@@ -259,39 +259,51 @@ veoveo-core    depends on third-party crates only
 
 ## Server Registration
 
-Servers register and migrate themselves through the Gateway. A server is a principal.
-It authenticates with its own OAuth client identity through a private-key JWT
-assertion, the mechanism agents and Computers workers already use. The installation
-binds each server identity to a namespace: a catalog slug, URI scheme, table prefix
-and permission prefix, such as `time`, `time://`, `time_` and `time.*`.
+The Gateway knows no server in its code or its configuration. A Gateway starts with
+an empty catalog, and every server reaches it only by registering. The installation
+configuration names no server either.
 
-At startup the server connects to the Gateway and declares itself through MCP
-extensions in its `initialize` capabilities:
+### Registration
+
+Each installation has one registration secret. OpenShell holds it as a provider, so
+an environment receives only a placeholder, and the proxy substitutes the real value
+only on requests to the Gateway's registration endpoint. No agent inside an
+environment can read it.
+
+A server generates its own key pair in its environment on first start. It registers
+with `POST /registrations`, authenticated by the registration secret and by a JWT it
+signs with its key (RFC 7523). The body carries three versioned declarations whose
+types live in `veoveo-core`:
 
 | Extension | Declares |
 |---|---|
-| `ai.veoveo/registration` | slug, URI scheme, version, image digest, endpoint, tools, resources and prompts |
-| `ai.veoveo/authorization` | permissions, predefined roles, the permission each tool, resource template and prompt requires, and each tool's effects: read, write, destructive, billed or physical |
-| `ai.veoveo/module` | the module manifest: ownership claims, requirements, SQL API, observation tables and migrations |
+| `ai.veoveo/registration` v1 | slug, URI scheme, version, endpoint and public key |
+| `ai.veoveo/authorization` v1 | permissions and the permission each tool, resource template and prompt requires |
+| `ai.veoveo/module` v1 | the module manifest: ownership claims, requirements, SQL API, observation tables and migrations |
 
-The Gateway accepts declarations only inside the identity's namespace, so Time
-cannot claim `map_` tables or `map.*` permissions. The Gateway applies migrations
-with the core module runner in `veoveo-modules` and its own database credentials.
-A server never holds database administrator credentials. Module manifests load
-through the same admission as the Rust declarations that generate them.
+The server advertises the same declarations under `extensions` in its MCP discovery
+result, so they have one source. Tools, resources and prompts are not declared twice:
+the Gateway reads them through MCP discovery, as it does today.
 
-Registrations live in SurrealDB, and every Gateway replica observes them through a
-LIVE query. A registration is a lease that the server renews. When renewal stops, the
-Gateway removes the server from routing, and its Tasks stay bound to the version that
-created them. Revoking the identity removes the server at once. Every registration
-and migration enters the audit chain.
+The first registration of a namespace claims it. The Gateway pins the server's public
+key to its slug, URI scheme, table prefix and permission prefix, such as `time`,
+`time://`, `time_` and `time.*`. Later registrations of that namespace, including new
+versions, must be signed by the pinned key, and a claim by another key is rejected.
+Releasing a namespace is an explicit administrative action. A declaration outside the
+pinned namespace is rejected with the exact reason.
 
-The Gateway compiles in only its own kernel declarations. Every permission, role, tool,
-resource, prompt and Audit target a server contributes arrives with its registration and
-is checked against the server's namespace. On each registration change, every replica
-builds a new immutable catalog snapshot and swaps it in. Requests in flight finish on the
-snapshot they started with. Owner-specific checks compiled into today's Gateway, such
-as Recording's ingest policy, become declarative rules or move into their server.
+The Gateway applies the module's migrations with the core module runner and its own
+database credentials, then issues the server its own database user at registration.
+The user has database-wide access, as servers have today, and limiting it to the
+server's table prefix is tracked separately. A server never holds administrator
+credentials.
+
+A registration is a lease in SurrealDB, renewed every 10 seconds and expired after 30.
+Every Gateway replica observes registrations through a LIVE query and builds a new
+immutable catalog snapshot on each change, and requests in flight finish on the
+snapshot they started with. When a lease expires, the server leaves routing, and its
+Tasks stay bound to the version that created them. Every registration, claim,
+migration and expiry enters the audit chain.
 
 Several versions of one server may register at the same time, and a builder's session
 selects among them as described in [Session Version Selection](#session-version-selection).
@@ -304,38 +316,90 @@ first. The runner performs the contract step only when no registered version dec
 reads of the removed shape and the change feeds show no access to it during the
 configured window, and it takes a snapshot before the drop.
 
+Artifact storage is a platform dependency of the Gateway, configured by address like
+SurrealDB, and its upload, download and administration routes depend on the Artifact
+contract in core rather than on a registered server.
+
 ## Authorization Model
 
-Veoveo adopts the permission, role and binding model proven by Google Cloud IAM,
-AWS IAM and Kubernetes RBAC. Relationship-based sharing in the style of Google
-Zanzibar covers memberships and grants, and Cedar expresses conditions.
+A server declares permissions. The installation declares roles and grants. The
+Gateway evaluates them, and the server checks the result again.
 
-| Element | Definition | Declared by |
-|---|---|---|
-| Permission | a typed action in a server's namespace, such as `time.schedules.create`; a closed enum with one wire spelling | the server, through `ai.veoveo/authorization` |
-| Role | a named set of permissions, such as `time.viewer` | the server for predefined roles, the installation for custom roles |
-| Binding | a role granted to a principal on a resource scope: a tenant, a Work Context or one resource | installation policy, and agents or the factory within their own permissions |
-| Principal | a person, group, agent, server identity or verifier agent | identity providers and the Gateway |
-| Relationship | membership and sharing, such as Work Context membership and Artifact grants | stored in SurrealDB |
-| Condition | a Cedar policy over labels, clearance, budgets, time and recorded evidence | installation policy |
+### Permissions
 
-The Gateway evaluates permissions, relationships and conditions before it forwards a
-request, and the server re-checks the signed authority it already receives. OAuth
-scopes stay coarse and name what a token is for, such as `mcp` or `time`, as the MCP
-authorization specification expects. An agent delegates by narrowing: token exchange
-issues a sub-agent a token limited to a subset of the agent's permissions, with budget
-conditions attached. Cedar policies are analyzed before they take effect, so an
-installation can check properties such as "only the module runner holds
-`platform.modules.contract`."
+Each permission names one action in the server's namespace, the resource type it acts
+on, one access kind and zero or more risks:
 
-Risk is expressed in the same model. A change that needs stronger checks requires a
-permission that is granted only under a stronger condition, and no change waits for
-a person. People write installation policy, and a policy change passes the same
-checks as any other change.
+```json
+{ "permission": "time.events.write", "resource": "time.event", "access": "write", "risks": [] }
+```
 
-This model replaces the rule list and per-profile `requiredScopes` in `gateway.json`;
-Time's profile entry requires only `operator:use` today. The closed-enum rule that
-AGENTS.md applies to scopes carries over to permissions.
+| Field | Values |
+|---|---|
+| `access` | exactly one of `read` or `write` |
+| `risks` | any of `sensitive` (reads secrets or personal data), `destructive`, `billed`, `physical` (acts on the real world) and `administer` |
+
+A server's permissions form a closed enum with one wire spelling per variant, and one
+typed requirement table drives both the declaration and every handler check. A tool
+annotated `destructiveHint` cannot require a permission without the `destructive` risk,
+and a tool annotated `readOnlyHint` cannot require a `write` permission.
+
+### Roles And Grants
+
+Roles belong to the installation. A role selects permissions by access kind and risk,
+and it grants a permission only when it allows that permission's access and every one
+of its risks. A risk the role does not name is never granted, so a new risk kind fails
+closed. Grants give roles to groups or principals within a tenant.
+
+```toml
+[[roles]]
+name   = "member"
+access = ["read", "write"]
+risks  = []
+
+[[roles]]
+name   = "admin"
+access = ["read", "write"]
+risks  = ["sensitive", "destructive", "billed", "physical", "administer"]
+
+[[grants]]
+group = "tenant-members"
+role  = "member"
+
+[[grants]]
+group = "installation-admins"
+role  = "admin"
+```
+
+An installation may add a risk to a permission or deny a permission by name when a
+server labels an action wrongly. The default configuration needs neither, and it names
+no server.
+
+### Evaluation
+
+For each request the Gateway resolves the caller's roles from grants, selects the
+permissions those roles allow and checks the permission that the target tool, resource
+template or prompt requires. Anything the server did not declare is denied. The signed
+identity the Gateway forwards carries only the granted permissions in the target
+server's namespace, together with the caller's tenant, Work Context and membership.
+The server checks the permission again through its typed enum.
+
+Per-object rules, such as Time's owner-only events, stay with the server. The resource
+type on each permission lets shared relationship checks, such as Work Context membership
+and Artifact sharing, attach later in the style of Google Zanzibar without changing the
+server declaration. Cedar conditions, custom roles, bindings scoped to a Work Context
+or a single resource and token-exchange delegation extend the evaluation in the
+Gateway; none of them changes what a server declares.
+
+### Time
+
+| Permission | Resource | Access | Risks | Required by |
+|---|---|---|---|---|
+| `time.read` | `time.authority` | read | | `resolve_time`, `convert_time`, `assess_clock`, resources, completions and prompts |
+| `time.schedule` | `time.calendar` | read | | `evaluate_windows`, `expand_schedule` |
+| `time.timeline` | `time.epoch` | read | | `validate_timeline` |
+| `time.events.write` | `time.event` | write | | `create_temporal_event`, `cancel_temporal_event` |
+| `time.admin` | `time.authority` | write | administer | authority sources, acquisitions and activation |
 
 ## Component Environments
 
@@ -655,13 +719,15 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 ### Registration And Authorization
 
-- [ ] A1. Define the `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` extensions in `veoveo-core`.
-- [ ] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations, and generate a manifest from every existing module.
-- [ ] A3. Add Gateway registration: private-key JWT server identities, namespace bindings, leases, registrations in SurrealDB with LIVE distribution, and migrations through the core runner.
-- [ ] A4. Evaluate permissions, roles, bindings, relationships and Cedar conditions in the Gateway, replacing the `gateway.json` rule list.
+- [ ] N1. Qualify the networking the first slice needs on macOS: one sandbox reaching another sandbox's service through exposure and through a port forward, and a custom endpointless provider whose placeholder resolves only on requests to a bound endpoint.
+- [ ] A1. Define `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` v1 in `veoveo-core`, the installation configuration without servers (roles, grants, overrides and the registration secret), and granted permissions in the signed identity.
+- [ ] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations.
+- [ ] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog.
+- [ ] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists.
 - [ ] A5. Issue narrowed sub-agent tokens through token exchange.
-- [ ] A6. Declare Time's permissions and roles, and register and migrate Time through the Gateway.
+- [ ] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway.
 - [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
+- [ ] A8. Limit each server's database user to its own table prefix.
 
 ### OpenShell Qualification
 
