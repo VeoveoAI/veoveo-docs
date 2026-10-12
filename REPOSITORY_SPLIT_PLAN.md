@@ -76,10 +76,12 @@ example `acme/veoveo-mcp-inventory`, and add the matching GitHub topic.
 | `template` | GitHub template repository | `veoveo-template-mcp-rust` |
 | `showcase` | Demonstration workload | `veoveo-showcase-uav` |
 | `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell` |
-| none | Organization singletons | `veoveo-docs`, `veoveo-deploy`, `veoveo-website` |
+| none | Organization singletons | `veoveo-docs`, `veoveo-website` |
 
-`veoveo-deploy` is the development installation that Veoveo runs for itself on
-OpenShell. It has the shape of an installation repository and holds development values.
+`veoveo-template-installation` is the template every installation starts from,
+including Veoveo's own local development installation and `BiomaAI/veoveo-bioma`. Its
+defaults run a local installation on one workstation. `veoveo-docs` holds this plan and
+other organization documents.
 
 An installation repository lives in its owner's organization and is named
 `veoveo-<installation>`. The reference installation is `BiomaAI/veoveo-bioma`, which
@@ -164,8 +166,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
-| `veoveo-template-installation` | `examples/bioma` with installation values removed | template repository |
-| `veoveo-deploy` | none; new | the development installation: SurrealDB Compose file, installation configuration, namespace bindings and component lock |
+| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: SurrealDB Compose file, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
 | `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
 | `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
@@ -593,12 +594,12 @@ The first slice is the smallest installation that represents Veoveo end to end.
 | Gateway environment | an OpenShell sandbox from `veoveo-service-gateway` |
 | Time environment | an OpenShell sandbox from `veoveo-mcp-time` |
 
-`veoveo-deploy` is the development installation. It holds the SurrealDB Compose file,
+`veoveo-template-installation` provides the local installation. It holds the SurrealDB Compose file,
 the installation configuration, the namespace bindings and a component lock that names
 each component's Git revision. Each component repository describes its own launch:
 its policy, providers, GPU use and exposure under `openshell/`. Installation
 configuration uses the same core contract that production installation repositories
-use. The Gateway environment fetches `veoveo-deploy` and applies its bindings at first
+use. The Gateway environment fetches its installation repository and applies its bindings at first
 start, so a binding changes through a commit. Starting SurrealDB and creating the
 sandboxes are the only steps taken outside an environment, and each environment
 generates its own private key. The slice is up when every environment reports itself
@@ -637,7 +638,7 @@ environments as soon as the environments can work.
 | 3 | `veoveo-qualify-openshell` from the spike, with its probes turned into Rust scenarios | The suite reproduces the October 11 results on both hosts |
 | 4 | `veoveo-template-mcp-rust`: the starting Dockerfile stages, `/etc/profile.d` variables, `rust-toolchain.toml`, `rustfmt.toml`, `clippy.toml`, `deny.toml`, nextest profiles and an OpenShell policy that allows rustup, crates.io, GitHub fetches and model providers | An environment created from the template builds and checks a crate on both hosts |
 | 5 | Qualify Git push through a GitHub provider (T4) and Claude Code with an API-key provider (T5) | Push succeeds for the environment's own repository only, and the agent completes an edit |
-| 6 | Skeletons for `veoveo-core`, `veoveo-mcp-time`, `veoveo-service-gateway` and `veoveo-deploy`: README, AGENTS.md, LICENSE, workspace manifest with lint tables, toolchain pin, Dockerfile stages and `openshell/policy.yaml` | `docker build --target check` passes and each environment starts on both hosts |
+| 6 | Skeletons for `veoveo-core`, `veoveo-mcp-time`, `veoveo-service-gateway` and `veoveo-template-installation`: README, AGENTS.md, LICENSE, workspace manifest with lint tables, toolchain pin, Dockerfile stages and `openshell/policy.yaml` | `docker build --target check` passes and each environment starts on both hosts |
 | 7 | Port the slice into the skeletons by copying, cutting and solving | First slice tasks S2 to S7 |
 
 Until step 5 passes, work runs in outside-author mode. A coding agent on the host,
@@ -781,7 +782,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2.
 - [ ] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6).
 - [ ] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository.
-- [ ] S5. `veoveo-deploy`: the SurrealDB Compose file, installation configuration, namespace bindings and component lock, applied by the Gateway environment at first start.
+- [ ] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults.
 - [ ] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`.
 - [ ] S7. A second Time version registers and one session selects it.
 
@@ -812,7 +813,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map, Frames and Media.
 - [ ] E4. Extract the services: Artifact, Knowledge, Recording, Agents and Computers.
 - [ ] E5. Extract the GPU servers, runtimes and showcases.
-- [ ] E6. Publish `veoveo-template-installation` and move the Bioma reference to `BiomaAI/veoveo-bioma`.
+- [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would, add a Kubernetes target to the template, and move the Bioma reference installation there.
 
 ### Documentation
 
