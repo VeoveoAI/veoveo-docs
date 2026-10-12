@@ -273,7 +273,8 @@ only on requests to the Gateway's registration endpoint. No agent inside an
 environment can read it.
 
 Registration follows open standards, and every Veoveo addition uses the extension
-mechanism of the standard it extends. Nothing carries a version number before it ships.
+mechanism of the standard it extends. Its URIs, paths and identifiers carry no version
+segment such as `/v1`.
 
 | Concern | Standard | Veoveo extension |
 |---|---|---|
@@ -753,7 +754,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] D17. Choose the contribution model: a DCO sign-off, or a Contributor License Agreement if relicensing must stay possible.
 - [x] D18. Runtime names use `vv-<kind>-<name>` with the kind codes in [Runtime Names](#runtime-names).
 - [ ] D19. A variant suffix for runtime names when several versions of one component run at once.
-- [x] D20. Every name and format follows a published standard or the conventions in `veoveo-core` `docs/CONVENTIONS.md`; nothing unshipped carries a version number.
+- [x] D20. Every name and format follows a published standard or the conventions in `veoveo-core` `docs/CONVENTIONS.md`. URIs, paths and identifiers carry no version segment such as `/v1`; releases, tags and crates carry versions.
 - [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
 - [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
 
