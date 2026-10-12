@@ -748,14 +748,17 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] D17. Choose the contribution model: a DCO sign-off, or a Contributor License Agreement if relicensing must stay possible.
 - [x] D18. Runtime names use `vv-<kind>-<name>` with the kind codes in [Runtime Names](#runtime-names).
 - [ ] D19. A variant suffix for runtime names when several versions of one component run at once.
+- [x] D20. Every name and format follows a published standard or the conventions in `veoveo-core` `docs/CONVENTIONS.md`; nothing unshipped carries a version number.
+- [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
+- [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
 
 ### Registration And Authorization
 
-- [ ] N1. Qualify the networking the first slice needs on macOS: one sandbox reaching another sandbox's service through exposure and through a port forward, and a custom endpointless provider whose placeholder resolves only on requests to a bound endpoint.
-- [ ] A1. In `veoveo-core`: the normative protocol document, typed RFC 7591/7592 registration requests and responses, the `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` declarations, the registration client for servers, the installation configuration without servers (roles, grants, overrides and the registration secret), and the forwarded identity as an RFC 9068 access token carrying granted permissions in RFC 9396 `authorization_details`.
-- [ ] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations.
-- [ ] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog.
-- [ ] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists.
+- [x] N1. Qualify the networking the first slice needs on macOS: one sandbox reaching another sandbox's service through exposure and through a port forward, and a custom endpointless provider whose placeholder resolves only on requests to a bound endpoint. Done on macOS (`veoveo-qualify-openshell`): port forwards reach between sandboxes, exposure does not, and a policy-bound provider secret resolves only on its endpoint.
+- [x] A1. In `veoveo-core`: the normative protocol document, typed RFC 7591/7592 registration requests and responses, the `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` declarations, the registration client for servers, the installation configuration without servers (roles, grants, overrides and the registration secret), and the forwarded identity as an RFC 9068 access token carrying granted permissions in RFC 9396 `authorization_details`. Done in `veoveo-core` (`veoveo-mcp-ext-registration`).
+- [x] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations. Done in `veoveo-core`.
+- [x] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog. Done in `veoveo-service-gateway` `92d8a25`; the newest registration of a slug routes until session version selection exists.
+- [x] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists. Done in `veoveo-service-gateway` `92d8a25`.
 - [ ] A5. Issue narrowed sub-agent tokens through token exchange.
 - [ ] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway.
 - [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
@@ -772,14 +775,14 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] Q7. A macOS telemetry setting that persists across logins.
 - [x] Q8. `veoveo-qualify-openshell` (`100545a`) turns the probes into 29 Rust scenarios with machine-readable results; macOS and Linux pass with no failures.
 - [x] Q9. Environments install toolchain components, targets, crates and Git dependencies inside the sandbox.
-- [ ] Q10. Add a `limit` scenario for loopback ports: inside a sandbox, a closed loopback listener keeps completing TCP handshakes and never answers, while a plain container refuses the connection.
+- [x] Q10. Add a `limit` scenario for loopback ports: inside a sandbox, a closed loopback listener keeps completing TCP handshakes and never answers, while a plain container refuses the connection. Added as `sandbox.loopback_close`.
 - [ ] Q11. Add a scenario for synthetic DNS address expiry: a long-running process that resolves a host early, such as Cargo fetching Git dependencies before the crates.io index, is denied with `transparent_tcp_mapping_denied` when it connects after the mapping expires.
 - [ ] Q12. Add a lifecycle scenario for a Docker daemon restart: OpenShell 0.1.3 marks running sandboxes Error, refuses both stop and start, and only delete recovers, losing `/sandbox`. Environments keep source in Git and treat `/sandbox` as a cache.
 
 ### First Slice Tasks
 
 - [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-service-gateway` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
-- [ ] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2.
+- [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `c50a2a3`.
 - [ ] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6).
 - [ ] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository.
 - [ ] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults.
@@ -790,21 +793,21 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 These cuts happen in the new repositories while code is copied, not in the current repository.
 
-- [ ] P1. Remove the Gateway's compiled module registry and the twelve optional module declarations it links: Reason, Stream, Computers, agents, Workspace, Recording, Map, Time, UAV, Frames, Media and Optimization. Kernel modules stay compiled in, and every other module arrives through registration.
-- [ ] P2. Move server-specific Gateway code to its owners: agent runtime authentication, bindings and catalog import; the Console stream over Recording and agent tables; Computers routes; Workspace modules; Speech routes; and the Gateway catalog's direct agent runtime, Computers and Recording dependencies.
+- [x] P1. Remove the Gateway's compiled module registry and the twelve optional module declarations it links: Reason, Stream, Computers, agents, Workspace, Recording, Map, Time, UAV, Frames, Media and Optimization. Kernel modules stay compiled in, and every other module arrives through registration. Done in `veoveo-service-gateway`.
+- [x] P2. Move server-specific Gateway code to its owners: agent runtime authentication, bindings and catalog import; the Console stream over Recording and agent tables; Computers routes; Workspace modules; Speech routes; and the Gateway catalog's direct agent runtime, Computers and Recording dependencies. Done in `veoveo-service-gateway`; managed-agent admission returns through registration and the Console endpoints return with the Console's repository.
 - [ ] P3. Make Media use the Artifact client instead of `veoveo-artifact-service`.
 - [ ] P4. Remove the Knowledge and Reason dev-dependency cycle.
 - [ ] P5. Split `platform/workspace` into a contract and services.
 - [ ] P6. Split the agent runtime contract from `agents/runtime`.
 - [ ] P7. Add implementation-neutral conformance suites for Artifact, Knowledge, Embedding and Recording.
-- [ ] P8. Replace the hand-written server entries in `gateway.json` with registration.
+- [x] P8. Replace the hand-written server entries in `gateway.json` with registration. Done: the Gateway and the installation name no server.
 - [ ] P9. Split `deploy/helm/veoveo` into per-component charts and a platform chart.
 - [ ] P10. Leave `cargo xtask` and the `testing-support` process supervisor behind; nextest and environment self-verification replace them.
 - [ ] P11. Let owners register Audit details the way they register Audit targets, and remove the Computer, Recording, Dictation, LiveView and Artifact variants from `AuditDetail`.
 - [ ] P12. Replace the Artifact, Knowledge and Audit sections of the Gateway configuration contract with registration data.
 - [ ] P13. Move the Knowledge and Artifact schemas and queries out of `veoveo-platform-store`, and `artifact_service` out of `veoveo-mcp-contract`, when those services are extracted.
 - [ ] P14. Move each server's contract-document conformance check into that server's repository; core provides the check as a library.
-- [ ] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted.
+- [x] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted. Done in `veoveo-core`.
 
 ### Extraction
 
