@@ -123,7 +123,7 @@ the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob
 | `template` | `tpl` | `vv-tpl-mcp-rust` |
 | `showcase` | `demo` | `vv-demo-uav` |
 | `qualify` | `qual` | `vv-qual-openshell` |
-| none | none | `vv-core`, `vv-deploy` |
+| none | none | `vv-core`, `vv-local`, `vv-surrealdb` |
 
 Every current catalog name fits. The longest, `vv-mcp-optimization`, uses all 19
 characters, so a new MCP server name stays within 12 characters after `vv-mcp-`.
@@ -785,16 +785,18 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] Q12. Add a lifecycle scenario for a Docker daemon restart: OpenShell 0.1.3 marks running sandboxes Error, refuses both stop and start, and only delete recovers, losing `/sandbox`. Environments keep source in Git and treat `/sandbox` as a cache.
 - [ ] Q13. Add a scenario for binary pinning: a policy binary path is pinned to the SHA-256 of the first binary it sees, so a rebuilt binary at the same path is denied; environments run services from content-addressed paths.
 - [ ] Q14. Add a scenario for `openshell sandbox exec` with a background child: the call does not return while the child runs, so services start in their own session.
+- [ ] Q15. Add a scenario for `openshell forward start -d`: the detached forward keeps the caller's standard streams open, so a caller that captures output waits until the forward stops, and stopping that caller kills the forward. Scripted callers redirect all three streams.
 
 ### First Slice Tasks
 
 - [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-service-gateway` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
-- [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `c50a2a3`.
-- [x] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6). Done at `fa049c3`.
-- [x] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `92d8a25`; dial-in remains A7.
-- [x] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults. Done: the provider profile and the bootstrap at `a4485c8`; the installation configuration is generated because it embeds per-run key thumbprints.
-- [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done: Time registers and passes its acceptance suite through the Gateway on macOS and on Linux from fresh clones.
+- [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `75c05e6`, which the Gateway and Time pin. The store fixture accepts only a `surreal` child it started and that signs in with the fixture's credentials, and knowledge member replacement retries SurrealDB write conflicts; with both, the suite passes 823 of 823 tests in five consecutive environment runs and in three Linux image checks.
+- [x] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6). Done at `fe08624`.
+- [x] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `b69f16f`; dial-in remains A7.
+- [x] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults. Done at `798e030`: the `vv-local` Compose project, the provider profile, and bootstrap, stop and reset instructions. The installation configuration is generated because it embeds per-run key thumbprints. The component lock is S8.
+- [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done on October 12 with core `75c05e6`, Gateway `b69f16f` and Time `fe08624`. The README bootstrap from a reset passes Time's six acceptance tests and the Gateway's registration test on macOS. On Linux, it passes the acceptance tests from fresh clones, and the reset leaves no sandbox, forward, container, volume or registration provider. On macOS, SIGTERM removes Time's registration row and a restart registers again within 6 seconds.
 - [ ] S7. A second Time version registers and one session selects it.
+- [ ] S8. A component lock in `veoveo-template-installation` that names each component's repository and Git revision, with a format URI and JSON Schema under the conventions, read by the bootstrap instead of cloning `main`.
 
 ### Cuts During Porting
 
