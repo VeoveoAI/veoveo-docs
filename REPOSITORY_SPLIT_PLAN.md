@@ -604,6 +604,14 @@ Core tests that use SurrealDB start one `surreal` process per fixture inside the
 environment, because no container runtime enters a sandbox. The dev images copy the
 SurrealDB 3.3.0 binary from the server image pinned by digest.
 
+Documents move under the same rule. A monorepo document moves only when a change
+touches what it describes, and until then references link to the monorepo at the
+baseline commit. A moving document is rewritten for its new repository: it keeps only
+current, relevant content, drops plan status, history, `xtask` commands, monorepo paths
+and other components' details, and every link resolves. Design documents that arrived
+with their crates are cleaned in the change that next touches their component, and
+before the repository is first pushed when they describe code that was cut.
+
 Code moves by copying, cutting and solving. One crate or concern at a time is copied
 into its new repository, stripped of everything outside the slice, made to pass every
 gate on both machines and committed with a message that names its source commit. The
