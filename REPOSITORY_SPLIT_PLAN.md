@@ -419,11 +419,16 @@ Gateway; none of them changes what a server declares.
 | `time.schedules.expand` | `time.schedule` | read | | `evaluate_windows`, `expand_schedule` |
 | `time.timelines.validate` | `time.timeline` | read | | `validate_timeline` |
 | `time.events.write` | `time.event` | write | | `create_event`, `cancel_event` |
-| `time.authorities.administer` | `time.authority` | write | administer | authority sources, acquisitions and activation |
+| `time.authorities.inspect` | `time.authority` | read | administer | administrative listings of sources, acquisitions and releases |
+| `time.authorities.administer` | `time.authority` | write | administer | registering sources, acquisitions and release activation |
+| `time.calendars.write` | `time.calendar` | write | administer | publishing operational calendars |
+| `time.epochs.write` | `time.epoch` | write | administer | publishing mission epochs |
+| `time.clock-policies.write` | `time.clock-policy` | write | administer | setting the clock quality policy |
 
-Permission, resource type and tool names follow the one-noun rule of the conventions:
-the event is `time.event` as a resource type, `time.events.write` as a permission,
-`create_event` as a tool and `time://events/{event_id}` as a URI.
+Time's administration is a set of MCP tools, so the Gateway authorizes it like any
+other call. Acquisition is a job tool with its own idempotency key, phases and
+cancellation, and releases, calendars, epochs and the clock policy are read through
+resources.
 
 ## Component Environments
 
@@ -760,7 +765,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog. Done in `veoveo-service-gateway` `92d8a25`; the newest registration of a slug routes until session version selection exists.
 - [x] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists. Done in `veoveo-service-gateway` `92d8a25`.
 - [ ] A5. Issue narrowed sub-agent tokens through token exchange.
-- [ ] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway.
+- [x] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway. Done in `veoveo-mcp-time` `fa049c3`: nine permissions from one requirement table, administration as MCP tools, and six acceptance tests through the Gateway on macOS and Linux.
 - [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
 - [ ] A8. Limit each server's database user to its own table prefix.
 
@@ -785,7 +790,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 - [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-service-gateway` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
 - [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `c50a2a3`.
-- [ ] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6).
+- [x] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6). Done at `fa049c3`.
 - [x] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `92d8a25`; dial-in remains A7.
 - [x] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults. Done: the provider profile and the bootstrap at `a4485c8`; the installation configuration is generated because it embeds per-run key thumbprints.
 - [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done: Time registers and passes its acceptance suite through the Gateway on macOS and on Linux from fresh clones.
