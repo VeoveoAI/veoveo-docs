@@ -31,7 +31,7 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | Compose specification | Launch of SurrealDB and other upstream infrastructure that runs outside OpenShell |
 | Helm 3 | One application chart per component, built on a shared library chart |
 | Flux | One HelmRelease per component in the installation repository, ordered with `dependsOn` |
-| MCP `2026-07-28` | Unchanged; slugs, URI schemes, scopes and `ai.veoveo/*` keys keep their wire spelling |
+| MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
 | Veoveo MCP extensions `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` | Repository-owned declarations a server sends when it registers with the Gateway |
 | OAuth 2.0 private-key JWT client authentication, RFC 7523 | Server and agent identities |
 | OAuth 2.0 Token Exchange, RFC 8693 | Narrowed delegation from an agent to a sub-agent |
@@ -98,8 +98,9 @@ Each component uses its repository name for every artifact it produces:
 
 Today these differ. Time's crate is `veoveo-time-mcp`, its image is `veoveo/time-mcp`
 and the Gateway image is `veoveo/mcp-gateway`. The rename happens when each component
-is extracted. No Veoveo crate is published yet, so the rename has no external
-consumers. Catalog slugs, URI schemes, scopes and extension keys do not change.
+is extracted. No Veoveo crate, wire name or format has been released, so renames have
+no external consumers. Wire names, format identifiers and other identifiers follow the
+[naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md).
 
 ### Runtime Names
 
@@ -107,8 +108,8 @@ OpenShell 0.1.3 rejects sandbox names longer than 19 characters, and container a
 Kubernetes resource names carry their own limits. Runtime names therefore use
 `vv-<kind>-<name>`, with a short code for each kind, while repositories, crates,
 binaries and images keep their full `veoveo-<kind>-<name>` names. Kinds without a code
-use `vv-<name>`. Published identities, such as `veoveo.ai`, the `ai.veoveo/*` extension
-keys and the `veoveo.ai/*` format tags, keep their spelling.
+use `vv-<name>`. Extension keys, format identifiers and every other wire name follow
+the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md).
 
 | Kind | Code | Example runtime name |
 |---|---|---|
@@ -413,11 +414,15 @@ Gateway; none of them changes what a server declares.
 
 | Permission | Resource | Access | Risks | Required by |
 |---|---|---|---|---|
-| `time.read` | `time.authority` | read | | `resolve_time`, `convert_time`, `assess_clock`, resources, completions and prompts |
-| `time.schedule` | `time.calendar` | read | | `evaluate_windows`, `expand_schedule` |
-| `time.timeline` | `time.epoch` | read | | `validate_timeline` |
-| `time.events.write` | `time.event` | write | | `create_temporal_event`, `cancel_temporal_event` |
-| `time.admin` | `time.authority` | write | administer | authority sources, acquisitions and activation |
+| `time.authorities.read` | `time.authority` | read | | `resolve_time`, `convert_time`, `assess_clock`, resources, completions and prompts |
+| `time.schedules.expand` | `time.schedule` | read | | `evaluate_windows`, `expand_schedule` |
+| `time.timelines.validate` | `time.timeline` | read | | `validate_timeline` |
+| `time.events.write` | `time.event` | write | | `create_event`, `cancel_event` |
+| `time.authorities.administer` | `time.authority` | write | administer | authority sources, acquisitions and activation |
+
+Permission, resource type and tool names follow the one-noun rule of the conventions:
+the event is `time.event` as a resource type, `time.events.write` as a permission,
+`create_event` as a tool and `time://events/{event_id}` as a URI.
 
 ## Component Environments
 
