@@ -160,7 +160,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-app-workspace` | `apps/workspace` and the Workspace services in `platform/workspace` | image, chart |
 | `veoveo-website` | `apps/website` | site |
 | `veoveo-sdk-python` | `sdk/python` | PyPI package |
-| `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps | npm package |
+| `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
 | `veoveo-template-installation` | `examples/bioma` with installation values removed | template repository |
@@ -683,7 +683,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-service-gateway` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
 - [ ] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2.
 - [ ] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6).
-- [ ] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture.
+- [ ] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository.
 - [ ] S5. `veoveo-deploy`: the SurrealDB Compose file, installation configuration, namespace bindings and component lock, applied by the Gateway environment at first start.
 - [ ] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`.
 - [ ] S7. A second Time version registers and one session selects it.
@@ -706,6 +706,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] P12. Replace the Artifact, Knowledge and Audit sections of the Gateway configuration contract with registration data.
 - [ ] P13. Move the Knowledge and Artifact schemas and queries out of `veoveo-platform-store`, and `artifact_service` out of `veoveo-mcp-contract`, when those services are extracted.
 - [ ] P14. Move each server's contract-document conformance check into that server's repository; core provides the check as a library.
+- [ ] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted.
 
 ### Extraction
 
