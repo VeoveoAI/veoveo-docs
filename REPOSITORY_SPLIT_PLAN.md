@@ -270,16 +270,34 @@ an environment receives only a placeholder, and the proxy substitutes the real v
 only on requests to the Gateway's registration endpoint. No agent inside an
 environment can read it.
 
-A server generates its own key pair in its environment on first start. It registers
-with `POST /registrations`, authenticated by the registration secret and by a JWT it
-signs with its key (RFC 7523). The body carries three versioned declarations whose
-types live in `veoveo-core`:
+Registration follows open standards, and every Veoveo addition uses the extension
+mechanism of the standard it extends. Nothing carries a version number before it ships.
+
+| Concern | Standard | Veoveo extension |
+|---|---|---|
+| Registering a server | OAuth 2.0 Dynamic Client Registration, RFC 7591 | Client metadata with collision-resistant names carries the three declarations below |
+| Reading, renewing and removing a registration | RFC 7592 | Renewal is an ordinary update; the lease is documented server-side policy |
+| Proving the server's key | RFC 7523 private-key JWT | none |
+| The identity forwarded to a server | JWT access token, RFC 9068, with `aud` naming the server | Granted permissions travel in RFC 9396 `authorization_details` with a collision-resistant `type` |
+| Discovery metadata | RFC 8414, RFC 9728 | none |
+| Declarations in MCP | MCP `capabilities.extensions` | the `ai.veoveo/` namespace |
+| Declaration schemas | JSON Schema 2020-12 | none |
+
+A server generates its own key pair in its environment on first start and registers at
+the Gateway's RFC 7591 registration endpoint. The installation's registration secret is
+the RFC 7591 initial access token, and the key travels as the `jwks` client metadata.
+Its three declarations, whose types live in `veoveo-core`, travel as client metadata:
 
 | Extension | Declares |
 |---|---|
-| `ai.veoveo/registration` v1 | slug, URI scheme, version, endpoint and public key |
-| `ai.veoveo/authorization` v1 | permissions and the permission each tool, resource template and prompt requires |
-| `ai.veoveo/module` v1 | the module manifest: ownership claims, requirements, SQL API, observation tables and migrations |
+| `ai.veoveo/registration` | slug, URI scheme, server version and endpoint |
+| `ai.veoveo/authorization` | permissions and the permission each tool, resource template and prompt requires |
+| `ai.veoveo/module` | the module manifest: ownership claims, requirements, SQL API, observation tables and migrations |
+
+The registration response returns the client identifier, the RFC 7592 registration
+access token, the server's database credentials and the keys that sign forwarded
+identities. `veoveo-core` holds the normative protocol document and a registration
+client that every server uses.
 
 The server advertises the same declarations under `extensions` in its MCP discovery
 result, so they have one source. Tools, resources and prompts are not declared twice:
@@ -298,7 +316,7 @@ The user has database-wide access, as servers have today, and limiting it to the
 server's table prefix is tracked separately. A server never holds administrator
 credentials.
 
-A registration is a lease in SurrealDB, renewed every 10 seconds and expired after 30.
+A registration is a lease in SurrealDB, renewed through an RFC 7592 update every 10 seconds and expired after 30.
 Every Gateway replica observes registrations through a LIVE query and builds a new
 immutable catalog snapshot on each change, and requests in flight finish on the
 snapshot they started with. When a lease expires, the server leaves routing, and its
@@ -720,7 +738,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 ### Registration And Authorization
 
 - [ ] N1. Qualify the networking the first slice needs on macOS: one sandbox reaching another sandbox's service through exposure and through a port forward, and a custom endpointless provider whose placeholder resolves only on requests to a bound endpoint.
-- [ ] A1. Define `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` v1 in `veoveo-core`, the installation configuration without servers (roles, grants, overrides and the registration secret), and granted permissions in the signed identity.
+- [ ] A1. In `veoveo-core`: the normative protocol document, typed RFC 7591/7592 registration requests and responses, the `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` declarations, the registration client for servers, the installation configuration without servers (roles, grants, overrides and the registration secret), and the forwarded identity as an RFC 9068 access token carrying granted permissions in RFC 9396 `authorization_details`.
 - [ ] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations.
 - [ ] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog.
 - [ ] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists.
