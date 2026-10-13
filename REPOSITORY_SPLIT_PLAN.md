@@ -28,16 +28,16 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | OCI images | Each host builds component images locally; a registry for distributing them is an open decision (D15) |
 | Dockerfile multi-stage builds with BuildKit | `dev`, `check`, `build` and `runtime` stages in every component repository |
 | OpenShell 0.1.3 | Component environment runtime: sandboxes from our images, `version: 1` policies, providers, service exposure and port forwarding |
-| Compose specification | Launch of SurrealDB and other upstream infrastructure that runs outside OpenShell |
+| Compose specification | Launch of PostgreSQL and other upstream infrastructure that runs outside OpenShell |
 | Helm 3 | One application chart per component, built on a shared library chart |
 | Flux | One HelmRelease per component in the installation repository, ordered with `dependsOn` |
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
-| Veoveo MCP extensions `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` | Repository-owned declarations a server sends when it registers with the Gateway |
+| Veoveo MCP extensions `ai.veoveo/registration` and `ai.veoveo/authorization` | Repository-owned declarations a server sends when it registers with the Gateway |
 | OAuth 2.0 private-key JWT client authentication, RFC 7523 | Server and agent identities |
 | OAuth 2.0 Token Exchange, RFC 8693 | Narrowed delegation from an agent to a sub-agent |
 | Cedar | Authorization conditions; the version is pinned when adopted |
 | `veoveo.ai/deployment/v9` and `veoveo.ai/deployment-lock/v8` | Current profile and lock formats; the component lock below extends them |
-| SurrealDB 3.3.0 modules | Each component ships its own module schema and migrations |
+| PostgreSQL 18.6 | One database per installation; core owns the kernel schemas, and each server owns one schema and applies its own sqlx migrations ([database design](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/DATABASE.md)) |
 
 ## Principles
 
@@ -123,7 +123,7 @@ the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob
 | `template` | `tpl` | `vv-tpl-mcp-rust` |
 | `showcase` | `demo` | `vv-demo-uav` |
 | `qualify` | `qual` | `vv-qual-openshell` |
-| none | none | `vv-core`, `vv-local`, `vv-surrealdb` |
+| none | none | `vv-core`, `vv-local`, `vv-postgres` |
 
 Every current catalog name fits. The longest, `vv-mcp-optimization`, uses all 19
 characters, so a new MCP server name stays within 12 characters after `vv-mcp-`.
@@ -166,7 +166,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
-| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: SurrealDB Compose file, installation configuration, roles and grants, and component lock |
+| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: PostgreSQL Compose file, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
 | `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
 | `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
@@ -307,24 +307,26 @@ result, so they have one source. Tools, resources and prompts are not declared t
 the Gateway reads them through MCP discovery, as it does today.
 
 The first registration of a namespace claims it. The Gateway pins the server's public
-key to its slug, URI scheme, table prefix and permission prefix, such as `time`,
-`time://`, `time_` and `time.*`. Later registrations of that namespace, including new
+key to its slug, URI scheme, database schema and permission prefix, such as `time`,
+`time://`, the schema `time` and `time.*`. Later registrations of that namespace, including new
 versions, must be signed by the pinned key, and a claim by another key is rejected.
 Releasing a namespace is an explicit administrative action. A declaration outside the
 pinned namespace is rejected with the exact reason.
 
-The Gateway applies the module's migrations with the core module runner and its own
-database credentials, then issues the server its own database user at registration.
-The user has database-wide access, as servers have today, and limiting it to the
-server's table prefix is tracked separately. A server never holds administrator
-credentials.
+The Gateway gives each registration its own PostgreSQL login, a member of the
+server's group role, which owns the server's schema. The server applies its own
+migrations in that schema at startup. PostgreSQL grants and row-level security confine
+a server to its schema and to its own rows in shared kernel tables, and a server never
+holds administrator credentials.
 
-A registration is a lease in SurrealDB, renewed through an RFC 7592 update every 10 seconds and expired after 30.
-Every Gateway replica observes registrations through a LIVE query and builds a new
-immutable catalog snapshot on each change, and requests in flight finish on the
-snapshot they started with. When a lease expires, the server leaves routing, and its
-Tasks stay bound to the version that created them. Every registration, claim,
-migration and expiry enters the audit chain.
+A registration has no lease and the server renews nothing. The Gateway keeps a
+registration while the server's login holds a live kernel instance, a session advisory
+lock on the server's database connection, and removes the registration and its login
+after a 60-second grace period otherwise. Every Gateway replica follows registrations
+through PostgreSQL notifications and builds a new immutable catalog snapshot on each
+change, and requests in flight finish on the snapshot they started with. A removed
+server leaves routing, and its Tasks stay bound to the version that created them.
+Every registration, claim and expiry enters the audit chain.
 
 Several versions of one server may register at the same time, and a builder's session
 selects among them as described in [Session Version Selection](#session-version-selection).
@@ -333,12 +335,11 @@ an authenticated connection and receive MCP requests on it, so a build on a lapt
 in a factory sandbox joins a shared Gateway without inbound networking.
 
 Destructive schema changes run as expand and contract. A version adds the new shape
-first. The runner performs the contract step only when no registered version declares
-reads of the removed shape and the change feeds show no access to it during the
-configured window, and it takes a snapshot before the drop.
+first. The contract step runs only when no registered version declares reads of the
+removed shape, and a snapshot precedes the drop.
 
 Artifact storage is a platform dependency of the Gateway, configured by address like
-SurrealDB, and its upload, download and administration routes depend on the Artifact
+the database, and its upload, download and administration routes depend on the Artifact
 contract in core rather than on a registered server.
 
 ## Authorization Model
@@ -505,7 +506,7 @@ exists.
 
 OpenShell 0.1.3 runs every environment as a sandbox created from the component's
 `dev` image and its committed policy. The OpenShell gateway, its supervisor images
-and SurrealDB are unmodified upstream releases that run outside the sandboxes. On
+and PostgreSQL are unmodified upstream releases that run outside the sandboxes. On
 macOS the runtime needs Docker Desktop 4.94 or newer, whose Linux kernel enables
 Landlock. Docker Desktop 4.54 lacks Landlock, and every sandbox fails OpenShell's
 Landlock probe there. Docker Desktop also needs host networking enabled and Enhanced
@@ -517,7 +518,7 @@ The October 11 qualification ran the same probes on macOS (arm64, Docker Desktop
 
 | Path | Works | Fails |
 |---|---|---|
-| Outbound from a sandbox | HTTP, SSE, WebSocket, native gRPC over HTTP/2, SurrealDB queries and LIVE notifications, Cargo through the TLS-inspecting proxy; 30-minute runs complete with p99 latency of 1 to 3 ms on Linux and 3 to 9 ms on macOS | WebSocket upgrades to endpoints inspected as `mcp`, `json-rpc` or `graphql`, and plain requests to endpoints inspected as `websocket` |
+| Outbound from a sandbox | HTTP, SSE, WebSocket, native gRPC over HTTP/2, PostgreSQL queries, advisory locks and notifications, Cargo through the TLS-inspecting proxy; 30-minute runs complete with p99 latency of 1 to 3 ms on Linux and 3 to 9 ms on macOS | WebSocket upgrades to endpoints inspected as `mcp`, `json-rpc` or `graphql`, and plain requests to endpoints inspected as `websocket` |
 | Inbound through service exposure | HTTP/1.1, SSE, WebSocket, chunked and length-framed streams, gRPC-Web and one passed-through Bearer header; 30-minute runs complete with p99 latency of 1 to 2 ms on Linux and 10 to 14 ms on macOS | native gRPC, because the relay speaks HTTP/1.1 to the service; Basic authentication; more than 32 relay setups pending at once for one sandbox |
 | Inbound through port forwarding | any TCP, including native gRPC and native Rerun Catalog SDK reads | nothing observed; a forward lives as long as the process that started it |
 
@@ -542,7 +543,7 @@ for every OpenShell release.
 Environments follow the author-sandbox rules in
 [`FACTORY_ISOLATION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md). No Docker or Podman socket,
 kubeconfig, registry credential or signing key enters an environment. Dependencies
-such as SurrealDB run outside OpenShell as plain containers, and each environment's
+such as PostgreSQL run outside OpenShell as plain containers, and each environment's
 policy names the address it may reach. Images are built outside the environment, by
 the bootstrap operator now and by the factory's build broker later. Each environment
 pushes through an OpenShell GitHub provider whose policy allows `git-receive-pack`
@@ -585,8 +586,8 @@ short commands.
 | Public API | cargo-semver-checks for `veoveo-core` against its previous tag |
 | Wire formats and schemas | insta snapshots |
 | Parsers, IDs and URIs | proptest |
-| Store tests | a real SurrealDB 3.3.0 server outside OpenShell, because the in-memory engine hid a RocksDB commit conflict in the current repository |
-| Launching | OpenShell sandboxes for environments, Docker Compose for SurrealDB, Kubernetes later |
+| Store tests | a private PostgreSQL 18 cluster per test process from the PGDG packages in the `dev` image, with a fresh database cloned from a migrated template for each test |
+| Launching | OpenShell sandboxes for environments, Docker Compose for PostgreSQL, Kubernetes later |
 | Deployment gates, later | Conftest or Kyverno CLI, kubeconform and `helm lint` |
 
 ## First Slice
@@ -596,25 +597,25 @@ The first slice is the smallest installation that represents Veoveo end to end.
 | Component | Runs as |
 |---|---|
 | OpenShell gateway 0.1.3 | the official package, outside the sandboxes |
-| SurrealDB 3.3.0 | the official image, outside the sandboxes; it runs as UID 65532, so its data volume mounts at `/home/nonroot`, where RocksDB can create its directory |
+| PostgreSQL 18.6 | the official image, outside the sandboxes, with a non-superuser installation owner |
 | Gateway environment | an OpenShell sandbox from `veoveo-service-gateway` |
 | Time environment | an OpenShell sandbox from `veoveo-mcp-time` |
 
-`veoveo-template-installation` provides the local installation. It holds the SurrealDB Compose file,
+`veoveo-template-installation` provides the local installation. It holds the PostgreSQL Compose file,
 the installation configuration, the namespace bindings and a component lock that names
 each component's Git revision. Each component repository describes its own launch:
 its policy, providers, GPU use and exposure under `openshell/`. Installation
 configuration uses the same core contract that production installation repositories
 use. The Gateway environment fetches its installation repository and applies its bindings at first
-start, so a binding changes through a commit. Starting SurrealDB and creating the
+start, so a binding changes through a commit. Starting PostgreSQL and creating the
 sandboxes are the only steps taken outside an environment, and each environment
 generates its own private key. The slice is up when every environment reports itself
 registered and verified on macOS. The Linux host repeats it from a fresh `git pull`
 after macOS passes.
 
-Core tests that use SurrealDB start one `surreal` process per fixture inside the
-environment, because no container runtime enters a sandbox. The dev images copy the
-SurrealDB 3.3.0 binary from the server image pinned by digest.
+Core tests that use the database start a private PostgreSQL cluster per test process
+inside the environment, because no container runtime enters a sandbox. The dev images
+install the PGDG `postgresql-18` 18.6 packages.
 
 Documents move under the same rule. A monorepo document moves only when a change
 touches what it describes, and until then references link to the monorepo at the
@@ -680,7 +681,7 @@ selection is stored server-side, so clients send nothing extra.
 - Selection changes routing only. It never widens permissions.
 
 Selected versions run against live data. Additive-only schema changes while a version
-is under test, origin tags on every write, SurrealDB change feeds for reversal, a
+is under test, origin tags on every write, audit records for reversal, a
 snapshot before write access, a kill switch that clears the selection, shadow
 comparison for read paths, canary sessions with automatic rollback when an error
 budget is spent and per-version telemetry contain that risk. The
@@ -757,6 +758,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D20. Every name and format follows a published standard or the conventions in `veoveo-core` `docs/CONVENTIONS.md`. URIs, paths and identifiers carry no version segment such as `/v1`; releases, tags and crates carry versions.
 - [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
 - [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
+- [x] D23. PostgreSQL 18 replaces SurrealDB as the database of every installation, decided on October 12 as a hard cut. SurrealDB Community runs as one node, and its multi-node failover and cross-node LIVE queries require Enterprise with online licence validation; PostgreSQL provides replication, advisory locks, `SKIP LOCKED` claims, `LISTEN`/`NOTIFY` and row-level security in its open-source release. Leases and renewals are gone: process liveness is a session advisory lock, released work moves to recovery through a foreign-key cascade, and registrations renew nothing. Every static query is checked at compile time by sqlx.
 
 ### Registration And Authorization
 
@@ -768,7 +770,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] A5. Issue narrowed sub-agent tokens through token exchange.
 - [x] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway. Done in `veoveo-mcp-time` `fa049c3`: nine permissions from one requirement table, administration as MCP tools, and six acceptance tests through the Gateway on macOS and Linux.
 - [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
-- [ ] A8. Limit each server's database user to its own table prefix.
+- [x] A8. Limit each server's database user to its own table prefix. Done by the PostgreSQL cut (S9): each server owns one schema through its group role, and row-level security confines it to its own rows in kernel tables.
 
 ### OpenShell Qualification
 
@@ -786,6 +788,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [ ] Q12. Add a lifecycle scenario for a Docker daemon restart: OpenShell 0.1.3 marks running sandboxes Error, refuses both stop and start, and only delete recovers, losing `/sandbox`. Environments keep source in Git and treat `/sandbox` as a cache.
 - [ ] Q13. Add a scenario for binary pinning: a policy binary path is pinned to the SHA-256 of the first binary it sees, so a rebuilt binary at the same path is denied; environments run services from content-addressed paths.
 - [ ] Q14. Add a scenario for `openshell sandbox exec` with a background child: the call does not return while the child runs, so services start in their own session.
+- [x] Q16. Replace the SurrealDB scenario with PostgreSQL 18.6: queries, a session advisory lock and `LISTEN`/`NOTIFY` delivery through inspected and `tcp` endpoints. Done at `d99b915`; 33 scenarios pass on both hosts with no failure.
 - [ ] Q15. Add a scenario for `openshell forward start -d`: the detached forward keeps the caller's standard streams open, so a caller that captures output waits until the forward stops, and stopping that caller kills the forward. Scripted callers redirect all three streams.
 
 ### First Slice Tasks
@@ -796,6 +799,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `b69f16f`; dial-in remains A7.
 - [x] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults. Done at `798e030`: the `vv-local` Compose project, the provider profile, and bootstrap, stop and reset instructions. The installation configuration is generated because it embeds per-run key thumbprints. The component lock is S8.
 - [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done on October 12 with core `75c05e6`, Gateway `b69f16f` and Time `fe08624`. The README bootstrap from a reset passes Time's six acceptance tests and the Gateway's registration test on macOS. On Linux, it passes the acceptance tests from fresh clones, and the reset leaves no sandbox, forward, container, volume or registration provider. On macOS, SIGTERM removes Time's registration row and a restart registers again within 6 seconds.
+- [x] S9. The PostgreSQL cut (D23): core, the Gateway, Time, the installation template, the server template and the qualification harness carry no SurrealDB code, dependency, image or document. Done on October 12 with core `61f913e` (640 tests), Gateway `2e1daba` (123 tests), Time `6079b6a` (144 tests), `veoveo-template-installation` `9c115c4`, `veoveo-template-mcp-rust` `2c25a8b` and `veoveo-qualify-openshell` `d99b915`; every image check passes on macOS and Linux. The slice runs on PostgreSQL 18.6 on both hosts and passes Time's six acceptance tests. On macOS, SIGTERM deletes Time's registration, login and instance at once, and after SIGKILL the Gateway removes the registration and drops the login 64 seconds later.
 - [ ] S7. A second Time version registers and one session selects it.
 - [ ] S8. A component lock in `veoveo-template-installation` that names each component's repository and Git revision, with a format URI and JSON Schema under the conventions, read by the bootstrap instead of cloning `main`.
 
