@@ -877,7 +877,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] M4. Durable steps in core's Task runtime: `ctx.step` stores each finished step's typed result on the Task, and a restarted Task resumes at its first unfinished step.
 - [x] M5. Artifact's `client` feature: `ArtifactClient` uploads a stream of unknown size and downloads, built on `ctx.client()`. Done in `veoveo-mcp-artifact` `92d38e1`: typed calls for every tool, streamed uploads whose memory stays at part size times parallelism (64 MiB by default), ranged downloads, and the acting server recorded on each artifact and audit record; 82 tests pass on macOS and Linux.
 - [ ] M6. `veoveo-mcp-media` on PostgreSQL with `ArtifactClient` (P3). The provider address is required configuration, so every test names a fake provider and none reaches the real one.
-- [ ] M7. Artifact sharing: release states, share links and their route, and access requests.
+- [x] M7. Artifact sharing: release states, share links and their route, and access requests. Done in `veoveo-mcp-artifact` `c2e541c`: release and private states, share links for released artifacts without data labels that live up to 30 days with an optional redemption limit, the public `GET /artifact/shares/{token}` route answering a live link with a five-minute signed GET and every refusal with the same 404, access requests whose approval writes the grant in the same transaction, and the two review prompts; 101 tests pass on macOS and Linux. The SDK's request span must stop recording raw paths before share links run in an installation.
 - [ ] M8. The Artifact library App, delivered with the Console port.
 
 ### Extraction
