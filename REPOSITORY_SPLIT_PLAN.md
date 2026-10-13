@@ -23,7 +23,7 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | Standard or protocol | Use in this plan |
 |---|---|
 | Git and GitHub organizations | One repository per component under `VeoveoAI`; installation repositories in the installation owner's organization |
-| Cargo | Components consume `veoveo-core` and other contract crates as GitHub Git dependencies pinned by tag; nothing is published to a registry |
+| Cargo | Components consume `veoveo-core` and other contract crates as GitHub Git dependencies pinned by Git revision until the first release tags (E1); nothing is published to a registry |
 | Semantic Versioning 2.0.0 | `veoveo-core` versions; `cargo-semver-checks` blocks unplanned breaking changes |
 | OCI images | Each host builds component images locally; a registry for distributing them is an open decision (D15) |
 | Dockerfile multi-stage builds with BuildKit | `dev`, `check`, `build` and `runtime` stages in every component repository |
@@ -170,7 +170,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
-| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: PostgreSQL Compose file, installation configuration, roles and grants, and component lock |
+| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL and RustFS, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
 | `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
 | `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
@@ -190,8 +190,8 @@ item removed:
 |---|---|
 | `veoveo-types`, `veoveo-macros` | IDs, names, resource addresses and vocabularies, without MCP tool, prompt and Task route names, Gateway profile and authentication types, agent IDs or Artifact access rules |
 | `veoveo-http`, `veoveo-oauth-client` | Request body admission and RS256 client assertions |
-| `veoveo-platform-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification, paging and the database checks |
-| `veoveo-task-contract`, `veoveo-task-runtime` | Durable Tasks with claims, recovery, subscriptions and durable steps |
+| `veoveo-platform-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification and paging |
+| `veoveo-task-contract`, `veoveo-task-runtime` | Durable Tasks with claims, recovery and subscriptions; durable steps arrive with M4 |
 | `veoveo-audit-contract`, `veoveo-audit` | The record envelope, append, sealing and export. Each owner declares its audit classes and details when it registers |
 | `veoveo-installation-contract` | The component lock |
 | `veoveo-test-fixtures` | The PostgreSQL fixture and the database checks |
@@ -517,8 +517,8 @@ pull -> build -> check -> run -> register with the Gateway -> verify through the
 
 An environment verifies its component the way a real client uses it. Time's
 environment calls Time's tools and runs a Task and a subscription through the
-Gateway. The Gateway's environment registers the `modular-mcp` fixture server from
-`veoveo-sdk-rust` as its test peer. Acceptance tests live in the component's repository
+Gateway. The Gateway's environment registers the Observatory test server from
+`veoveo-sdk-rust-fixture` as its test peer. Acceptance tests live in the component's repository
 and run inside its environment.
 
 The Gateway returns the exact reason for a rejected registration or migration to the
@@ -588,7 +588,7 @@ traffic between the host and sandboxes, which no sandbox can do. Its sandboxes l
 for one run and take `q<run>-<role>` names instead of runtime names.
 
 An environment on one machine reaches a Gateway on another by dialing in, so the
-dial-in connection (A7) belongs to the first slice.
+dial-in connection (A7) comes before environments span machines.
 
 On macOS the environments run as `linux/arm64`, and on the Linux host as
 `linux/amd64`. Each machine builds natively. Build output and the Cargo cache live
@@ -627,7 +627,7 @@ The first slice is the smallest installation that represents Veoveo end to end.
 | Gateway environment | an OpenShell sandbox from `veoveo-service-gateway` |
 | Time environment | an OpenShell sandbox from `veoveo-mcp-time` |
 
-`veoveo-template-installation` provides the local installation. It holds the PostgreSQL Compose file,
+`veoveo-template-installation` provides the local installation. It holds the Compose file for PostgreSQL and RustFS,
 the installation configuration, the namespace bindings and a component lock that names
 each component's Git revision. Each component repository describes its own launch:
 its policy, providers, GPU use and exposure under `openshell/`. Installation
@@ -854,10 +854,10 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [x] P8. Replace the hand-written server entries in `gateway.json` with registration. Done: the Gateway and the installation name no server.
 - [ ] P9. Split `deploy/helm/veoveo` into per-component charts and a platform chart.
 - [ ] P10. Leave `cargo xtask` and the `testing-support` process supervisor behind; nextest and environment self-verification replace them.
-- [ ] P11. Owners declare their audit classes and details at registration (D28), and core's audit contract keeps only the envelope (C3).
+- [x] P11. Owners declare their audit classes and details at registration (D28), and core's audit contract keeps only the envelope (C3). Done with C5: a registered server declares its classes through `audit.declare_server_classes`, confined to its own prefix.
 - [ ] P12. Remove the Artifact and Knowledge sections of the Gateway configuration contract, and take its Audit section from registration data.
-- [ ] P13. Remove the Knowledge and Artifact schemas, queries and service contract from core (C3).
-- [ ] P14. Move each server's contract-document conformance check into that server's repository; core provides the check as a library.
+- [x] P13. Remove the Knowledge and Artifact schemas, queries and service contract from core (C3). Done with C3.
+- [ ] P14. Move each server's contract-document conformance check into that server's repository; `veoveo-sdk-rust` provides the check as a library.
 - [x] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted. Done in `veoveo-core`.
 
 ### Core Cut
@@ -871,7 +871,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 
 ### Artifact And Media
 
-- [x] M1. `veoveo-mcp-artifact` foundation: the repository from the server template, the `artifact` schema, RustFS in the installation, single and multipart uploads, downloads, metadata, lists and paging, grants, deletion and retention, quotas, audit and notifications. Size and SHA-256 are optional on `create_upload`; RustFS checks them during the write when given, and the server computes the SHA-256 at completion otherwise. `create_upload` carries labels, retention, metadata and an idempotency key, and objects are stored by artifact ID. Acceptance passes through the Gateway on macOS and Linux. The database layer is at `b158e88`: the `artifact` schema, `artifact.effective_level`, quota reservation under a locked usage row, idempotent creates, keyset listings and the sweep, with 32 tests on both hosts. The server is at `d25e90f`: nine tools, its resources and subscriptions, signed RustFS transfers through aws-sdk-s3, inline or Task digest verification, the sweep, and an audit record in each decision's transaction through core's server audit functions, with 75 tests on both hosts. Acceptance through the Gateway remains. Done: Artifact's five acceptance tests pass through the Gateway and RustFS on both hosts, including 1 GiB of unknown size uploaded in parallel parts through OpenShell's TCP pass-through (44 s on macOS, 87 s on Linux), a ranged download, grants, a quota refusal and deletion releasing the bytes. A read refused across tenants is covered by database tests, because the local installation has one tenant.
+- [x] M1. `veoveo-mcp-artifact` foundation: the repository from the server template, the `artifact` schema, RustFS in the installation, single and multipart uploads, downloads, metadata, lists and paging, grants, deletion and retention, quotas, audit and notifications. Size and SHA-256 are optional on `create_upload`; RustFS checks them during the write when given, and the server computes the SHA-256 at completion otherwise. `create_upload` carries labels, retention, metadata and an idempotency key, and objects are stored by artifact ID. Acceptance passes through the Gateway on macOS and Linux. Done in `veoveo-mcp-artifact` `cd4445b`: the `artifact` schema with `artifact.effective_level`, quota reservation under a locked usage row, idempotent creates, keyset listings and the sweep; nine tools, their resources and subscriptions, signed RustFS transfers through aws-sdk-s3, inline or Task digest verification, and an audit record in each decision's transaction through core's server audit functions, with 75 tests on both hosts. Artifact's five acceptance tests pass through the Gateway and RustFS on both hosts, including 1 GiB of unknown size uploaded in parallel parts through OpenShell's TCP pass-through (44 s on macOS, 87 s on Linux), a ranged download, grants, a quota refusal and deletion releasing the bytes. A read refused across tenants is covered by database tests, because the local installation has one tenant.
 - [x] M2. The server uses aws-sdk-s3 1.152.0 without default features, with rustls on ring and without aws-config. It is the only Rust S3 crate that signs Content-Length, Content-Type, the SHA-256 checksum and `If-None-Match` into a URL, completes a multipart upload create-only, and sets bucket CORS and lifecycle rules. Done in M1.
 - [ ] M3. `ctx.client()` in `veoveo-sdk-rust`: calls through the Gateway for the current caller or Task with token exchange (A5), typed calls from a provider's `contract` feature, builders that run when awaited, and a typed handle for tools that run as Tasks.
 - [ ] M4. Durable steps in core's Task runtime: `ctx.step` stores each finished step's typed result on the Task, and a restarted Task resumes at its first unfinished step.
