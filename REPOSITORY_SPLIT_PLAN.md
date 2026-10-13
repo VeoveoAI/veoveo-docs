@@ -68,8 +68,8 @@ example `acme/veoveo-mcp-inventory`, and add the matching GitHub topic.
 | Kind | Meaning | Example |
 |---|---|---|
 | `core` | Contracts, protocol clients, conformance suites and shared libraries | `veoveo-core` |
-| `service` | Platform service that implements a core contract, including its MCP server | `veoveo-service-artifact` |
-| `mcp` | Domain MCP server with no platform role | `veoveo-mcp-time` |
+| `service` | Platform process that is not an MCP server | `veoveo-service-gateway` |
+| `mcp` | MCP server; a contract it implements lives in core as `veoveo-<name>-contract` | `veoveo-mcp-time` |
 | `runtime` | Native or GPU runtime used by a service | `veoveo-runtime-embedding` |
 | `app` | User-facing application | `veoveo-app-console` |
 | `sdk` | Client library | `veoveo-sdk-python` |
@@ -137,7 +137,6 @@ suffix that this rule has no room for in the longest names (D19).
 |---|---|---|
 | `veoveo-core` | `platform/{types,macros,modules,store,policy,oauth,http,task-runtime,audit}`, `mcp/{contract,apps-extension,knowledge-extension,conformance}`, the contract, protocol and client crates listed under [Core Contents](#core-contents), `testing/support`, `testing/fixtures` | crates, conformance CLI and suites, policy checks |
 | `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries}` | image, chart |
-| `veoveo-service-artifact` | `platform/artifacts/service`, `servers/artifact-mcp` | service and MCP images, chart |
 | `veoveo-service-agents` | `agents/{kernel,manager,runtime}` | images, chart, agent templates |
 | `veoveo-service-knowledge` | Knowledge implementation in `platform/knowledge`, `servers/knowledge-mcp` | image, chart |
 | `veoveo-service-recording` | `platform/recordings/{hub,forwarder,store,reader,rrd,video}`, `servers/recording-mcp` | images, chart |
@@ -146,6 +145,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-runtime-embedding` | `platform/runtimes/embedding` without its contract and client | GPU image, chart |
 | `veoveo-runtime-simulation` | `platform/runtimes/simulation` without its contract | GPU image |
 | `veoveo-mcp-time` | `servers/time-mcp` | contract crate, image, chart |
+| `veoveo-mcp-artifact` | `servers/artifact-mcp`; the HTTP service in `platform/artifacts/service` is retired | image, chart |
 | `veoveo-mcp-map` | `servers/map-mcp` | same set |
 | `veoveo-mcp-frames` | `servers/frames-mcp` and the Frames implementation in `platform/frames` | same set |
 | `veoveo-mcp-chart` | `servers/chart-mcp` | same set |
