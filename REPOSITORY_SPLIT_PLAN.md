@@ -794,6 +794,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D30. The Gateway's schema, migrations, policy evaluator and contract move into `veoveo-service-gateway`, since only the Gateway uses them. Decided on October 12.
 - [x] D31. The kernel migrations change in place for the core cut, and every local installation resets, because no installation has a release to preserve. Decided on October 12.
 - [x] D32. Clients reach RustFS directly at one address the installation configures. Artifact records each authorization, and an installation that must prove each transfer adds RustFS's audit feed. Release states are private and released. The Artifact server owns each tenant's upload limits. RustFS is accepted while it stays private behind the server's credential, current, and used only through standard S3 calls. Decided on October 12.
+- [x] D33. `veoveo-sdk-rust` has one library crate, `veoveo-sdk-rust`, that absorbs the hosted server contract, hosting, the client, registration, MCP Apps and the Task adapter behind `contract`, `client` and `server` features. The conformance CLI `veoveo-sdk-rust-conformance` and the test server `veoveo-sdk-rust-fixture` are separate crates because they are binaries. Decided on October 12.
 
 ### Registration And Authorization
 
@@ -861,7 +862,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 
 ### Core Cut
 
-- [ ] C1. Create `veoveo-sdk-rust` from the server template and move into it the MCP crates, the Task runtime's MCP adapter, the `modular-mcp` fixture, the tool-input fixtures and the MCP audit details. The Gateway, Time and the server template pin it.
+- [ ] C1. Create `veoveo-sdk-rust` from the server template with the crates of D33: the MCP crates, the Task runtime's MCP adapter and the MCP audit details merge into `veoveo-sdk-rust`, `veoveo-mcp-conformance` becomes `veoveo-sdk-rust-conformance`, and the `modular-mcp` fixture with the tool-input fixtures becomes `veoveo-sdk-rust-fixture`. The Gateway and Time pin it.
 - [ ] C2. Move the Gateway's schema and migrations, the store's Gateway module, `veoveo-policy` and `veoveo-gateway-contract` into `veoveo-service-gateway` (D30).
 - [ ] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Gateway drop their Knowledge source declarations.
 - [ ] C4. Replace the Gateway profile and the MCP input method in the `tasks` schema with protocol-neutral owner data.
