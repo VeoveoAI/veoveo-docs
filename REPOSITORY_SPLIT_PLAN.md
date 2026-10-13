@@ -788,9 +788,9 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D24. `veoveo-core` holds no MCP and no server or domain vocabulary, audit included. The Rust MCP layer moves to `veoveo-sdk-rust`, and Knowledge and Embedding leave core with Artifact. Decided on October 12.
 - [x] D25. A server that uses another server declares the permissions it uses at registration and calls through the Gateway with an RFC 8693 token narrowed to the declared permissions the caller holds. Typed consumers depend on the provider's `contract` feature by Git revision. Decided on October 12.
 - [x] D26. The rmcp fork `VeoveoAI/rust-sdk` at `917e791` stays as it is. It is rmcp 3.5.0 plus Task status subscriptions, a typed HTTP rejection and a quieter drain log, and upstream 3.5.1 has none of the three. `veoveo-sdk-rust` records that reason beside its pin. Decided on October 12.
-- [ ] D27. Whether a model without a sandbox may write a small artifact inline through a `write_artifact` tool, and the size limit. Programs and sandboxed agents upload through signed URLs.
+- [ ] D27. Whether a model without a sandbox may write a small artifact inline through a `write_artifact` tool, and the size limit. Programs and sandboxed agents upload through signed URLs. Taken up with the agents (E4), when an agent and a chat client exist to qualify it; nothing before them needs it.
 - [x] D28. An owner declares each audit detail as a JSON Schema at registration, and the audit writer checks details against it. Decided on October 12.
-- [ ] D29. The repository names of Knowledge, Recording, Computers and Agents, each of which contains an MCP server.
+- [ ] D29. The repository names of Knowledge, Recording, Computers and Agents, each of which contains an MCP server. Taken up with their extraction (E4).
 - [x] D30. The Gateway's schema, migrations, policy evaluator and contract move into `veoveo-service-gateway`, since only the Gateway uses them. Decided on October 12.
 - [x] D31. The kernel migrations change in place for the core cut, and every local installation resets, because no installation has a release to preserve. Decided on October 12.
 - [x] D32. Clients reach RustFS directly at one address the installation configures. Artifact records each authorization, and an installation that must prove each transfer adds RustFS's audit feed. Release states are private and released. The Artifact server owns each tenant's upload limits. RustFS is accepted while it stays private behind the server's credential, current, and used only through standard S3 calls. Decided on October 12.
@@ -892,7 +892,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] E1. Tag `veoveo-core` `v0.1.0` once the first slice is up.
 - [ ] E2. Bring each further component in with its own environment, one at a time, after the first slice is up.
 - [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map and Frames.
-- [ ] E4. Extract Knowledge, Recording, Agents and Computers.
+- [ ] E4. Extract Knowledge, Recording, Agents and Computers, deciding their repository names (D29) first and, with the agents, inline artifact writes for a model without a sandbox (D27).
 - [ ] E5. Extract the GPU servers, runtimes and showcases.
 - [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would, add a Kubernetes target to the template, and move the Bioma reference installation there.
 
