@@ -8,11 +8,11 @@ it moves.
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
-One repository, `veoveo-core`, holds every contract, protocol client, conformance
-suite and shared library that crosses a repository boundary. Each running service,
-MCP server, runtime and application becomes its own repository that depends on
-`veoveo-core` and releases on its own schedule. Installations compose released
-components instead of forking the platform.
+`veoveo-core` holds the protocol-independent platform: types, the database kernel,
+identity, Tasks and the audit envelope. `veoveo-sdk-rust` builds MCP on top of it, and
+each MCP server publishes its own contract. Each running service, MCP server, runtime
+and application becomes its own repository and releases on its own schedule.
+Installations compose released components instead of forking the platform.
 
 The goal is that a change to one component rebuilds, qualifies and deploys that
 component alone. Today a change to a shared crate rebuilds every Rust image family,
@@ -34,23 +34,26 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
 | Veoveo MCP extensions `ai.veoveo/registration` and `ai.veoveo/authorization` | Repository-owned declarations a server sends when it registers with the Gateway |
 | OAuth 2.0 private-key JWT client authentication, RFC 7523 | Server and agent identities |
-| OAuth 2.0 Token Exchange, RFC 8693 | Narrowed delegation from an agent to a sub-agent |
+| OAuth 2.0 Token Exchange, RFC 8693 | Delegation when a server or agent calls another server for a caller, narrowed to the permissions the calling server declares |
 | Cedar | Authorization conditions; the version is pinned when adopted |
 | `veoveo.ai/deployment/v9` and `veoveo.ai/deployment-lock/v8` | Current profile and lock formats; the component lock below extends them |
 | PostgreSQL 18.6 | One database per installation; core owns the kernel schemas, and each server owns one schema and applies its own sqlx migrations ([database design](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/DATABASE.md)) |
 
 ## Principles
 
-1. `veoveo-core` holds contracts, protocol clients, conformance suites and shared
-   libraries. It runs no service and depends on no component repository.
-2. Every component repository depends on `veoveo-core`. A component may also depend
-   on another component's published contract crate, never by path and never in a
-   cycle.
-3. A contract moves into `veoveo-core` when `veoveo-core` needs it, when a service
-   needs it, or when most repositories use it as shared vocabulary.
-4. An implementation is valid when it passes its conformance suite in `veoveo-core`.
-   That suite, not the source location, is what makes Artifact, Knowledge, Embedding
-   and Recording replaceable.
+1. `veoveo-core` holds protocol-independent platform libraries: types and macros, the
+   database kernel, identity, the Task runtime and the audit envelope. It names no MCP
+   method, server or domain, runs no service and depends on no component repository.
+2. `veoveo-sdk-rust` holds the Rust MCP layer on top of core: hosting, the client that
+   servers use to call each other, registration, the MCP extensions, the Task MCP
+   adapter and MCP conformance. The Gateway and every Rust server depend on it.
+3. A server publishes its contract through its crate's `contract` feature, which builds
+   without the server's runtime dependencies. A component that uses another server
+   depends on that feature by Git revision, never by path and never in a cycle, and
+   declares the permissions it uses when it registers.
+4. A server's acceptance suite lives in its repository and runs over MCP against any
+   server address, so another implementation of Artifact, Knowledge, Embedding or
+   Recording qualifies against the same suite.
 5. A component keeps one name for its repository, primary crate, binary, image and
    chart.
 6. A component owns its image, toolchain and gate configuration. Repositories couple
@@ -67,12 +70,12 @@ example `acme/veoveo-mcp-inventory`, and add the matching GitHub topic.
 
 | Kind | Meaning | Example |
 |---|---|---|
-| `core` | Contracts, protocol clients, conformance suites and shared libraries | `veoveo-core` |
+| `core` | Protocol-independent platform libraries | `veoveo-core` |
 | `service` | Platform process that is not an MCP server | `veoveo-service-gateway` |
-| `mcp` | MCP server; a contract it implements lives in core as `veoveo-<name>-contract` | `veoveo-mcp-time` |
+| `mcp` | MCP server, which publishes its contract through its crate's `contract` feature | `veoveo-mcp-time` |
 | `runtime` | Native or GPU runtime used by a service | `veoveo-runtime-embedding` |
 | `app` | User-facing application | `veoveo-app-console` |
-| `sdk` | Client library | `veoveo-sdk-python` |
+| `sdk` | Library for building Veoveo servers, clients and apps in one language | `veoveo-sdk-rust` |
 | `template` | GitHub template repository | `veoveo-template-mcp-rust` |
 | `showcase` | Demonstration workload | `veoveo-showcase-uav` |
 | `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell` |
@@ -135,17 +138,18 @@ suffix that this rule has no room for in the longest names (D19).
 
 | Repository | Source today | Publishes |
 |---|---|---|
-| `veoveo-core` | `platform/{types,macros,modules,store,policy,oauth,http,task-runtime,audit}`, `mcp/{contract,apps-extension,knowledge-extension,conformance}`, the contract, protocol and client crates listed under [Core Contents](#core-contents), `testing/support`, `testing/fixtures` | crates, conformance CLI and suites, policy checks |
-| `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries}` | image, chart |
+| `veoveo-core` | `platform/{types,macros,http,oauth,store,task-runtime,audit,installation/contract}` without their MCP, Gateway and domain items, `testing/fixtures` (see [Core Contents](#core-contents)) | crates |
+| `veoveo-sdk-rust` | `mcp/{contract,ext-registration,ext-apps,conformance}`, the Task runtime's MCP adapter, `testing/fixtures/modular-mcp`, and the client servers use to call each other | crates, conformance CLI |
+| `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries,contract}`, `platform/policy`, the store's Gateway module and the `gateway` schema | image, chart |
 | `veoveo-service-agents` | `agents/{kernel,manager,runtime}` | images, chart, agent templates |
-| `veoveo-service-knowledge` | Knowledge implementation in `platform/knowledge`, `servers/knowledge-mcp` | image, chart |
+| `veoveo-service-knowledge` | `platform/knowledge` with its contract, the `ai.veoveo/knowledge-source` extension, `servers/knowledge-mcp` | image, chart |
 | `veoveo-service-recording` | `platform/recordings/{hub,forwarder,store,reader,rrd,video}`, `servers/recording-mcp` | images, chart |
 | `veoveo-service-computers` | `platform/computers/*`, `platform/runtimes/computers`, `servers/computers-mcp` | Host, template and MCP images, chart |
 | `veoveo-service-factory` | new; see [Factory](#factory) | images, chart |
-| `veoveo-runtime-embedding` | `platform/runtimes/embedding` without its contract and client | GPU image, chart |
+| `veoveo-runtime-embedding` | `platform/runtimes/embedding` with its contract and client | GPU image, chart |
 | `veoveo-runtime-simulation` | `platform/runtimes/simulation` without its contract | GPU image |
 | `veoveo-mcp-time` | `servers/time-mcp` | contract crate, image, chart |
-| `veoveo-mcp-artifact` | `servers/artifact-mcp`; the HTTP service in `platform/artifacts/service` is retired | image, chart |
+| `veoveo-mcp-artifact` | `servers/artifact-mcp` and the Artifact contract from `platform/artifacts/contract`; the HTTP service in `platform/artifacts/service` is retired | contract feature, image, chart |
 | `veoveo-mcp-map` | `servers/map-mcp` | same set |
 | `veoveo-mcp-frames` | `servers/frames-mcp` and the Frames implementation in `platform/frames` | same set |
 | `veoveo-mcp-chart` | `servers/chart-mcp` | same set |
@@ -173,39 +177,36 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-qualify-openshell` | the OpenShell spike probes and policies | qualification results per OpenShell release and host |
 | `.github` | new | organization profile and reusable workflows |
 
-The organization holds 38 repositories. Each installation adds one public
+The catalog lists 38 repositories. Each installation adds one public
 repository in its owner's organization. The reference is `BiomaAI/veoveo-bioma`,
 built from `examples/bioma`.
 
 ### Core Contents
 
-Starting from `veoveo-mcp-contract`, `veoveo-platform-store`, `veoveo-task-runtime`
-and `veoveo-types`, the required dependency closure contains 13 crates. It already
-includes the Artifact, Audit, Gateway, Knowledge and Embedding contracts, so those
-contracts cannot live outside `veoveo-core`.
+`veoveo-core` keeps its protocol-independent crates, with every MCP, Gateway and domain
+item removed:
 
-| Crate | Path today | Reason it belongs in core |
-|---|---|---|
-| `veoveo-artifact-contract` | `platform/artifacts/contract` | Required by `mcp-contract`, `audit-contract` and `platform-store` |
-| `veoveo-artifact-client` | `platform/artifacts/client` | Encodes the Artifact HTTP protocol for 16 crates |
-| `veoveo-audit-contract` | `platform/audit/contract` | Required by `mcp-contract` and `platform-store` |
-| `veoveo-gateway-contract` | `platform/gateway/contract` | Required by `mcp-contract`, `platform-store` and `policy` |
-| `veoveo-knowledge-contract` | `platform/knowledge/contract` | Required by `mcp-contract` and `platform-store` |
-| `veoveo-embedding-contract` | `platform/runtimes/embedding/contract` | Required by `knowledge-contract` and `platform-store` |
-| `veoveo-embedding-client` | `platform/runtimes/embedding/client` | Protocol client for any Embedding implementation |
-| `veoveo-task-contract` | `platform/task-runtime/contract` | Shared Task vocabulary |
-| `veoveo-recording-contract`, `veoveo-recording-protocol` | `platform/recordings/{contract,protocol}` | Used by the Gateway, UAV, View and Console |
-| `veoveo-computers-contract` | `platform/computers/contract` | Used by the Gateway and Console |
-| `veoveo-frames-contract` | `platform/frames/contract` | Used by the Recording service |
-| `veoveo-simulation-contract` | `platform/runtimes/simulation/contract` | Shared by showcases and acceptance |
-| `veoveo-deploy-contract` | `deploy/contract` | Installation tooling; it enumerates first-party servers in `FirstPartyMcpServer`, so it stays out of core until registration replaces that list |
-| `veoveo-oauth-client` | `platform/oauth` | Shared by the Gateway and Computers |
-| Agent runtime contract | to be split from `agents/runtime` | Required by the Gateway catalog |
-| Workspace contract | to be split from `platform/workspace` | Shared by the Gateway, Console and Workspace |
+| Crate | Keeps |
+|---|---|
+| `veoveo-types`, `veoveo-macros` | IDs, names, resource addresses and vocabularies, without MCP tool, prompt and Task route names, Gateway profile and authentication types, agent IDs or Artifact access rules |
+| `veoveo-http`, `veoveo-oauth-client` | Request body admission and RS256 client assertions |
+| `veoveo-platform-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification, paging and the database checks |
+| `veoveo-task-contract`, `veoveo-task-runtime` | Durable Tasks with claims, recovery, subscriptions and durable steps |
+| `veoveo-audit-contract`, `veoveo-audit` | The record envelope, append, sealing and export. Each owner declares its audit classes and details when it registers |
+| `veoveo-installation-contract` | The component lock |
+| `veoveo-test-fixtures` | The PostgreSQL fixture and the database checks |
 
-Domain server contracts stay with their server under the existing `contract`
-feature. Map and Time are the first candidates for promotion because the most
-repositories use them.
+Everything else leaves core:
+
+| Today in core | Moves to |
+|---|---|
+| `veoveo-mcp-contract` hosting, protocol, transport, subscriptions, docs resources and forwarded identity; `veoveo-mcp-ext-registration`; `veoveo-mcp-ext-apps`; `veoveo-mcp-conformance`; `veoveo-modular-fixture-mcp`; the Task runtime's MCP adapter; the tool-input fixtures; the MCP audit details for discovery and tool admission and completion | `veoveo-sdk-rust` |
+| `veoveo-policy`; `veoveo-gateway-contract`; the control plane, OAuth, profile and policy types in `veoveo-mcp-contract`; the store's Gateway module; the `gateway` schema with its Task routes; the Gateway's audit details for registration, administration, profiles and clients | `veoveo-service-gateway` (D30) |
+| `veoveo-artifact-contract` | `veoveo-mcp-artifact`'s `contract` feature, trimmed to signed transfers |
+| `veoveo-artifact-client`, the upload grant in internal authentication, the Artifact service trait and access module, the Artifact policy targets, Gateway actions and profile section, `gateway.artifact_upload_authority` with its two digest functions, and the Artifact audit vocabulary | Deleted with the old byte path |
+| `veoveo-knowledge-contract`, `veoveo-embedding-contract`, `veoveo-mcp-ext-knowledge`, the Knowledge audit details and the `audit.indexing_*` objects | Deleted. Knowledge and Embedding bring their own when they are ported, and Time and the Gateway drop their Knowledge source declarations until then |
+| The LiveView, Computers, Recording, Dictation, Agents and Console audit vocabularies and types | Deleted. Each owner declares its own when it is ported |
+| `provider.rs`, `usage.rs`, `waiters.rs`, `bootstrap.rs`, `fixture_client.rs`, `policy::internal_clients` and other items no consumer uses | Deleted |
 
 ## Cross-Repository Contracts
 
@@ -216,7 +217,7 @@ tag:
 
 | Artifact | Today | After the split |
 |---|---|---|
-| Contract crate | path dependency through the `contract` feature | versioned crate |
+| Contract | path dependency through the `contract` feature | the server crate's `contract` feature, consumed by Git revision |
 | Image | built inside shared Rust families | built by the component's repository |
 | Helm chart on `veoveo-chart-common` | templates inside the 38-template `deploy/helm/veoveo` chart | one chart per component |
 | Catalog declaration | the server's entry written by hand in the installation's `gateway.json` | declared by the running server when it [registers](#server-registration) |
@@ -251,12 +252,13 @@ window rules in [`CONTRACT_EVOLUTION.md`](https://github.com/BiomaAI/veoveo/blob
 ### Layers
 
 ```text
-installation   composes released components
-app            depends on veoveo-core, reaches services through core clients
-mcp            depends on veoveo-core and on other published mcp contract crates
-service        depends on veoveo-core
-runtime        depends on veoveo-core
-veoveo-core    depends on third-party crates only
+installation     composes released components
+app              depends on its language's sdk and reaches servers through the Gateway
+mcp              depends on veoveo-sdk-rust and on other servers' contract features
+service          depends on veoveo-sdk-rust or veoveo-core
+runtime          depends on veoveo-core
+veoveo-sdk-rust  depends on veoveo-core and rmcp
+veoveo-core      depends on third-party crates only
 ```
 
 ## Server Registration
@@ -289,17 +291,17 @@ segment such as `/v1`.
 A server generates its own key pair in its environment on first start and registers at
 the Gateway's RFC 7591 registration endpoint. The installation's registration secret is
 the RFC 7591 initial access token, and the key travels as the `jwks` client metadata.
-Its three declarations, whose types live in `veoveo-core`, travel as client metadata:
+Its three declarations, whose types live in `veoveo-sdk-rust`, travel as client metadata:
 
 | Extension | Declares |
 |---|---|
 | `ai.veoveo/registration` | slug, URI scheme, server version and endpoint |
-| `ai.veoveo/authorization` | permissions and the permission each tool, resource template and prompt requires |
+| `ai.veoveo/authorization` | permissions, the permission each tool, resource template and prompt requires, and the permissions the server uses on other servers |
 | `ai.veoveo/module` | the module manifest: ownership claims, requirements, SQL API, observation tables and migrations |
 
 The registration response returns the client identifier, the RFC 7592 registration
 access token, the server's database credentials and the keys that sign forwarded
-identities. `veoveo-core` holds the normative protocol document and a registration
+identities. `veoveo-sdk-rust` holds the normative protocol document and a registration
 client that every server uses.
 
 The server advertises the same declarations under `extensions` in its MCP discovery
@@ -338,9 +340,9 @@ Destructive schema changes run as expand and contract. A version adds the new sh
 first. The contract step runs only when no registered version declares reads of the
 removed shape, and a snapshot precedes the drop.
 
-Artifact storage is a platform dependency of the Gateway, configured by address like
-the database, and its upload, download and administration routes depend on the Artifact
-contract in core rather than on a registered server.
+Artifact storage belongs to the Artifact server, which registers like any other server.
+Clients move bytes directly to and from object storage through URLs the Artifact server
+signs, and the Gateway has no byte routes.
 
 ## Authorization Model
 
@@ -412,6 +414,30 @@ and Artifact sharing, attach later in the style of Google Zanzibar without chang
 server declaration. Cedar conditions, custom roles, bindings scoped to a Work Context
 or a single resource and token-exchange delegation extend the evaluation in the
 Gateway; none of them changes what a server declares.
+
+### Calls Between Servers
+
+A server that uses another server declares the permissions it uses in
+`ai.veoveo/authorization`. Media, for example, declares `artifact.artifacts.read` and
+`artifact.artifacts.write`. When no registered server provides a declared permission,
+the Gateway refuses the call with a message that names the missing permission.
+
+The calling server reaches the other server through the Gateway with a token from RFC
+8693 token exchange. The token names the original caller and an `act` chain of the
+calling server and the Gateway, and it carries only the declared permissions that the
+caller holds. The target server authorizes the call as it would any other, and it
+records the acting server as provenance. A Task keeps its delegation while it is live,
+so work that finishes after the request returned, such as Media storing a provider's
+output from its webhook, still acts for the Task's caller.
+
+`veoveo-sdk-rust` gives each handler and Task a client, `ctx.client()`, that performs the
+exchange, caches the token until it expires and sends typed calls. A provider's
+`contract` feature supplies the request and result types and its permission constants,
+and its optional `client` feature supplies helpers for flows of several calls, such as
+an Artifact upload. Calls are builders that run when awaited, and a tool that runs as a
+Task returns a typed handle that resolves when the Task completes. A Task that must not
+repeat a step, such as a billed provider call, wraps it in `ctx.step`, which stores the
+step's typed result on the Task so a restarted Task resumes at its first unfinished step.
 
 ### Time
 
@@ -492,7 +518,7 @@ pull -> build -> check -> run -> register with the Gateway -> verify through the
 An environment verifies its component the way a real client uses it. Time's
 environment calls Time's tools and runs a Task and a subscription through the
 Gateway. The Gateway's environment registers the `modular-mcp` fixture server from
-`veoveo-core` as its test peer. Acceptance tests live in the component's repository
+`veoveo-sdk-rust` as its test peer. Acceptance tests live in the component's repository
 and run inside its environment.
 
 The Gateway returns the exact reason for a rejected registration or migration to the
@@ -582,8 +608,8 @@ short commands.
 | Test execution, timeouts, process-group cleanup and machine-readable results | cargo-nextest with per-repository profiles |
 | Code rules | `[workspace.lints]`, `clippy.toml` and rustfmt |
 | Dependencies | cargo-deny for licenses, advisories, bans and sources limited to crates.io and `github.com/VeoveoAI` |
-| Feature isolation | cargo-hack, proving that each `contract` feature builds alone |
-| Public API | cargo-semver-checks for `veoveo-core` against its previous tag |
+| Feature isolation | cargo-hack, proving that each `contract` feature builds alone, and `cargo tree`, proving that it pulls in no server runtime dependency |
+| Public API | cargo-semver-checks for `veoveo-core` and `veoveo-sdk-rust` against their previous tags |
 | Wire formats and schemas | insta snapshots |
 | Parsers, IDs and URIs | proptest |
 | Store tests | a private PostgreSQL 18 cluster per test process from the PGDG packages in the `dev` image, with a fresh database cloned from a migrated template for each test |
@@ -759,6 +785,15 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
 - [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
 - [x] D23. PostgreSQL 18 replaces SurrealDB as the database of every installation, decided on October 12 as a hard cut. SurrealDB Community runs as one node, and its multi-node failover and cross-node LIVE queries require Enterprise with online licence validation; PostgreSQL provides replication, advisory locks, `SKIP LOCKED` claims, `LISTEN`/`NOTIFY` and row-level security in its open-source release. Leases and renewals are gone: process liveness is a session advisory lock, released work moves to recovery through a foreign-key cascade, and registrations renew nothing. Every static query is checked at compile time by sqlx.
+- [x] D24. `veoveo-core` holds no MCP and no server or domain vocabulary, audit included. The Rust MCP layer moves to `veoveo-sdk-rust`, and Knowledge and Embedding leave core with Artifact. Decided on October 12.
+- [x] D25. A server that uses another server declares the permissions it uses at registration and calls through the Gateway with an RFC 8693 token narrowed to the declared permissions the caller holds. Typed consumers depend on the provider's `contract` feature by Git revision. Decided on October 12.
+- [ ] D26. The rmcp fork `VeoveoAI/rust-sdk` at `917e791` is rmcp 3.5.0 plus Task status subscriptions, a typed HTTP rejection and a quieter drain log; upstream 3.5.1 has none of the three. Task status subscriptions change rmcp's model types and need an upstream change. Veoveo can implement `StreamableHttpClient` itself to keep the rejection status, and log configuration can quiet the drain message. Record the reason and removal condition beside the pin.
+- [ ] D27. Whether a model without a sandbox may write a small artifact inline through a `write_artifact` tool, and the size limit. Programs and sandboxed agents upload through signed URLs.
+- [ ] D28. The audit detail format: a JSON Schema the owner declares at registration, or free-form JSON.
+- [ ] D29. The repository names of Knowledge, Recording, Computers and Agents, each of which contains an MCP server.
+- [ ] D30. Move the Gateway's schema, migrations, policy evaluator and contract into `veoveo-service-gateway`, since only the Gateway uses them.
+- [ ] D31. The kernel migrations change in place for the core cut and every local installation resets, because no installation has a release to preserve; forward migrations that drop the removed objects are the alternative.
+- [ ] D32. The open Artifact decisions: where clients reach object storage, whether to keep evidence of each transfer, the release states, who owns each tenant's upload limits, and whether RustFS's advisory history is acceptable.
 
 ### Registration And Authorization
 
@@ -767,7 +802,8 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations. Done in `veoveo-core`.
 - [x] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog. Done in `veoveo-service-gateway` `92d8a25`; the newest registration of a slug routes until session version selection exists.
 - [x] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists. Done in `veoveo-service-gateway` `92d8a25`.
-- [ ] A5. Issue narrowed sub-agent tokens through token exchange.
+- [ ] A5. Token exchange (RFC 8693) for calls between servers and from an agent to a sub-agent. The Gateway issues a token for the target server that names the caller and the acting server, carries the declared permissions the caller holds, and stays available to a live Task (D25).
+- [ ] A9. A server declares the permissions it uses on other servers, and the Gateway refuses a call when no registered server provides one, naming the missing permission (D25).
 - [x] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway. Done in `veoveo-mcp-time` `fa049c3`: nine permissions from one requirement table, administration as MCP tools, and six acceptance tests through the Gateway on macOS and Linux.
 - [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
 - [x] A8. Limit each server's database user to its own table prefix. Done by the PostgreSQL cut (S9): each server owns one schema through its group role, and row-level security confines it to its own rows in kernel tables.
@@ -809,26 +845,46 @@ These cuts happen in the new repositories while code is copied, not in the curre
 
 - [x] P1. Remove the Gateway's compiled module registry and the twelve optional module declarations it links: Reason, Stream, Computers, agents, Workspace, Recording, Map, Time, UAV, Frames, Media and Optimization. Kernel modules stay compiled in, and every other module arrives through registration. Done in `veoveo-service-gateway`.
 - [x] P2. Move server-specific Gateway code to its owners: agent runtime authentication, bindings and catalog import; the Console stream over Recording and agent tables; Computers routes; Workspace modules; Speech routes; and the Gateway catalog's direct agent runtime, Computers and Recording dependencies. Done in `veoveo-service-gateway`; managed-agent admission returns through registration and the Console endpoints return with the Console's repository.
-- [ ] P3. Make Media use the Artifact client instead of `veoveo-artifact-service`.
+- [ ] P3. Port Media onto Artifact's `client` feature (M6). Its write-capability table, the `media://artifact` proxy, in-memory output buffering and the public `/media/files` directory are cut.
 - [ ] P4. Remove the Knowledge and Reason dev-dependency cycle.
 - [ ] P5. Split `platform/workspace` into a contract and services.
 - [ ] P6. Split the agent runtime contract from `agents/runtime`.
-- [ ] P7. Add implementation-neutral conformance suites for Artifact, Knowledge, Embedding and Recording.
+- [ ] P7. Give Artifact, Knowledge, Embedding and Recording acceptance suites in their own repositories that run over MCP against any implementation.
 - [x] P8. Replace the hand-written server entries in `gateway.json` with registration. Done: the Gateway and the installation name no server.
 - [ ] P9. Split `deploy/helm/veoveo` into per-component charts and a platform chart.
 - [ ] P10. Leave `cargo xtask` and the `testing-support` process supervisor behind; nextest and environment self-verification replace them.
-- [ ] P11. Let owners register Audit details the way they register Audit targets, and remove the Computer, Recording, Dictation, LiveView and Artifact variants from `AuditDetail`.
-- [ ] P12. Replace the Artifact, Knowledge and Audit sections of the Gateway configuration contract with registration data.
-- [ ] P13. Move the Knowledge and Artifact schemas and queries out of `veoveo-platform-store`, and `artifact_service` out of `veoveo-mcp-contract`, when those services are extracted.
+- [ ] P11. Owners declare their audit classes and details at registration (D28), and core's audit contract keeps only the envelope (C3).
+- [ ] P12. Remove the Artifact and Knowledge sections of the Gateway configuration contract, and take its Audit section from registration data.
+- [ ] P13. Remove the Knowledge and Artifact schemas, queries and service contract from core (C3).
 - [ ] P14. Move each server's contract-document conformance check into that server's repository; core provides the check as a library.
 - [x] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted. Done in `veoveo-core`.
+
+### Core Cut
+
+- [ ] C1. Create `veoveo-sdk-rust` from the server template and move into it the MCP crates, the Task runtime's MCP adapter, the `modular-mcp` fixture, the tool-input fixtures and the MCP audit details. The Gateway, Time and the server template pin it.
+- [ ] C2. Move the Gateway's schema and migrations, the store's Gateway module, `veoveo-policy` and `veoveo-gateway-contract` into `veoveo-service-gateway` (D30).
+- [ ] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Gateway drop their Knowledge source declarations.
+- [ ] C4. Replace the Gateway profile and the MCP input method in the `tasks` schema with protocol-neutral owner data.
+- [ ] C5. Core's check stage fails when a core crate depends on rmcp or on an MCP crate, or when the audit vocabulary names a server.
+- [ ] C6. Every repository passes its image check on macOS and Linux, and the local installation passes Time's acceptance tests after a reset (D31).
+
+### Artifact And Media
+
+- [ ] M1. `veoveo-mcp-artifact` foundation: the repository from the server template, the `artifact` schema, RustFS in the installation, single and multipart uploads, downloads, metadata, lists and paging, grants, deletion and retention, quotas, audit and notifications. Size and SHA-256 are optional on `create_upload`; RustFS checks them during the write when given, and the server computes the SHA-256 at completion otherwise. `create_upload` carries labels, retention, metadata and an idempotency key, and objects are stored by artifact ID. Acceptance passes through the Gateway on macOS and Linux.
+- [ ] M2. The server uses aws-sdk-s3 1.152.0 without default features, with rustls on ring and without aws-config. It is the only Rust S3 crate that signs Content-Length, Content-Type, the SHA-256 checksum and `If-None-Match` into a URL, completes a multipart upload create-only, and sets bucket CORS and lifecycle rules.
+- [ ] M3. `ctx.client()` in `veoveo-sdk-rust`: calls through the Gateway for the current caller or Task with token exchange (A5), typed calls from a provider's `contract` feature, builders that run when awaited, and a typed handle for tools that run as Tasks.
+- [ ] M4. Durable steps in core's Task runtime: `ctx.step` stores each finished step's typed result on the Task, and a restarted Task resumes at its first unfinished step.
+- [ ] M5. Artifact's `client` feature: `ArtifactClient` uploads a stream of unknown size and downloads, built on `ctx.client()`.
+- [ ] M6. `veoveo-mcp-media` on PostgreSQL with `ArtifactClient` (P3). The provider address is required configuration, so every test names a fake provider and none reaches the real one.
+- [ ] M7. Artifact sharing: release states, share links and their route, and access requests.
+- [ ] M8. The Artifact library App, delivered with the Console port.
 
 ### Extraction
 
 - [ ] E1. Tag `veoveo-core` `v0.1.0` once the first slice is up.
 - [ ] E2. Bring each further component in with its own environment, one at a time, after the first slice is up.
-- [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map, Frames and Media.
-- [ ] E4. Extract the services: Artifact, Knowledge, Recording, Agents and Computers.
+- [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map and Frames.
+- [ ] E4. Extract Knowledge, Recording, Agents and Computers.
 - [ ] E5. Extract the GPU servers, runtimes and showcases.
 - [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would, add a Kubernetes target to the template, and move the Bioma reference installation there.
 
