@@ -7,6 +7,8 @@ it moves.
 
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
+Current push: M9, then M10, then M6, then M12, under [Artifact And Media](#artifact-and-media).
+
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
 identity, Tasks and the audit envelope. `veoveo-sdk-rust` builds MCP on top of it, and
@@ -886,6 +888,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] M9. Operations, the usage ledger and the minimal audit record in `veoveo-core` (D34, D35, D36), with durable steps (M4).
 - [ ] M10. The SDK, the Gateway, Time and Artifact adopt M9: `ctx.step`, `ctx.operation`, `ctx.usage` and the callback route in the SDK; the Gateway's own reason codes, the session rule of D37 and its cost views.
 - [ ] M11. Spending limits over the usage ledger, and the OCSF audit export and FOCUS usage export checked by their projects' validators.
+- [ ] M12. Reset the local installation from the README on macOS and Linux with a new component lock, and pass the acceptance tests of the Gateway, Time, Artifact with sharing, and Media with a fake provider.
 
 ### Extraction
 
