@@ -864,9 +864,9 @@ These cuts happen in the new repositories while code is copied, not in the curre
 
 - [ ] C1. Create `veoveo-sdk-rust` from the server template with the crates of D33: the MCP crates, the Task runtime's MCP adapter and the MCP audit details merge into `veoveo-sdk-rust`, `veoveo-mcp-conformance` becomes `veoveo-sdk-rust-conformance`, and the `modular-mcp` fixture with the tool-input fixtures becomes `veoveo-sdk-rust-fixture`. The Gateway and Time pin it.
 - [ ] C2. Move the Gateway's schema and migrations, the store's Gateway module, `veoveo-policy` and `veoveo-gateway-contract` into `veoveo-service-gateway` (D30).
-- [ ] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Gateway drop their Knowledge source declarations.
-- [ ] C4. Replace the Gateway profile and the MCP input method in the `tasks` schema with protocol-neutral owner data.
-- [ ] C5. Core's check stage fails when a core crate depends on rmcp or on an MCP crate, or when the audit vocabulary names a server.
+- [x] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Gateway drop their Knowledge source declarations. Done in `veoveo-core` `7a6c210`: 19 commits remove 67,895 lines and leave 11 crates; Time and the Gateway follow in C2.
+- [x] C4. Replace the Gateway profile and the MCP input method in the `tasks` schema with protocol-neutral owner data. Done in `7a6c210`: `task.surface` is an opaque key the creating adapter fills, and `task_input.kind` an opaque input name.
+- [x] C5. Core's check stage fails when a core crate depends on rmcp or on an MCP crate, or when the audit vocabulary names a server. Done in `7a6c210`: a Rust test reads core's lock file, audit classes are owner-declared with a JSON Schema stored in `audit.detail_type`, and core declares only Task and audit classes. The check stage passes 299 tests on macOS and Linux.
 - [ ] C6. Every repository passes its image check on macOS and Linux, and the local installation passes Time's acceptance tests after a reset (D31).
 
 ### Artifact And Media
