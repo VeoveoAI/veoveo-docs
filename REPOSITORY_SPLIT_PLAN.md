@@ -766,9 +766,9 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D2. Every repository is public. The reference installation is `BiomaAI/veoveo-bioma`.
 - [x] D3. No crate is published to a registry. Repositories consume crates as GitHub Git dependencies pinned by tag, and every repository built together uses one `veoveo-core` tag.
 - [x] D4. Each component repository defines its own container environment with `dev`, `check`, `build` and `runtime` stages, and owns its toolchain and gate configuration. No Nix dev shell and no host toolchain requirement beyond Docker and Git.
-- [ ] D5. CI placement for per-repository CPU checks.
-- [ ] D6. Agent model for Console and Workspace work.
-- [ ] D7. Reconcile the factory permissions and roles with the brokers in `FACTORY_ISOLATION.md`.
+- [ ] D5. CI placement for per-repository CPU checks. Taken up before the first release tag (E1) or the first outside contribution.
+- [ ] D6. Agent model for Console and Workspace work. Taken up with the agents (E4).
+- [ ] D7. Reconcile the factory permissions and roles with the brokers in `FACTORY_ISOLATION.md`. Taken up with the factory service.
 - [x] D8. Authorization uses permissions, roles and bindings, relationship-based sharing, Cedar conditions, coarse OAuth scopes and narrowed delegation, declared by servers through `ai.veoveo/authorization`. No change waits for a person.
 - [x] D9. New repositories are pushed to `VeoveoAI` as work lands, and the Linux host verifies each step from a fresh `git pull`.
 - [x] D10. No task runner. Tools keep their own configuration, Cargo aliases provide short commands and test logic lives in Rust.
@@ -776,11 +776,11 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D12. OpenShell 0.1.3 is the environment runtime on macOS and Linux, with telemetry disabled.
 - [x] D13. MCP servers dial out to the Veoveo Gateway. Native gRPC endpoints use dial-in or port forwarding, never service exposure.
 - [x] D14. Every repository is licensed under Apache-2.0. Its Section 6 grants no trademark rights, and it carries an explicit patent grant. The current repository has no `LICENSE` file and no Cargo `license` metadata, so every new repository's first commit adds both.
-- [ ] D15. Image distribution: whether and where images are published, decided when an installation needs images it did not build.
-- [ ] D16. Register the Veoveo name and logo as trademarks, and publish a `TRADEMARKS.md` policy that covers forks and `veoveo-*` names.
-- [ ] D17. Choose the contribution model: a DCO sign-off, or a Contributor License Agreement if relicensing must stay possible.
+- [ ] D15. Image distribution: whether and where images are published, decided when an installation needs images it did not build. Taken up with E6.
+- [ ] D16. Register the Veoveo name and logo as trademarks, and publish a `TRADEMARKS.md` policy that covers forks and `veoveo-*` names. Taken up before the first public release.
+- [ ] D17. Choose the contribution model: a DCO sign-off, or a Contributor License Agreement if relicensing must stay possible. Taken up before the first outside contribution.
 - [x] D18. Runtime names use `vv-<kind>-<name>` with the kind codes in [Runtime Names](#runtime-names).
-- [ ] D19. A variant suffix for runtime names when several versions of one component run at once.
+- [ ] D19. A variant suffix for runtime names when several versions of one component run at once. Taken up with S7.
 - [x] D20. Every name and format follows a published standard or the conventions in `veoveo-core` `docs/CONVENTIONS.md`. URIs, paths and identifiers carry no version segment such as `/v1`; releases, tags and crates carry versions.
 - [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
 - [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
