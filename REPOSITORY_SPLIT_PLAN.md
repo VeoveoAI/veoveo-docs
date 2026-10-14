@@ -7,7 +7,7 @@ it moves.
 
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
-Current push: L2 through L7, under [Docker Environments And Lore](#docker-environments-and-lore).
+Current push: the cutover to Docker environments under [Docker Environments And Lore](#docker-environments-and-lore) is done on macOS; the Linux host follows on the owner's go-ahead.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
@@ -29,8 +29,9 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | Semantic Versioning 2.0.0 | `veoveo-core` versions; `cargo-semver-checks` blocks unplanned breaking changes |
 | OCI images | Each host builds component images locally; a registry for distributing them is an open decision (D15) |
 | Dockerfile multi-stage builds with BuildKit | `dev`, `check`, `build` and `runtime` stages in every component repository |
-| OpenShell 0.1.3 | Component environment runtime: sandboxes from our images, `version: 1` policies, providers, service exposure and port forwarding |
-| Compose specification | Launch of PostgreSQL and other upstream infrastructure that runs outside OpenShell |
+| Docker Engine and the Compose specification | The local installation: PostgreSQL, SeaweedFS, the Envoy edge, Lore and one environment per component, on internal networks (D40) |
+| Envoy 1.40.0 | The installation's edge: published ports, an HTTPS CONNECT proxy with a host allowlist, and secrets added per route (D42) |
+| Lore v0.10.1 from `VeoveoAI/lore` | The installation's version control for environments over `lores://`, gRPC over TLS and Lore's QUIC storage protocol, with RFC 9068 tokens from the Gateway (D41, D43) |
 | Helm 3 | One application chart per component, built on a shared library chart |
 | Flux | One HelmRelease per component in the installation repository, ordered with `dependsOn` |
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
@@ -80,7 +81,7 @@ example `acme/veoveo-mcp-inventory`, and add the matching GitHub topic.
 | `sdk` | Library for building Veoveo servers, clients and apps in one language | `veoveo-sdk-rust` |
 | `template` | GitHub template repository | `veoveo-template-mcp-rust` |
 | `showcase` | Demonstration workload | `veoveo-showcase-uav` |
-| `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell` |
+| `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell`, archived with D40 |
 | none | Organization singletons | `veoveo-docs`, `veoveo-website` |
 
 `veoveo-template-installation` is the template every installation starts from,
@@ -111,11 +112,12 @@ no external consumers. Wire names, format identifiers and other identifiers foll
 
 ### Runtime Names
 
-OpenShell 0.1.3 rejects sandbox names longer than 19 characters, and container and
-Kubernetes resource names carry their own limits. Runtime names therefore use
-`vv-<kind>-<name>`, with a short code for each kind, while repositories, crates,
-binaries and images keep their full `veoveo-<kind>-<name>` names. Kinds without a code
-use `vv-<name>`. Extension keys, format identifiers and every other wire name follow
+Container and Kubernetes resource names carry their own limits, and short names read
+well in commands. Runtime names therefore use `vv-<kind>-<name>`, with a short code for
+each kind, while repositories, crates, binaries and images keep their full
+`veoveo-<kind>-<name>` names. Kinds without a code use `vv-<name>`. On a local
+installation's network each container also answers under `.internal`, such as
+`vv-mcp-time.internal`. Extension keys, format identifiers and every other wire name follow
 the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md).
 
 | Kind | Code | Example runtime name |
@@ -127,14 +129,12 @@ the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob
 | `sdk` | `sdk` | `vv-sdk-python` |
 | `template` | `tpl` | `vv-tpl-mcp-rust` |
 | `showcase` | `demo` | `vv-demo-uav` |
-| `qualify` | `qual` | `vv-qual-openshell` |
+| `qualify` | `qual` | `vv-qual-<suite>` |
 | none | none | `vv-core`, `vv-local`, `vv-postgres` |
 
-Every current catalog name fits. The longest, `vv-mcp-optimization`, uses all 19
-characters, so a new MCP server name stays within 12 characters after `vv-mcp-`.
 Running several versions of one component, as
 [Session Version Selection](#session-version-selection) requires, needs a variant
-suffix that this rule has no room for in the longest names (D19).
+suffix (D19).
 
 ## Repository Catalog
 
@@ -172,11 +172,11 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
-| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL and SeaweedFS, installation configuration, roles and grants, and component lock |
+| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL, SeaweedFS, the Envoy edge, Lore and the environments, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
 | `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
 | `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
-| `veoveo-qualify-openshell` | the OpenShell spike probes and policies | qualification results per OpenShell release and host |
+| `veoveo-qualify-openshell` | the OpenShell spike probes and policies | archived with D40 |
 | `.github` | new | organization profile and reusable workflows |
 
 The catalog lists 38 repositories. Each installation adds one public
@@ -271,10 +271,9 @@ configuration names no server either.
 
 ### Registration
 
-Each installation has one registration secret. OpenShell holds it as a provider, so
-an environment receives only a placeholder, and the proxy substitutes the real value
-only on requests to the Gateway's registration endpoint. No agent inside an
-environment can read it.
+Each installation has one registration secret. The installation's Envoy edge holds it
+and adds it to `POST /oauth/register` at the Gateway's name, so an environment holds
+only a placeholder and no agent inside an environment can read it (D42).
 
 Registration follows open standards, and every Veoveo addition uses the extension
 mechanism of the standard it extends. Its URIs, paths and identifiers carry no version
@@ -470,9 +469,9 @@ an environment builds, tests or repairs that component.
 
 ### Image Stages
 
-Each repository has one Dockerfile and an `openshell/policy.yaml`. The `dev` stage is
-the image an OpenShell sandbox runs, and editors attach through OpenShell's SSH and
-`--editor` support.
+Each repository has one Dockerfile. The `dev` stage is the image an environment runs
+under the installation's layer (D40), and editors attach through `docker compose exec`
+or a container-attach extension.
 
 | Stage | Contents | Purpose |
 |---|---|---|
@@ -485,7 +484,7 @@ Each repository's Dockerfile installs its own toolchain and tools from pinned
 upstream images and releases: for a Rust component, Rust with clippy and rustfmt,
 cargo-nextest, cargo-deny, cargo-hack, cargo-semver-checks, cargo-insta, clang,
 cmake and pkg-config. The repository also owns its `rust-toolchain.toml`,
-`rustfmt.toml`, `clippy.toml`, `deny.toml`, nextest profiles and OpenShell policy.
+`rustfmt.toml`, `clippy.toml`, `deny.toml` and nextest profiles.
 `veoveo-template-mcp-rust` provides the starting copy of these files, and a new
 repository owns them after it is created. Images and toolchains may differ between
 repositories, because components interact only through contracts. A crate that other
@@ -496,18 +495,17 @@ current as ordinary maintenance.
 Every build runs in a Linux container. That removes the macOS failures of the current
 repository: `veoveo-testing-support` uses Linux-only process calls, and macOS lacks
 the `leap-seconds.list` that Debian's `tzdata` package provides. Images set their
-environment variables in `/etc/profile.d`, because OpenShell passes only `PATH` from
-an image's `ENV` to sandbox processes and login shells reset it.
+environment variables in `/etc/profile.d` as well as in `ENV`, because login shells
+reset `PATH`.
 
 An environment is a working development machine. The sandbox user owns the Rust
-toolchain and Cargo home, and the environment policy lists both as writable and
-allows `static.rust-lang.org`, `index.crates.io`, `static.crates.io`, `crates.io`
-and Git fetches from `github.com`. Developers and agents install toolchains,
-components, targets and crates as they need them, and the image only pre-seeds its
-pinned toolchain so the first start is fast. The qualification installed clippy and
-rustfmt from a `rust-toolchain.toml`, added a `wasm32` target, ran `cargo install`
-and built a Cargo Git dependency inside a sandbox. Pushing stays impossible, because
-the sandbox holds no GitHub credential and its policy allows only `git-upload-pack`.
+toolchain and Cargo home, and the installation's edge lets the environment reach
+`static.rust-lang.org`, `index.crates.io`, `static.crates.io`, `crates.io`,
+`github.com` and `api.github.com` through its HTTPS proxy. Developers and agents
+install toolchains, components, targets and crates as they need them, and the image
+only pre-seeds its pinned toolchain so the first start is fast. The environment holds
+no GitHub credential. Its source lives in the installation's Lore repository for its
+component (D41).
 
 ### Environment Loop
 
@@ -532,72 +530,59 @@ exists.
 
 ### Environment Runtime
 
-OpenShell 0.1.3 runs every environment as a sandbox created from the component's
-`dev` image and its committed policy. The OpenShell gateway, its supervisor images
-and PostgreSQL are unmodified upstream releases that run outside the sandboxes. On
-macOS the runtime needs Docker Desktop 4.94 or newer, whose Linux kernel enables
-Landlock. Docker Desktop 4.54 lacks Landlock, and every sandbox fails OpenShell's
-Landlock probe there. Docker Desktop also needs host networking enabled and Enhanced
-Container Isolation disabled. Both hosts run the OpenShell gateway with
-`OPENSHELL_TELEMETRY_ENABLED=false`, and images disable Rerun's usage analytics.
+A local installation runs on Docker Compose (D40). Each environment is a Compose service
+built from its component's `dev` image under the installation's layer, which adds the
+setgid Lore client and the installation CA and removes every other setuid or setgid
+program. It runs as the `sandbox` user with every capability dropped and without
+`no-new-privileges`, keeps `/sandbox` in a named volume, and answers on the internal
+`vv-local` network under its `.internal` name.
 
-The October 11 qualification ran the same probes on macOS (arm64, Docker Desktop
-4.94) and on the Ubuntu 24.04 RTX 4090 host (amd64).
+PostgreSQL, SeaweedFS and Lore share that network, which no route leaves. The Envoy edge
+is the environments' only other path (D42): it publishes the Gateway and the servers on
+the host's loopback interface, serves an HTTPS proxy to the hosts environments fetch
+from, adds the registration secret to `POST /oauth/register`, and adds the media
+provider's key on a network only Media's environment joins. Secrets an environment
+uses this way never enter it. A component that signs with a secret itself, such as
+Artifact with the object store's credential, receives that secret as an owner-only
+file.
 
-| Path | Works | Fails |
-|---|---|---|
-| Outbound from a sandbox | HTTP, SSE, WebSocket, native gRPC over HTTP/2, PostgreSQL queries, advisory locks and notifications, Cargo through the TLS-inspecting proxy; 30-minute runs complete with p99 latency of 1 to 3 ms on Linux and 3 to 9 ms on macOS | WebSocket upgrades to endpoints inspected as `mcp`, `json-rpc` or `graphql`, and plain requests to endpoints inspected as `websocket` |
-| Inbound through service exposure | HTTP/1.1, SSE, WebSocket, chunked and length-framed streams, gRPC-Web and one passed-through Bearer header; 30-minute runs complete with p99 latency of 1 to 2 ms on Linux and 10 to 14 ms on macOS | native gRPC, because the relay speaks HTTP/1.1 to the service; Basic authentication; more than 32 relay setups pending at once for one sandbox |
-| Inbound through port forwarding | any TCP, including native gRPC and native Rerun Catalog SDK reads | nothing observed; a forward lives as long as the process that started it |
+Lore runs from `VeoveoAI/lore` (D41). The Gateway issues each environment's Lore token
+(D43), and the installation's token service keeps it in a file that only the setgid
+Lore client reads, which sends it only to the installation's Lore server over
+`lores://`. The macOS qualification on October 14 showed:
 
-These results set the transport design:
+- the Gateway, Time, Artifact and Media register through the edge and pass their
+  acceptance tests, Artifact's gibibyte upload and share route included;
+- each environment clones its own repository and gets "Not found" for another, a push
+  to protected `main` is refused, a branch push and the admin's merge succeed;
+- no environment can read its Lore token, the registration secret or the provider key,
+  and the egress proxy refuses every host outside its allowlist.
 
-- MCP servers dial out to the Veoveo Gateway and need no inbound path.
-- The Veoveo Gateway serves MCP traffic through service exposure. Remote clients reach an exposed service through the OpenShell gateway listener's TLS, so remote installations run the OpenShell gateway with OIDC authentication instead of client certificates.
-- Native gRPC endpoints, such as Recording's Redap service for native Rerun clients, use dial-in or a port forward. Rerun's WebViewer uses gRPC-Web, which passes exposure.
-- Clients retry relay setup after a `502`, because OpenShell refuses relay setups beyond 32 pending for one sandbox.
-- OpenShell inspects MCP `2026-07-28` requests and enforces tool-level allow and deny rules, so each environment's policy names the tools it may call.
-
-`/sandbox` lives in the sandbox container's writable layer. It survives stop and
-start and restart-policy replacement, which the qualification verified with an 8 GiB
-cache and Cargo output, and deleting the sandbox removes it. OpenShell sets
-`SSL_CERT_FILE`, `CURL_CA_BUNDLE`, `GIT_SSL_CAINFO` and `NODE_EXTRA_CA_CERTS` for its
-TLS-inspecting proxy, and Rust HTTPS clients must trust that bundle. The probes,
-policies and results move into `veoveo-qualify-openshell`, which reruns on both hosts
-for every OpenShell release.
+An MCP server needs no inbound path beyond the edge's published port, and the Gateway
+reaches servers on the internal network. A coding agent in an environment that
+sandboxes its own commands with `no-new-privileges` keeps `lore` outside that sandbox.
 
 ### Boundaries
 
 Environments follow the author-sandbox rules in
 [`FACTORY_ISOLATION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md). No Docker or Podman socket,
-kubeconfig, registry credential or signing key enters an environment. Dependencies
-such as PostgreSQL run outside OpenShell as plain containers, and each environment's
-policy names the address it may reach. Images are built outside the environment, by
-the bootstrap operator now and by the factory's build broker later. Each environment
-pushes through an OpenShell GitHub provider whose policy allows `git-receive-pack`
-only for the component's own repository, and the agent never sees the token. The
-factory's source broker replaces that provider, because `FACTORY_ISOLATION.md` keeps
-push authority with brokers. The provider, created from OpenShell's GitHub example
-profile, grants fetch. The environment's own policy adds `git-receive-pack` for its
-repository, so one installation-wide token serves every environment while each pushes
-only where its policy allows. The sandbox receives the token as an `openshell:resolve:`
-placeholder, and the image configures a Git credential helper that sends the placeholder
-as the password. The proxy substitutes the real token only on requests to GitHub.
-
-`veoveo-qualify-openshell` is the one component that runs on the host. Its suite
-creates, stops and deletes sandboxes, builds its probe image with Docker and measures
-traffic between the host and sandboxes, which no sandbox can do. Its sandboxes live
-for one run and take `q<run>-<role>` names instead of runtime names.
+kubeconfig, registry credential or signing key enters an environment. Images are built
+outside the environment, by the operator now and by the factory's build broker later.
+An environment pushes branches to its component's Lore repository, and the
+installation's Lore admin, a Lore service account, merges into the protected `main`
+(D41). Nothing in Lore returns to GitHub; a component update arrives as a snapshot
+commit on `main`. The factory's source broker takes over the admin's merges once it
+exists, because `FACTORY_ISOLATION.md` keeps push authority with brokers.
 
 An environment on one machine reaches a Gateway on another by dialing in, so the
 dial-in connection (A7) comes before environments span machines.
 
 On macOS the environments run as `linux/arm64`, and on the Linux host as
 `linux/amd64`. Each machine builds natively. Build output and the Cargo cache live
-under `/sandbox`. GPU components get sandboxes with `--gpu` on the Linux host, where
-the qualification reached the RTX 4090 through NVIDIA CDI. A change that spans
-repositories clones the sibling repository into `/sandbox` and points a `[patch]` in
-an uncommitted `.cargo/config.toml` at that clone.
+under `/sandbox`. GPU environments use the NVIDIA Container Toolkit on the Linux host,
+taken up with the GPU components. A change that spans repositories clones the sibling
+repository into `/sandbox` and points a `[patch]` in an uncommitted
+`.cargo/config.toml` at that clone.
 
 ### Tooling
 
@@ -615,12 +600,14 @@ short commands.
 | Wire formats and schemas | insta snapshots |
 | Parsers, IDs and URIs | proptest |
 | Store tests | a private PostgreSQL 18 cluster per test process from the PGDG packages in the `dev` image, with a fresh database cloned from a migrated template for each test |
-| Launching | OpenShell sandboxes for environments, Docker Compose for PostgreSQL, Kubernetes later |
+| Launching | Docker Compose for the local installation and its environments, Kubernetes later |
 | Deployment gates, later | Conftest or Kyverno CLI, kubeconform and `helm lint` |
 
 ## First Slice
 
-The first slice is the smallest installation that represents Veoveo end to end.
+The first slice is the smallest installation that represents Veoveo end to end. This
+section records the slice as it ran on OpenShell before D40;
+[Environment Runtime](#environment-runtime) describes the installation now.
 
 | Component | Runs as |
 |---|---|
@@ -663,8 +650,8 @@ and every core crate the slice does not use.
 
 ## Bootstrap
 
-Bootstrap creates the first repositories by hand and hands them to their
-environments as soon as the environments can work.
+Bootstrap created the first repositories by hand and handed them to their environments
+as soon as the environments could work. This record predates D40.
 
 | Step | Work | Done when |
 |---|---|---|
@@ -823,7 +810,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 ### OpenShell Qualification
 
-D40 retires OpenShell, so the open items below close unrun when L7 lands.
+D40 retired OpenShell, and the open items below closed unrun.
 
 - [x] Q1. Inbound exposure, outbound transports, SurrealDB, MCP `2026-07-28` inspection, Redap through forwarding and gRPC-Web, persistence, restart policy and GPU on both hosts.
 - [x] Q2. Thirty-minute endurance runs on macOS and Linux: every stream completes, except four of fifty simultaneous SSE opens on Linux that hit the 32 pending-relay limit.
@@ -903,10 +890,10 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [x] L1. Record D40 to D43 and these tasks. Done with this record.
 - [x] L2. The Gateway issues Lore tokens (D43), and stock Lore accepts them: a client clones the repositories it is granted and gets "Not found" for any other. Done in `veoveo-service-gateway` `dcaf880` on core `c0c8254` and the SDK `3ea1a32`: the typed `lore` section, Lore tokens at the token endpoint, the authorization server's metadata at `/oauth/.well-known/openid-configuration`, Lore clients from `generate-local-installation` and the `lore-tokens` refresher; stock Lore v0.10.1 clones a granted repository with an EdDSA token of that shape and answers "Not found" for another. Core admits plain HTTP for names under `.internal` in place of OpenShell's host alias.
 - [x] L3. Qualify the Envoy edge on macOS before the installation adopts it: HTTPS egress to the fetch hosts only, the registration secret added only on `POST /oauth/register`, published ports reaching environments that sit only on internal networks, and the media provider key resolving only from Media's network. Done with Envoy v1.40.0: a CONNECT proxy reaches crates.io, `static.rust-lang.org` and GitHub, where Cargo fetches a crate and a Git dependency, and refuses other hosts; a matcher limits the registration secret to `POST /oauth/register`, so registration access tokens pass unchanged and the published port adds nothing; RBAC on the source subnet limits the provider key to Media's network; no secret appears in an environment.
-- [ ] L4. `veoveo-template-installation` runs the Lore server, the Envoy edge, the token service and the environments as Compose services, generates the installation CA, and describes Lore bootstrap and merges in its README. It keeps no OpenShell file.
-- [ ] L5. The Gateway, Time, Artifact, Media and `veoveo-template-mcp-rust` drop their OpenShell policies and wording, and their READMEs launch environments through Compose.
-- [ ] L6. Reset the local installation from the README on macOS and pass M12's acceptance tests, the Lore checks (a granted clone, a refused repository, a branch push, a refused push to `main`, an admin merge) and the secret checks (no Lore token, registration secret or provider key readable inside an environment).
-- [ ] L7. Retire OpenShell: archive `veoveo-qualify-openshell` and rewrite this plan's environment sections and every repository's documents for D40.
+- [x] L4. `veoveo-template-installation` runs the Lore server, the Envoy edge, the token service and the environments as Compose services, generates the installation CA, and describes Lore bootstrap and merges in its README. It keeps no OpenShell file. Done at `f220a75`.
+- [x] L5. The Gateway, Time, Artifact, Media and `veoveo-template-mcp-rust` drop their OpenShell policies and wording, and their READMEs launch environments through Compose. Done with Gateway `c3db10a`, Time `1098651`, Artifact `a559daa`, Media `9786adb` and the server template `cc989e0`, each passing its image check, and core `2b4dc94` and the SDK `d06d9fe` for their documents; every component moved to core `c0c8254`, the SDK `3ea1a32` and rustls 0.23.46.
+- [x] L6. Reset the local installation from the README on macOS and pass M12's acceptance tests, the Lore checks (a granted clone, a refused repository, a branch push, a refused push to `main`, an admin merge) and the secret checks (no Lore token, registration secret or provider key readable inside an environment). Done on October 14: Time passes 6 acceptance tests, Artifact 7 and Media 2 with the fake provider, again after every environment was recreated; every Lore and secret check holds, tokens refresh every ten minutes, and the egress proxy refuses hosts outside its allowlist.
+- [x] L7. Retire OpenShell: archive `veoveo-qualify-openshell` and rewrite this plan's environment sections and every repository's documents for D40. Done: the repository is archived, and OpenShell appears only in the records of completed work.
 
 ### Extraction
 
