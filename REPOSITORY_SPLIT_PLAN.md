@@ -172,7 +172,7 @@ suffix that this rule has no room for in the longest names (D19).
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
 | `veoveo-template-mcp-rust` | `templates/rust-mcp` | template repository |
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
-| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL and RustFS, installation configuration, roles and grants, and component lock |
+| `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL and SeaweedFS, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
 | `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
 | `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
@@ -629,7 +629,7 @@ The first slice is the smallest installation that represents Veoveo end to end.
 | Gateway environment | an OpenShell sandbox from `veoveo-service-gateway` |
 | Time environment | an OpenShell sandbox from `veoveo-mcp-time` |
 
-`veoveo-template-installation` provides the local installation. It holds the Compose file for PostgreSQL and RustFS,
+`veoveo-template-installation` provides the local installation. It holds the Compose file for PostgreSQL and SeaweedFS,
 the installation configuration, the namespace bindings and a component lock that names
 each component's Git revision. Each component repository describes its own launch:
 its policy, providers, GPU use and exposure under `openshell/`. Installation
@@ -802,6 +802,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D36. Core's audit record is the minimal envelope NIST SP 800-53 Rev. 5 AU-3 asks for, mapped to OCSF 1.9: source from the writer's login, an owner-declared class with its OCSF class, a four-value outcome, an owner-defined reason, actor, acting server and Task, target URI, request and details of at most 16 KiB. The writer checks details against the owner's schema; core keeps the hash chain, sealing and export. This revises D28's write-time check. Decided on October 13.
 - [x] D37. Revoking a caller's session for a replayed refresh token ends the delegation of that caller's running Tasks; a logout does not. Decided on October 13.
 - [x] D38. An installation keeps one PostgreSQL database, and server logins keep their row-filtered table access to core's schemas, so core and the Gateway can still join across servers' data. Server code reaches core state only through the SDK and core's runtime API: a server's SQL names only its own schema, and each server's tests run the SDK's confinement check. When the API lacks something a server needs, core or the SDK gains it as a general feature. Decided on October 14.
+- [x] D39. SeaweedFS replaces RustFS as the installation's object store, revising the store D32 accepted: SeaweedFS 4.48, unmodified and pinned by digest, in its `weed mini` mode for the local installation, on the same loopback port and credential. Artifact's object-storage tests pass against it unchanged, including size and SHA-256 checks while it writes, create-only multipart completion, attachment downloads with ranges, CORS and the lifecycle rule for abandoned uploads. Clients still reach the store directly at the one address the installation configures, and an installation that must prove each transfer adds SeaweedFS's S3 audit log. Decided on October 14.
 
 ### Registration And Authorization
 
