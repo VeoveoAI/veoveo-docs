@@ -191,9 +191,9 @@ item removed:
 | Crate | Keeps |
 |---|---|
 | `veoveo-types`, `veoveo-macros` | IDs, names, resource addresses and vocabularies, without MCP tool, prompt and Task route names, Gateway profile and authentication types, agent IDs or Artifact access rules |
-| `veoveo-http`, `veoveo-oauth-client` | Request body admission and RS256 client assertions |
-| `veoveo-platform-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification and paging |
-| `veoveo-task-contract`, `veoveo-task-runtime` | Durable Tasks with claims, recovery and subscriptions; durable steps arrive with M4 |
+| `veoveo-http`, `veoveo-oauth` | Request body admission and RS256 client assertions |
+| `veoveo-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification and paging |
+| `veoveo-task-contract`, `veoveo-task` | Durable Tasks with claims, recovery and subscriptions; durable steps arrive with M4 |
 | `veoveo-audit-contract`, `veoveo-audit` | The record envelope, append, sealing and export. Each owner declares its audit classes and details when it registers |
 | `veoveo-installation-contract` | The component lock |
 | `veoveo-test-fixtures` | The PostgreSQL fixture and the database checks |
