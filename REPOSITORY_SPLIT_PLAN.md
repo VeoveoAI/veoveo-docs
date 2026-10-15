@@ -31,7 +31,7 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | Dockerfile multi-stage builds with BuildKit | `dev`, `check`, `build` and `runtime` stages in every component repository |
 | Docker Engine and the Compose specification | The local installation: PostgreSQL, SeaweedFS, the Envoy edge, Lore and one environment per component, on internal networks (D40) |
 | Envoy 1.40.0 | The installation's edge: published ports, an HTTPS CONNECT proxy with a host allowlist, and secrets added per route (D42) |
-| Lore v0.10.1 from `VeoveoAI/lore` | The installation's version control for environments over `lores://`, gRPC over TLS and Lore's QUIC storage protocol, with RFC 9068 tokens from the Gateway (D41, D43) |
+| Unmodified Lore v0.10.1 from `EpicGames/lore` | Version control over Envoy-authenticated `grpcs://`, with RFC 9068 tokens from the Gateway in trusted SDS storage (D41, D43, D44) |
 | Helm 3 | One application chart per component, built on a shared library chart |
 | Flux | One HelmRelease per component in the installation repository, ordered with `dependsOn` |
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
@@ -530,12 +530,13 @@ exists.
 
 ### Environment Runtime
 
-A local installation runs on Docker Compose (D40). Each environment is a Compose service
-built from its component's `dev` image under the installation's layer, which adds the
-setgid Lore client and the installation CA and removes every other setuid or setgid
-program. It runs as the `sandbox` user with every capability dropped and without
-`no-new-privileges`, keeps `/sandbox` in a named volume, and answers on the internal
-`vv-local` network under its `.internal` name.
+A local installation runs on Docker Compose (D40, revised by D44). Trusted runtime
+containers keep approved source snapshots and service state, with no Lore client or
+credential mounts. Separate `vv-dev-*` containers hold source, test fixtures and caches;
+OpenCode v2 is their preconfigured coding agent and starts only when invoked. Both
+profiles use non-root users, drop all capabilities and enable `no-new-privileges`.
+Each dev has its own internal network and reaches Lore, DeepInfra inference and
+allowlisted dependency downloads only through Envoy.
 
 PostgreSQL, SeaweedFS and Lore share that network, which no route leaves. The Envoy edge
 is the environments' only other path (D42): it publishes the Gateway and the servers on
@@ -546,10 +547,13 @@ uses this way never enter it. A component that signs with a secret itself, such 
 Artifact with the object store's credential, receives that secret as an owner-only
 file.
 
-Lore runs from `VeoveoAI/lore` (D41). The Gateway issues each environment's Lore token
-(D43), and the installation's token service keeps it in a file that only the setgid
-Lore client reads, which sends it only to the installation's Lore server over
-`lores://`. The macOS qualification on October 14 showed:
+Lore builds directly from unmodified upstream `EpicGames/lore` v0.10.1 (D44).
+The Gateway issues repository-scoped tokens; a trusted refresher writes only Envoy
+SDS responses. The proxy selects credentials from each listener's private network
+and actual TCP peer. Clients never read a token. The isolated reviewer has a separate
+admin listener and never runs repository code. QUIC and the setgid token loader are
+not used; all Lore client operations go through `grpcs://lore-proxy.internal:7443`.
+The earlier macOS qualification on October 14 showed:
 
 - the Gateway, Time, Artifact and Media register through the edge and pass their
   acceptance tests, Artifact's gibibyte upload and share route included;
@@ -790,10 +794,12 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D37. Revoking a caller's session for a replayed refresh token ends the delegation of that caller's running Tasks; a logout does not. Decided on October 13.
 - [x] D38. An installation keeps one PostgreSQL database, and server logins keep their row-filtered table access to core's schemas, so core and the Gateway can still join across servers' data. Server code reaches core state only through the SDK and core's runtime API: a server's SQL names only its own schema, and each server's tests run the SDK's confinement check. When the API lacks something a server needs, core or the SDK gains it as a general feature. Decided on October 14.
 - [x] D39. SeaweedFS replaces RustFS as the installation's object store, revising the store D32 accepted: SeaweedFS 4.48, unmodified and pinned by digest, in its `weed mini` mode for the local installation, on the same loopback port and credential. Artifact's object-storage tests pass against it unchanged, including size and SHA-256 checks while it writes, create-only multipart completion, attachment downloads with ranges, CORS and the lifecycle rule for abandoned uploads. Clients still reach the store directly at the one address the installation configures, and an installation that must prove each transfer adds SeaweedFS's S3 audit log. Decided on October 14.
-- [x] D40. Plain Docker replaces OpenShell as the environment runtime, replacing D12, so environments can use transports OpenShell's proxy does not carry, such as Lore's QUIC. An environment is a Compose service built from its component's `dev` image and an installation layer. It runs as its non-root user with every capability dropped, on an internal network, and reaches anything else only through the installation's Envoy edge (D42). Environments run without `no-new-privileges` so the setgid Lore client can read its token, and their images carry no other setuid or setgid program. Decided on October 14.
-- [x] D41. Lore is the version control environments use inside an installation. The installation builds the Lore server and client from `VeoveoAI/lore`, which is Lore v0.10.1 with two patches: the client presents its token on QUIC sessions when the server has no separate auth service, and a client installed setgid reads an installation token the agent cannot read and sends it only to the installation's Lore server. Lore otherwise runs as Epic ships it, storing on disk. A component's Lore repository starts from a snapshot of its locked GitHub revision, and later revisions arrive as snapshot commits on `main`; nothing returns to GitHub. Agents push branches, and the installation's admin client merges into the protected `main`. Decided on October 14.
+- [x] D40. Plain Docker replaces OpenShell as the environment runtime, replacing D12, so environments can use transports OpenShell's proxy does not carry, such as Lore's QUIC. An environment is a Compose service built from its component's `dev` image and an installation layer. It runs as its non-root user with every capability dropped, on an internal network, and reaches anything else only through the installation's Envoy edge (D42). Environments run without `no-new-privileges` so the setgid Lore client can read its token, and their images carry no other setuid or setgid program. Decided on October 14; the privilege and transport choices are superseded by D44.
+- [x] D41. Lore is the version control environments use inside an installation. The installation builds the Lore server and client from `VeoveoAI/lore`, which is Lore v0.10.1 with two patches: the client presents its token on QUIC sessions when the server has no separate auth service, and a client installed setgid reads an installation token the agent cannot read and sends it only to the installation's Lore server. Lore otherwise runs as Epic ships it, storing on disk. A component's Lore repository starts from a snapshot of its locked GitHub revision, and later revisions arrive as snapshot commits on `main`; nothing returns to GitHub. Agents push branches, and the installation's admin client merges into the protected `main`. Decided on October 14; the fork and credential mechanism are superseded by D44.
 - [x] D42. One Envoy edge per installation is the only path into and out of environments. It publishes the environments' ports on the host's loopback interface, serves environments an HTTPS proxy that opens tunnels only to the hosts they fetch from, and adds each secret on its own route under an `.internal` name: the registration secret on `POST /oauth/register` at the Gateway's name, and the media provider key at the provider's. A secret's route admits only the network of the environments entitled to it, and the edge terminates TLS for those routes with a certificate from the installation's CA. Decided on October 14.
 - [x] D43. The Gateway issues Lore tokens. Lore is a protected resource in the installation configuration, with grants per client: repository IDs or `*`, Lore actions and the service-account flag. A client-credentials request for that resource returns an RFC 9068 access token whose `lore_resources` claim carries the grants, and stock Lore enforces them. An installation service refreshes each environment's token file before the token expires; it holds the environments' client keys, so no environment does. Decided on October 14.
+
+- [x] D44. Remove all legacy Lore authentication paths. Build the client and server directly from upstream EpicGames/lore v0.10.1, commit `95a9a834`, with no source patches. Lore clients run only in isolated development/review containers and use Envoy-authenticated gRPC; disable QUIC. Replace setgid loaders and raw token volumes with trusted Envoy SDS storage. Runtime containers contain no Lore client, keep approved snapshots and service state, and enable `no-new-privileges`. OpenCode v2.0.29 is installed in every dev, using DeepInfra MiMo through Envoy; no agent starts automatically. Supersedes the fork and privilege exceptions in D40/D41 and the client token files in D43. Decided on October 15.
 
 ### Registration And Authorization
 
