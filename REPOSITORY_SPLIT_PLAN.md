@@ -196,7 +196,7 @@ item removed:
 | `veoveo-task-contract`, `veoveo-task` | Durable Tasks with claims, recovery and subscriptions; durable steps arrive with M4 |
 | `veoveo-audit-contract`, `veoveo-audit` | The record envelope, append, sealing and export. Each owner declares its audit classes and details when it registers |
 | `veoveo-installation-contract` | The component lock |
-| `veoveo-test-fixtures` | The PostgreSQL fixture and the database checks |
+| `veoveo-fixtures` | The PostgreSQL fixture and the database checks |
 
 Everything else leaves core:
 
