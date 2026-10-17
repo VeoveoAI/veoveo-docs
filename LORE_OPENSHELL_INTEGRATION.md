@@ -7,10 +7,11 @@ revisions to checks, service composition and promotion. The local hard cut and f
 native Lore/private MCP path pass focused acceptance; general deployment and
 composition remain pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
-Desktop is no longer an acceptance requirement. The next slice is
-[direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md),
-followed by retirement of the Desktop authentication adapter. This is the selected
-design, not a claim that the currently deployed adapter has already been removed.
+Desktop is no longer an acceptance requirement. The locally qualified path uses
+[direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md).
+The Desktop authentication adapter, signer dependencies and Desktop ingress are
+retired; durable data and private recovery state are preserved. External issuers
+and interactive human Lore login require separate qualification.
 
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted

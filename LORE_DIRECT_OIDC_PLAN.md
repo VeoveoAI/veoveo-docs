@@ -1,9 +1,10 @@
 # Direct Lore Credentials Through OpenShell
 
-Status: accepted implementation direction, 2026-10-17. **Not deployed or qualified
-by this document.** The previous smoke and push-hook tests used the Veoveo signer.
-Their results remain valid for that configuration; direct-issuer acceptance is open.
-The execution checklist is [OPENSHELL_HARDCUT_PLAN.md](OPENSHELL_HARDCUT_PLAN.md).
+Status: implemented and locally qualified on 2026-10-17. Direct IdP issuance,
+native OpenShell renewal/injection and native Lore authorization are deployed.
+The Desktop adapter, signer/manual-token helpers and Desktop-only ingress are
+retired. Historical signer results remain distinct from direct-issuer evidence.
+The execution record is [OPENSHELL_HARDCUT_PLAN.md](OPENSHELL_HARDCUT_PLAN.md).
 
 ## Decision And Ownership
 
@@ -234,7 +235,8 @@ HTTP/2 mediation patch. No new OpenShell core change is planned.
 
 ## Implementation Order And Acceptance
 
-All items below are open. Use disposable, owned test resources and the existing
+The local gates below are complete; exact results are recorded in the execution
+checklist and installation component lock. Use disposable, owned test resources and the existing
 small fixture seeder. Do not add a public seed API, new Lore fixture service or
 production auth test endpoint. Keep behavioral test logic in the Rust qualification
 repository; the existing offline seeder may remain colocated in Lore test support.
@@ -273,8 +275,12 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    grace interval explicitly. No cached-token fallback, manually renewed token or
    global IdP shutdown. This tests unavailable issuance without a new failure proxy.
 5. **Prove native detach separately.** Use a newly provisioned test A with its IdP
-   client still enabled. Detach its provider through native APIs and wait for the
-   attachment's applied `REVOKED` receipt. Reuse A's saved reference from the
+   client still enabled. The native gateway rejects detach while a policy endpoint
+   explicitly references that provider. Remove only the credential binding through
+   native `UpdateConfig`, await the active policy version, then detach through native
+   APIs and wait for the attachment's applied `REVOKED` receipt. Record the initial
+   `FAILED_PRECONDITION` and both applied steps. This qualifies the supported policy
+   transition plus detach; it does not isolate a detach-only effect on streams. Reuse A's saved reference from the
    already-running process and prove fresh requests/connections fail. Do not call
    receipt of the detach request proof that supervisors have applied it. B remains
    able to read/push and automatically renew.
@@ -335,3 +341,43 @@ claims/type/audience and explicit repository grants. Keep that separate gate ope
 when it cannot; do not weaken Lore or restore a Veoveo signer solely to claim
 provider independence. Linux/CUDA, actual MCP adoption, composition and
 source-to-runtime reconciliation follow separately after this slice.
+
+## Local Acceptance Record
+
+The native server and supervisor source were unchanged for this cutover. Installation
+changes configure native OIDC, public CA trust, ordinary IdP grants and trusted hook
+assignments. No new Lore authorization/transport layer or OpenShell core patch was added.
+
+The focused corpus combines completed renewal evidence with an independent remaining-
+gates run. It does not call an interrupted run complete or imply every gate ran on
+one fixture image. Both test images inherit the same accepted factory/Lore CLI;
+exact images, timestamps and scope are in the component lock.
+
+- Verified IdP signatures, at+jwt, subject/audience, 300-second signed lifetime,
+  single-repository grants and omitted/unlinked-scope denial for six local identities.
+- Direct clone/edit/push and independent content verification passed; every wrong-branch
+  attempt cloned the current branch and committed first. Native protection and an
+  unassigned identity's ordinary permissions passed. Existing hook tests cover both RPC
+  call sites. Credential custody and raw-egress/operator-file boundaries passed.
+- At least two automatic renewals and post-original-expiry/leeway operations passed
+  using the original reference and unchanged process. No manual provider rotation,
+  replacement credential file or factory restart supplied those renewals.
+- Source withdrawal produced oauth_invalid_client/fix_configuration. Fresh requests
+  were denied after 299 seconds, 55 seconds before the recorded expiry/leeway bound.
+  The stream received an event after client disable, then no new event was observed
+  after expiry. Native stop reached Stopped and execution was rejected; the actual
+  workload containers were observed exited. B continued reading, pushing and renewing.
+- Native policy binding removal followed by applied REVOKED detach passed in 10 seconds
+  from detach request to applied receipt. The retained reference was rejected. No event
+  was observed after the combined transition; no detach-only stream claim is made.
+- A fresh healthy native OnFailure fixture survived gateway recovery with the same
+  sandbox identity and subsequently renewed from stored native configuration, without
+  provider reconfiguration or manual rotation. Partial-setup cleanup and the pre-existing
+  workspace sentinel passed. All temporary qualification resources were removed.
+- A valid, unexpired former-signer token with verified signature and an OpenShell
+  management bearer were rejected by Lore. The old Desktop IdP client was disabled;
+  the separate native registrations remained enabled. Durable data and private recovery
+  state were preserved. No inference or coding-agent session was run.
+
+Entra/customer issuers, interactive human Lore login and Linux/CUDA remain unqualified
+by these local tests. They are separate adoption gates, not reasons to restore a signer.

@@ -395,8 +395,9 @@ outside OpenShell. See [execution status](OPENSHELL_HARDCUT_PLAN.md) and the
 [installation design](../veoveo-template-installation/DESIGN.md).
 The former Desktop catalog result is historical; graph/diff and automatic
 expired-session recovery are withdrawn requirements. Direct IdP Lore credentials,
-native renewal and access removal remain open. Entra and Linux/CUDA are not
-qualified by the local first-path checks.
+native renewal, source withdrawal, applied binding-removal/detach and termination
+are locally qualified, and the adapter/signer/ingress are retired. Entra and
+Linux/CUDA are not qualified by the local checks.
 
 The gateway currently selects the newest registration per service slug, and its
 [registration snapshot](../veoveo-service-gateway/crates/veoveo-service-gateway/src/registration/snapshot.rs)

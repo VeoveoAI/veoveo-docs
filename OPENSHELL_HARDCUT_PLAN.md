@@ -1,17 +1,14 @@
 # OpenShell Hard Cut Plan
 
-Status: the local macOS hard cut and read-only Lore/private MCP smoke path pass
-focused acceptance. Bounded clone/edit/push and the existing pre-push hook for
-trusted factory assignments also pass the focused local workflow tests. Complete
-low-level branch isolation is superseded, not an acceptance claim. Native credential
-renewal and access removal remain separate qualifications. The old factory/application
-runtime has been removed. Linux is explicitly out of scope for this phase; its current installation will be replaced separately.
+Status: the local macOS hard cut and direct-IdP Lore authoring path pass focused
+acceptance. Clone/edit/push, the small branch hook, native credential renewal,
+source withdrawal, applied binding-removal/detach, termination and gateway recovery
+are qualified. The Desktop adapter/signer/ingress are retired and durable data is
+preserved. Complete low-level branch isolation is superseded, not claimed passed.
+Linux remains outside this phase and its existing installation is untouched.
 
-Updated design decision (2026-10-17): Desktop acceptance is withdrawn. Qualify
-direct IdP-issued Lore credentials through native OpenShell refresh, then retire
-the Desktop adapter. The current adapter is still deployed; the checklist below
-does not claim the new path has passed. Exact configuration, ownership and coding
-scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
+Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
+Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
 
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 Use one native OpenShell Docker-driver path for factories, checks and managed
@@ -33,7 +30,7 @@ factory/application image tags. No global Docker prune was used.
 
 The application gateway's `lore-tokens` command and its Envoy filesystem SDS worker
 have been deleted. OpenShell owns workload credential custody and policy. Envoy
-currently remains only for bootstrap OIDC egress and Desktop/identity ingress.
+remains only for trusted bootstrap OIDC egress and identity ingress.
 
 Durable Lore, PostgreSQL, SeaweedFS, identity and Desktop session/signing state have
 not been deleted. Unattached application data and recovery archives are retained;
@@ -77,7 +74,14 @@ Exact source revisions, official runtime digest and machine-local build outputs
 are recorded in [the component lock](../veoveo-template-installation/openshell/component-lock.json).
 Operating commands are in [the native setup](../veoveo-template-installation/openshell/README.md).
 
-## Completed Smoke Acceptance
+Keycloak now issues ordinary repository-scoped grants directly. Lore uses native
+OIDC discovery/JWKS, one issuer, strict type/audience/expiry checks and denied baseline
+access. The native provider owns client-secret custody, automatic renewal and injection.
+The smoke RPC policy remains read-only. No manual token file or Veoveo signer is in
+this path. Empty native catalog listing is expected; factories receive known assigned URLs.
+
+
+## Historical First-Path Smoke Acceptance
 
 Keep these checks narrow; no inference or coding agent session is required.
 
@@ -169,34 +173,62 @@ Keep this work separate from the hook implementation. Follow
 [the direct IdP plan](LORE_DIRECT_OIDC_PLAN.md#implementation-order-and-acceptance)
 in order; it supplies the exact configuration, limits and evidence requirements.
 
-- [ ] **Direct issuer preparation.** Provision ordinary repo-scoped IdP clients and
+- [x] **Direct issuer preparation.** Provision ordinary repo-scoped IdP clients and
   native OAuth client-credentials providers. Use built-in Keycloak mappers locally;
   no adapter token endpoint. Verify `at+jwt`, audience, subject, resource claims,
   scope denial and five-minute expiry without exposing credentials. Back up state.
-- [ ] **Native Lore cutover and workflow regression.** Configure native OIDC/Tier 2,
+- [x] **Native Lore cutover and workflow regression.** Configure native OIDC/Tier 2,
   direct discovery/JWKS and public CA trust. Remove adapter auth/catalog references,
   update trusted hook assignments to IdP subjects, and rerun bounded clone/push,
   hook, protection, repo-denial and custody checks. Old signer and management
   bearers must fail. Keep the smoke policy read-only. Empty native catalog listing
   is expected; provide known assigned repository URLs.
-- [ ] **Automatic renewal and reconnect.** Observe at least two native automatic
+- [x] **Automatic renewal and reconnect.** Observe at least two native automatic
   refreshes, preserving the original opaque reference and running sandbox. Verify
   real operations and a fresh connection after original `exp` plus verifier leeway.
   No manual rotate/update/reconfiguration during the observation period. Human
   OpenShell CLI refresh is not this credential path.
-- [ ] **Source withdrawal and renewal failure.** Disable only test A's IdP client,
+- [x] **Source withdrawal and renewal failure.** Disable only test A's IdP client,
   observe native refresh failure, and verify new operations/reconnects fail within
   the last issued token's expiry/leeway bound. Independent B continues to renew.
-- [ ] **Applied detach and established-work termination.** Separately detach A's
-  provider, await native `REVOKED`, and reject saved-reference requests. Observe a
+- [x] **Applied detach and established-work termination.** Separately detach A's
+  provider after removing its policy binding, await native `REVOKED`, and reject
+  saved-reference requests. This is the supported combined transition, not detach alone. Observe a
   real notification stream across withdrawal; do not claim detach/expiry cancels
   already-forwarded requests. Stop A with native sandbox lifecycle, await stopped
   state and verify termination while B remains operational. No Lore stream patch.
-- [ ] **Recovery and adapter retirement.** Verify native stored refresh after a
+- [x] **Recovery and adapter retirement.** Verify native stored refresh after a
   gateway restart and owned-resource cleanup. Remove the Desktop adapter/runtime,
   routes, signer/manual token-file dependencies and active lock entries after the
   direct path passes. Preserve source/history/private recovery state and durable
   data. Update operator instructions and actual source/image acceptance records.
+
+
+Local direct-issuer evidence (2026-10-17): six identities passed signed-token and
+scope-negative preflight. The workflow, custody, former-signer/management-token
+rejection and idempotent provisioning checks passed. Automatic renewal observed
+two native refreshes and successful operations after original expiry plus 60-second
+leeway, using the original reference and unchanged process. This is separate from
+human CLI refresh and the historical manual-rotation test.
+
+Disabling only A's client produced native `oauth_invalid_client` with recovery
+`fix_configuration`. First fresh-request denial was 299 seconds after disable and
+55 seconds before the recorded expiry/leeway bound. A received a branch event after
+disable; none was observed after expiry. Native stopped state, execution rejection
+and exited workload containers were checked. B remained operational and renewed.
+Binding removal was applied before detach; its applied `REVOKED` receipt followed
+10 seconds after the detach request. Saved-reference access failed, and no event was
+observed after that combined transition. Native stop ended the detached factory.
+
+Healthy gateway recovery preserved sandbox identity and automatic stored refresh.
+The qualification corpus records renewal and remaining gates separately with their
+actual fixture images; interrupted attempts are not complete runs. Four partial-setup
+failure points and a pre-existing workspace sentinel passed. The adapter/container,
+Desktop edge, legacy provider/profile, manual signer helpers and old Desktop IdP
+registration are retired. Private recovery is under installation
+`state/recovery/direct-oidc-20261017-012804`; durable data volumes were preserved.
+No new Lore authorization/transport changes or OpenShell core patches were needed.
+Exact sources, image IDs, sanitized timestamps and receipt are in the component lock.
 
 Record the exact source/image/policy/grant scope, declared limits and measured
 results for each gate. Keep unimplemented or unrun cases open; do not infer them
@@ -224,8 +256,8 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 The first workable local path does not qualify the whole platform. Still required:
 
-- Qualify native credential lifecycle separately before claiming the full authoring
-  path is accepted. The focused push-workflow gates above are complete.
+- Qualify Entra/customer issuers and interactive human Lore login separately. The
+  local direct-issuer authoring/credential lifecycle gates above are complete.
 - Move the remaining compatible infrastructure and actual MCP components to native
   definitions; qualify persistence, registration and relevant service operations.
 - Put thin source/revision-to-runtime bindings in an existing trusted Veoveo process.
