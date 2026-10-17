@@ -126,8 +126,8 @@ in order; it supplies the exact configuration, limits and evidence requirements.
 - [x] **Native Lore cutover and workflow regression.** Configure native OIDC/Tier 2,
   direct discovery/JWKS and public CA trust. Remove adapter auth/catalog references,
   update trusted hook assignments to IdP subjects, and rerun bounded clone/push,
-  hook, protection, repo-denial and custody checks. Old signer and management
-  bearers must fail. Keep the smoke policy read-only. Empty native catalog listing
+  hook, protection, repo-denial and custody checks. Management bearers must fail.
+  Keep the smoke policy read-only. Empty native catalog listing
   is expected; provide known assigned repository URLs.
 - [x] **Automatic renewal and reconnect.** Observe at least two native automatic
   refreshes, preserving the original opaque reference and running sandbox. Verify

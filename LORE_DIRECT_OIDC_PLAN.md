@@ -253,8 +253,8 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    clone/edit/push against the disposable repository. Verify assigned push,
    explicit wrong-branch rejection, both existing hook call paths, native protected
    branch rejection, and an ordinary identity without a hook assignment. Verify an
-   existing ungranted repository fails, old adapter-signed credentials fail, and
-   OpenShell-management tokens cannot access Lore. This does not qualify human
+   existing ungranted repository fails and OpenShell-management tokens cannot
+   access Lore. This does not qualify human
    browser login. Recheck credential custody and denial of bootstrap/management
    access. Any issuer change invalidates the earlier fixture's acceptance for the
    new configuration; record fresh results without erasing the old record.
