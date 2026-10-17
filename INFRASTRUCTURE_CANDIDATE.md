@@ -55,6 +55,13 @@ per active authoring workspace or isolated check job, normally with one primary
 repository and any additional explicitly authorized repositories. Fresh verification
 runs from an exact Lore revision rather than the author's writable directory.
 
+Factories use ordinary Lore repository access. A small existing pre-push hook
+checks designated factories against trusted installation-owned branch assignments;
+human permissions and native branch protection retain their normal behavior. The
+assignment is a push-workflow guard, not a new branch security boundary or complete
+isolation against storage APIs. Native OpenShell credential lifecycle qualification
+remains separate from this hook.
+
 A service sandbox runs an immutable runtime image and its canonical service command.
 Both use native OpenShell resources, templates, policies and providers. They differ
 in workload configuration, not execution APIs or security architecture. Closing an
@@ -378,7 +385,8 @@ bootstrap and recovery; do not build a Veoveo vault or mandate a new secrets ser
 The macOS hard cut has removed the old Compose factory/application launchers.
 OpenShell 0.1.4 now supplies native execution, credential mediation and private MCP
 forwarding; the maintained supervisor and factory Lore CLI contain narrow transport
-and auth patches. The Lore server remains upstream. Trusted infrastructure still
+and auth patches. The Lore server adds a small native pre-push hook for trusted
+factory assignments; ordinary authorization and transport remain unchanged. Trusted infrastructure still
 awaits migration to native workloads. Keep only the necessary identity bootstrap
 outside OpenShell. See [execution status](OPENSHELL_HARDCUT_PLAN.md) and the
 [installation design](../veoveo-template-installation/DESIGN.md).
@@ -399,8 +407,9 @@ represent Lore revisions and resolved environment compositions.
 
 The first [qualification gates](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence)
 prove native execution/service forwarding and Lore coexistence with small fixtures,
-without model inference. Verify repository/branch confinement, credential custody,
-renewal, restart/reconnect and then actual Linux CUDA. Forks may close verified gaps
+without model inference. Verify ordinary repository permissions, the normal-push
+assignment guard, credential custody, renewal, restart/reconnect and then actual
+Linux CUDA. The hook is not complete isolation against low-level storage APIs. Forks may close verified gaps
 while preserving native contracts; see
 [fork policy](LORE_OPENSHELL_INTEGRATION.md#extension-builds-and-fork-policy).
 

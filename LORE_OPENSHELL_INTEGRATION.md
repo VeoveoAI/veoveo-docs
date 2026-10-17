@@ -293,11 +293,24 @@ the selected hooks into a server build. See the
 [hook configuration](https://github.com/EpicGames/lore/blob/v0.10.1/docs/reference/lore-server-config.md)
 and [hook traits](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/hooks/traits.rs).
 
-Use a small compiled hook to enforce branch mutation policy with authenticated
-identity and trusted bindings. Do not execute scripts from the pushed repository in
-the trusted Lore server. Keep pre-handlers bounded and local; builds, remote
-provisioning and CI never run inside a pre-push handler. Inspect any needed async
-policy lookup or additional verified identity context as a specific hook API change,
+Use the existing `BranchPush` pre-hook for a small workflow guard on designated
+factory identities. Compare the authenticated identity in `HookContext` with its
+trusted repository/branch assignment and reject pushes elsewhere with a message
+naming the assigned and attempted branches. Both supported push APIs already
+invoke this hook. Keep assignments in installation/integration-owned server hook
+configuration, outside agent control; CLI identities, headers and source files do
+not establish authority. Human identities without an assignment retain normal
+permissions. The current hook API supplies the required verified identity and IDs;
+no handler or authorization/transport change is needed. Use the existing
+`FailedPrecondition` business-rule rejection so ordinary clients display the
+assignment message; their generic `PermissionDenied` conversion hides detail.
+
+This is a guard on normal pushes, not complete isolation between branches or a
+new authorization system. Native repository grants, branch protection, storage,
+push and merge behavior retain their ordinary meaning. Do not execute scripts
+from the pushed repository in the trusted Lore server. Keep pre-handlers bounded
+and local; builds, remote provisioning and CI never run inside a pre-push handler.
+Inspect any future missing hook capability as a specific hook API change,
 rather than blocking the server thread with network calls.
 
 Use Lore's
@@ -369,7 +382,9 @@ Use OpenShell provider profiles and supported refresh strategies wherever they
 match. Its ordinary `oauth2_client_credentials` refresh currently uses client ID and
 client secret; Veoveo's existing Lore refresher uses private-key JWT authentication.
 Qualify that difference explicitly. A generic private-key JWT refresh addition is a
-possible upstreamable OpenShell patch; retain working external refresh while needed.
+possible upstreamable OpenShell patch. The current installation has no accepted
+automatic ordinary Lore renewal path; qualify this separately through native
+providers rather than adding another token worker.
 The existing SPIFFE JWT-SVID token-grant path is another option when an installation
 already has workload identity, but requires SPIRE or a compatible Workload API and
 additional trust bindings. It is not required infrastructure for the first slice.
@@ -381,27 +396,31 @@ in this candidate.
 
 Lore's existing
 [resource grants](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/authnz/resource_grants_authorizer.rs)
-are repository-scoped. That alone does not prove isolation between users' branches
-inside the same repository. Bind author workers to allowed branch identities and
-deny protected-branch changes, branch administration, another user's branches and
-cross-repository access at server-side authorization or hook boundaries. Audit every
-enabled mutation path, including low-level storage operations and alternative API
-versions, before claiming a branch policy cannot be bypassed.
+are repository-scoped. Factories use ordinary granted repository access and normal
+Lore commands. The selected work branch is a workflow assignment, not a new
+security boundary inside that repository. The pre-push hook above guards normal
+pushes only; it does not establish complete isolation against low-level storage
+APIs or every form of branch administration. The earlier comprehensive branch
+confinement requirement is replaced by this scope, not satisfied by narrower tests.
+Do not introduce custom `lore_authoring` claims, duplicated server RPC allowlists,
+authorization middleware or stream-expiry machinery for the assignment guard.
 
 In both inspected branch-push implementations, Lore v0.10.1 permits
 `is_service_account` to bypass branch protection. An author worker must not receive
 that flag merely because it is an automated client. Promotion authority belongs to
 an independently authorized principal. Preserve the server's ordinary push and
-merge semantics; add explicit policy or capabilities instead of trusting agent
-claims. See the
+merge semantics. Hook admission cannot bypass native protection. See the
 [legacy push handler](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/grpc/handlers/branch_push.rs)
 and [v1 handler](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/grpc/revision/v1/branch_push.rs).
 
 Agent workers cannot read the secret store, resolve provider secrets through the
 management API, access signing keys or the SPIFFE Workload API, or administer
-OpenShell. Removing a binding must invalidate future credential resolution; already
-established Lore sessions must also be tested for bounded expiry/revocation. Never
-claim that hiding a token prevents abuse of the permissions that token grants.
+OpenShell. Qualify native provider attachment, removal and renewal separately from
+the branch hook. Removal must invalidate future credential references; measure
+cached credentials and already-established sessions without promising cancellation
+of requests already sent upstream. Use native sandbox stop when factory execution
+must end. Do not add a Lore stream-expiry contract to manufacture revocation
+acceptance. Never claim that hiding a token prevents abuse of its permissions.
 
 ## gRPC Integration Gap And Envoy Transition
 
@@ -534,16 +553,20 @@ cutting the old stack. Use focused checks as each changed boundary becomes runna
    allowed/denied requests, streaming/cancellation, cross-workspace denial, exit/restart and
    supervisor/gateway interruption. Check credential unreadability and current
    generation identity. This needs no model session, Helm, Flux or Kubernetes.
-2. **Lore coexistence.** Use one author sandbox, one allowed repository/branch and
-   a forbidden repository. Qualify gRPC credential mediation, then clone and push a
-   bounded fixture with normal Lore commands. Verify branch/repository confinement,
-   both relevant API paths and low-level storage access. Qualify automatic grant
-   renewal across expiry, reconnect and fail-closed renewal failure; manual provider
-   rotation does not establish renewal. Remove bindings and revoke source authority,
-   checking future resolution and bounded revocation of established Lore sessions.
-   Any bridge is limited to the verified gap and removed when native support qualifies.
+2. **Lore authoring and push guard.** In a disposable repository, clone, edit and
+   push a bounded fixture with normal Lore commands and mediated credentials. Verify
+   an assigned factory push succeeds, another branch gets the clear hook rejection,
+   both supported push APIs invoke the existing hook, and native protected-branch
+   behavior remains effective. Human permissions remain unchanged. These tests
+   qualify a normal-push workflow guard; complete low-level branch isolation is not
+   a requirement or a passing claim.
 3. **Native access, policies and persistence.** Verify workspace confinement, provider
-   binding/rotation, policy advisor review/reload and prover limits. Validate admitted
+   binding/rotation, automatic ordinary Lore credential renewal across expiry and
+   reconnect, and renewal-failure behavior. CLI OIDC refresh and manual rotation do
+   not establish Lore renewal. Qualify attachment removal and measure effects on
+   new requests and established sessions separately; use native sandbox stop for
+   execution termination. Keep Lore's transport/session behavior unchanged. Verify
+   policy advisor review/reload and prover limits. Validate admitted
    volume persistence and cleanup. Exercise missed events, delayed operations and
    gateway crashes; generic recovery fixes belong in OpenShell. Use its native
    diagnostics and credential driver.
@@ -566,9 +589,10 @@ cutting the old stack. Use focused checks as each changed boundary becomes runna
    requirement needs them; they do not justify a parallel service execution stack.
 
 The [execution plan](OPENSHELL_HARDCUT_PLAN.md#required-lore-acceptance) tracks
-the required Lore gates explicitly. The completed read-only smoke path and manual
-rotation do not complete Lore coexistence acceptance; other gates remain open unless
-their exact tested scope is recorded there. The architecture is OpenShell-owned
+the revised Lore gates explicitly. The stronger custom-isolation requirement is
+superseded, not marked passed by hook tests. Completed read-only smoke checks,
+push-hook tests and manual rotation do not establish automatic credential renewal
+or revocation; those remain separate until measured. The architecture is OpenShell-owned
 execution; qualification chooses supported configuration or closes a specific native
 gap, not whether to keep a duplicate Veoveo implementation by default.
 

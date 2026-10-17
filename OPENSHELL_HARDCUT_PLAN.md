@@ -1,10 +1,11 @@
 # OpenShell Hard Cut Plan
 
 Status: the local macOS hard cut and read-only Lore/private MCP smoke path pass
-focused acceptance. Full Lore coexistence acceptance remains open: bounded
-clone/push, branch confinement, automatic grant renewal and revocation are not
-qualified. The old factory/application runtime has been removed. Linux is explicitly
-out of scope for this phase; its current installation will be replaced separately.
+focused acceptance. Bounded clone/edit/push and the existing pre-push hook for
+trusted factory assignments also pass the focused local workflow tests. Complete
+low-level branch isolation is superseded, not an acceptance claim. Native credential
+renewal and access removal remain separate qualifications. The old factory/application
+runtime has been removed. Linux is explicitly out of scope for this phase; its current installation will be replaced separately.
 
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 Use one native OpenShell Docker-driver path for factories, checks and managed
@@ -50,7 +51,10 @@ and release relay slots, including after upload finishes.
 The maintained Lore checkout is `../lore`, with no temporary `lore-openshell`
 worktree. Its CLI has auth-only changes to accept an opaque access token with an
 explicit local identity and carry that bearer on repository discovery. The server
-remains upstream v0.10.1. Revision, storage, branch and merge behavior is unchanged.
+is a v0.10.1 extension build with one existing pre-push hook. Verified factory
+identities map to operator-owned repository/branch assignments. Ordinary
+repository authorization, revision, storage, branch protection and merge behavior
+are unchanged; no new transport or authorization middleware is present.
 
 The factory image starts from a pinned Rust toolchain image, with OpenCode 2.0.29
 and the patched Lore CLI. It no longer inherits an old Veoveo development image.
@@ -101,35 +105,69 @@ commits separately from publication and upstream PRs.
 
 ## Required Lore Acceptance
 
-All gates below remain open. They are required by the architecture's
+The authoring gates below follow the revised scope in the architecture's
 [Lore coexistence and credential boundaries](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence),
-not optional subsequent enhancements. Complete them before calling the Lore authoring
-path qualified or enabling write-capable agent factories. The current read-only smoke
-grant does not satisfy these gates; do not broaden it merely to make a probe pass.
+not a comprehensive branch-authorization system. The original read-only smoke grant
+stays read-only. Use ordinary repository credentials for the disposable authoring
+fixture; never add a service-account protection bypass merely because it is a factory.
+The broad `068cf857` server changes are set aside by a revert; preserve the earlier
+CLI auth fixes and unrelated work. Hook modules, configuration and tests own this
+slice; identify a concrete hook API gap before expanding it.
 
-- [ ] **Bounded clone and push.** Use a disposable fixture repository and an assigned
+- [x] **Bounded clone and push.** Use a disposable fixture repository and an assigned
   branch with normal Lore CLI commands. Declare file/byte limits and operation
   deadlines, clone and verify the fixture, make one small edit, then push and verify
   the resulting revision/content. Use mediated gRPC storage; no inference session
   or QUIC bypass is needed.
-- [ ] **Repository and branch confinement.** Allow only the assigned author branch's
-  mutations. Deny another author's branch, protected-branch changes, unauthorized
-  branch creation/deletion and cross-repository access. Exercise both enabled push
-  API implementations and low-level storage operations, with no service-account
-  branch-protection bypass. Repository-scoped grants alone are insufficient; qualify
-  server-side authorization/hooks before exposing write authority.
-- [ ] **Automatic Lore grant renewal and reconnect.** Use a short-lived grant and
+- [x] **Normal-push assignment guard.** Enable Lore's existing `BranchPush` pre-hook
+  for designated verified factory identities. Trusted installation/integration
+  configuration supplies their repository and branch IDs, outside agent control.
+  Test assigned-branch success, a clear wrong-branch rejection naming both targets,
+  both existing push API hook calls, unchanged human permissions and native branch
+  protection. No new token claim, authorization middleware, duplicated RPC allowlist
+  or stream-expiry behavior. This is not proof of complete storage/API isolation.
+
+The former comprehensive branch-confinement gate is **replaced**, not passed by
+these narrower hook tests. Ordinary repository authorization remains in force.
+
+Local evidence (2026-10-17): Lore `cb2c191f` is a hook/config/test extension of
+`162df649`; the broad `068cf857` patch was reverted by `cb56081e`. The source diff
+contains no authorization, RPC handler or transport edits. Seven focused hook tests
+pass, including both existing push API calls with verified identity and spoofed
+metadata. The native CLI fixture pushed a 7-byte final file and independently
+cloned it, committed a separate change on `other-author`, and received the exact
+assignment rejection. It read native protection metadata, verified the protected
+push failed and remote content stayed unchanged, then pushed as an unassigned
+human. Stock clients hide details of native `PermissionDenied`; the hook uses its
+existing `FailedPrecondition` status so the workflow message remains visible.
+Native push-handler tests separately check the specific protection status.
+
+The qualification harness (`2021ddb`) also passed injected failures after workspace,
+profile, provider and sandbox admission, including admission before readiness.
+Cleanup runs for partial setup and workflow failures, attempts all owned resources,
+and preserves a labelled pre-existing workspace. Each workload command is limited to
+20 seconds, the workflow to 120 seconds, and setup plus workflow to 180 seconds.
+Temporary OpenShell resources were removed and test assignments were cleared.
+Exact source and running image IDs are in the installation component lock. This
+fixture made no inference calls and kept the original smoke grant read-only.
+
+## Separate Credential Lifecycle Qualification
+
+Keep this work separate from the hook implementation:
+
+- [ ] **Automatic ordinary Lore credential renewal and reconnect.** Use a short-lived grant and
   cross its expiry without operator reprovisioning or a factory restart. Verify
   renewal through the supported OpenShell credential path, unchanged authority,
-  established and re-established connections, and fail-closed behavior if renewal
+  re-established connections, and fail-closed behavior if renewal
   is unavailable. Record expiry/renewal times without logging credentials. Manual
   provider rotation is only prerequisite evidence.
-- [ ] **Revocation and bounded expiry.** Remove the sandbox's credential binding and
-  revoke its source authority in separate probes. Verify future credential
-  resolution is denied and measure the cutoff for cached credentials and already
-  established Lore sessions against an explicit accepted bound. Check fresh RPCs,
-  reconnects and in-flight operations; ordinary token expiry alone does not prove
-  revocation. Verify an unrelated authorized factory continues to work.
+- [ ] **Native access removal and termination.** Remove the provider attachment and
+  revoke source authority in separate probes. Verify future credential references
+  are invalidated and measure actual cached-credential, reconnect and established
+  session behavior. Detach does not promise cancellation of already-sent requests.
+  Qualify native sandbox stop when execution must end, with an unrelated authorized
+  factory remaining operational. Record native limits; do not change Lore's stream
+  lifetime or claim ordinary token expiry alone proves revocation.
 
 Record the exact source/image/policy/grant scope, declared limits and measured
 results for each gate. Keep unimplemented or unrun cases open; do not infer them
@@ -157,7 +195,8 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 The first workable local path does not qualify the whole platform. Still required:
 
-- Complete the required Lore acceptance above before enabling write-capable factories.
+- Qualify native credential lifecycle separately before claiming the full authoring
+  path is accepted. The focused push-workflow gates above are complete.
 - Move the remaining compatible infrastructure and actual MCP components to native
   definitions; qualify persistence, registration and relevant service operations.
 - Put thin source/revision-to-runtime bindings in an existing trusted Veoveo process.
