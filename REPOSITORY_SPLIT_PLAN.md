@@ -9,6 +9,11 @@ Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
 Current push: the cutover to Docker environments under [Docker Environments And Lore](#docker-environments-and-lore) is done on macOS; the Linux host follows on the owner's go-ahead.
 
+Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
+records the leading candidate from October 16 for Lore-managed environments,
+Kubernetes/Helm/Flux, personal service overrides, agent sandboxing and shared secrets.
+It does not mark those migrations implemented or change the runtime status below.
+
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
 identity, Tasks and the audit envelope. `veoveo-sdk-rust` builds MCP on top of it, and
@@ -688,24 +693,23 @@ an owning document.
 
 ### Session Version Selection
 
-A builder's Veoveo session selects which version of each MCP server it sees. The
-Gateway identifies the session from the signed `session_family` claim it already
-verifies ([Gateway authentication](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/platform/gateway/src/auth/DESIGN.md)). The
-selection is stored server-side, so clients send nothing extra.
+The leading model is now [personal overrides of a shared environment](INFRASTRUCTURE_CANDIDATE.md#personal-overrides-and-gateway-routing).
+A workspace selects a base such as dev, staging or stable and explicitly replaces
+individual service deployments. Unchanged services come from that base; other
+people's previews do not enter the selection automatically. This refines the earlier
+single selection per login session so one user can run multiple experiments.
 
-- The Gateway resolves the session's selection on each request and routes that server's traffic to the selected upstream; other sessions keep the stable version.
-- Agents started by the builder inherit the selection through their managed-agent execution metadata.
-- A Task route records the version that created the Task. `CanonicalTaskRoute` in [`authorization.rs`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/platform/gateway/src/mcp/authorization.rs) records only the server today.
-- A selected version declares its own tools through registration, since it may add tools.
-- Selection changes routing only. It never widens permissions.
+The gateway validates the context and preserves it through discovery, calls,
+delegation and Tasks. A selected deployment that fails does not silently fall back.
+Long-lived Tasks remain associated with the deployment version that created them.
+Selection never widens permissions. The current newest-registration-per-slug routing
+does not implement this model.
 
-Selected versions run against live data. Additive-only schema changes while a version
-is under test, origin tags on every write, audit records for reversal, a
-snapshot before write access, a kill switch that clears the selection, shadow
-comparison for read paths, canary sessions with automatic rollback when an error
-budget is spent and per-version telemetry contain that risk. The
-[authorization model](#authorization-model) decides which of these checks a change
-requires.
+Data bindings are explicit and separate from version selection. Preview-owned state
+is disposable or retained according to policy; use of shared live data requires an
+authorized binding. This replaces live data as an automatic assumption of a preview.
+The [candidate](INFRASTRUCTURE_CANDIDATE.md#data-and-infrastructure-bindings) describes
+the constraints imposed by shared services, core state and object metadata.
 
 ### Factory
 
@@ -803,6 +807,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 - [x] D45. Use official Lore Desktop as a live acceptance client that puts pressure on Veoveo's design. A human adds one remote, authenticates once, discovers authorized repositories and browses current branches, revision graphs and diffs, with session renewal and reconnect handled by the integration. Local checkout exports, snapshots and manual token copying do not satisfy this requirement. The host's human client is an explicit extension to D44's container-only client placement; its identity and permissions remain separate from development agents and the administrative reviewer. Preserve upstream Lore and the Envoy boundary. Decide completeness from the actual Desktop experience, not from a successful CLI probe. Decided on October 15.
 - [x] D46. Identity is an installation choice: the macOS development installation runs permanent Keycloak, the remote Linux reference at `veoveo.bioma.ai` will use Microsoft Entra ID, and customers configure their own OIDC provider, optionally retaining bundled Keycloak. Generic deployment and runtime authentication must not require Keycloak administration or detect providers by name. Keycloak state has its own operator-owned PostgreSQL volume, separate from disposable component state; the installation CA and credentials also survive component resets. Provider credentials belong only to trusted services. Envoy remains the network boundary, and human sign-in does not give development agents credentials or repository administration. Decided on October 15; live reference Entra qualification remains L10.
+- [x] D47. Record [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) as the leading infrastructure direction on October 16: Lore-managed environment configuration, shared environments with personal service overrides, Kubernetes/Helm/Flux orchestration, OpenShell sandbox qualification, Envoy credential protection and OpenBao for shared development secrets. Acceptance is of the candidate for further design and qualification, not a completed migration; D40/D44 remain the recorded runtime baseline.
 
 ### Registration And Authorization
 
