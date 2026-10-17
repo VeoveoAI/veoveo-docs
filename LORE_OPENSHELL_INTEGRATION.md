@@ -1,9 +1,9 @@
 # Lore And OpenShell Integration
 
 Status: accepted infrastructure direction for design and qualification, revised on
-2026-10-16. Lore is the source and revision authority; OpenShell is the factory
-execution and sandbox access authority. Veoveo connects those authorities to checks,
-service composition and promotion. Implementation and migration are pending.
+2026-10-16. Lore is the source and revision authority. OpenShell owns execution
+and runtime access for factory work and deployed services. Veoveo connects source
+revisions to checks, service composition and promotion. Implementation and migration are pending.
 
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted
@@ -26,28 +26,66 @@ console, logging service, runtime API or infrastructure language is not a prereq
 
 ## Native Responsibilities
 
-| Authority | Owns | Veoveo adds |
+OpenShell owns every capability it already implements. Veoveo must not duplicate
+it or require another service for the same job. Use native schemas/SDKs first,
+extensions second, and narrow upstreamable changes for verified platform gaps.
+The accepted factory-only Helm/Flux split is superseded by this execution model.
+
+| Need | Reuse | Remaining integration |
 |---|---|---|
-| Lore | Repositories, branches, immutable revisions, source transfer and native authorization | Binding an authenticated worker to allowed repositories and branches; branch events to checks and environment lifecycle |
-| OpenShell | Sandbox lifecycle, execution, templates, resources, filesystem/network and MCP egress rules, workspace membership, OIDC API access and provider custody | Approved source/revision bindings and deployment-specific admission through supported extensions |
-| Existing component checks and CI | Test commands, build outputs and job results | Correlation to the exact Lore revision, template image, policy and resulting artifact digests |
-| Helm, Flux and Kubernetes | One service deployment path for all configured environments: packaging, reconciliation, replicas, readiness and cleanup | Approved environment composition and ownership declarations |
-| Configured OAuth/OIDC provider | User login, MFA, OAuth grants, token renewal and identity sessions | Trusted issuer/subject mapping and application authorization; no parallel identity provider |
-| Veoveo MCP gateway | Application authorization, discovery, delegation and Tasks | Base-environment selection, personal overrides and immutable deployment routing |
-| OpenBao | Shared secret storage and developer retrieval | Scoped grants using existing APIs and qualification of OpenShell's Vault-compatible driver |
+| Source and immutable revisions | Lore repositories, grants, hooks and notifications | Approved source-to-workload bindings |
+| Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
+| Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
+| Runtime/GPU/storage attachment | Native compute driver, resource fields and external-resource admission | Installation backend choice and approved resource references |
+| Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Qualify Lore gRPC and current private-key JWT requirements |
+| Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
+| Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
+| Factory user access | Native OIDC and workspace membership | Mapping approved source authority to runtime access |
+| Human identity | Configured OAuth/OIDC provider | Application subject/permission mapping |
+| MCP application behavior | Existing Veoveo gateway and service contracts | Composition, discovery, narrowed delegation and Task authority |
 
-The factory integration uses OpenShell's SDK and native resources. It does not keep
-a second authoritative sandbox inventory, restart controller, workspace membership
-database, credential vault or sandbox network/MCP policy engine. Small records
-linking a Lore branch/revision to an OpenShell resource and a deployment are necessary coordination
-state, and reconcile against the authoritative systems.
+Native [templates](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/templates)
+carry workload settings. The [SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust)
+provides management and connections. Keep source links as coordination state;
+OpenShell remains authoritative for runtime inventory, status and access.
 
-OpenShell provides a [Rust SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust),
-[templates](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/templates),
-[workspaces](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/workspaces), and
-[credential drivers](https://docs.nvidia.com/openshell/v0.1.4/extensibility/drivers).
-Reference their native configuration and schemas instead of copying every setting
-into a Veoveo wrapper.
+Remove Flux and per-service Helm packaging from this candidate. Helm may install
+OpenShell itself on an installation that chooses Kubernetes. Kubernetes is a
+compute driver underneath OpenShell, not a second controller Veoveo calls to deploy
+services. No standalone factory service, broker, console or general CI platform is
+required for the first integration. Place the small source/revision adapter in an
+existing trusted process unless a concrete deployment need justifies separation.
+
+## Capability Evidence And Remaining Gaps
+
+The reviewed v0.1.4 API has `SandboxSpec.command`, `restart_policy`, native service
+exposures and workspace templates. Restart policies are `Never`, `OnFailure` and
+`Always`; omission means `Never`. See
+[`openshell.proto`](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/proto/openshell.proto)
+and [restart handling](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-server/src/compute/mod.rs).
+A long-running service is therefore already a native workload, not a feature that
+requires a separate Kubernetes Deployment or a Veoveo process supervisor.
+
+The public API inspected does not establish a deployment-group controller with
+replica counts, autoscaling or coordinated rolling updates. Start with one sandbox
+per owned service version. Create a new immutable version, qualify it and change
+composition selection; do not claim template edits update existing sandboxes.
+If fleet orchestration becomes required, first evaluate an OpenShell extension or
+upstream contribution. Do not silently recreate it in Veoveo or restore Flux.
+
+Native runtime `Ready` is distinct from application readiness. Use current service
+registration and an application probe before selecting a version. The documented
+lifecycle also has a recovery gap: a gateway crash while owning a driver operation
+can leave the record pending with no resolution API. Qualify crash recovery and
+close a proven gap in OpenShell before depending on it for durable service hosting.
+Do not add a competing Veoveo restart/watchdog controller.
+
+OpenShell attaches existing admitted volumes; that does not establish database
+replication, backup orchestration or an arbitrary infrastructure provisioner.
+PostgreSQL and SeaweedFS remain data services. Prefer running compatible instances
+as native workloads with protected storage, and qualify their protocols/persistence
+before replacing their existing bootstrap. Root OpenShell/Lore/identity/storage
+recovery remains independent of disposable environment branches.
 
 ## Workspaces And Runtime Placement
 
@@ -62,65 +100,78 @@ they are not interchangeable identifiers. Native OpenShell workspace users can
 operate resources within their membership boundary, so private work must not rely
 on sandbox names to hide it from unrelated members of the same OpenShell workspace.
 
-Use OpenShell's Kubernetes driver with k3d on the Mac and K3s on Linux, including
-the first coexistence probe. Use existing gateway selection for local CPU and remote
-Linux GPU work, with the same Kubernetes backend contract on both. Kubernetes
-schedules the admitted CPU, memory and GPU requests. Do not add a Veoveo GPU
-scheduler or silently substitute CPU for CUDA.
+Use OpenShell's native Docker driver as the first single-host candidate on Mac and
+Linux, including the initial probes. Request Linux GPU access through native NVIDIA
+CDI support. Kubernetes is optional for an installation that needs cluster placement;
+use its upstream driver and prerequisites without another Veoveo runtime API. A
+backend change does not change environment schema or deployment workflow.
 
-Every environment is a configured composition of separate service deployments. A
-factory sandbox can run temporary test fixtures; it does not contain an entire
-shared environment. Every service version, including a private preview, follows
-the same service deployment path below. Minimal runtime preview containers retain
-restricted network access, resources and credentials; unmerged source does not
-become trusted merely because its checks passed.
-
-The [runtime documentation](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes)
-describes the supported drivers. The v0.1.4
-[MicroVM driver README](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-driver-vm/README.md)
-still marks that driver experimental; it is not the initial default.
+The Docker driver uses a separate trusted supervisor and a fenced workload. It is
+not equivalent to the current bare Compose agent containers. Qualify the driver's
+host prerequisites and actual boundary, including persistence and CUDA. Container
+and GPU-driver isolation do not imply a VM boundary. OpenShell's
+[MicroVM driver](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-driver-vm/README.md)
+is still experimental in the reviewed release. Backend capability/scale choices
+remain installation configuration, with no mandatory k3d/K3s layer.
 
 ## One Service Deployment Path
 
-Every deployed MCP service uses its component's runtime image and Helm chart,
-reconciled by Flux on Kubernetes. A personal preview is an additional release of
-that same component with different ownership, revision, bindings and gateway
-selection. Environment definitions change those inputs and promotion policy; they
-do not use different hosting implementations.
+Every managed MCP service version runs as an OpenShell service sandbox. Use its
+runtime image digest, canonical command, native resource request, approved policy,
+provider attachments and authenticated forwarding. Author/build/check sandboxes use the
+same execution system with different workload definitions. Published services stay
+independent of their author's workspace lifetime.
 
-The workflow is Lore revision, OpenShell checks/build work, verified OCI artifacts,
-Helm/Flux reconciliation, Kubernetes service deployment and Veoveo gateway routing.
-Promotion reuses the tested image digest. Use the same component packaging,
-readiness and streaming contracts, ingress authorization, restart/recovery tests
-and teardown rules throughout. Closing the author's factory sandbox cannot stop a
-deployed preview.
+The path is Lore revision, fresh OpenShell checks/build, verified artifact digest,
+OpenShell service sandbox and endpoint, then Veoveo application routing. Promotion
+selects tested artifacts in any authorized environment through that same path.
+There is no OpenShell-only preview mode alongside a Helm/Flux release mode.
 
-OpenShell owns author, build and verification sandboxes through its Kubernetes
-driver. Kubernetes workload controllers own deployed service instances in every
-environment. These are different responsibilities within one delivery workflow;
-there is one implementation of service hosting. OpenShell service forwarding does
-not become another MCP preview deployment backend.
+Use native authenticated `ForwardTcp` for private MCP connectivity from the
+trusted Veoveo gateway to each sandbox's loopback listener. The v0.1.4 RPC requires
+bearer authentication, `sandbox:write` scope and workspace membership, and resolves
+the target sandbox under that principal before opening the supervisor relay. See
+[`ForwardTcp`](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/proto/openshell.proto)
+and [its handler](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-server/src/grpc/sandbox.rs).
+Use the native SDK/raw client transport; add a generic SDK stream adapter if needed,
+not a new relay service. Keep its management credential outside service workloads.
+The current scope is broader than forward-only; qualify least-privilege workspace
+placement and add a native capability if finer transport authority is required.
 
-Apply the common service runtime restrictions to every environment, with scoped
-credentials and data bindings appropriate to each deployment. Previews receive no
-production-wide secrets, host sockets or administrative mounts. Keep endpoints
-behind trusted gateway/ingress authorization and prove that direct requests cannot
-bypass the selected context or its permissions. Container hardening and namespaces
-are not a claim of VM-grade isolation; qualify the actual runtime boundary.
+Do not publish an unauthenticated service exposure for these private MCP workloads.
+OpenShell's HTTP service URLs bypass control-plane OIDC. Requiring agent-authored
+application code alone to authenticate those URLs would not establish a trusted
+private boundary. Native authenticated forwarding is the single selected MCP
+transport. Application requests still carry Veoveo's short-lived, audience-bound,
+permission-narrowed tokens, never the user's general identity or OpenShell token.
+
+Qualify streaming, cancellation, limits, credential expiry, workspace revocation
+and reconnection with the actual SDK. The native TCP relay can carry protocols
+without parsing them; it does not inject or protect credentials inside Lore gRPC.
+The separate browser-facing service implementation uses HTTP/1.1 upstream, so its
+existence also does not close that gap. See
+[service routing](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-server/src/service_routing.rs).
+Use a native enhancement for an actual transport limit rather than another launcher.
+Retire replaced paths after qualification.
+
+Runtime restarts remain OpenShell-owned. Version promotion and Task drain are
+application decisions: the integration changes the selected revision only after
+checks and application readiness; pinned Tasks keep their version. Source changes
+cannot grant providers, host mounts, administrative credentials or a weaker boundary.
 
 ## Data-Driven Environment Definitions
 
 Use the [same Lore composition schema](INFRASTRUCTURE_CANDIDATE.md#configuration-and-lore-integration)
 for any environment name. Names are labels, not lifecycle or authorization rules.
 A definition can own deployments, inherit an authorized base, or combine both.
-Pinned or tracking base selection, permitted identity/data bindings, replica counts,
+Pinned or tracking base selection, permitted identity/data bindings, resource requests,
 retention and branch-deletion behavior are explicit inputs. Promotion selects
 verified immutable artifacts in any authorized destination, without a fixed sequence
 of stages. The immutable environment identity is separate from its label and branch
 name; the resolved composition captures exact versions for routing and Tasks.
 
-Keep the schema narrow: native Helm values for components, OpenShell template and
-policy references for factories, approved binding references for state and identity.
+Keep the schema narrow: native OpenShell workload/template, policy and provider
+references for all execution, and approved binding references for state and identity.
 Do not copy these systems' schemas into a new infrastructure language. Trusted
 admission policy outside the editing branch constrains references, grants, quotas
 and targets. An environment cannot authorize its own issuer or privileges. Root
@@ -233,6 +284,18 @@ only for its documented phases and operations. Credential/routing headers are
 protected and secrets are omitted from governance payloads; do not turn middleware
 into a route for returning raw credentials or bypassing those restrictions.
 
+Use the native [policy advisor](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/policies/advisor)
+for network-access proposals, review and reload. Veoveo does not keep another
+approval queue. Lore can version approved policy inputs; runtime approval still
+follows OpenShell's authorized operations. Do not auto-apply agent-edited policy.
+
+Use the native [prover](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/policies/prover)
+within its documented model. Proposal risk checks do not prove compliance with an
+installation maximum. The current boundary checker reports MCP/GraphQL and other
+unmodeled shapes as unsupported. Keep those cases denied or under trusted explicit
+review; never discard unsupported rules to manufacture a passing proof. No claim
+of universal policy verification or automatic startup proving is made.
+
 ## Credentials And Repository Authority
 
 The intended path is: an authorized sandbox makes a Lore request, its trusted
@@ -251,12 +314,11 @@ The existing SPIFFE JWT-SVID token-grant path is another option when an installa
 already has workload identity, but requires SPIRE or a compatible Workload API and
 additional trust bindings. It is not required infrastructure for the first slice.
 
-OpenShell's
-[Vault-compatible driver](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-driver-vault/src/lib.rs)
-supports KV storage and Kubernetes or token-file authentication. Test that driver
-against OpenBao before building any new connector. Human `.env` distribution uses
-OpenBao's native UI/CLI separately; those files and login sessions stay outside
-factory sandboxes.
+Use native OpenShell credential drivers and provider APIs. Qualify the database
+credential driver for the first installation, including protected persistent state,
+refresh, rotation and recovery. Other upstream-supported backends remain an
+installation capability rather than a mandatory extra service. There is no separate
+secrets service or human `.env` distribution project in this candidate.
 
 Lore's existing
 [resource grants](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/authnz/resource_grants_authorizer.rs)
@@ -306,9 +368,10 @@ Raw TLS passthrough can carry gRPC but cannot inject credentials into encrypted
 requests. No transition may expose a real token to the author as a workaround.
 
 Retire duplicated agent-egress, credential injection and refresh machinery only
-after the replacement passes the same checks. Envoy retains service/Desktop ingress
-and any independently required trusted-service routes. It is not a second mandatory
-factory proxy once OpenShell can own that path securely.
+after the replacement passes the same checks. Envoy has no blanket ownership of
+service ingress: native OpenShell forwarding owns supported service routes. Retain
+only independently demonstrated gaps, such as Lore Desktop gRPC ingress or required
+TLS/auth mediation, and remove each bridge when native support qualifies.
 
 ## Optional QUIC Storage Transport
 
@@ -363,12 +426,13 @@ provide a safe privileged container builder.
 
 Use the existing Veoveo Task facilities where appropriate for durable coordination,
 without building another sandbox scheduler or assuming OpenShell is a complete CI
-workflow engine. Publish approved immutable OCI deployment bundles for Flux. A
+workflow engine. Submit approved immutable images and native definitions through
+OpenShell's SDK; no Flux deployment bundle or separate CI service is required. A
 human-friendly Lore branch follows revisions; the deployed record always names the
 resolved revision and digests. Recheck active branch generation and permissions at
 publication and deployment. Long-lived MCP Tasks keep their version binding.
 
-Lore, OpenShell, their policy/credential bootstrap, OpenBao and identity services
+Lore, OpenShell, their policy/credential bootstrap, credential storage and identity services
 remain outside preview-owned teardown. Branch deletion drains or cancels work,
 revokes access and cleans up owned resources while respecting declared retention.
 Periodic reconciliation recovers missed callbacks; no additional event bus is
@@ -400,50 +464,43 @@ existing clients and configurations working within their documented contracts.
 
 ## Qualification Sequence
 
-1. **Lore and OpenShell coexistence.** Use the Kubernetes backend, one factory
-   sandbox, one allowed test repository/branch and one forbidden repository.
-   Reproduce the native transport limitation, qualify credential mediation, then
-   clone, commit/push a bounded
-   fixture and fetch the exact revision through normal Lore commands. Verify denied
-   cross-repository and protected/other-user branch operations, no readable real
-   tokens or signing keys, expiry/renewal, and reconnect. Test both supported API
-   paths and low-level storage access relevant to the admitted client. No inference
-   or coding-agent session is required.
-2. **Native OpenShell integration.** Provision through its SDK/template and enforce
-   the binding with native workspace roles and an interceptor where needed. Verify
-   that names/labels cannot change grants, unsupported middleware fails closed,
-   events can be missed without losing desired state, and deletion cannot be undone
-   by a delayed job. Qualify the OpenBao credential driver with no custom connector.
-3. **Kubernetes and CUDA.** Repeat the relevant boundary tests on local k3d and Linux
-   K3s with OpenShell's Kubernetes driver and an enforcing CNI. On Linux, execute a
-   small actual CUDA kernel and check the result. Distinguish container and VM
-   isolation; do not treat `nvidia-smi` alone as compute qualification.
-4. **One service deployment path and selection.** Deploy an arbitrarily named base
-   and Alice/Bob overrides of one tiny MCP service using the same runtime image
-   packaging and Helm/Flux/Kubernetes path, with an inherited second service. Deny direct endpoint
-   access from unauthorized users, and verify authenticated routing, discovery,
-   downstream context, no silent fallback, streaming/cancellation, Task version
-   ownership and replacement-instance recovery. Rename environment labels without
-   changing behavior, test pinned/tracking bases and reject cycles. Promote a tested
-   image to another authorized destination using the same chart and controllers.
-   This is the earlier routing slice, after the critical factory/source boundary.
-5. **Branch to preview lifecycle.** Push an environment change, run fresh checks,
-   publish immutable artifacts and reconcile through Flux. Delete one preview and
-   verify another preview, shared services, retained state and platform bootstrap
-   survive. Promote the tested artifacts without rebuilding them as a new version.
-6. **External identity and native MCP policy.** Qualify user and automation login
-   against the configured issuer, independent resource audiences, renewal, discovery,
-   approved identity mappings and revocation/Task compromise behavior. Use a small
-   deterministic MCP client to verify an allowed tool, a denied tool, malformed and
-   excluded protocol revisions, and unchanged gateway application denials. Test the
-   actual `2026-07-28` SDK, streaming and extension contracts. No model run is needed.
-   Remove replaced hosted login/refresh code only after an equivalent path passes;
-   do not retain an alternate legacy identity mode.
-7. **Optional QUIC.** Qualify mediation and credential custody, then compare measured
-   transfers with gRPC. Keep it disabled if the benefit or boundary is insufficient.
+1. **Native execution and service hosting.** On the first single-host native backend,
+   run a tiny prebuilt MCP service as the canonical process, with a native template,
+   scoped provider, restart policy and authenticated `ForwardTcp` access. Verify
+   allowed/denied requests, streaming/cancellation, cross-workspace denial, exit/restart and
+   supervisor/gateway interruption. Check credential unreadability and current
+   generation identity. This needs no model session, Helm, Flux or Kubernetes.
+2. **Lore coexistence.** Use one author sandbox, one allowed repository/branch and
+   a forbidden repository. Qualify gRPC credential mediation, then clone and push a
+   bounded fixture with normal Lore commands. Verify branch/repository confinement,
+   both relevant API paths, low-level storage access, renewal and reconnect. Any
+   bridge is limited to the verified gap and removed when native support qualifies.
+3. **Native access, policies and persistence.** Verify workspace confinement, provider
+   binding/rotation, policy advisor review/reload and prover limits. Validate admitted
+   volume persistence and cleanup. Exercise missed events, delayed operations and
+   gateway crashes; generic recovery fixes belong in OpenShell. Use its native
+   diagnostics and credential driver.
+4. **Linux CUDA.** Repeat the runtime boundary with native GPU requests and execute
+   a small CUDA kernel with a checked result. No CPU substitution or `nvidia-smi`-only
+   acceptance. Qualify Kubernetes separately only for installations selecting it.
+5. **Composition and one hosting path.** Run a base and two private overrides through
+   OpenShell, with arbitrary labels and an inherited second service. Verify discovery,
+   downstream context, no silent fallback, Task version ownership and same-version
+   restart recovery. Rename labels; test pinned/tracking bases and reject cycles.
+   Promote the same image digest to any authorized destination using native workloads.
+6. **Source lifecycle and identity.** Push a definition, run fresh checks, apply native
+   OpenShell resources, then delete its branch and verify only owned resources are
+   removed. Preserve other compositions, retained state and bootstrap. Qualify external
+   issuer login/refresh, separate audiences, MCP client compatibility and compromise
+   revocation of Task delegation before retiring hosted OAuth. Test native MCP policy
+   with the actual `2026-07-28` SDK and extension methods using deterministic requests.
+7. **Optional transport and scale.** Measure QUIC only after secure mediation works.
+   Qualify replica/rollout or other generic platform extensions only when a concrete
+   requirement needs them; they do not justify a parallel service execution stack.
 
-Mac and Linux qualification are recorded separately. These are acceptance gates,
-not claims that the integrations have passed.
+These are unrun acceptance gates. The architecture is OpenShell-owned execution;
+qualification chooses supported configuration or closes a specific native gap, not
+whether to keep a duplicate Veoveo implementation by default.
 
 ## Reviewed Source Baselines
 

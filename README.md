@@ -7,8 +7,8 @@ component owns.
 | Document | Contents |
 |---|---|
 | [Repository Split Plan](REPOSITORY_SPLIT_PLAN.md) | The repository catalog, the contracts between repositories, server registration and authorization, component environments, and the decisions and tasks with their status |
-| [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) | Lore-managed environment definitions without fixed stages, service overrides, identity delegation, Kubernetes/Helm/Flux responsibilities, sandboxing, CUDA and shared secrets |
-| [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | OpenShell factory and MCP egress enforcement, native Lore hooks, identity and credential boundaries, HTTP/2 and optional QUIC integration, extension/fork policy and qualification order |
+| [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) | Lore-managed environment definitions without fixed stages, service overrides, native OpenShell execution, identity delegation, CUDA and provider custody |
+| [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | OpenShell factory/service execution and MCP enforcement, native Lore hooks, identity and credential boundaries, HTTP/2 and optional QUIC integration, extension/fork policy and qualification order |
 
 ## License
 

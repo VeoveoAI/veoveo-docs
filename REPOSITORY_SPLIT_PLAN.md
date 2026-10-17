@@ -10,16 +10,17 @@ Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 Current push: the cutover to Docker environments under [Docker Environments And Lore](#docker-environments-and-lore) is done on macOS; the Linux host follows on the owner's go-ahead.
 
 Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
-records the leading candidate from October 16 for Lore-managed environments,
-Kubernetes/Helm/Flux, personal service overrides and shared secrets. The revised
-[Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md) makes OpenShell the
-factory foundation and permits extension builds and maintained forks for verified
-gaps, including transport support. Lore/OpenShell coexistence is the first gate;
-QUIC is an optional optimization after credential and policy qualification.
-Every service deployment, including personal previews, follows one
-[Helm/Flux/Kubernetes path](LORE_OPENSHELL_INTEGRATION.md#one-service-deployment-path).
-OpenShell owns factory execution through its Kubernetes backend on both hosts.
-It does not mark those migrations implemented or change the runtime status below.
+and [Lore/OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) make OpenShell the
+execution authority for factory work and deployed services. Lore carries source
+and arbitrary environment definitions. Native templates, service endpoints,
+restarts, policy workflows, sessions and credential drivers replace duplicated
+Veoveo or external machinery. Flux and per-component Helm deployment are removed
+from the candidate; Kubernetes is an optional OpenShell backend. The first
+single-host candidate uses its Docker driver, with native Linux GPU requests.
+Maintained forks may close verified gaps while preserving extension/security
+contracts. This supersedes D49's hosting split; it does not claim migration of the
+recorded Compose runtime below. Shared human secret distribution is outside this
+focused plan; runtime custody uses OpenShell.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
@@ -44,8 +45,7 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | Docker Engine and the Compose specification | The local installation: PostgreSQL, SeaweedFS, the Envoy edge, Lore and one environment per component, on internal networks (D40) |
 | Envoy 1.40.0 | The installation's edge: published ports, an HTTPS CONNECT proxy with a host allowlist, and secrets added per route (D42) |
 | Unmodified Lore v0.10.1 from `EpicGames/lore` | Version control over Envoy-authenticated `grpcs://`, with RFC 9068 tokens from the Gateway in trusted SDS storage (D41, D43, D44) |
-| Helm 3 | One application chart per component, built on a shared library chart |
-| Flux | One HelmRelease per component in the installation repository, ordered with `dependsOn` |
+| OpenShell native workloads | Target execution contract for authoring, checks and deployed services, using native templates/specs, policy, providers, restart policy and service exposure; migration pending |
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
 | Veoveo MCP extensions `ai.veoveo/registration` and `ai.veoveo/authorization` | Repository-owned declarations a server sends when it registers with the Gateway |
 | OAuth 2.0 private-key JWT client authentication, RFC 7523 | Server and agent identities |
@@ -70,7 +70,7 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
    server address, so another implementation of Artifact, Knowledge, Embedding or
    Recording qualifies against the same suite.
 5. A component keeps one name for its repository, primary crate, binary, image and
-   chart.
+   native workload definition.
 6. A component owns its image, toolchain and gate configuration. Repositories couple
    only through contracts, conformance suites and the `rust-version` floor of the
    crates they compile from other repositories, so differing images and toolchains
@@ -154,16 +154,15 @@ suffix (D19).
 |---|---|---|
 | `veoveo-core` | `platform/{types,macros,http,oauth,store,task-runtime,audit,installation/contract}` without their MCP, Gateway and domain items, `testing/fixtures` (see [Core Contents](#core-contents)) | crates |
 | `veoveo-sdk-rust` | `mcp/{contract,ext-registration,ext-apps,conformance}`, the Task runtime's MCP adapter, `testing/fixtures/modular-mcp`, and the client servers use to call each other | crates, conformance CLI |
-| `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries,contract}`, `platform/policy`, the store's Gateway module and the `gateway` schema | image, chart |
-| `veoveo-service-agents` | `agents/{kernel,manager,runtime}` | images, chart, agent templates |
-| `veoveo-service-knowledge` | `platform/knowledge` with its contract, the `ai.veoveo/knowledge-source` extension, `servers/knowledge-mcp` | image, chart |
-| `veoveo-service-recording` | `platform/recordings/{hub,forwarder,store,reader,rrd,video}`, `servers/recording-mcp` | images, chart |
-| `veoveo-service-computers` | `platform/computers/*`, `platform/runtimes/computers`, `servers/computers-mcp` | Host, template and MCP images, chart |
-| `veoveo-service-factory` | new; see [Factory](#factory) | images, chart |
-| `veoveo-runtime-embedding` | `platform/runtimes/embedding` with its contract and client | GPU image, chart |
+| `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries,contract}`, `platform/policy`, the store's Gateway module and the `gateway` schema | image, OpenShell workload definitions |
+| `veoveo-service-agents` | Agent reasoning and application Task behavior from `agents/{kernel,manager,runtime}`; execution/session responsibilities move to OpenShell | images, OpenShell workload definitions, agent templates |
+| `veoveo-service-knowledge` | `platform/knowledge` with its contract, the `ai.veoveo/knowledge-source` extension, `servers/knowledge-mcp` | image, OpenShell workload definitions |
+| `veoveo-service-recording` | `platform/recordings/{hub,forwarder,store,reader,rrd,video}`, `servers/recording-mcp` | images, OpenShell workload definitions |
+| `veoveo-service-computers` | `platform/computers/*`, `platform/runtimes/computers`, `servers/computers-mcp` | Host, template and MCP images, OpenShell workload definitions |
+| `veoveo-runtime-embedding` | `platform/runtimes/embedding` with its contract and client | GPU image, OpenShell workload definitions |
 | `veoveo-runtime-simulation` | `platform/runtimes/simulation` without its contract | GPU image |
-| `veoveo-mcp-time` | `servers/time-mcp` | contract crate, image, chart |
-| `veoveo-mcp-artifact` | `servers/artifact-mcp` and the Artifact contract from `platform/artifacts/contract`; the HTTP service in `platform/artifacts/service` is retired | contract feature, image, chart |
+| `veoveo-mcp-time` | `servers/time-mcp` | contract crate, image, OpenShell workload definitions |
+| `veoveo-mcp-artifact` | `servers/artifact-mcp` and the Artifact contract from `platform/artifacts/contract`; the HTTP service in `platform/artifacts/service` is retired | contract feature, image, OpenShell workload definitions |
 | `veoveo-mcp-map` | `servers/map-mcp` | same set |
 | `veoveo-mcp-frames` | `servers/frames-mcp` and the Frames implementation in `platform/frames` | same set |
 | `veoveo-mcp-chart` | `servers/chart-mcp` | same set |
@@ -175,10 +174,10 @@ suffix (D19).
 | `veoveo-mcp-speech` | `servers/speech-mcp`, including its contract crate | same set, GPU |
 | `veoveo-mcp-stream` | `servers/stream-mcp` | same set, GPU |
 | `veoveo-mcp-view` | `servers/view-mcp` | same set, GPU |
-| `veoveo-mcp-datasheet` | the deployed Datasheet server, separated from the Python template | Python image, chart |
-| `veoveo-mcp-bridges` | `mcp/bridges/{stdio,legacy}`; Rerun is a configured legacy bridge | images, chart |
-| `veoveo-app-console` | `apps/console` web and BFF, `tools/vendor-three` | image, chart |
-| `veoveo-app-workspace` | `apps/workspace` and the Workspace services in `platform/workspace` | image, chart |
+| `veoveo-mcp-datasheet` | the deployed Datasheet server, separated from the Python template | Python image, OpenShell workload definitions |
+| `veoveo-mcp-bridges` | `mcp/bridges/{stdio,legacy}`; Rerun is a configured legacy bridge | images, OpenShell workload definitions |
+| `veoveo-app-console` | `apps/console` web and BFF, `tools/vendor-three` | image, OpenShell workload definitions |
+| `veoveo-app-workspace` | `apps/workspace` and the Workspace services in `platform/workspace` | image, OpenShell workload definitions |
 | `veoveo-website` | `apps/website` | site |
 | `veoveo-sdk-python` | `sdk/python` | PyPI package |
 | `veoveo-sdk-typescript` | the generated client bundles used by Console and MCP Apps, and the MCP Apps browser runtime from `mcp/apps-extension/browser` with its tests | npm package |
@@ -186,12 +185,14 @@ suffix (D19).
 | `veoveo-template-mcp-python` | `templates/python-mcp` | template repository |
 | `veoveo-template-installation` | new; renamed from `veoveo-deploy` | template repository whose defaults run a local installation: Compose file for PostgreSQL, SeaweedFS, the Envoy edge, Lore and the environments, installation configuration, roles and grants, and component lock |
 | `veoveo-docs` | repository-wide documents in `docs/`, `tools/screenshots` | documentation site |
-| `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, charts |
-| `veoveo-showcase-sumo` | `showcase/sumo` | images, charts |
+| `veoveo-showcase-uav` | `showcase/uav-sim`, `servers/uav-sim-mcp` | images, OpenShell workload definitions |
+| `veoveo-showcase-sumo` | `showcase/sumo` | images, OpenShell workload definitions |
 | `veoveo-qualify-openshell` | the OpenShell spike probes and policies | archived with D40 |
 | `.github` | new | organization profile and reusable workflows |
 
-The catalog lists 38 repositories. Each installation adds one public
+The catalog lists 37 repositories; a separate factory service is no longer required.
+Runtime outputs in this catalog are migration targets, not claims that the repositories
+already publish native OpenShell definitions. Each installation adds one public
 repository in its owner's organization. The reference is `BiomaAI/veoveo-bioma`,
 built from `examples/bioma`.
 
@@ -233,7 +234,7 @@ tag:
 |---|---|---|
 | Contract | path dependency through the `contract` feature | the server crate's `contract` feature, consumed by Git revision |
 | Image | built inside shared Rust families | built by the component's repository |
-| Helm chart on `veoveo-chart-common` | templates inside the 38-template `deploy/helm/veoveo` chart | one chart per component |
+| Runtime definition | shared Helm templates and current Compose configuration | native OpenShell workload/template, policy/provider references and service exposure; no per-component chart requirement |
 | Catalog declaration | the server's entry written by hand in the installation's `gateway.json` | declared by the running server when it [registers](#server-registration) |
 | Permissions and roles | per-profile scopes and the rule list in `gateway.json` | declared by the running server through `ai.veoveo/authorization` |
 | Module schema | owned per module, compiled into the Gateway's module registry | submitted by the running server through `ai.veoveo/module` |
@@ -248,8 +249,8 @@ An installation repository contains:
 
 - installation configuration: domain, identity providers, tenants, work contexts, OAuth clients, role bindings and Cedar policies;
 - namespace bindings that say which server identities may register which namespaces;
-- a component lock with each component's version, image digest and chart version;
-- one Flux HelmRelease per component, ordered with `dependsOn`;
+- a component lock with exact source revision, image digest and native OpenShell workload/template, policy and binding provenance;
+- Lore environment definitions mapped to admitted OpenShell resources through the native SDK;
 - installed acceptance for that installation.
 
 The Gateway catalog is the installation configuration plus the current
@@ -726,56 +727,33 @@ the constraints imposed by shared services, core state and object metadata.
 
 ### Factory
 
-[`FACTORY_ISOLATION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md) defines the factory's author, verifier
-and broker architecture and proposes `tools/factory/` for it. Under this plan its
-control plane, brokers, verifier and console live in `veoveo-service-factory`.
-The [revised integration direction](LORE_OPENSHELL_INTEGRATION.md#native-responsibilities)
-narrows that service to coordination with Lore, checks, artifacts and deployment.
-OpenShell owns sandbox lifecycle, native access workspaces, templates, policies,
-providers and diagnostics. Use its SDK and supported extension APIs rather than
-implementing a second factory runtime or workspace access system. A custom factory
-console is not a prerequisite. The first gate is source/runtime coexistence before
-service-preview routing or deployment automation.
+The older [factory design](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md)
+is superseded where it proposes runtime control planes, brokers, consoles or
+supervisors that OpenShell already supplies. There is no required standalone
+`veoveo-service-factory` in the candidate. Use the native SDK/CLI/TUI, workspace
+access, templates, providers, policies/advisor/prover, execution, service exposure,
+restart handling and observation APIs.
+
+The [remaining integration](LORE_OPENSHELL_INTEGRATION.md#native-responsibilities)
+binds Lore repository/branch/revision authority to native resources, runs existing
+component checks in fresh workers, records immutable verdict/artifact provenance,
+and updates authorized environment selection. Keep it in an existing trusted
+process unless a concrete need justifies a separate service. Hooks only trigger
+bounded checks or reconciliation; they never run untrusted build scripts in Lore.
+
+Use native OpenShell membership for runtime access and Lore grants for source.
+Veoveo retains product-specific permission to promote a revision, select a
+composition or bind application data. It does not recreate native workspace roles,
+policy approvals, credentials or process lifecycle under factory-specific APIs.
+Fresh verification and trusted artifact publication stay separate from the author.
+Application checks and Task drain govern version selection; OpenShell owns runtime
+restarts. Do not add a custom watchdog or Flux reconciliation loop for that job.
 
 The [identity and MCP boundary](LORE_OPENSHELL_INTEGRATION.md#identity-and-mcp-enforcement)
-also delegates factory login and outbound MCP filtering to OpenShell, and ordinary
-user OAuth/refresh to the configured identity provider after qualification. Veoveo
-retains application authorization, environment routing and constrained Task/server
-delegation. OpenShell is not a replacement identity provider or generic MCP
-authorization server.
-
-[Component authoring containers](#component-environments) are called factory
-sandboxes. Lore carries source and environment changes; factory permissions govern
-workspace creation, checks, artifact publication and deployment. The proposed
-factory MCP server declares these permissions:
-
-| Permission | Capability |
-|---|---|
-| `factory.sources.read` | read source, `CODEMAP.md` and designs |
-| `factory.workspaces.create` | create a sandbox and edit a feature branch |
-| `factory.checks.run` | run lints, contract checks and tests |
-| `factory.images.build` | build and sign images for a commit |
-| `factory.environments.create` | propose a composition and select it in an authorized execution context |
-| `factory.environments.bind` | use an approved identity, storage or database binding within the caller's grants |
-| `factory.verdicts.sign` | sign an independent verification verdict |
-| `factory.branches.merge` | merge a verified branch |
-| `factory.installations.deploy` | change an authorized destination's component lock |
-
-The factory ships three predefined roles. `factory.author` covers sources,
-workspaces, checks, images and permitted environment compositions.
-`factory.verifier` covers sources, checks and verdicts. `factory.deployer` covers
-merges and deployments. Cedar conditions
-decide when each permission applies. For example, `factory.branches.merge` requires
-verdicts from a quorum of verifiers running harnesses and models other than the
-author's, and a destination accepts a version only after its configured rollout
-checks pass. The factory mints a short-lived server identity for each build, bound to the image digest
-and to the component's namespace.
-
-The factory recovers without depending on itself. A watchdog outside the factory
-reverts the installation to its last known-good component lock when health checks
-or error budgets fail after a deployment, and Flux applies the revert. Changes to the
-factory, Gateway authentication and the protected hosting files carry the strictest
-conditions.
+delegates factory login and outbound tool limits to OpenShell, and ordinary user
+OAuth/refresh to the configured provider after qualification. Veoveo keeps
+application/data permissions, version routing and constrained Task/server delegation.
+All environment names and promotion destinations remain configuration.
 
 ### Agent Experience In Console And Workspace
 
@@ -795,7 +773,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D4. Each component repository defines its own container environment with `dev`, `check`, `build` and `runtime` stages, and owns its toolchain and gate configuration. No Nix dev shell and no host toolchain requirement beyond Docker and Git.
 - [ ] D5. CI placement for per-repository CPU checks. Taken up before the first release tag (E1) or the first outside contribution.
 - [ ] D6. Agent model for Console and Workspace work. Taken up with the agents (E4).
-- [ ] D7. Reconcile the factory permissions and roles with the brokers in `FACTORY_ISOLATION.md`. Taken up with the factory service.
+- [ ] D7. Map Lore source/promotion authority to native OpenShell workspace and provider access. Retain only application-specific grants; the old factory broker/role plan is superseded by D52.
 - [x] D8. Authorization uses permissions, roles and bindings, relationship-based sharing, Cedar conditions, coarse OAuth scopes and narrowed delegation, declared by servers through `ai.veoveo/authorization`. No change waits for a person.
 - [x] D9. New repositories are pushed to `VeoveoAI` as work lands, and the Linux host verifies each step from a fresh `git pull`.
 - [x] D10. No task runner. Tools keep their own configuration, Cargo aliases provide short commands and test logic lives in Rust.
@@ -837,11 +815,14 @@ between Reason on the Linux GPU host and a hosted provider is open.
 
 - [x] D45. Use official Lore Desktop as a live acceptance client that puts pressure on Veoveo's design. A human adds one remote, authenticates once, discovers authorized repositories and browses current branches, revision graphs and diffs, with session renewal and reconnect handled by the integration. Local checkout exports, snapshots and manual token copying do not satisfy this requirement. The host's human client is an explicit extension to D44's container-only client placement; its identity and permissions remain separate from development agents and the administrative reviewer. Preserve upstream Lore and the Envoy boundary. Decide completeness from the actual Desktop experience, not from a successful CLI probe. Decided on October 15.
 - [x] D46. Identity is an installation choice: the macOS development installation runs permanent Keycloak, the remote Linux reference at `veoveo.bioma.ai` will use Microsoft Entra ID, and customers configure their own OIDC provider, optionally retaining bundled Keycloak. Generic deployment and runtime authentication must not require Keycloak administration or detect providers by name. Keycloak state has its own operator-owned PostgreSQL volume, separate from disposable component state; the installation CA and credentials also survive component resets. Provider credentials belong only to trusted services. Envoy remains the network boundary, and human sign-in does not give development agents credentials or repository administration. Decided on October 15; live reference Entra qualification remains L10.
-- [x] D47. Record [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) as the leading infrastructure direction on October 16: Lore-managed environment configuration, shared environments with personal service overrides, Kubernetes/Helm/Flux orchestration, OpenShell sandbox qualification, Envoy credential protection and OpenBao for shared development secrets. Acceptance is of the candidate for further design and qualification, not a completed migration; D40/D44 remain the recorded runtime baseline.
+- [x] D47. Record [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) as the leading infrastructure direction on October 16: Lore-managed environment configuration, shared environments with personal service overrides, Kubernetes/Helm/Flux orchestration, OpenShell sandbox qualification, Envoy credential protection and a shared development-secret service (withdrawn by D53). Acceptance is of the candidate for further design and qualification, not a completed migration; D40/D44 remain the recorded runtime baseline.
 - [x] D48. Lean on OpenShell as the factory foundation and integrate it deeply with Lore through native SDKs, templates, workspace access, providers, governance extensions, Lore hooks and reconciliation. Maintained VeoveoAI forks of Lore and OpenShell are permitted when a verified gap requires a patch, respecting their extension, security and design contracts. This supersedes an unconditional no-source-patches constraint for future integration builds; D44's protected credentials and privilege restrictions remain. The first qualification is normal Lore operations in an OpenShell sandbox, including branch/repository confinement, credential custody, renewal and reconnect. Source inspection found an HTTP/2 inspection gap and no general external UDP mediation in OpenShell v0.1.4; optional Lore QUIC must preserve credentials and policy and show measured value. Accepted on October 16; [the integration design](LORE_OPENSHELL_INTEGRATION.md) records the source evidence, boundaries and gates. No fork or runtime migration is claimed.
-- [x] D49. Use one MCP service hosting path for personal previews, shared dev, staging and stable: each component's runtime image and Helm chart, reconciled by Flux on Kubernetes. OpenShell owns author/build/check factory execution, with its Kubernetes backend on k3d for Mac and K3s for Linux. Remove native OpenShell preview hosting from the candidate rather than maintain a second launcher, ingress path and lifecycle implementation. Apply the same service packaging and runtime contracts across environments, changing ownership, revisions, bindings and gateway selection. Accepted on October 16; migration remains pending.
+- [x] D49. Use one MCP service hosting path for personal previews, shared dev, staging and stable: each component's runtime image and Helm chart, reconciled by Flux on Kubernetes. OpenShell owns author/build/check factory execution, with its Kubernetes backend on k3d for Mac and K3s for Linux. Remove native OpenShell preview hosting from the candidate rather than maintain a second launcher, ingress path and lifecycle implementation. Apply the same service packaging and runtime contracts across environments, changing ownership, revisions, bindings and gateway selection. Accepted on October 16; migration remains pending. Superseded by D52: one native OpenShell service execution path replaces this Helm/Flux split.
 - [x] D50. Environment names are arbitrary labels, with no built-in preview/dev/stage/release categories or promotion ordering. Lore stores one small composition schema with optional authorized base inheritance, explicit pin/follow selection, component revisions, approved bindings and lifecycle/retention policy. Stable controller identities and immutable resolved compositions govern ownership and routing; branch names do not grant authority. Admission policy lives outside author-controlled configuration. This refines D47/D49's illustrative environment names, not their single deployment path. Accepted on October 16; schema implementation and routing remain pending.
 - [x] D51. Reduce Veoveo identity scope: use the configured OAuth/OIDC provider for standard user login, grants, refresh and identity sessions; use native OpenShell OIDC/workspace authorization for factories and native MCP egress policy for agent method/tool limits. OpenShell is an OIDC consumer, not the general MCP authorization server. Veoveo retains application permissions, context routing, short-lived narrowed delegation and Task authority. Qualify issuer token formats, MCP clients, revocation and Task compromise semantics before removing hosted login/refresh routes and storage; no permanent parallel legacy mode. Explicitly qualify MCP `2026-07-28` with native OpenShell policy and rejection diagnostics. Accepted design direction on October 16, not a completed authentication migration.
+
+- [x] D52. OpenShell owns all capabilities it already provides, for factory work and deployed services. Use native templates/specs, long-running service execution and authenticated native forwarding, main-process restarts, workspace access, policy advisor/prover, providers/credential drivers, sessions and diagnostics. Remove Flux, per-component Helm deployment and the mandatory Kubernetes/k3d/K3s layer. The first single-host candidate uses OpenShell's Docker driver on Mac/Linux with native NVIDIA CDI on Linux; Kubernetes remains an optional native backend. Generic execution gaps belong in supported OpenShell extensions or a narrow upstreamable fork before adding Veoveo/external machinery. Keep only source-to-runtime integration and application-specific authority/routing/Tasks in Veoveo; a standalone factory service is not required. Accepted on October 16; supersedes the hosting portions of D47–D49, with qualification and runtime migration pending.
+- [x] D53. Remove OpenBao entirely from the active candidate and qualification sequence. Use OpenShell's native provider/credential-driver capabilities for runtime custody. Shared human `.env` distribution is outside the focused plan. Accepted on October 16; no runtime change is implied.
 
 ### Registration And Authorization
 
@@ -901,7 +882,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] P6. Split the agent runtime contract from `agents/runtime`.
 - [ ] P7. Give Artifact, Knowledge, Embedding and Recording acceptance suites in their own repositories that run over MCP against any implementation.
 - [x] P8. Replace the hand-written server entries in `gateway.json` with registration. Done: the Gateway and the installation name no server.
-- [ ] P9. Split `deploy/helm/veoveo` into per-component charts and a platform chart.
+- [ ] P9. Replace the planned per-component chart split with native OpenShell workload definitions and a qualified service execution path (D52). Retire replaced packaging after migration; use upstream installation tooling for OpenShell bootstrap.
 - [ ] P10. Leave `cargo xtask` and the `testing-support` process supervisor behind; nextest and environment self-verification replace them.
 - [x] P11. Owners declare their audit classes and details at registration (D28), and core's audit contract keeps only the envelope (C3). Done with C5: a registered server declares its classes through `audit.declare_server_classes`, confined to its own prefix.
 - [ ] P12. Remove the Artifact and Knowledge sections of the Gateway configuration contract, and take its Audit section from registration data.
@@ -954,7 +935,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map and Frames.
 - [ ] E4. Extract Knowledge, Recording, Agents and Computers, deciding their repository names (D29) first and, with the agents, inline artifact writes for a model without a sandbox (D27).
 - [ ] E5. Extract the GPU servers, runtimes and showcases.
-- [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would, add a Kubernetes target to the template, and move the Bioma reference installation there.
+- [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would and move the reference to the qualified OpenShell execution path. Select a supported native backend for its needs; Kubernetes is not mandatory (D52).
 
 ### Documentation
 
