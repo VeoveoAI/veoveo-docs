@@ -31,7 +31,7 @@ console, logging service, runtime API or infrastructure language is not a prereq
 | Lore | Repositories, branches, immutable revisions, source transfer and native authorization | Binding an authenticated worker to allowed repositories and branches; branch events to checks and environment lifecycle |
 | OpenShell | Sandbox lifecycle, execution, templates, resource requests, filesystem/network policy, workspace membership and provider custody | Approved source/revision bindings and deployment-specific admission through supported extensions |
 | Existing component checks and CI | Test commands, build outputs and job results | Correlation to the exact Lore revision, template image, policy and resulting artifact digests |
-| Helm, Flux and Kubernetes | Service packaging, configuration reconciliation, replicas, readiness and deployment cleanup | Approved environment composition and ownership declarations |
+| Helm, Flux and Kubernetes | One service deployment path for personal previews, shared dev, staging and stable: packaging, reconciliation, replicas, readiness and cleanup | Approved environment composition and ownership declarations |
 | Veoveo MCP gateway | Application authorization, discovery, delegation and Tasks | Base-environment selection, personal overrides and immutable deployment routing |
 | OpenBao | Shared secret storage and developer retrieval | Scoped grants using existing APIs and qualification of OpenShell's Vault-compatible driver |
 
@@ -61,56 +61,51 @@ they are not interchangeable identifiers. Native OpenShell workspace users can
 operate resources within their membership boundary, so private work must not rely
 on sandbox names to hide it from unrelated members of the same OpenShell workspace.
 
-The target deployment uses OpenShell's Kubernetes driver with k3d on the Mac and K3s
-on Linux. The Docker driver is suitable for the first bounded coexistence probe.
-Each OpenShell gateway selects one backend; use existing gateway selection for local
-CPU and remote Linux GPU work. Kubernetes schedules the admitted CPU, memory and GPU
-requests. Do not add a Veoveo GPU scheduler or silently substitute CPU for CUDA.
+Use OpenShell's Kubernetes driver with k3d on the Mac and K3s on Linux, including
+the first coexistence probe. Use existing gateway selection for local CPU and remote
+Linux GPU work, with the same Kubernetes backend contract on both. Kubernetes
+schedules the admitted CPU, memory and GPU requests. Do not add a Veoveo GPU
+scheduler or silently substitute CPU for CUDA.
 
 Dev, staging and stable remain compositions of separate service deployments. A
 factory sandbox can run temporary test fixtures; it does not contain an entire
-shared environment. Minimal runtime preview containers remain untrusted until
-admitted and retain restricted network access, resources and credentials. An
-OpenShell-hosted preview is the preferred opportunity to qualify for private,
-unmerged versions; shared dev/staging/stable services retain normal deployment
-controllers. Hosting and ingress contracts must pass before selecting it as the
-preview default.
+shared environment. Every service version, including a private preview, follows
+the same service deployment path below. Minimal runtime preview containers retain
+restricted network access, resources and credentials; unmerged source does not
+become trusted merely because its checks passed.
 
 The [runtime documentation](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes)
 describes the supported drivers. The v0.1.4
 [MicroVM driver README](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-driver-vm/README.md)
 still marks that driver experimental; it is not the initial default.
 
-## Native Private Preview Hosting
+## One Service Deployment Path
 
-OpenShell can expose long-running HTTP services in a sandbox through a
-gateway-managed service URL. Qualify using a dedicated preview sandbox running the
-component's minimal runtime image, separate from the author sandbox and its mutable
-source. Closing the editor or stopping the author must not stop the preview. If this
-passes, use native sandbox/service lifecycle for private previews instead of writing
-a separate preview-container launcher. See
-[service forwarding](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/overview).
+Every deployed MCP service uses its component's runtime image and Helm chart,
+reconciled by Flux on Kubernetes. A personal preview is an additional release of
+that same component with different ownership, revision, bindings and gateway
+selection. Dev, staging and stable change those inputs and promotion policy; they
+do not use different hosting implementations.
 
-In v0.1.4, forwarded service routes bypass control-plane RPC/OIDC authorization;
-the listener's TLS policy still applies. Bearer passthrough, when enabled, delivers
-the application's bearer to the service and is not a gateway authorization check.
-A service URL is therefore not evidence of private workspace access. Keep preview
-endpoints private to the trusted gateway/ingress or enforce explicit application
-authorization at the edge. Test that another user cannot call the endpoint directly
-to bypass the selected composition or its permissions.
+The workflow is Lore revision, OpenShell checks/build work, verified OCI artifacts,
+Helm/Flux reconciliation, Kubernetes service deployment and Veoveo gateway routing.
+Promotion reuses the tested image digest. Use the same component packaging,
+readiness and streaming contracts, ingress authorization, restart/recovery tests
+and teardown rules throughout. Closing the author's factory sandbox cannot stop a
+deployed preview.
 
-Forward only a short-lived, appropriately scoped application credential bound to
-the selected preview/context. Never forward a user's refresh token, OpenShell
-management credential or a production-wide bearer to agent-authored code. Verify
-MCP initialization, discovery, SSE/streaming, cancellation, body limits, service
-readiness, restart and active-Task behavior through the native forwarding path.
-Sandbox readiness alone does not establish application health.
+OpenShell owns author, build and verification sandboxes through its Kubernetes
+driver. Kubernetes workload controllers own deployed service instances in every
+environment. These are different responsibilities within one delivery workflow;
+there is one implementation of service hosting. OpenShell service forwarding does
+not become another MCP preview deployment backend.
 
-OpenShell remains the sandbox lifecycle authority. The Veoveo MCP gateway remains
-the version-selection and application authorization authority. Flux and Kubernetes
-continue managing shared baseline workloads and persistent infrastructure; adoption
-of native private preview hosting does not imply moving databases, identity or the
-entire stable environment into a sandbox.
+Apply the common service runtime restrictions to every environment, with scoped
+credentials and data bindings appropriate to each deployment. Previews receive no
+production-wide secrets, host sockets or administrative mounts. Keep endpoints
+behind trusted gateway/ingress authorization and prove that direct requests cannot
+bypass the selected context or its permissions. Container hardening and namespaces
+are not a claim of VM-grade isolation; qualify the actual runtime boundary.
 
 ## Lore Hooks And Branch Lifecycle
 
@@ -283,7 +278,8 @@ Prefer existing interfaces and protocol libraries. Benchmark binary and multi-fi
 transfers against the qualified gRPC baseline with matching authorization, hashes,
 limits, network conditions and credential custody. Enable QUIC only for a measured
 benefit worth its integration cost. gRPC remains acceptable and QUIC does not block
-the factory or preview work.
+the factory or preview work. Transport optimization preserves this same delivery
+workflow; it does not create a second service hosting path.
 
 ## Checks Artifacts And Deployment
 
@@ -339,9 +335,10 @@ existing clients and configurations working within their documented contracts.
 
 ## Qualification Sequence
 
-1. **Lore and OpenShell coexistence.** Use one factory sandbox, one allowed test
-   repository/branch and one forbidden repository. Reproduce the native transport
-   limitation, choose the smallest secure path, then clone, commit/push a bounded
+1. **Lore and OpenShell coexistence.** Use the Kubernetes backend, one factory
+   sandbox, one allowed test repository/branch and one forbidden repository.
+   Reproduce the native transport limitation, qualify credential mediation, then
+   clone, commit/push a bounded
    fixture and fetch the exact revision through normal Lore commands. Verify denied
    cross-repository and protected/other-user branch operations, no readable real
    tokens or signing keys, expiry/renewal, and reconnect. Test both supported API
@@ -356,14 +353,14 @@ existing clients and configurations working within their documented contracts.
    K3s with OpenShell's Kubernetes driver and an enforcing CNI. On Linux, execute a
    small actual CUDA kernel and check the result. Distinguish container and VM
    isolation; do not treat `nvidia-smi` alone as compute qualification.
-4. **Private preview hosting and selection.** Qualify dedicated OpenShell runtime
-   sandboxes and native service forwarding for Alice/Bob previews of one tiny MCP
-   service, with an inherited shared dev service. Deny direct endpoint access from
-   unauthorized users, and verify authenticated routing, discovery, downstream
-   context, no silent fallback, stream/cancellation behavior, Task version ownership
-   and replacement-instance recovery. If native hosting does not meet the contract,
-   keep restricted Kubernetes preview deployments rather than weaken the boundary.
-   This is the earlier routing slice, after the critical factory/source boundary.
+4. **One service deployment path and selection.** Deploy shared dev and Alice/Bob
+   previews of one tiny MCP service using the same runtime image packaging and
+   Helm/Flux/Kubernetes path, with an inherited second service. Deny direct endpoint
+   access from unauthorized users, and verify authenticated routing, discovery,
+   downstream context, no silent fallback, streaming/cancellation, Task version
+   ownership and replacement-instance recovery. Promote a tested image through
+   staging and stable using the same chart and controllers. This is the earlier
+   routing slice, after the critical factory/source boundary.
 5. **Branch to preview lifecycle.** Push an environment change, run fresh checks,
    publish immutable artifacts and reconcile through Flux. Delete one preview and
    verify another preview, shared services, retained state and platform bootstrap

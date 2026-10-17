@@ -24,9 +24,9 @@ both systems' security and design contracts.
 | Lore | Service source, environment configuration, branches and immutable revisions; native hooks and notifications connect approved changes to factory work |
 | Veoveo factory integration | Connect Lore revisions and permissions to native OpenShell resources, CI results, deployment declarations and gateway contexts; reconcile branch lifecycle |
 | CI | Run component checks in fresh OpenShell workers and publish verified immutable artifacts through a trusted step |
-| Helm | Package each component and expose its supported configuration values |
-| Flux | Reconcile approved deployment declarations and configured resource cleanup |
-| Kubernetes | Schedule workloads, maintain replica counts, replace failed instances and manage rollout readiness |
+| Helm | Package each component once for personal previews, dev, staging and stable, exposing its supported configuration values |
+| Flux | Reconcile every service deployment through the same release path and configured resource cleanup |
+| Kubernetes | Host every deployed service, maintain replica counts, replace failed instances and manage rollout readiness; provide OpenShell's factory compute backend |
 | k3d | Run the development Kubernetes cluster on the Mac |
 | K3s | Run the Linux reference installation, including NVIDIA GPU workloads; customer installations can use their own compatible Kubernetes cluster |
 | OpenShell | Factory foundation for sandbox lifecycle/execution, templates, resource requests, access workspaces, policy enforcement, providers and diagnostics; integration requires qualification |
@@ -73,11 +73,11 @@ requirements. Keeping services separate allows a Media change to deploy or resta
 without restarting Time and Artifact. Agent-authored preview services still receive
 restricted network access, resource limits and appropriately scoped credentials.
 
-Qualify [OpenShell's native service forwarding](LORE_OPENSHELL_INTEGRATION.md#native-private-preview-hosting)
-as the preferred private-preview hosting option, using a dedicated runtime sandbox
-separate from the author. Shared dev/staging/stable services retain normal deployment
-controllers. Service URLs do not inherit OpenShell control-plane OIDC authorization;
-private application ingress and MCP behavior must pass before adopting this option.
+Use [one service deployment path](LORE_OPENSHELL_INTEGRATION.md#one-service-deployment-path)
+for personal previews, shared dev, staging and stable: the component's runtime image
+and Helm chart, reconciled by Flux on Kubernetes. Ownership, revision, bindings and
+gateway selection change; the hosting implementation does not. OpenShell owns
+factory author/build/check work using its Kubernetes backend on both Mac and Linux.
 
 OpenShell's documented
 [sandbox lifecycle](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes)
@@ -103,8 +103,8 @@ plus previews. Databases, storage, infrastructure, factory sandboxes and additio
 replicas are separate from this count. A Pod can also contain more than one
 container, so environment names do not imply an exact container count.
 
-Use a namespace for each shared environment and for preview-owned ordinary
-Kubernetes dependencies. OpenShell manages sandbox placement and namespaces through
+Use a namespace for each shared environment and for preview-owned service workloads
+and dependencies. OpenShell manages factory sandbox placement and namespaces through
 its native backend; an OpenShell access workspace is not assumed to equal a
 Kubernetes namespace. Reuse inherited services through authorized gateway routing.
 A namespace does not provide hostile-code isolation on its own; sandboxing and
@@ -173,11 +173,11 @@ first slice. Resource quotas can reject or leave work pending; a GPU request can
 be satisfied by routing to an unrelated deployment.
 
 The Veoveo factory integration records whether an environment should exist. Flux
-maintains baseline deployments and declared dependencies; Kubernetes maintains
+maintains all service deployments and declared dependencies; Kubernetes maintains
 those workloads. OpenShell owns sandbox lifecycle and restart policy for factory
-workers and, if qualified, native private previews, using its configured backend
-for compute. The Veoveo gateway uses deployment identity, registration and readiness
-to select available instances; it does not become a second process supervisor.
+workers, using its Kubernetes backend for compute. The Veoveo gateway uses
+deployment identity, registration and readiness to select available instances;
+it does not become a second process supervisor.
 
 On branch deletion, stop accepting new work for the preview, drain or explicitly
 cancel its Tasks according to the configured policy, revoke its access and remove
