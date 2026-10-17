@@ -36,7 +36,7 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Source and immutable revisions | Lore repositories, grants, hooks and notifications | Approved source-to-workload bindings |
 | Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
-| Runtime/GPU/storage attachment | Native compute driver, resource fields and external-resource admission | Installation backend choice and approved resource references |
+| Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
 | Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Qualify Lore gRPC and current private-key JWT requirements |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
@@ -49,12 +49,69 @@ carry workload settings. The [SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/
 provides management and connections. Keep source links as coordination state;
 OpenShell remains authoritative for runtime inventory, status and access.
 
-Remove Flux and per-service Helm packaging from this candidate. Helm may install
-OpenShell itself on an installation that chooses Kubernetes. Kubernetes is a
-compute driver underneath OpenShell, not a second controller Veoveo calls to deploy
-services. No standalone factory service, broker, console or general CI platform is
+Remove Kubernetes, k3d, K3s, Helm and Flux entirely from this candidate, including
+optional installation paths. Select OpenShell's native Docker driver on Mac and
+Linux. No standalone factory service, broker, console or general CI platform is
 required for the first integration. Place the small source/revision adapter in an
 existing trusted process unless a concrete deployment need justifies separation.
+
+## Rust Interfaces And Component Flow
+
+Lore's core library, server and CLI are Rust, as are OpenShell's core runtime and
+gateway. Use their existing Rust client interfaces in the trusted Veoveo integration.
+Rust is the implementation language; authenticated protocols still separate the
+services. Linking a client library does not embed either server, bypass authorization
+or require access to its database. Agents continue to use the ordinary Lore CLI.
+
+| Boundary | Selected interface |
+|---|---|
+| Veoveo to OpenShell | Official async `openshell-sdk`, with explicit workspace and HTTPS/OIDC configuration; generated Tonic clients through `raw_grpc_fresh()` for RPCs such as `ForwardTcp` |
+| Veoveo to Lore | Version-pinned Rust client surfaces: `lore` for high-level repository operations and `lore-proto` generated clients with native transport/authentication for remote RPCs |
+| Lore to revision integration | Native branch notifications as wakeups, followed by authoritative reads; periodic reconciliation repairs missed events |
+| Agent to Lore | Stock CLI over the qualified supervisor-mediated credential/transport path |
+| Veoveo gateway to deployed MCP service | Native authenticated OpenShell forwarding, carrying MCP requests with Veoveo's narrowed application token |
+
+OpenShell documents consuming its [Rust SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust)
+from source at the gateway's release tag. Reuse a client/channel per gateway. Configure
+the SDK's token source/refresher explicitly; a static bearer value does not renew
+itself. Qualify expiry and reconnection for long-lived streams. The
+[`lore` library](https://github.com/EpicGames/lore/blob/v0.10.1/lore/src/lib.rs)
+exposes typed operations with event callbacks, including
+[remote repository information](https://github.com/EpicGames/lore/blob/v0.10.1/lore/src/repository.rs)
+and [notifications](https://github.com/EpicGames/lore/blob/v0.10.1/lore/src/notification.rs).
+[`lore-proto`](https://github.com/EpicGames/lore/blob/v0.10.1/lore-proto/src/lib.rs)
+contains generated RPC clients. These are source dependencies, not a claim of a
+stable standalone Cargo SDK: Lore is pre-1.0 and its `lore` crate is `publish = false`.
+Pin compatible versions and qualify the exact operations used. Prefer the high-level
+client where it owns required version-control semantics; do not reconstruct those
+semantics from raw storage RPCs or parse CLI output in the control plane.
+
+The end-to-end flow is:
+
+1. A user signs in through the installation's identity provider. OpenShell authorizes
+   factory access through native workspace membership; Veoveo authorizes application
+   context and service access. Tokens have separate intended audiences.
+2. OpenShell starts an author sandbox. The agent edits source/configuration and pushes
+   with Lore. Its supervisor mediates permitted egress and holds provider credentials
+   outside the workload. Lore gRPC mediation remains a qualification gate below.
+3. A Lore notification wakes the small revision integration. It reads the exact revision
+   and approved environment definition, then asks OpenShell to run fresh checks/builds.
+   Trusted publication records the resulting immutable image digest and check evidence.
+4. The integration requests a service sandbox through the same OpenShell SDK and Docker
+   driver. OpenShell owns startup, supervision and restarts. After application readiness,
+   Veoveo makes that immutable version available in the authorized composition.
+5. An MCP client calls the Veoveo gateway with its execution context. The gateway resolves
+   the selected service version, checks application permission and opens authenticated
+   OpenShell forwarding to that service. The service receives a narrowed application
+   token. Neither the user nor agent receives the gateway's OpenShell management token.
+6. Later pushes repeat the same path; promotion selects a tested artifact. Branch deletion
+   triggers an authoritative ownership check, Task drain/retention decisions and native
+   OpenShell deletion of owned workloads. Inherited services and bootstrap remain.
+
+Only the source/revision-to-workload mapping and Veoveo application semantics are
+custom. Runtime state, credential custody, execution, forwarding, restarts, policy
+and diagnostics retain their native OpenShell owners. No new Rust SDK, broker or
+deployment service is required to connect these existing interfaces.
 
 ## Capability Evidence And Remaining Gaps
 
@@ -64,7 +121,7 @@ exposures and workspace templates. Restart policies are `Never`, `OnFailure` and
 [`openshell.proto`](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/proto/openshell.proto)
 and [restart handling](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-server/src/compute/mod.rs).
 A long-running service is therefore already a native workload, not a feature that
-requires a separate Kubernetes Deployment or a Veoveo process supervisor.
+requires a separate deployment controller or a Veoveo process supervisor.
 
 The public API inspected does not establish a deployment-group controller with
 replica counts, autoscaling or coordinated rolling updates. Start with one sandbox
@@ -100,19 +157,15 @@ they are not interchangeable identifiers. Native OpenShell workspace users can
 operate resources within their membership boundary, so private work must not rely
 on sandbox names to hide it from unrelated members of the same OpenShell workspace.
 
-Use OpenShell's native Docker driver as the first single-host candidate on Mac and
-Linux, including the initial probes. Request Linux GPU access through native NVIDIA
-CDI support. Kubernetes is optional for an installation that needs cluster placement;
-use its upstream driver and prerequisites without another Veoveo runtime API. A
-backend change does not change environment schema or deployment workflow.
+Use OpenShell's native Docker driver on Mac and Linux, including the initial probes.
+Request Linux GPU access through native NVIDIA CDI support. This is the single
+runtime path in the plan; no cluster backend or alternate launcher is in scope.
 
 The Docker driver uses a separate trusted supervisor and a fenced workload. It is
 not equivalent to the current bare Compose agent containers. Qualify the driver's
 host prerequisites and actual boundary, including persistence and CUDA. Container
-and GPU-driver isolation do not imply a VM boundary. OpenShell's
-[MicroVM driver](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-driver-vm/README.md)
-is still experimental in the reviewed release. Backend capability/scale choices
-remain installation configuration, with no mandatory k3d/K3s layer.
+and GPU-driver isolation do not imply a VM boundary. Qualify this selected boundary
+against the threat model before migration; do not weaken it to make a probe pass.
 
 ## One Service Deployment Path
 
@@ -314,11 +367,10 @@ The existing SPIFFE JWT-SVID token-grant path is another option when an installa
 already has workload identity, but requires SPIRE or a compatible Workload API and
 additional trust bindings. It is not required infrastructure for the first slice.
 
-Use native OpenShell credential drivers and provider APIs. Qualify the database
-credential driver for the first installation, including protected persistent state,
-refresh, rotation and recovery. Other upstream-supported backends remain an
-installation capability rather than a mandatory extra service. There is no separate
-secrets service or human `.env` distribution project in this candidate.
+Use native OpenShell provider APIs and its encrypted database credential driver.
+Qualify protected persistent state, encryption-key custody, refresh, rotation and
+recovery. There is no separate secrets service or human `.env` distribution project
+in this candidate.
 
 Lore's existing
 [resource grants](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/authnz/resource_grants_authorizer.rs)
@@ -384,7 +436,7 @@ storage with QUIC does not remove the gRPC control-path qualification. See
 
 OpenShell v0.1.4 mediates TCP and DNS, and its inspected socket broker denies
 general external UDP. Thus Lore QUIC is not enabled by an existing network allowlist
-or by selecting the Docker/Kubernetes driver. See the
+or by selecting a compute driver. See the
 [socket broker](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-sandbox/src/network_broker.rs).
 Lore's QUIC authorization embeds the JWT in the storage protocol; UDP forwarding
 alone would not keep that credential outside the author process. See
@@ -464,7 +516,7 @@ existing clients and configurations working within their documented contracts.
 
 ## Qualification Sequence
 
-1. **Native execution and service hosting.** On the first single-host native backend,
+1. **Native execution and service hosting.** On OpenShell's native Docker driver,
    run a tiny prebuilt MCP service as the canonical process, with a native template,
    scoped provider, restart policy and authenticated `ForwardTcp` access. Verify
    allowed/denied requests, streaming/cancellation, cross-workspace denial, exit/restart and
@@ -482,7 +534,7 @@ existing clients and configurations working within their documented contracts.
    diagnostics and credential driver.
 4. **Linux CUDA.** Repeat the runtime boundary with native GPU requests and execute
    a small CUDA kernel with a checked result. No CPU substitution or `nvidia-smi`-only
-   acceptance. Qualify Kubernetes separately only for installations selecting it.
+   acceptance. Use the same selected Docker driver and security boundary.
 5. **Composition and one hosting path.** Run a base and two private overrides through
    OpenShell, with arbitrary labels and an inherited second service. Verify discovery,
    downstream context, no silent fallback, Task version ownership and same-version

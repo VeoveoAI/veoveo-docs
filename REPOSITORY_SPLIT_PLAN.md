@@ -14,9 +14,10 @@ and [Lore/OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) make OpenShell t
 execution authority for factory work and deployed services. Lore carries source
 and arbitrary environment definitions. Native templates, service endpoints,
 restarts, policy workflows, sessions and credential drivers replace duplicated
-Veoveo or external machinery. Flux and per-component Helm deployment are removed
-from the candidate; Kubernetes is an optional OpenShell backend. The first
-single-host candidate uses its Docker driver, with native Linux GPU requests.
+Veoveo or external machinery. Kubernetes, k3d, K3s, Helm and Flux are removed from
+the candidate, including optional paths. Use OpenShell's Docker driver on Mac and
+Linux, with native NVIDIA CDI for Linux GPU requests. The trusted integration uses
+the existing version-pinned Rust clients for Lore and OpenShell.
 Maintained forks may close verified gaps while preserving extension/security
 contracts. This supersedes D49's hosting split; it does not claim migration of the
 recorded Compose runtime below. Shared human secret distribution is outside this
@@ -124,7 +125,7 @@ no external consumers. Wire names, format identifiers and other identifiers foll
 
 ### Runtime Names
 
-Container and Kubernetes resource names carry their own limits, and short names read
+Runtime resource names carry their own limits, and short names read
 well in commands. Runtime names therefore use `vv-<kind>-<name>`, with a short code for
 each kind, while repositories, crates, binaries and images keep their full
 `veoveo-<kind>-<name>` names. Kinds without a code use `vv-<name>`. On a local
@@ -615,14 +616,14 @@ short commands.
 |---|---|
 | Test execution, timeouts, process-group cleanup and machine-readable results | cargo-nextest with per-repository profiles |
 | Code rules | `[workspace.lints]`, `clippy.toml` and rustfmt |
-| Dependencies | cargo-deny for licenses, advisories, bans and sources limited to crates.io and `github.com/VeoveoAI` |
+| Dependencies | cargo-deny for licenses, advisories, bans and sources limited to crates.io, `github.com/VeoveoAI` and explicitly approved revision-pinned upstream Lore/OpenShell client dependencies (D54) |
 | Feature isolation | cargo-hack, proving that each `contract` feature builds alone, and `cargo tree`, proving that it pulls in no server runtime dependency |
 | Public API | cargo-semver-checks for `veoveo-core` and `veoveo-sdk-rust` against their previous tags |
 | Wire formats and schemas | insta snapshots |
 | Parsers, IDs and URIs | proptest |
 | Store tests | a private PostgreSQL 18 cluster per test process from the PGDG packages in the `dev` image, with a fresh database cloned from a migrated template for each test |
-| Launching | Docker Compose for the local installation and its environments, Kubernetes later |
-| Deployment gates, later | Conftest or Kyverno CLI, kubeconform and `helm lint` |
+| Launching | Docker Compose is the recorded baseline; the target is OpenShell's native Docker driver on Mac/Linux (D54), pending qualification and migration |
+| Deployment gates | Native OpenShell schema/admission and policy checks, verified revision/artifact provenance, and Veoveo application readiness; no chart or cluster validation toolchain |
 
 ## First Slice
 
@@ -821,8 +822,9 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D50. Environment names are arbitrary labels, with no built-in preview/dev/stage/release categories or promotion ordering. Lore stores one small composition schema with optional authorized base inheritance, explicit pin/follow selection, component revisions, approved bindings and lifecycle/retention policy. Stable controller identities and immutable resolved compositions govern ownership and routing; branch names do not grant authority. Admission policy lives outside author-controlled configuration. This refines D47/D49's illustrative environment names, not their single deployment path. Accepted on October 16; schema implementation and routing remain pending.
 - [x] D51. Reduce Veoveo identity scope: use the configured OAuth/OIDC provider for standard user login, grants, refresh and identity sessions; use native OpenShell OIDC/workspace authorization for factories and native MCP egress policy for agent method/tool limits. OpenShell is an OIDC consumer, not the general MCP authorization server. Veoveo retains application permissions, context routing, short-lived narrowed delegation and Task authority. Qualify issuer token formats, MCP clients, revocation and Task compromise semantics before removing hosted login/refresh routes and storage; no permanent parallel legacy mode. Explicitly qualify MCP `2026-07-28` with native OpenShell policy and rejection diagnostics. Accepted design direction on October 16, not a completed authentication migration.
 
-- [x] D52. OpenShell owns all capabilities it already provides, for factory work and deployed services. Use native templates/specs, long-running service execution and authenticated native forwarding, main-process restarts, workspace access, policy advisor/prover, providers/credential drivers, sessions and diagnostics. Remove Flux, per-component Helm deployment and the mandatory Kubernetes/k3d/K3s layer. The first single-host candidate uses OpenShell's Docker driver on Mac/Linux with native NVIDIA CDI on Linux; Kubernetes remains an optional native backend. Generic execution gaps belong in supported OpenShell extensions or a narrow upstreamable fork before adding Veoveo/external machinery. Keep only source-to-runtime integration and application-specific authority/routing/Tasks in Veoveo; a standalone factory service is not required. Accepted on October 16; supersedes the hosting portions of D47–D49, with qualification and runtime migration pending.
+- [x] D52. OpenShell owns all capabilities it already provides, for factory work and deployed services. Use native templates/specs, long-running service execution and authenticated native forwarding, main-process restarts, workspace access, policy advisor/prover, providers/credential drivers, sessions and diagnostics. Remove Flux, per-component Helm deployment and the mandatory Kubernetes/k3d/K3s layer. The first single-host candidate uses OpenShell's Docker driver on Mac/Linux with native NVIDIA CDI on Linux; the originally optional Kubernetes backend is withdrawn by D54. Generic execution gaps belong in supported OpenShell extensions or a narrow upstreamable fork before adding Veoveo/external machinery. Keep only source-to-runtime integration and application-specific authority/routing/Tasks in Veoveo; a standalone factory service is not required. Accepted on October 16; supersedes the hosting portions of D47–D49, with qualification and runtime migration pending.
 - [x] D53. Remove OpenBao entirely from the active candidate and qualification sequence. Use OpenShell's native provider/credential-driver capabilities for runtime custody. Shared human `.env` distribution is outside the focused plan. Accepted on October 16; no runtime change is implied.
+- [x] D54. Remove Kubernetes, k3d, K3s, Helm and Flux completely from the candidate, including optional installation paths. Select OpenShell's native Docker driver on both Mac and Linux, using native NVIDIA CDI for Linux CUDA. No alternate backend menu or cluster orchestration is in scope. Use the official source-pinned OpenShell Rust SDK and version-pinned Lore Rust client interfaces across authenticated service boundaries; keep source-to-runtime integration in an existing trusted process. This withdraws D52's optional Kubernetes clause and the earlier cluster direction, without changing the single workload path or data-driven environments. Accepted on October 16; runtime qualification and migration remain pending. See [Rust interfaces and component flow](LORE_OPENSHELL_INTEGRATION.md#rust-interfaces-and-component-flow).
 
 ### Registration And Authorization
 
@@ -935,7 +937,7 @@ These cuts happen in the new repositories while code is copied, not in the curre
 - [ ] E3. Extract the leaf servers: Datasheet, DuckDB, Timeseries, Chart, Map and Frames.
 - [ ] E4. Extract Knowledge, Recording, Agents and Computers, deciding their repository names (D29) first and, with the agents, inline artifact writes for a model without a sandbox (D27).
 - [ ] E5. Extract the GPU servers, runtimes and showcases.
-- [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would and move the reference to the qualified OpenShell execution path. Select a supported native backend for its needs; Kubernetes is not mandatory (D52).
+- [ ] E6. Create `BiomaAI/veoveo-bioma` from `veoveo-template-installation` the way any organization would and move the reference to the qualified OpenShell Docker-driver execution path, including native Linux CUDA requests where needed (D54).
 
 ### Documentation
 

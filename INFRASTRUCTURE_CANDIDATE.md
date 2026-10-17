@@ -31,8 +31,8 @@ external dependency needs a concrete requirement OpenShell does not satisfy.
 | Lore/OpenShell integration | Bind approved revisions and check results to native OpenShell resources and Veoveo contexts; reconcile source intent through the SDK |
 | Component checks | Run in fresh OpenShell sandboxes; publish verified artifacts through a trusted step; no separate CI platform is required |
 | OpenShell | Author/build/check and service execution, lifecycle/restarts, templates, workspace access, resources/GPU requests, policy/advisor/prover, providers, service endpoints, sessions and diagnostics |
-| OpenShell compute driver | Provide the selected host runtime; Docker is the first single-host candidate, Kubernetes an optional cluster backend |
-| OpenShell credential driver | Store and resolve runtime credentials through its supported database, Kubernetes Secret or Vault-compatible backend |
+| OpenShell compute driver | Use the native Docker driver on Mac and Linux, with NVIDIA CDI for Linux CUDA workloads |
+| OpenShell credential driver | Store and resolve runtime credentials through its native encrypted database store |
 | Configured identity provider | User login, MFA and OAuth grants/refresh; Keycloak locally, Entra for the reference, customer-selected providers elsewhere |
 | Veoveo gateway | Application permissions, context selection, MCP catalogs/routing, narrowed delegation and Tasks |
 | Envoy, only for a demonstrated gap | Existing Lore gRPC credential bridge and ingress requirements not met by native forwarding; retire replaced routes |
@@ -42,11 +42,11 @@ factory console, terminal relay, runtime inventory, supervisor, approval queue o
 credential broker. Coordination records hold source/deployment relationships, not
 a second copy of OpenShell's runtime state.
 
-Remove Flux and per-component Helm releases from the candidate. Kubernetes, k3d
-and K3s are no longer prerequisites. Customers may select OpenShell's Kubernetes
-driver; an upstream Helm chart may then install OpenShell itself. That is platform
-bootstrap, not another service delivery path. OpenShell owns workload lifecycle
-through whichever native driver the installation selects.
+Remove Kubernetes, k3d, K3s, Helm and Flux from the candidate, including optional
+installation paths. Select OpenShell's native Docker driver on both hosts. OpenShell
+owns workload lifecycle; Veoveo does not call Docker directly. Cluster orchestration
+is outside this plan. Use the existing Rust client interfaces for the small
+[source-to-runtime integration](LORE_OPENSHELL_INTEGRATION.md#rust-interfaces-and-component-flow).
 
 ## Factory Sandboxes And Service Deployments
 
@@ -104,8 +104,8 @@ Inherited services add none. Databases, storage, factory workers and additional
 replicas are counted separately. Environment count is not container count.
 
 Use native OpenShell access workspaces for runtime access. They are distinct from
-environment composition and Veoveo execution contexts. The selected driver owns
-placement and isolation; Kubernetes namespaces are not environment schema fields.
+environment composition and Veoveo execution contexts. OpenShell's Docker driver
+owns runtime placement and isolation; environment definitions contain no backend menu.
 Reuse inherited services through authorized gateway routing.
 
 ## Personal Overrides And Gateway Routing
@@ -333,11 +333,10 @@ a permanent legacy mode. No authentication code has been removed by this design.
 ## Agent Isolation And CUDA
 
 Any coding or service task may need CUDA. Request it through OpenShell resource
-fields. Docker/Podman drivers use NVIDIA CDI; Kubernetes uses GPU resource requests.
-The first single-host candidate is OpenShell's Docker driver on Mac and Linux, with
-CUDA on Linux. This uses a separate trusted supervisor and fenced workload; the
-current bare Compose author containers do not supply that architecture. Kubernetes
-is optional when an installation needs a cluster. See
+fields and the Docker driver's NVIDIA CDI support on Linux. The selected runtime
+is OpenShell's Docker driver on Mac and Linux, with CUDA on Linux. This uses a
+separate trusted supervisor and fenced workload; the current bare Compose author
+containers do not supply that architecture. See
 [native runtimes](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes).
 
 OpenShell is the execution platform; migration remains gated on qualification.
@@ -365,14 +364,14 @@ the process does not hide it.
 Use native OpenShell provider profiles, attachments, refresh and credential drivers.
 The runtime receives only the material its approved profile permits. Ordinary API
 credentials remain with the trusted supervisor and selected store. No second secret
-service is required. Qualify the native database driver for the first installation;
+service is required. Use and qualify the native encrypted database credential driver;
 protect and back up its operator-controlled state using upstream mechanisms.
 
 Lore stores non-secret configuration and provider references. Human login state and
 local `.env` files stay outside sandboxes and version control. `.gitignore` prevents
 commits, not reads. Shared human `.env` distribution is outside this focused plan.
-The native credential driver's storage backend is an installation choice, not a
-reason to build a Veoveo vault or mandate a new secrets service.
+Protect the selected native store and its encryption key through operator-controlled
+bootstrap and recovery; do not build a Veoveo vault or mandate a new secrets service.
 
 ## Existing Foundation And Qualification
 
