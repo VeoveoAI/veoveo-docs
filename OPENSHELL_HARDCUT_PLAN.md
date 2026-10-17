@@ -11,6 +11,8 @@ Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LOR
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
 
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
+The [platform visual guide](diagrams/veoveo-platform.html) must be updated with every
+major architecture change and whenever an illustrated pending path is qualified.
 Use one native OpenShell Docker-driver path for factories, checks and managed
 services. No Kubernetes, Helm, Flux, OpenBao, alternate preview host or compatibility
 launcher. Preserve source and durable data independently of workload lifecycle.
@@ -187,7 +189,37 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 ## Subsequent Adoption
 
-The first workable local path does not qualify the whole platform. Still required:
+The first workable local path does not qualify the whole platform.
+
+The next application slice is specified in
+[Planned Adoption Of Existing Veoveo Components](LORE_OPENSHELL_INTEGRATION.md#planned-adoption-of-existing-veoveo-components)
+and drawn as planned in the [visual guide](diagrams/veoveo-platform.html#next).
+Execute these bounded steps in order; each is still open:
+
+- [ ] **Gateway + Time:** explicit runtime images in native service sandboxes;
+  gateway in an operator-owned control workspace, Time in an approved service
+  workspace. Qualify local application-token admission, service registration and
+  return egress, endpoint-to-sandbox binding, native forwarding with the existing
+  narrowed application token, database access and persistent service identity.
+- [ ] **Time operations:** discovery, resolve/convert, schedule Tasks and
+  cancellation, event subscriptions/reconnect, permission denials and restart
+  recovery. Use packaged authorities. Existing component tests are evidence of
+  behavior, not acceptance of this new runtime placement.
+- [ ] **Artifact:** add its native service, registration-key volume and approved
+  PostgreSQL/S3 access. Qualify signed upload/download, integrity and ranges,
+  tenant/access denial, quota enforcement and restart persistence. Bytes go to S3
+  directly; the MCP gateway carries metadata/authorization.
+- [ ] **Media:** add its native service with the existing fake provider and status
+  checks. Qualify Task-bound delegation through the gateway to Artifact, streamed
+  output storage, cancellation/recovery, provenance and usage. Real billed providers,
+  webhooks and Artifact share-link ingress remain separate qualifications.
+
+During this slice, retain PostgreSQL/SeaweedFS in their trusted installation
+placement and the qualified Lore/IdP path. Qualify persistent-volume access and
+backup/restore before migrating durable infrastructure. Use one selected service
+version per slug until composition/version routing is implemented.
+
+Further adoption remains open:
 
 - Qualify Entra/customer issuers and interactive human Lore login separately. The
   local direct-issuer authoring/credential lifecycle gates above are complete.

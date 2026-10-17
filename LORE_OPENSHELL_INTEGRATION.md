@@ -7,6 +7,10 @@ revisions to checks, service composition and promotion. The local hard cut and f
 native Lore/private MCP path pass focused acceptance; general deployment and
 composition remain pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
+The [platform visual guide](diagrams/veoveo-platform.html) shows the current platform,
+credential path and next integration. Update it alongside this document after every
+major architecture change; keep planned paths visibly distinct from qualified ones.
+
 Desktop is no longer an acceptance requirement. The locally qualified path uses
 [direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md).
 The Desktop authentication adapter, signer dependencies and Desktop ingress are
@@ -200,7 +204,8 @@ the target sandbox under that principal before opening the supervisor relay. See
 [`ForwardTcp`](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/proto/openshell.proto)
 and [its handler](https://github.com/NVIDIA/OpenShell/blob/v0.1.4/crates/openshell-server/src/grpc/sandbox.rs).
 Use the native SDK/raw client transport; add a generic SDK stream adapter if needed,
-not a new relay service. Keep its management credential outside service workloads.
+not a new relay service. Keep its management credential in the trusted gateway,
+outside factories, build/check jobs and MCP service workloads.
 The current scope is broader than forward-only; qualify least-privilege workspace
 placement and add a native capability if finer transport authority is required.
 
@@ -224,6 +229,106 @@ Runtime restarts remain OpenShell-owned. Version promotion and Task drain are
 application decisions: the integration changes the selected revision only after
 checks and application readiness; pinned Tasks keep their version. Source changes
 cannot grant providers, host mounts, administrative credentials or a weaker boundary.
+
+## Planned Adoption Of Existing Veoveo Components
+
+This is the next application integration, not a claim of installed acceptance.
+The [visual guide's Next integration view](diagrams/veoveo-platform.html#next)
+shows the same placement and rollout. Bring in the existing released-process
+boundaries in this order: Gateway plus Time, Artifact, then Media. Select explicit
+runtime images first; automatic Lore-to-image deployment follows this service slice.
+
+| Existing component | Use in this integration | Planned placement |
+|---|---|---|
+| `veoveo-service-gateway` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
+| `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | First private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
+| `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
+| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and the existing fake provider for initial qualification |
+| `veoveo-core` | Database kernel, identity, durable Tasks, audit and usage | Libraries inside the gateway/services; their durable state remains in the installation PostgreSQL database |
+| `veoveo-sdk-rust` | MCP hosting/client, registration, forwarded-token checks, Task adapter, subscriptions and delegated calls | Libraries inside the gateway/services; its existing CLI is an initial application client |
+| `veoveo-template-installation` | Assemble images, native workload/policy/provider definitions, approved endpoints and volumes | Existing installation repository; no second deployment manifest or component lock |
+
+Each MCP service runs independently of factories and build/check jobs. The gateway
+is trusted control code, not agent-authored code. Only that trusted gateway receives
+the native OpenShell management authority needed for `ForwardTcp`; MCP services and
+author/build jobs do not. Select explicit workspace IDs and qualify the actual
+native permission boundary, since current forwarding authority includes
+`sandbox:write`. The gateway's own restart, volumes and readiness use OpenShell's
+native workload lifecycle. Its application endpoint must remain available to
+services for registration and delegation; no service needs to manage OpenShell.
+
+PostgreSQL and SeaweedFS initially remain in their existing trusted installation
+placement. Admit only the service connections they need. Move these durable services
+under OpenShell only after volume access and backup/restore qualification. Local
+Keycloak, its dedicated database and HTTPS bootstrap remain outside OpenShell.
+Lore's current service and authoring path stay as already qualified during this slice.
+
+### Connections To Qualify
+
+1. **Client to gateway:** the existing SDK CLI or another MCP client calls
+   `/mcp/{profile}` at one approved TLS application origin. Qualify a local IdP-issued
+   application token against the gateway's existing external-issuer admission,
+   including `at+jwt`, audience, principal/tenant/Work Context mapping and permission
+   denial. OpenShell management and Lore tokens are different audiences. This does
+   not qualify interactive human login or customer issuers. Do not enable the
+   gateway's old Lore-token issuance path to make this pass.
+2. **Gateway to service:** keep the existing MCP client and forwarded-token contract;
+   connect its byte stream through native authenticated OpenShell `ForwardTcp` to
+   the selected sandbox port. Bind the admitted registration endpoint to an
+   operator-approved workspace, sandbox and port in the existing trusted process.
+   Preserve the registered HTTP authority/path and JWT audience. A service cannot
+   choose an arbitrary sandbox or grant management authority by registering a URL.
+   Current gateway upstream code uses ordinary `reqwest` HTTP; this native transport
+   connection is implementation work, not an already working capability. Keep any
+   stream adapter generic and inside the existing client; add no relay daemon.
+3. **Service back to gateway:** existing registration discovery, `/oauth/register`,
+   JWKS refresh and (for Media) `/oauth/token` plus `/mcp/{profile}` use an approved
+   gateway origin through native policy-controlled egress. Qualify this return route
+   and gateway ingress separately from forward connections. Preserve registration's
+   signed service identity and server-owned permission declarations. The gateway
+   still learns service names through registration, not a compiled service list.
+4. **Persistence:** the gateway owns installation/kernel migrations and grants each
+   registration its own PostgreSQL login. Services run their own schema migrations
+   and use the SDK/core APIs for shared Tasks, audit and usage. PostgreSQL connections
+   must preserve session locks and LISTEN/NOTIFY. Native network admission, reconnect
+   and mounted registration-key persistence are acceptance gates, not assumptions
+   inferred from the echo fixture.
+5. **Artifact bytes:** MCP carries metadata and authorization; clients and Media
+   PUT/GET bytes at Artifact's signed S3 URLs. Qualify the address from every actual
+   caller and preserve SigV4-bound host/headers. The bucket-scoped signing key stays
+   in Artifact because signing requires the real key; it is never an agent credential.
+   Share-link ingress is a later explicit qualification, not required for private
+   upload/download acceptance.
+6. **Media outputs:** Media uses its existing Task-bound SDK delegation to call
+   Artifact through the gateway, then streams provider output to signed storage
+   URLs. Use the existing fake provider on a policy-approved private endpoint and
+   status-check completion (`VEOVEO_PUBLIC_ORIGIN` unset). Qualify real billed
+   providers and public signed webhook ingress separately. Keep provider credentials
+   with the trusted service/provider path, outside author/build jobs.
+
+Time's first acceptance covers discovery, resolve/convert, schedule Task completion
+and cancellation, event subscriptions/reconnect, permission denial, restart recovery
+and persistent registration identity. Use packaged time authority data; remote
+authority acquisition and clock-observation sockets are separate qualifications.
+Artifact then adds byte-transfer integrity, range download, access denial, quotas and
+restart persistence. Media then adds delegated Artifact access, Task recovery without
+duplicate output publication, cancellation, output provenance and usage records.
+The corresponding cases remain open in the execution checklist until run on this path.
+
+The source-to-deployment integration remains a later, thin module in the existing
+trusted gateway process: Lore notification plus authoritative revision read, fresh
+OpenShell checks/builds, trusted publication of an immutable image, then native
+service deployment and readiness before selection. Registration currently routes
+the newest instance of a slug; parallel version selection, composition and Task
+version retention remain later work. The first slice uses one selected version of
+each service and does not claim to solve those semantics.
+
+Implementation evidence: [gateway transport](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_http.rs),
+[forwarded identity](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_authorized_http.rs),
+[Time startup](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/mod.rs),
+[Artifact storage](../veoveo-mcp-artifact/crates/veoveo-mcp-artifact/DESIGN.md#object-storage),
+[Media outputs](../veoveo-mcp-media/crates/veoveo-mcp-media/src/run.rs),
+[Core libraries](../veoveo-core/README.md) and [SDK libraries/client](../veoveo-sdk-rust/README.md).
 
 ## Data-Driven Environment Definitions
 
