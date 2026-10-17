@@ -705,9 +705,11 @@ an owning document.
 ### Session Version Selection
 
 The leading model is now [personal overrides of a shared environment](INFRASTRUCTURE_CANDIDATE.md#personal-overrides-and-gateway-routing).
-A workspace selects a base such as dev, staging or stable and explicitly replaces
-individual service deployments. Unchanged services come from that base; other
-people's previews do not enter the selection automatically. This refines the earlier
+A workspace selects any authorized configured environment and explicitly replaces
+individual service deployments. Names do not determine policy or a fixed promotion
+sequence; Lore configuration defines optional inheritance, bindings and lifecycle.
+Unchanged services come from that base; other people's previews do not enter the
+selection automatically. This refines the earlier
 single selection per login session so one user can run multiple experiments.
 
 The gateway validates the context and preserves it through discovery, calls,
@@ -734,6 +736,14 @@ providers and diagnostics. Use its SDK and supported extension APIs rather than
 implementing a second factory runtime or workspace access system. A custom factory
 console is not a prerequisite. The first gate is source/runtime coexistence before
 service-preview routing or deployment automation.
+
+The [identity and MCP boundary](LORE_OPENSHELL_INTEGRATION.md#identity-and-mcp-enforcement)
+also delegates factory login and outbound MCP filtering to OpenShell, and ordinary
+user OAuth/refresh to the configured identity provider after qualification. Veoveo
+retains application authorization, environment routing and constrained Task/server
+delegation. OpenShell is not a replacement identity provider or generic MCP
+authorization server.
+
 [Component authoring containers](#component-environments) are called factory
 sandboxes. Lore carries source and environment changes; factory permissions govern
 workspace creation, checks, artifact publication and deployment. The proposed
@@ -745,19 +755,20 @@ factory MCP server declares these permissions:
 | `factory.workspaces.create` | create a sandbox and edit a feature branch |
 | `factory.checks.run` | run lints, contract checks and tests |
 | `factory.images.build` | build and sign images for a commit |
-| `factory.previews.create` | register a version and select it in the caller's session |
-| `factory.previews.write` | let a selected version write live data |
+| `factory.environments.create` | propose a composition and select it in an authorized execution context |
+| `factory.environments.bind` | use an approved identity, storage or database binding within the caller's grants |
 | `factory.verdicts.sign` | sign an independent verification verdict |
 | `factory.branches.merge` | merge a verified branch |
-| `factory.installations.deploy` | change an installation's stable component lock |
+| `factory.installations.deploy` | change an authorized destination's component lock |
 
 The factory ships three predefined roles. `factory.author` covers sources,
-workspaces, checks, images and previews. `factory.verifier` covers sources, checks
-and verdicts. `factory.deployer` covers merges and deployments. Cedar conditions
+workspaces, checks, images and permitted environment compositions.
+`factory.verifier` covers sources, checks and verdicts. `factory.deployer` covers
+merges and deployments. Cedar conditions
 decide when each permission applies. For example, `factory.branches.merge` requires
 verdicts from a quorum of verifiers running harnesses and models other than the
-author's, and a version becomes stable only after its staged rollout passes. The
-factory mints a short-lived server identity for each build, bound to the image digest
+author's, and a destination accepts a version only after its configured rollout
+checks pass. The factory mints a short-lived server identity for each build, bound to the image digest
 and to the component's namespace.
 
 The factory recovers without depending on itself. A watchdog outside the factory
@@ -829,6 +840,8 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D47. Record [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) as the leading infrastructure direction on October 16: Lore-managed environment configuration, shared environments with personal service overrides, Kubernetes/Helm/Flux orchestration, OpenShell sandbox qualification, Envoy credential protection and OpenBao for shared development secrets. Acceptance is of the candidate for further design and qualification, not a completed migration; D40/D44 remain the recorded runtime baseline.
 - [x] D48. Lean on OpenShell as the factory foundation and integrate it deeply with Lore through native SDKs, templates, workspace access, providers, governance extensions, Lore hooks and reconciliation. Maintained VeoveoAI forks of Lore and OpenShell are permitted when a verified gap requires a patch, respecting their extension, security and design contracts. This supersedes an unconditional no-source-patches constraint for future integration builds; D44's protected credentials and privilege restrictions remain. The first qualification is normal Lore operations in an OpenShell sandbox, including branch/repository confinement, credential custody, renewal and reconnect. Source inspection found an HTTP/2 inspection gap and no general external UDP mediation in OpenShell v0.1.4; optional Lore QUIC must preserve credentials and policy and show measured value. Accepted on October 16; [the integration design](LORE_OPENSHELL_INTEGRATION.md) records the source evidence, boundaries and gates. No fork or runtime migration is claimed.
 - [x] D49. Use one MCP service hosting path for personal previews, shared dev, staging and stable: each component's runtime image and Helm chart, reconciled by Flux on Kubernetes. OpenShell owns author/build/check factory execution, with its Kubernetes backend on k3d for Mac and K3s for Linux. Remove native OpenShell preview hosting from the candidate rather than maintain a second launcher, ingress path and lifecycle implementation. Apply the same service packaging and runtime contracts across environments, changing ownership, revisions, bindings and gateway selection. Accepted on October 16; migration remains pending.
+- [x] D50. Environment names are arbitrary labels, with no built-in preview/dev/stage/release categories or promotion ordering. Lore stores one small composition schema with optional authorized base inheritance, explicit pin/follow selection, component revisions, approved bindings and lifecycle/retention policy. Stable controller identities and immutable resolved compositions govern ownership and routing; branch names do not grant authority. Admission policy lives outside author-controlled configuration. This refines D47/D49's illustrative environment names, not their single deployment path. Accepted on October 16; schema implementation and routing remain pending.
+- [x] D51. Reduce Veoveo identity scope: use the configured OAuth/OIDC provider for standard user login, grants, refresh and identity sessions; use native OpenShell OIDC/workspace authorization for factories and native MCP egress policy for agent method/tool limits. OpenShell is an OIDC consumer, not the general MCP authorization server. Veoveo retains application permissions, context routing, short-lived narrowed delegation and Task authority. Qualify issuer token formats, MCP clients, revocation and Task compromise semantics before removing hosted login/refresh routes and storage; no permanent parallel legacy mode. Explicitly qualify MCP `2026-07-28` with native OpenShell policy and rejection diagnostics. Accepted design direction on October 16, not a completed authentication migration.
 
 ### Registration And Authorization
 
