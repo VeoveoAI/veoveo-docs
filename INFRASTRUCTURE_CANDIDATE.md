@@ -22,7 +22,7 @@ continues to use the other services from a selected shared environment.
 | Kubernetes | Schedule workloads, maintain replica counts, replace failed instances and manage rollout readiness |
 | k3d | Run the development Kubernetes cluster on the Mac |
 | K3s | Run the Linux reference installation, including NVIDIA GPU workloads; customer installations can use their own compatible Kubernetes cluster |
-| OpenShell | Candidate runtime for untrusted coding agents; Kubernetes, Envoy and CUDA integration still require qualification |
+| OpenShell | Candidate runtime for factory sandboxes where untrusted agents edit, build and test; Kubernetes, Envoy and CUDA integration still require qualification |
 | Envoy | Enforce permitted network routes and supply protected credentials to authorized upstream requests |
 | Veoveo gateway | Authenticate and authorize callers, resolve their selected service composition, expose its MCP catalog and route calls to healthy instances |
 | OpenBao | Persistent shared secret storage and authorized developer retrieval of development configuration |
@@ -37,6 +37,33 @@ maintain desired replicas, and
 [Flux Helm releases](https://fluxcd.io/flux/components/helm/helmreleases/) manage the
 declared component releases. Gateway registration does not keep a process running.
 
+## Factory Sandboxes And Service Deployments
+
+Call the authoring containers **factory sandboxes**. A factory sandbox holds an
+agent's working source, toolchain, tests and caches. Allocate one per active
+workspace or independently isolated job, normally with one primary component
+repository. A change may include additional authorized repositories in the same
+workspace. Multiple users or unrelated experiments do not share a writable sandbox.
+The factory control plane is a separate trusted service from these worker sandboxes.
+
+Use OpenShell to contain factory work after qualification. Dev, staging and stable
+are service compositions, not three OpenShell sandboxes. A factory sandbox can
+start temporary test processes and fixtures, but it does not host an entire shared
+environment or carry that environment's credentials. Request GPU resources for a
+factory sandbox when its work needs CUDA, independently of service runtime GPU needs.
+
+Deploy each service as its own workload using its runtime image. Each environment
+that owns an instance has a distinct deployment; personal previews add only their
+overrides. Replicas and tightly coupled supporting containers follow that workload's
+requirements. Keeping services separate allows a Media change to deploy or restart
+without restarting Time and Artifact. Agent-authored preview services still receive
+restricted network access, resource limits and appropriately scoped credentials.
+
+OpenShell's documented
+[sandbox lifecycle](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes)
+is managed by its own gateway. Keep that responsibility for factory sandboxes
+separate from the Veoveo gateway's MCP routing and Kubernetes service deployments.
+
 ## Environments And Instances
 
 An installation has shared environments such as `dev`, `staging` and `stable`.
@@ -45,14 +72,14 @@ service composition and explicit data, storage and identity bindings.
 
 A personal preview selects one shared environment as its base and overrides only
 the services or bindings involved in the experiment. It does not copy every
-inherited service. A coding sandbox is a separate workspace for editing and testing
+inherited service. A factory sandbox is a separate workspace for editing and testing
 code; it is not another name for the deployed `dev` environment.
 
 For a single service enabled in all three shared environments, with one replica in
 each, there are three baseline application instances. Two personal versions of that
 service add two preview instances. With ten services enabled in all three
 environments, the same assumptions produce thirty baseline application instances,
-plus previews. Databases, storage, infrastructure, coding sandboxes and additional
+plus previews. Databases, storage, infrastructure, factory sandboxes and additional
 replicas are separate from this count. A Pod can also contain more than one
 container, so environment names do not imply an exact container count.
 
@@ -205,7 +232,7 @@ gRPC and actual CUDA execution before migration. GPU device visibility alone is 
 a CUDA test. Shared kernels and GPU drivers remain part of the isolation model;
 this candidate makes no VM-grade isolation claim.
 
-Coding sandboxes and untrusted build workers receive source, toolchains and permitted
+Factory sandboxes and untrusted build workers receive source, toolchains and permitted
 network access, but no Docker socket, host credentials, cluster administration or
 production secret files. Provider credentials remain with trusted consumers such
 as Envoy. Any credential delivered to an agent-authored service can be read by that
@@ -227,7 +254,7 @@ credentials are generated locally rather than copied from a teammate. Fetched
 files are private and ignored, and must be fetched again after changes; revoking
 store access does not erase downloaded credentials.
 
-Human login state and downloaded `.env` files stay outside coding sandboxes.
+Human login state and downloaded `.env` files stay outside factory sandboxes.
 `.gitignore` prevents accidental commits, not filesystem reads. Ordinary application
 users do not need development secrets. Keep OpenBao persistent, with backups and
 its unlock mechanism outside disposable environments; do not build a custom secrets
@@ -237,7 +264,8 @@ distribution service.
 
 The recorded macOS foundation uses Docker Compose, upstream Lore with no core
 patches, a Veoveo OIDC integration for Lore, Envoy-protected credentials, OpenCode
-development containers, PostgreSQL, SeaweedFS and permanent Keycloak. The
+factory containers currently named `vv-dev-*`, PostgreSQL, SeaweedFS and permanent
+Keycloak. The
 [installation design](../veoveo-template-installation/DESIGN.md) describes it.
 Live Entra qualification and Lore Desktop remote graph/diff and automatic session
 recovery remain acceptance work in the existing plan.

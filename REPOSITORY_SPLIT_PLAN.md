@@ -466,11 +466,15 @@ resources.
 
 ## Component Environments
 
-Each component repository defines its own environment: one long-running container
-that holds the component's source, toolchain, gates, acceptance tests, a coding agent
-and an identity limited to the component's namespace. The environment builds, runs
-and verifies its component, and the agent inside it fixes what fails. Nothing outside
-an environment builds, tests or repairs that component.
+The authoring containers are called **factory sandboxes**, distinct from deployed
+service environments such as dev, staging and stable. Each component repository
+defines its source, toolchain, gates, acceptance tests and coding-agent image. The
+current installation runs one authoring container per component, with a restricted
+identity. It builds and tests the component, and the agent inside fixes what fails.
+The [infrastructure candidate](INFRASTRUCTURE_CANDIDATE.md#factory-sandboxes-and-service-deployments)
+allocates factory sandboxes per active workspace or isolated job, with additional
+authorized repositories when a change spans components. Runtime service deployments
+remain separate from these authoring workspaces.
 
 ### Image Stages
 
@@ -716,9 +720,10 @@ the constraints imposed by shared services, core state and object metadata.
 [`FACTORY_ISOLATION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md) defines the factory's author, verifier
 and broker architecture and proposes `tools/factory/` for it. Under this plan its
 control plane, brokers, verifier and console live in `veoveo-service-factory`.
-[Component environments](#component-environments) are the factory's author
-sandboxes. A coding agent changes, builds and deploys code only through the factory's MCP server,
-which declares these permissions:
+[Component authoring containers](#component-environments) are called factory
+sandboxes. Lore carries source and environment changes; factory permissions govern
+workspace creation, checks, artifact publication and deployment. The proposed
+factory MCP server declares these permissions:
 
 | Permission | Capability |
 |---|---|
