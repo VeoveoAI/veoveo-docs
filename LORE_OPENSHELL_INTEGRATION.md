@@ -266,15 +266,20 @@ under OpenShell only after volume access and backup/restore qualification. Local
 Keycloak, its dedicated database and HTTPS bootstrap remain outside OpenShell.
 Lore's current service and authoring path stay as already qualified during this slice.
 
-### MCP Hub And SDK Naming And Ownership
+### Hub And SDK Naming And Ownership
 
 Use these names throughout the application integration. The repository and source
 renames are planned work; links below still point to the existing checkouts.
 
+The names describe component roles: the Hub connects services, and the Hub SDK
+implements the shared contracts for participating services and clients. MCP remains
+explicit in current protocol contracts and transport modules. Future protocol support
+can follow concrete integration needs; this rename preserves the current behavior.
+
 | Current repository | Target repository and primary package | Responsibility |
 |---|---|---|
-| `veoveo-service-gateway` | `veoveo-mcp-hub` | Service registration/catalog, application authorization, MCP routing, narrowed forwarded identity and server-to-server delegation |
-| `veoveo-sdk-rust` | `veoveo-mcp-sdk` | Shared MCP service contracts, hosting/client implementations, registration, Tasks adapter and delegated calls |
+| `veoveo-service-gateway` | `veoveo-hub` | Service registration/catalog, application authorization, MCP routing, narrowed forwarded identity and server-to-server delegation |
+| `veoveo-sdk-rust` | `veoveo-hub-sdk` | Shared MCP service contracts, hosting/client implementations, registration, Tasks adapter and delegated calls |
 
 The Hub connects services through their declared contracts. The SDK implements
 the shared mechanics; each service owns its domain contract. Core supplies the
@@ -283,12 +288,12 @@ sandbox boundaries and credential custody. Lore owns source and repository acces
 
 **Complete the naming change across source and documentation.** Rename the
 repositories, owned packages/crates/binaries and SDK companion crates consistently;
-use `veoveo-mcp-sdk-cli`, `veoveo-mcp-sdk-fixture` and
-`veoveo-mcp-sdk-conformance` for the existing companions. Update consumers, Rust
+use `veoveo-hub-sdk-cli`, `veoveo-hub-sdk-fixture` and
+`veoveo-hub-sdk-conformance` for the existing companions. Update consumers, Rust
 imports, Git dependency URLs/pins, Cargo locks, build/image references,
 installation configuration, tests and documentation. Remove the Veoveo Gateway
 name and its application-owned `Gateway`/`gateway` identifiers, including owned
-configuration, schema, audit and telemetry names, in favor of MCP Hub naming.
+configuration, schema, audit and telemetry names, in favor of Hub naming.
 Change shared declarations in their owning repository before updating consumers.
 Use the existing local setup/reset path for changed stored names; preserve Lore
 repositories and unrelated durable data. Keep native OpenShell gateway references
@@ -367,7 +372,7 @@ restriction; preserve ordinary Lore grants and the existing push hook.
    Docker socket or new CI/deployment controller is needed in the factory.
 
 Done when the factory builds the prepared Time revision from Lore, the corresponding
-local service works through the MCP Hub, and the matching source is pushed to Git.
+local service works through the Hub, and the matching source is pushed to Git.
 The service runtime and the build factory remain separate workloads.
 
 Git stays in parallel through ordinary source handoffs, not a permanent sync

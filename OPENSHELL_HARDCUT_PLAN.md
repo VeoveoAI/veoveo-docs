@@ -200,10 +200,10 @@ rebuild and replace local services directly. Complete integration and debugging 
 the main development session before assigning work to the factory model. These
 steps remain open:
 
-- [ ] **MCP Hub and SDK rename:** follow
-  [MCP Hub And SDK Naming And Ownership](LORE_OPENSHELL_INTEGRATION.md#mcp-hub-and-sdk-naming-and-ownership).
-  Rename `veoveo-service-gateway` to `veoveo-mcp-hub` and `veoveo-sdk-rust` to
-  `veoveo-mcp-sdk`, including SDK companion crates and all active consumers.
+- [ ] **Hub and SDK rename:** follow
+  [Hub And SDK Naming And Ownership](LORE_OPENSHELL_INTEGRATION.md#hub-and-sdk-naming-and-ownership).
+  Rename `veoveo-service-gateway` to `veoveo-hub` and `veoveo-sdk-rust` to
+  `veoveo-hub-sdk`, including SDK companion crates and all active consumers.
   Remove Veoveo Gateway naming from owned source, configuration, schema/audit
   identifiers, build inputs and docs; update dependency URLs/pins, locks and the
   visual guide. Retain accurate native OpenShell gateway terminology and standard
