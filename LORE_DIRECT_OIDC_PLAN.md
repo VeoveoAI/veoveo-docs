@@ -235,9 +235,9 @@ HTTP/2 mediation patch. No new OpenShell core change is planned.
 
 ## Implementation Order And Acceptance
 
-The local gates below are complete; exact results are recorded in the execution
-checklist and installation component lock. Use disposable, owned test resources and the existing
-small fixture seeder. Do not add a public seed API, new Lore fixture service or
+The execution checklist and installation component lock record the local gates
+below. Use disposable, owned test resources and the existing small fixture seeder.
+Do not add a public seed API, new Lore fixture service or
 production auth test endpoint. Keep behavioral test logic in the Rust qualification
 repository; the existing offline seeder may remain colocated in Lore test support.
 
@@ -264,6 +264,8 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    must succeed with unchanged repository/subject authority, including after the
    original token's expiry bound plus Lore's native 60-second verifier leeway. Establish a
    fresh Lore CLI connection after that point using the same saved reference.
+   Prove process continuity with a random per-launch marker included in fresh
+   command replies. A PID or persisted readiness file is insufficient.
    Repeat ungranted-repository denial and wrong-branch hook rejection after renewal.
    Success before old-token expiry, a new `exec` environment alone, explicit
    rotation or OpenShell human CLI refresh is insufficient evidence.
@@ -274,6 +276,8 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    verifier leeway (native provider expiration may deny earlier). Measure any
    grace interval explicitly. No cached-token fallback, manually renewed token or
    global IdP shutdown. This tests unavailable issuance without a new failure proxy.
+   Record the client's prior enabled value only when this run changes it; restore
+   that value on cleanup, including failed probes. Other phases must not enable A.
 5. **Prove native detach separately.** Use a newly provisioned test A with its IdP
    client still enabled. The native gateway rejects detach while a policy endpoint
    explicitly references that provider. Remove only the credential binding through
@@ -296,9 +300,12 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    Lore stream timers, blacklists or transport revocation to change native behavior.
 7. **Recovery, cleanup and retirement.** Recreate a healthy authorized test path
    through normal provisioning and verify stored provider refresh survives a native
-   gateway restart. Reuse the harness's ownership-aware partial-setup cleanup and
-   pre-existing-workspace sentinel. Preserve durable Lore data and unrelated
-   providers/workspaces. Record source SHAs, image IDs, policy/grant scope,
+   gateway restart. Obtain the recovered process marker from a fresh answered
+   command, allowing native workload restart. Do not infer uninterrupted lifetime
+   from sandbox identity.
+   Reuse the harness's ownership-aware partial-setup cleanup and pre-existing-workspace
+   sentinel. Preserve durable Lore data and unrelated providers/workspaces.
+   Record source SHAs, image IDs, policy/grant scope,
    sanitized timestamps, expiry/leeway, readiness receipts and measured outcomes.
    Retire the old adapter only after the direct path passes these checks.
 
@@ -359,21 +366,25 @@ exact images, timestamps and scope are in the component lock.
   attempt cloned the current branch and committed first. Native protection and an
   unassigned identity's ordinary permissions passed. Existing hook tests cover both RPC
   call sites. Credential custody and raw-egress/operator-file boundaries passed.
-- At least two automatic renewals and post-original-expiry/leeway operations passed
-  using the original reference and unchanged process. No manual provider rotation,
-  replacement credential file or factory restart supplied those renewals.
-- Source withdrawal produced oauth_invalid_client/fix_configuration. Fresh requests
-  were denied after 299 seconds, 55 seconds before the recorded expiry/leeway bound.
+- At least two automatic renewals and post-original-expiry/leeway operations were
+  requalified using the original reference and unchanged per-launch IDs in fresh
+  replies. No manual provider rotation, replacement credential file or factory
+  restart supplied those renewals. This corrects the earlier PID-only evidence.
+- Source withdrawal produced oauth_invalid_client/fix_configuration. The first observed
+  fresh-request denial was 299 seconds after disable, 55 seconds before the recorded expiry/leeway bound.
   The stream received an event after client disable, then no new event was observed
   after expiry. Native stop reached Stopped and execution was rejected; the actual
   workload containers were observed exited. B continued reading, pushing and renewing.
 - Native policy binding removal followed by applied REVOKED detach passed in 10 seconds
   from detach request to applied receipt. The retained reference was rejected. No event
   was observed after the combined transition; no detach-only stream claim is made.
-- A fresh healthy native OnFailure fixture survived gateway recovery with the same
-  sandbox identity and subsequently renewed from stored native configuration, without
-  provider reconfiguration or manual rotation. Partial-setup cleanup and the pre-existing
-  workspace sentinel passed. All temporary qualification resources were removed.
+- A fresh healthy native OnFailure fixture recovered after a gateway restart with
+  the same sandbox identity and subsequently renewed from stored native configuration, without
+  provider reconfiguration or manual rotation. The corrected probe's unique launch IDs
+  confirm the workload process restarted. Starting recovery with A disabled left it
+  disabled; the outer test restored only its own change afterward. Partial-setup
+  cleanup and the pre-existing workspace sentinel passed. All temporary
+  qualification resources were removed.
 - A valid, unexpired former-signer token with verified signature and an OpenShell
   management bearer were rejected by Lore. The old Desktop IdP client was disabled;
   the separate native registrations remained enabled. Durable data and private recovery
@@ -381,3 +392,12 @@ exact images, timestamps and scope are in the component lock.
 
 Entra/customer issuers, interactive human Lore login and Linux/CUDA remain unqualified
 by these local tests. They are separate adoption gates, not reasons to restore a signer.
+
+The original PID-only process markers could repeat after restart, and recovery could
+read a stale readiness file. Those records do not establish uninterrupted process
+lifetime; their process-only fields are explicitly unqualified, including the older
+detach probe. Corrected renewal and recovery probes use random per-launch IDs in
+fresh command replies and qualify only their own runs.
+Original private records are preserved alongside corrected interpretations. The
+299-second first observed denial and 10-second detach-request-to-applied-receipt
+measurements remain valid; the latter starts after policy binding removal.

@@ -186,11 +186,14 @@ in order; it supplies the exact configuration, limits and evidence requirements.
 - [x] **Automatic renewal and reconnect.** Observe at least two native automatic
   refreshes, preserving the original opaque reference and running sandbox. Verify
   real operations and a fresh connection after original `exp` plus verifier leeway.
+  Check a unique per-launch marker in fresh command replies to establish process
+  continuity; PID equality and a persisted readiness file are insufficient.
   No manual rotate/update/reconfiguration during the observation period. Human
   OpenShell CLI refresh is not this credential path.
 - [x] **Source withdrawal and renewal failure.** Disable only test A's IdP client,
   observe native refresh failure, and verify new operations/reconnects fail within
   the last issued token's expiry/leeway bound. Independent B continues to renew.
+  Restore only state changed by this run, preserving its previous enabled value.
 - [x] **Applied detach and established-work termination.** Separately detach A's
   provider after removing its policy binding, await native `REVOKED`, and reject
   saved-reference requests. This is the supported combined transition, not detach alone. Observe a
@@ -208,11 +211,12 @@ Local direct-issuer evidence (2026-10-17): six identities passed signed-token an
 scope-negative preflight. The workflow, custody, former-signer/management-token
 rejection and idempotent provisioning checks passed. Automatic renewal observed
 two native refreshes and successful operations after original expiry plus 60-second
-leeway, using the original reference and unchanged process. This is separate from
-human CLI refresh and the historical manual-rotation test.
+leeway. The corrected renewal run verified the original reference and unchanged
+process using unique per-launch IDs in fresh replies. This is separate from human
+CLI refresh and the historical manual-rotation test.
 
 Disabling only A's client produced native `oauth_invalid_client` with recovery
-`fix_configuration`. First fresh-request denial was 299 seconds after disable and
+`fix_configuration`. First observed fresh-request denial was 299 seconds after disable and
 55 seconds before the recorded expiry/leeway bound. A received a branch event after
 disable; none was observed after expiry. Native stopped state, execution rejection
 and exited workload containers were checked. B remained operational and renewed.
@@ -220,8 +224,13 @@ Binding removal was applied before detach; its applied `REVOKED` receipt followe
 10 seconds after the detach request. Saved-reference access failed, and no event was
 observed after that combined transition. Native stop ended the detached factory.
 
-Healthy gateway recovery preserved sandbox identity and automatic stored refresh.
-The qualification corpus records renewal and remaining gates separately with their
+The corrected gateway recovery probe preserved sandbox identity and automatic stored
+refresh while its unique launch markers confirmed a workload process restart.
+Starting recovery with A disabled left A disabled; the outer regression restored
+only its own change afterward. Earlier PID-only records cannot establish uninterrupted
+process lifetime. Their process-continuity fields are unqualified, including the
+older detach probe; this does not change its removal/termination observations.
+The qualification corpus records renewal, recovery and remaining gates separately with their
 actual fixture images; interrupted attempts are not complete runs. Four partial-setup
 failure points and a pre-existing workspace sentinel passed. The adapter/container,
 Desktop edge, legacy provider/profile, manual signer helpers and old Desktop IdP
