@@ -194,7 +194,11 @@ The first workable local path does not qualify the whole platform.
 The next application slice is specified in
 [Planned Adoption Of Existing Veoveo Components](LORE_OPENSHELL_INTEGRATION.md#planned-adoption-of-existing-veoveo-components)
 and drawn as planned in the [visual guide](diagrams/veoveo-platform.html#next).
-Execute these bounded steps in order; each is still open:
+The next milestone is a **build-only factory pass over prepared Time source**.
+This is a local Mac installation with no users or live deployment to preserve:
+rebuild and replace local services directly. Complete integration and debugging in
+the main development session before assigning work to the factory model. These
+steps remain open:
 
 - [ ] **Gateway + Time:** explicit runtime images in native service sandboxes;
   gateway in an operator-owned control workspace, Time in an approved service
@@ -205,6 +209,38 @@ Execute these bounded steps in order; each is still open:
   cancellation, event subscriptions/reconnect, permission denials and restart
   recovery. Use packaged authorities. Existing component tests are evidence of
   behavior, not acceptance of this new runtime placement.
+- [ ] **Prepared source and Git copy:** finish any Gateway/Time integration fixes
+  outside the factory model's task, run the component-owned gates and commit/push
+  the prepared source to Git. Seed Time in Lore from that exact tracked tree;
+  verify file contents, paths, executable bits and symlinks, excluding VCS metadata,
+  secrets and build output. Record the Git commit and Lore revision in this
+  checklist's acceptance entry; no new manifest or synchronization service.
+  Retain Cargo's existing pinned Git dependencies for this pass.
+- [ ] **Factory preparation without model calls:** layer the shared Lore/agent
+  setup over Time's existing Dockerfile `dev` image. Prepare dependency access,
+  the Lore source revision, working directory and the exact build command. In
+  the same native image/policy/provider setup, manually verify a fresh Lore clone,
+  a release build and SDK-client access to Time through Gateway. Resolve all
+  failures here, including registration/auth/network issues. Set up inference and
+  MCP access for this task; give the model enough steps to run the prepared commands
+  without opening an autonomous coding/debugging effort.
+- [ ] **Bounded model task:** provide the exact Lore clone/revision instructions
+  and run `cargo build --locked --release --bin veoveo-mcp-time` from the prepared
+  checkout. The model reports the revision, command, exit status and output path.
+  It is not assigned source edits, dependency changes, environment repair or
+  additional MCP exploration. If a command fails, retain its output and return the
+  failure to the main development session; no model repair loop. This is task
+  scope, not a new read-only grant, filesystem restriction or deny rule. Verify
+  source is unchanged and the binary was built in this run, not supplied prebuilt.
+- [ ] **Local result:** from the same Lore revision, use the component Dockerfile
+  on the Mac for image construction and replace the local Time service through
+  native OpenShell commands. Verify readiness and a Gateway-routed Time call.
+  Image construction/deployment stay outside the model's task; no Docker socket
+  is added to the factory. Record this as build-only acceptance, not autonomous
+  authoring or an automated Lore-to-deployment pipeline.
+
+After the prepared Time build pass:
+
 - [ ] **Artifact:** add its native service, registration-key volume and approved
   PostgreSQL/S3 access. Qualify signed upload/download, integrity and ranges,
   tenant/access denial, quota enforcement and restart persistence. Bytes go to S3
@@ -221,6 +257,11 @@ version per slug until composition/version routing is implemented.
 
 Further adoption remains open:
 
+- Give the factory model a real edit/test/commit task only in a separate effort
+  covering model quality and token cost. For later Lore-authored changes, publish
+  a verified source snapshot to a separate Git checkout and remote, with the Lore
+  revision in the Git commit message. Use one editing path per task; no automatic
+  bidirectional sync. Git remains a build input while Cargo uses Git revision pins.
 - Qualify Entra/customer issuers and interactive human Lore login separately. The
   local direct-issuer authoring/credential lifecycle gates above are complete.
 - Move the remaining compatible infrastructure and actual MCP components to native

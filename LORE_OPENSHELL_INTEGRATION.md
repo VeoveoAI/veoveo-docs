@@ -234,9 +234,12 @@ cannot grant providers, host mounts, administrative credentials or a weaker boun
 
 This is the next application integration, not a claim of installed acceptance.
 The [visual guide's Next integration view](diagrams/veoveo-platform.html#next)
-shows the same placement and rollout. Bring in the existing released-process
-boundaries in this order: Gateway plus Time, Artifact, then Media. Select explicit
-runtime images first; automatic Lore-to-image deployment follows this service slice.
+shows the same placement and sequence. Prepare Gateway plus Time first, then run
+a build-only factory task from a known-good Lore revision before adding Artifact
+and Media. This is an unused local Mac installation: replace and restart local
+services directly. Production continuity, parallel deployments and rollout
+automation are not prerequisites. Select explicit runtime images; automatic
+Lore-to-image deployment remains later work.
 
 | Existing component | Use in this integration | Planned placement |
 |---|---|---|
@@ -262,6 +265,67 @@ placement. Admit only the service connections they need. Move these durable serv
 under OpenShell only after volume access and backup/restore qualification. Local
 Keycloak, its dedicated database and HTTPS bootstrap remain outside OpenShell.
 Lore's current service and authoring path stay as already qualified during this slice.
+
+### First Factory Task: Build Prepared Time Source
+
+The main development session owns Gateway/Time integration, source fixes, component
+checks and environment preparation. Complete those before invoking the factory's
+model. The first factory task is to clone the supplied Lore revision, build Time
+and report the result. It does not require a feature change or autonomous debugging.
+Keeping edits out of this assignment is a cost/scope decision, not a new permission
+restriction; preserve ordinary Lore grants and the existing push hook.
+
+1. **Prepare and verify Gateway + Time.** Qualify the connections and Time
+   operations below using deterministic SDK/CLI calls. Fix source, configuration,
+   registration, dependency and network errors in the main development session.
+   Keep using the direct IdP Lore path; older component README examples of Compose
+   routing or Gateway-issued Lore credentials are not installation instructions
+   for this integration.
+2. **Put the prepared source in Lore and Git.** Commit and push the tested source
+   to the existing Git remote, then seed Time's Lore repository from that exact
+   tracked tree. Verify paths, bytes, executable bits and symlinks. Keep the VCS
+   working directories separate and exclude their metadata, local secrets and
+   build output. Record the Git commit and Lore revision in the execution
+   checklist's concise acceptance entry. No source modification is needed merely
+   to demonstrate the first build.
+3. **Prepare the factory without spending model tokens.** Reuse Time's Dockerfile
+   `dev` stage plus the shared installation's Lore/agent layer. It owns the Rust
+   toolchain, PostgreSQL test tools and component checks. Configure dependency
+   access/caches, inference, the approved Gateway MCP endpoint and credentials
+   through the existing OpenShell mechanisms. The current smoke agent has a
+   two-step limit, small output budget and all MCP integrations denied; adjust
+   only what the bounded task and prepared MCP access need. Manually preflight a
+   fresh Lore clone and the exact build in the same image/policy/provider setup.
+   Use the SDK client from the factory network path to verify Gateway discovery
+   and a Time call; the model need not explore or repair MCP integration.
+4. **Run the bounded model task.** Supply the immutable Lore revision, clone
+   instructions, working directory and
+   `cargo build --locked --release --bin veoveo-mcp-time`. Ask for the source
+   revision, command, exit status and `target/release/veoveo-mcp-time` output path.
+   Build source in this run; dependency caches are fine, a supplied prebuilt Time
+   binary is not proof. On failure, return the command output to the main
+   development session. Do not ask the model to diagnose, edit, change dependency
+   pins or retry speculative fixes. Check that the source tree remains unchanged.
+5. **Use the result locally.** The operator builds Time's runtime image from the
+   same Lore tree using its existing Dockerfile on the Mac, replaces the local
+   OpenShell service and verifies readiness plus a Gateway-routed Time call.
+   Keep image construction and deployment outside the model's assignment; no
+   Docker socket or new CI/deployment controller is needed in the factory.
+
+Acceptance means prepared Veoveo source builds from Lore in the factory and the
+corresponding local service works through Gateway. It does not establish autonomous
+coding, model debugging quality or automatic source-to-deployment. Those are later
+efforts. The service runtime and the build factory remain separate workloads.
+
+Git stays in parallel through ordinary source handoffs, not a permanent sync
+adapter. For subsequent Lore-authored work, copy an exact revision into a separate
+Git checkout, verify additions/deletions/content/modes/symlinks, commit with the
+Lore revision in the message and push. Edit through one source path per task and
+reconcile any intervening Git changes before continuing. A pushed Git tree protects
+the source; it does not back up Lore's repository metadata or replace its data
+backup. Cargo still resolves Core, SDK and other dependencies from pinned Git
+revisions. Keep those pins for this first pass; publish a changed dependency to Git
+before updating a consumer. Removing that dependency on Git is a separate decision.
 
 ### Connections To Qualify
 
@@ -315,7 +379,7 @@ restart persistence. Media then adds delegated Artifact access, Task recovery wi
 duplicate output publication, cancellation, output provenance and usage records.
 The corresponding cases remain open in the execution checklist until run on this path.
 
-The source-to-deployment integration remains a later, thin module in the existing
+Automatic source-to-deployment integration remains a later, thin module in the existing
 trusted gateway process: Lore notification plus authoritative revision read, fresh
 OpenShell checks/builds, trusted publication of an immutable image, then native
 service deployment and readiness before selection. Registration currently routes
