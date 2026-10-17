@@ -1,8 +1,10 @@
 # OpenShell Hard Cut Plan
 
-Status: the local macOS hard cut and first native Lore/private MCP path pass focused
-acceptance. The old factory/application runtime has been removed. Linux is explicitly out of scope for
-this phase; its current installation will be replaced separately.
+Status: the local macOS hard cut and read-only Lore/private MCP smoke path pass
+focused acceptance. Full Lore coexistence acceptance remains open: bounded
+clone/push, branch confinement, automatic grant renewal and revocation are not
+qualified. The old factory/application runtime has been removed. Linux is explicitly
+out of scope for this phase; its current installation will be replaced separately.
 
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 Use one native OpenShell Docker-driver path for factories, checks and managed
@@ -65,7 +67,7 @@ Exact source revisions, official runtime digest and machine-local build outputs
 are recorded in [the component lock](../veoveo-template-installation/openshell/component-lock.json).
 Operating commands are in [the native setup](../veoveo-template-installation/openshell/README.md).
 
-## Focused Acceptance
+## Completed Smoke Acceptance
 
 Keep these checks narrow; no inference or coding agent session is required.
 
@@ -77,6 +79,9 @@ Keep these checks narrow; no inference or coding agent session is required.
 - Native provider rotation is installed and a subsequent Lore read succeeds without
   restarting the factory. The initial grant is read-only and expires in fifteen
   minutes; operator reprovisioning is explicit, with no replacement token daemon.
+  This proves installation of a replacement credential, not automatic Lore grant
+  renewal, expiry handling or revocation. OpenShell CLI OIDC refresh is a separate
+  credential path and does not establish Lore grant renewal either.
 - MCP initialization, notification, tool discovery and echo invocation succeed over
   native forwarding. Missing application credentials and an authenticated workspace
   nonmember fail. Native target authorization hides the resource with `NOT_FOUND`.
@@ -93,6 +98,42 @@ Keep these checks narrow; no inference or coding agent session is required.
 The [committed acceptance record](../veoveo-qualify-openshell/README.md#focused-macos-native-path)
 and component lock identify the exact tested source and running images. A prior image's successful check cannot qualify a later build. Record local
 commits separately from publication and upstream PRs.
+
+## Required Lore Acceptance
+
+All gates below remain open. They are required by the architecture's
+[Lore coexistence and credential boundaries](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence),
+not optional subsequent enhancements. Complete them before calling the Lore authoring
+path qualified or enabling write-capable agent factories. The current read-only smoke
+grant does not satisfy these gates; do not broaden it merely to make a probe pass.
+
+- [ ] **Bounded clone and push.** Use a disposable fixture repository and an assigned
+  branch with normal Lore CLI commands. Declare file/byte limits and operation
+  deadlines, clone and verify the fixture, make one small edit, then push and verify
+  the resulting revision/content. Use mediated gRPC storage; no inference session
+  or QUIC bypass is needed.
+- [ ] **Repository and branch confinement.** Allow only the assigned author branch's
+  mutations. Deny another author's branch, protected-branch changes, unauthorized
+  branch creation/deletion and cross-repository access. Exercise both enabled push
+  API implementations and low-level storage operations, with no service-account
+  branch-protection bypass. Repository-scoped grants alone are insufficient; qualify
+  server-side authorization/hooks before exposing write authority.
+- [ ] **Automatic Lore grant renewal and reconnect.** Use a short-lived grant and
+  cross its expiry without operator reprovisioning or a factory restart. Verify
+  renewal through the supported OpenShell credential path, unchanged authority,
+  established and re-established connections, and fail-closed behavior if renewal
+  is unavailable. Record expiry/renewal times without logging credentials. Manual
+  provider rotation is only prerequisite evidence.
+- [ ] **Revocation and bounded expiry.** Remove the sandbox's credential binding and
+  revoke its source authority in separate probes. Verify future credential
+  resolution is denied and measure the cutoff for cached credentials and already
+  established Lore sessions against an explicit accepted bound. Check fresh RPCs,
+  reconnects and in-flight operations; ordinary token expiry alone does not prove
+  revocation. Verify an unrelated authorized factory continues to work.
+
+Record the exact source/image/policy/grant scope, declared limits and measured
+results for each gate. Keep unimplemented or unrun cases open; do not infer them
+from successful reads, rotation, cancellation tests or gateway restart recovery.
 
 ## Infrastructure Placement
 
@@ -116,6 +157,7 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 The first workable local path does not qualify the whole platform. Still required:
 
+- Complete the required Lore acceptance above before enabling write-capable factories.
 - Move the remaining compatible infrastructure and actual MCP components to native
   definitions; qualify persistence, registration and relevant service operations.
 - Put thin source/revision-to-runtime bindings in an existing trusted Veoveo process.

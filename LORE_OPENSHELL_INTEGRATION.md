@@ -537,8 +537,11 @@ cutting the old stack. Use focused checks as each changed boundary becomes runna
 2. **Lore coexistence.** Use one author sandbox, one allowed repository/branch and
    a forbidden repository. Qualify gRPC credential mediation, then clone and push a
    bounded fixture with normal Lore commands. Verify branch/repository confinement,
-   both relevant API paths, low-level storage access, renewal and reconnect. Any
-   bridge is limited to the verified gap and removed when native support qualifies.
+   both relevant API paths and low-level storage access. Qualify automatic grant
+   renewal across expiry, reconnect and fail-closed renewal failure; manual provider
+   rotation does not establish renewal. Remove bindings and revoke source authority,
+   checking future resolution and bounded revocation of established Lore sessions.
+   Any bridge is limited to the verified gap and removed when native support qualifies.
 3. **Native access, policies and persistence.** Verify workspace confinement, provider
    binding/rotation, policy advisor review/reload and prover limits. Validate admitted
    volume persistence and cleanup. Exercise missed events, delayed operations and
@@ -562,9 +565,12 @@ cutting the old stack. Use focused checks as each changed boundary becomes runna
    Qualify replica/rollout or other generic platform extensions only when a concrete
    requirement needs them; they do not justify a parallel service execution stack.
 
-These are unrun acceptance gates. The architecture is OpenShell-owned execution;
-qualification chooses supported configuration or closes a specific native gap, not
-whether to keep a duplicate Veoveo implementation by default.
+The [execution plan](OPENSHELL_HARDCUT_PLAN.md#required-lore-acceptance) tracks
+the required Lore gates explicitly. The completed read-only smoke path and manual
+rotation do not complete Lore coexistence acceptance; other gates remain open unless
+their exact tested scope is recorded there. The architecture is OpenShell-owned
+execution; qualification chooses supported configuration or closes a specific native
+gap, not whether to keep a duplicate Veoveo implementation by default.
 
 ## Reviewed Source Baselines
 
