@@ -1,6 +1,6 @@
 # Infrastructure Candidate
 
-Status: leading infrastructure candidate, recorded on 2026-10-16. The direction is
+Status: leading infrastructure candidate, revised on 2026-10-16. The direction is
 accepted for further design and qualification; it is not a completed migration or a
 replacement for the recorded runtime status in the
 [Repository Split Plan](REPOSITORY_SPLIT_PLAN.md).
@@ -10,27 +10,36 @@ environments through ordinary Lore branches and configuration files. Several use
 can run different versions of the same MCP service concurrently, while each user
 continues to use the other services from a selected shared environment.
 
+OpenShell is the factory foundation: reuse its lifecycle, templates, access
+workspaces, resource requests, policies, providers and diagnostics. Lore is the
+source and revision authority. The [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md)
+defines their shared boundaries, verified gaps and qualification order. Maintained
+VeoveoAI forks and extension builds are permitted where needed, while preserving
+both systems' security and design contracts.
+
 ## Infrastructure Responsibilities
 
 | Component | Proposed responsibility |
 |---|---|
-| Upstream Lore | Service source, environment configuration, branches, reviews and immutable revisions; no changes to Lore's regular operations |
-| Veoveo environment controller | Authorize environment changes, connect Lore revisions to CI results, create and remove deployment declarations, and associate deployments with gateway contexts |
-| CI | Validate configuration, build and test code in isolated workers, and publish images and deployment bundles tied to exact source revisions |
+| Lore | Service source, environment configuration, branches and immutable revisions; native hooks and notifications connect approved changes to factory work |
+| Veoveo factory integration | Connect Lore revisions and permissions to native OpenShell resources, CI results, deployment declarations and gateway contexts; reconcile branch lifecycle |
+| CI | Run component checks in fresh OpenShell workers and publish verified immutable artifacts through a trusted step |
 | Helm | Package each component and expose its supported configuration values |
 | Flux | Reconcile approved deployment declarations and configured resource cleanup |
 | Kubernetes | Schedule workloads, maintain replica counts, replace failed instances and manage rollout readiness |
 | k3d | Run the development Kubernetes cluster on the Mac |
 | K3s | Run the Linux reference installation, including NVIDIA GPU workloads; customer installations can use their own compatible Kubernetes cluster |
-| OpenShell | Candidate runtime for factory sandboxes where untrusted agents edit, build and test; Kubernetes, Envoy and CUDA integration still require qualification |
-| Envoy | Enforce permitted network routes and supply protected credentials to authorized upstream requests |
+| OpenShell | Factory foundation for sandbox lifecycle/execution, templates, resource requests, access workspaces, policy enforcement, providers and diagnostics; integration requires qualification |
+| Envoy | Service/Desktop ingress and trusted routes; retain an authenticated Lore bridge while necessary, retiring duplicated factory egress after OpenShell qualifies |
 | Veoveo gateway | Authenticate and authorize callers, resolve their selected service composition, expose its MCP catalog and route calls to healthy instances |
 | OpenBao | Persistent shared secret storage and authorized developer retrieval of development configuration |
 
 Use the existing Kubernetes, Helm, Flux and service diagnostics. This candidate does
 not introduce a log aggregator, a replacement scheduler or a general infrastructure
 programming language. The Veoveo controller owns the product-specific decisions;
-existing controllers own workload reconciliation.
+existing controllers own workload reconciliation. OpenShell is authoritative for
+factory sandboxes and workspace membership. The integration does not maintain a
+second runtime API, scheduler, credential store or policy engine.
 
 [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 maintain desired replicas, and
@@ -44,9 +53,14 @@ agent's working source, toolchain, tests and caches. Allocate one per active
 workspace or independently isolated job, normally with one primary component
 repository. A change may include additional authorized repositories in the same
 workspace. Multiple users or unrelated experiments do not share a writable sandbox.
-The factory control plane is a separate trusted service from these worker sandboxes.
+The factory integration is trusted and separate from these worker sandboxes. It
+uses OpenShell's native SDK and extension APIs rather than managing containers itself.
 
-Use OpenShell to contain factory work after qualification. Dev, staging and stable
+Use OpenShell to contain factory work after qualification. Reference approved native
+OpenShell templates, policies and provider profiles instead of duplicating their
+settings in a Veoveo configuration language. Map private work to native OpenShell
+access workspaces; those are distinct from the service-selection context.
+Dev, staging and stable
 are service compositions, not three OpenShell sandboxes. A factory sandbox can
 start temporary test processes and fixtures, but it does not host an entire shared
 environment or carry that environment's credentials. Request GPU resources for a
@@ -58,6 +72,12 @@ overrides. Replicas and tightly coupled supporting containers follow that worklo
 requirements. Keeping services separate allows a Media change to deploy or restart
 without restarting Time and Artifact. Agent-authored preview services still receive
 restricted network access, resource limits and appropriately scoped credentials.
+
+Qualify [OpenShell's native service forwarding](LORE_OPENSHELL_INTEGRATION.md#native-private-preview-hosting)
+as the preferred private-preview hosting option, using a dedicated runtime sandbox
+separate from the author. Shared dev/staging/stable services retain normal deployment
+controllers. Service URLs do not inherit OpenShell control-plane OIDC authorization;
+private application ingress and MCP behavior must pass before adopting this option.
 
 OpenShell's documented
 [sandbox lifecycle](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes)
@@ -83,10 +103,12 @@ plus previews. Databases, storage, infrastructure, factory sandboxes and additio
 replicas are separate from this count. A Pod can also contain more than one
 container, so environment names do not imply an exact container count.
 
-Use a namespace for each shared environment and each personal preview's owned
-workloads. Reuse inherited services through authorized gateway routing. A namespace
-does not provide hostile-code isolation on its own; sandboxing and network and
-identity policy remain necessary. See
+Use a namespace for each shared environment and for preview-owned ordinary
+Kubernetes dependencies. OpenShell manages sandbox placement and namespaces through
+its native backend; an OpenShell access workspace is not assumed to equal a
+Kubernetes namespace. Reuse inherited services through authorized gateway routing.
+A namespace does not provide hostile-code isolation on its own; sandboxing and
+network and identity policy remain necessary. See
 [Kubernetes multi-tenancy](https://kubernetes.io/docs/concepts/security/multi-tenancy/).
 
 ## Personal Overrides And Gateway Routing
@@ -150,10 +172,12 @@ Do not introduce automatic sleeping, gateway-triggered starts or idle timers in 
 first slice. Resource quotas can reject or leave work pending; a GPU request cannot
 be satisfied by routing to an unrelated deployment.
 
-The Veoveo controller records whether an environment should exist. Flux maintains
-its declared resources. Kubernetes maintains the running workloads. The gateway
-uses deployment identity, registration and readiness to select available replicas;
-it does not become a second process supervisor.
+The Veoveo factory integration records whether an environment should exist. Flux
+maintains baseline deployments and declared dependencies; Kubernetes maintains
+those workloads. OpenShell owns sandbox lifecycle and restart policy for factory
+workers and, if qualified, native private previews, using its configured backend
+for compute. The Veoveo gateway uses deployment identity, registration and readiness
+to select available instances; it does not become a second process supervisor.
 
 On branch deletion, stop accepting new work for the preview, drain or explicitly
 cancel its Tasks according to the configured policy, revoke its access and remove
@@ -178,6 +202,13 @@ Agents can propose chart changes when deployment behavior needs to change, subje
 to the permissions and checks for that component. They do not receive cluster
 credentials, arbitrary privileged deployment authority or unrestricted secret
 references by editing a file.
+
+Use Lore's native hooks and notifications to connect source changes to OpenShell
+checks and environment reconciliation. A compiled Lore hook can enforce mutation
+policy; notification delivery alone is not authoritative. Respect OpenShell's
+interceptor phases and native authorization. The
+[integration design](LORE_OPENSHELL_INTEGRATION.md#lore-hooks-and-branch-lifecycle)
+defines the extension-build and recovery constraints.
 
 The proposed source bridge publishes validated environment manifests as OCI
 artifacts. It binds a Lore revision and CI results to image, chart and configuration
@@ -226,16 +257,22 @@ GPU workers with the NVIDIA runtime, while the Mac hosts local development work.
 [K3s documents NVIDIA runtime integration](https://docs.k3s.io/advanced#nvidia-container-runtime).
 Keep GPU scheduling separate from deciding which service version a caller sees.
 
-OpenShell is the leading sandbox candidate, not a qualified replacement yet. Prove
-the chosen runtime's integration with Kubernetes, Envoy credential injection, Lore
-gRPC and actual CUDA execution before migration. GPU device visibility alone is not
-a CUDA test. Shared kernels and GPU drivers remain part of the isolation model;
+OpenShell is the selected factory foundation, with migration gated on qualification.
+The reviewed v0.1.4 inspected proxy is HTTP/1.1-only, so Lore gRPC needs a qualified
+bridge or generic HTTP/2 support. General external UDP is also denied, and native
+Lore QUIC requires a separate mediation and credential-custody design. QUIC is an
+optional measured optimization; gRPC remains acceptable. See
+[transport integration](LORE_OPENSHELL_INTEGRATION.md#grpc-integration-gap-and-envoy-transition)
+and [QUIC](LORE_OPENSHELL_INTEGRATION.md#optional-quic-storage-transport).
+Prove actual CUDA execution before migration. GPU device visibility alone is not a
+CUDA test. Shared kernels and GPU drivers remain part of the isolation model;
 this candidate makes no VM-grade isolation claim.
 
 Factory sandboxes and untrusted build workers receive source, toolchains and permitted
 network access, but no Docker socket, host credentials, cluster administration or
-production secret files. Provider credentials remain with trusted consumers such
-as Envoy. Any credential delivered to an agent-authored service can be read by that
+production secret files. Provider credentials remain with OpenShell's trusted
+supervisor and credential driver, or a qualified trusted bridge during transition.
+Any credential delivered to an agent-authored service can be read by that
 code, so previews receive only explicitly allowed, appropriately scoped credentials.
 
 ## Shared Development Secrets
@@ -260,6 +297,11 @@ users do not need development secrets. Keep OpenBao persistent, with backups and
 its unlock mechanism outside disposable environments; do not build a custom secrets
 distribution service.
 
+Qualify OpenShell's existing Vault-compatible credential driver against OpenBao for
+factory provider custody before writing a connector. Native supported refresh
+strategies take over renewal where compatible; the existing private-key JWT Lore
+flow needs explicit qualification or a generic extension.
+
 ## Existing Foundation And Qualification
 
 The recorded macOS foundation uses Docker Compose, upstream Lore with no core
@@ -281,15 +323,20 @@ migration and OpenBao provisioning remain unimplemented candidate work. Existing
 installation contracts and Git-based component locks also need explicit changes to
 represent Lore revisions and resolved environment compositions.
 
-The first acceptance slice is one shared dev composition and two personal previews
+The first acceptance gate is now [Lore and OpenShell coexistence](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence):
+normal Lore commands in a factory sandbox with repository/branch confinement,
+protected credentials, renewal and reconnect. Qualify native OpenShell provisioning,
+the Kubernetes backend and CUDA next. Forks may close verified gaps while preserving
+extension contracts; see [fork policy](LORE_OPENSHELL_INTEGRATION.md#extension-builds-and-fork-policy).
+
+The service-selection acceptance slice is one shared dev composition and two personal previews
 of one MCP service. Verify that each preview replaces only that service; inherited
 services remain dev; another person's preview is invisible unless shared; discovery
 and downstream calls preserve selection; failed previews never silently fall back;
 and deleting one preview leaves the base and the other preview intact. Include a
 long-lived Task and a replica restart to check version ownership and recovery.
 
-Then qualify the GPU sandbox with an actual CUDA kernel and denied secret/host
-access, and qualify developer secret login and retrieval using native OpenBao tools.
+Qualify developer secret login and retrieval using native OpenBao tools.
 Before broader migration, settle the environment schema, baseline update policy,
 state isolation boundaries, active-Task deletion policy, OCI registry, and backup
 and unlock arrangements for persistent infrastructure. Lore, the controller,

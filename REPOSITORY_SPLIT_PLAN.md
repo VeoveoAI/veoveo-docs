@@ -11,7 +11,11 @@ Current push: the cutover to Docker environments under [Docker Environments And 
 
 Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
 records the leading candidate from October 16 for Lore-managed environments,
-Kubernetes/Helm/Flux, personal service overrides, agent sandboxing and shared secrets.
+Kubernetes/Helm/Flux, personal service overrides and shared secrets. The revised
+[Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md) makes OpenShell the
+factory foundation and permits extension builds and maintained forks for verified
+gaps, including transport support. Lore/OpenShell coexistence is the first gate;
+QUIC is an optional optimization after credential and policy qualification.
 It does not mark those migrations implemented or change the runtime status below.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
@@ -720,6 +724,13 @@ the constraints imposed by shared services, core state and object metadata.
 [`FACTORY_ISOLATION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/FACTORY_ISOLATION.md) defines the factory's author, verifier
 and broker architecture and proposes `tools/factory/` for it. Under this plan its
 control plane, brokers, verifier and console live in `veoveo-service-factory`.
+The [revised integration direction](LORE_OPENSHELL_INTEGRATION.md#native-responsibilities)
+narrows that service to coordination with Lore, checks, artifacts and deployment.
+OpenShell owns sandbox lifecycle, native access workspaces, templates, policies,
+providers and diagnostics. Use its SDK and supported extension APIs rather than
+implementing a second factory runtime or workspace access system. A custom factory
+console is not a prerequisite. The first gate is source/runtime coexistence before
+service-preview routing or deployment automation.
 [Component authoring containers](#component-environments) are called factory
 sandboxes. Lore carries source and environment changes; factory permissions govern
 workspace creation, checks, artifact publication and deployment. The proposed
@@ -813,6 +824,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D45. Use official Lore Desktop as a live acceptance client that puts pressure on Veoveo's design. A human adds one remote, authenticates once, discovers authorized repositories and browses current branches, revision graphs and diffs, with session renewal and reconnect handled by the integration. Local checkout exports, snapshots and manual token copying do not satisfy this requirement. The host's human client is an explicit extension to D44's container-only client placement; its identity and permissions remain separate from development agents and the administrative reviewer. Preserve upstream Lore and the Envoy boundary. Decide completeness from the actual Desktop experience, not from a successful CLI probe. Decided on October 15.
 - [x] D46. Identity is an installation choice: the macOS development installation runs permanent Keycloak, the remote Linux reference at `veoveo.bioma.ai` will use Microsoft Entra ID, and customers configure their own OIDC provider, optionally retaining bundled Keycloak. Generic deployment and runtime authentication must not require Keycloak administration or detect providers by name. Keycloak state has its own operator-owned PostgreSQL volume, separate from disposable component state; the installation CA and credentials also survive component resets. Provider credentials belong only to trusted services. Envoy remains the network boundary, and human sign-in does not give development agents credentials or repository administration. Decided on October 15; live reference Entra qualification remains L10.
 - [x] D47. Record [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) as the leading infrastructure direction on October 16: Lore-managed environment configuration, shared environments with personal service overrides, Kubernetes/Helm/Flux orchestration, OpenShell sandbox qualification, Envoy credential protection and OpenBao for shared development secrets. Acceptance is of the candidate for further design and qualification, not a completed migration; D40/D44 remain the recorded runtime baseline.
+- [x] D48. Lean on OpenShell as the factory foundation and integrate it deeply with Lore through native SDKs, templates, workspace access, providers, governance extensions, Lore hooks and reconciliation. Maintained VeoveoAI forks of Lore and OpenShell are permitted when a verified gap requires a patch, respecting their extension, security and design contracts. This supersedes an unconditional no-source-patches constraint for future integration builds; D44's protected credentials and privilege restrictions remain. The first qualification is normal Lore operations in an OpenShell sandbox, including branch/repository confinement, credential custody, renewal and reconnect. Source inspection found an HTTP/2 inspection gap and no general external UDP mediation in OpenShell v0.1.4; optional Lore QUIC must preserve credentials and policy and show measured value. Accepted on October 16; [the integration design](LORE_OPENSHELL_INTEGRATION.md) records the source evidence, boundaries and gates. No fork or runtime migration is claimed.
 
 ### Registration And Authorization
 
