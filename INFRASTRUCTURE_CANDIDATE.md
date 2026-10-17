@@ -375,13 +375,16 @@ bootstrap and recovery; do not build a Veoveo vault or mandate a new secrets ser
 
 ## Existing Foundation And Qualification
 
-The recorded macOS foundation uses Docker Compose, upstream Lore with no core
-patches, a Veoveo OIDC integration for Lore, Envoy-protected credentials, OpenCode
-factory containers currently named `vv-dev-*`, PostgreSQL, SeaweedFS and permanent
-Keycloak. The
-[installation design](../veoveo-template-installation/DESIGN.md) describes it.
-Live Entra qualification and Lore Desktop remote graph/diff and automatic session
-recovery remain acceptance work in the existing plan.
+The macOS hard cut has removed the old Compose factory/application launchers.
+OpenShell 0.1.4 now supplies native execution, credential mediation and private MCP
+forwarding; the maintained supervisor and factory Lore CLI contain narrow transport
+and auth patches. The Lore server remains upstream. Trusted infrastructure still
+awaits migration to native workloads. Keep only the necessary identity bootstrap
+outside OpenShell. See [execution status](OPENSHELL_HARDCUT_PLAN.md) and the
+[installation design](../veoveo-template-installation/DESIGN.md).
+Desktop remote catalog reload works; graph/diff and automatic expired-session
+recovery remain acceptance work. Entra and Linux/CUDA are not qualified by the local
+first-path checks.
 
 The gateway currently selects the newest registration per service slug, and its
 [registration snapshot](../veoveo-service-gateway/crates/veoveo-service-gateway/src/registration/snapshot.rs)
@@ -389,8 +392,8 @@ holds one routed entry per slug. Multiple isolated environment selections requir
 changes to registration identity, routing, catalogs, delegation and Task ownership.
 They are not supplied by deploying additional containers alone.
 
-The Lore-to-OpenShell integration, environment overrides, service hosting and
-OpenShell migration remain unimplemented candidate work. Existing
+The general Lore-to-OpenShell source adapter, environment overrides and complete
+application/infrastructure migration remain unimplemented candidate work. Existing
 installation contracts and Git-based component locks also need explicit changes to
 represent Lore revisions and resolved environment compositions.
 

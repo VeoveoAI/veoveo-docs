@@ -3,7 +3,9 @@
 Status: accepted infrastructure direction for design and qualification, revised on
 2026-10-16. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
-revisions to checks, service composition and promotion. Implementation and migration are pending.
+revisions to checks, service composition and promotion. The local hard cut and first
+native Lore/private MCP path pass focused acceptance; general deployment and
+composition remain pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted
@@ -141,8 +143,13 @@ OpenShell attaches existing admitted volumes; that does not establish database
 replication, backup orchestration or an arbitrary infrastructure provisioner.
 PostgreSQL and SeaweedFS remain data services. Prefer running compatible instances
 as native workloads with protected storage, and qualify their protocols/persistence
-before replacing their existing bootstrap. Root OpenShell/Lore/identity/storage
-recovery remains independent of disposable environment branches.
+before replacing their existing bootstrap. Run compatible infrastructure through
+OpenShell too, with operator-owned workspaces and retained volumes. Local Keycloak,
+its dedicated database and HTTPS endpoint remain the minimal external bootstrap:
+OpenShell initializes its OIDC issuer before workload recovery, so hosting the only
+issuer inside that same gateway creates a cold-start loop. External Entra/customer
+issuers need no local Keycloak stack. Root OpenShell/Lore/identity/storage recovery
+remains independent of disposable environment branches.
 
 ## Workspaces And Runtime Placement
 
