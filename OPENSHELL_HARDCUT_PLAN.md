@@ -200,6 +200,23 @@ rebuild and replace local services directly. Complete integration and debugging 
 the main development session before assigning work to the factory model. These
 steps remain open:
 
+- [ ] **MCP Hub and SDK rename:** follow
+  [MCP Hub And SDK Naming And Ownership](LORE_OPENSHELL_INTEGRATION.md#mcp-hub-and-sdk-naming-and-ownership).
+  Rename `veoveo-service-gateway` to `veoveo-mcp-hub` and `veoveo-sdk-rust` to
+  `veoveo-mcp-sdk`, including SDK companion crates and all active consumers.
+  Remove Veoveo Gateway naming from owned source, configuration, schema/audit
+  identifiers, build inputs and docs; update dependency URLs/pins, locks and the
+  visual guide. Retain accurate native OpenShell gateway terminology and standard
+  protocol fields/routes. Use direct replacements and the existing local setup
+  path, without compatibility aliases or duplicate configuration. Keep this gate
+  open until the source, consumer builds and documentation all use the new names.
+- [ ] **Remove the compiled Lore issuer:** delete `src/bin/gateway/lore_tokens.rs`
+  and its token-endpoint dispatch, Lore resource/grant configuration and validation,
+  local Lore client/key generation and CLI options, and obsolete issuer tests and
+  examples. Keep direct IdP issuance with native OpenShell custody/renewal and Lore
+  validation. Preserve MCP authentication, registration, forwarded-token signing
+  and narrowed delegation/token exchange. Verify the Hub cannot issue a Lore token
+  and run focused regressions for the retained MCP flows. Record actual results.
 - [ ] **Follow the code-based implementation decisions:** use
   [Implementation Decisions For The Prepared Time Pass](LORE_OPENSHELL_INTEGRATION.md#implementation-decisions-for-the-prepared-time-pass)
   as the coding handoff. In particular, reuse Time's `dev` image through factory
@@ -243,8 +260,8 @@ steps remain open:
   on the Mac for image construction and replace the local Time service through
   native OpenShell commands. Verify readiness and a Gateway-routed Time call.
   Image construction/deployment stay outside the model's task; no Docker socket
-  is added to the factory. Record this as build-only acceptance, not autonomous
-  authoring or an automated Lore-to-deployment pipeline.
+  is added to the factory. Record the build, source correspondence and local Time
+  result in this checklist.
 
 After the prepared Time build pass:
 

@@ -266,6 +266,60 @@ under OpenShell only after volume access and backup/restore qualification. Local
 Keycloak, its dedicated database and HTTPS bootstrap remain outside OpenShell.
 Lore's current service and authoring path stay as already qualified during this slice.
 
+### MCP Hub And SDK Naming And Ownership
+
+Use these names throughout the application integration. The repository and source
+renames are planned work; links below still point to the existing checkouts.
+
+| Current repository | Target repository and primary package | Responsibility |
+|---|---|---|
+| `veoveo-service-gateway` | `veoveo-mcp-hub` | Service registration/catalog, application authorization, MCP routing, narrowed forwarded identity and server-to-server delegation |
+| `veoveo-sdk-rust` | `veoveo-mcp-sdk` | Shared MCP service contracts, hosting/client implementations, registration, Tasks adapter and delegated calls |
+
+The Hub connects services through their declared contracts. The SDK implements
+the shared mechanics; each service owns its domain contract. Core supplies the
+database kernel, durable Tasks, audit and usage. OpenShell owns workload lifecycle,
+sandbox boundaries and credential custody. Lore owns source and repository access.
+
+**Complete the naming change across source and documentation.** Rename the
+repositories, owned packages/crates/binaries and SDK companion crates consistently;
+use `veoveo-mcp-sdk-cli`, `veoveo-mcp-sdk-fixture` and
+`veoveo-mcp-sdk-conformance` for the existing companions. Update consumers, Rust
+imports, Git dependency URLs/pins, Cargo locks, build/image references,
+installation configuration, tests and documentation. Remove the Veoveo Gateway
+name and its application-owned `Gateway`/`gateway` identifiers, including owned
+configuration, schema, audit and telemetry names, in favor of MCP Hub naming.
+Change shared declarations in their owning repository before updating consumers.
+Use the existing local setup/reset path for changed stored names; preserve Lore
+repositories and unrelated durable data. Keep native OpenShell gateway references
+and standard protocol terminology accurate. Keep standard MCP/OAuth routes and
+fields intact. Use direct replacements, without old-name aliases, wrappers,
+duplicate manifests or compatibility paths. Sweep all active repositories and
+docs for stale references, including this plan's source links and visual guide.
+
+**Remove the superseded Lore credential issuer.** The current binary imports
+[`lore_tokens.rs`](../veoveo-service-gateway/crates/veoveo-service-gateway/src/bin/gateway/lore_tokens.rs),
+and [`oauth_client_credentials.rs`](../veoveo-service-gateway/crates/veoveo-service-gateway/src/bin/gateway/oauth_client_credentials.rs)
+dispatches Lore resource requests to it. Remove that issuer and dispatch, the Lore
+resource variant/resolution in `src/bin/gateway/oauth.rs`, the Lore grants and
+validation in `src/control_plane/lore.rs` and its callers, and the Lore client/key
+generation and CLI options in the local installation generator. Remove obsolete
+issuer-specific tests, fixtures, configuration and README/design examples. The
+installation's IdP issues Lore grants directly; native OpenShell providers renew
+and inject them; Lore validates them through native OIDC discovery/JWKS.
+
+Retain the Hub's MCP application authentication, registration, per-request
+forwarded-token signing and narrowed delegation/token exchange. Keep generic
+OAuth/JWKS machinery required by those flows. The direct-IdP Lore configuration,
+existing Lore push hook and OpenShell custody/renewal remain in their current owners.
+
+Done when builds and focused checks pass under the new names, every active consumer
+resolves the renamed dependencies, Veoveo-owned old names and Lore-issuer paths are
+gone, and MCP registration, forwarded identity and delegation still work. Verify
+that a Lore resource request cannot obtain a token from the Hub and that direct-IdP
+Lore access remains configured. Use focused component regressions and the planned
+Hub/Time integration checks; record the actual checks in the execution checklist.
+
 ### First Factory Task: Build Prepared Time Source
 
 The main development session owns Gateway/Time integration, source fixes, component
@@ -312,10 +366,9 @@ restriction; preserve ordinary Lore grants and the existing push hook.
    Keep image construction and deployment outside the model's assignment; no
    Docker socket or new CI/deployment controller is needed in the factory.
 
-Acceptance means prepared Veoveo source builds from Lore in the factory and the
-corresponding local service works through Gateway. It does not establish autonomous
-coding, model debugging quality or automatic source-to-deployment. Those are later
-efforts. The service runtime and the build factory remain separate workloads.
+Done when the factory builds the prepared Time revision from Lore, the corresponding
+local service works through the MCP Hub, and the matching source is pushed to Git.
+The service runtime and the build factory remain separate workloads.
 
 Git stays in parallel through ordinary source handoffs, not a permanent sync
 adapter. For subsequent Lore-authored work, copy an exact revision into a separate
