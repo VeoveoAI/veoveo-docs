@@ -7,6 +7,12 @@ low-level branch isolation is superseded, not an acceptance claim. Native creden
 renewal and access removal remain separate qualifications. The old factory/application
 runtime has been removed. Linux is explicitly out of scope for this phase; its current installation will be replaced separately.
 
+Updated design decision (2026-10-17): Desktop acceptance is withdrawn. Qualify
+direct IdP-issued Lore credentials through native OpenShell refresh, then retire
+the Desktop adapter. The current adapter is still deployed; the checklist below
+does not claim the new path has passed. Exact configuration, ownership and coding
+scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
+
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 Use one native OpenShell Docker-driver path for factories, checks and managed
 services. No Kubernetes, Helm, Flux, OpenBao, alternate preview host or compatibility
@@ -81,8 +87,9 @@ Keep these checks narrow; no inference or coding agent session is required.
   paths and Docker socket are inaccessible. Raw TCP attempts to a public endpoint,
   identity administration and the OpenShell management endpoint are denied.
 - Native provider rotation is installed and a subsequent Lore read succeeds without
-  restarting the factory. The initial grant is read-only and expires in fifteen
-  minutes; operator reprovisioning is explicit, with no replacement token daemon.
+  restarting the factory. The initial smoke policy is read-only and its credential
+  expires in fifteen minutes; operator reprovisioning is explicit, with no
+  replacement token daemon.
   This proves installation of a replacement credential, not automatic Lore grant
   renewal, expiry handling or revocation. OpenShell CLI OIDC refresh is a separate
   credential path and does not establish Lore grant renewal either.
@@ -95,9 +102,9 @@ Keep these checks narrow; no inference or coding agent session is required.
   header custody, message framing, policy-generation fencing and cancellation before
   and after response headers. More cancellations than the slot limit must succeed.
 - Restart the native gateway, then repeat the Lore and private service checks.
-- Reload the official Desktop's remote catalog after auth deployment. CLI success is
-  not Desktop acceptance. Remote graph/diff and automatic expired-session recovery
-  remain separate requirements.
+- Historical Desktop catalog reload passed for the adapter deployment. Desktop
+  graph/diff and automatic expired-session recovery were not completed; the user
+  withdrew those requirements on 2026-10-17. They no longer block this plan.
 
 The [committed acceptance record](../veoveo-qualify-openshell/README.md#focused-macos-native-path)
 and component lock identify the exact tested source and running images. A prior image's successful check cannot qualify a later build. Record local
@@ -107,9 +114,11 @@ commits separately from publication and upstream PRs.
 
 The authoring gates below follow the revised scope in the architecture's
 [Lore coexistence and credential boundaries](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence),
-not a comprehensive branch-authorization system. The original read-only smoke grant
-stays read-only. Use ordinary repository credentials for the disposable authoring
-fixture; never add a service-account protection bypass merely because it is a factory.
+not a comprehensive branch-authorization system. The original smoke path stays
+read-only through its OpenShell RPC policy. Native Lore grants with an empty
+action array still allow ordinary unprotected pushes. Use ordinary repository
+credentials for the disposable authoring fixture; never add a service-account
+protection bypass merely because it is a factory.
 The broad `068cf857` server changes are set aside by a revert; preserve the earlier
 CLI auth fixes and unrelated work. Hook modules, configuration and tests own this
 slice; identify a concrete hook API gap before expanding it.
@@ -149,25 +158,45 @@ and preserves a labelled pre-existing workspace. Each workload command is limite
 20 seconds, the workflow to 120 seconds, and setup plus workflow to 180 seconds.
 Temporary OpenShell resources were removed and test assignments were cleared.
 Exact source and running image IDs are in the installation component lock. This
-fixture made no inference calls and kept the original smoke grant read-only.
+fixture made no inference calls and kept the original smoke path read-only.
+
+These completed checks used the former Veoveo signer. Preserve them as historical
+evidence and rerun the workflow under the direct IdP before accepting that cutover.
 
 ## Separate Credential Lifecycle Qualification
 
-Keep this work separate from the hook implementation:
+Keep this work separate from the hook implementation. Follow
+[the direct IdP plan](LORE_DIRECT_OIDC_PLAN.md#implementation-order-and-acceptance)
+in order; it supplies the exact configuration, limits and evidence requirements.
 
-- [ ] **Automatic ordinary Lore credential renewal and reconnect.** Use a short-lived grant and
-  cross its expiry without operator reprovisioning or a factory restart. Verify
-  renewal through the supported OpenShell credential path, unchanged authority,
-  re-established connections, and fail-closed behavior if renewal
-  is unavailable. Record expiry/renewal times without logging credentials. Manual
-  provider rotation is only prerequisite evidence.
-- [ ] **Native access removal and termination.** Remove the provider attachment and
-  revoke source authority in separate probes. Verify future credential references
-  are invalidated and measure actual cached-credential, reconnect and established
-  session behavior. Detach does not promise cancellation of already-sent requests.
-  Qualify native sandbox stop when execution must end, with an unrelated authorized
-  factory remaining operational. Record native limits; do not change Lore's stream
-  lifetime or claim ordinary token expiry alone proves revocation.
+- [ ] **Direct issuer preparation.** Provision ordinary repo-scoped IdP clients and
+  native OAuth client-credentials providers. Use built-in Keycloak mappers locally;
+  no adapter token endpoint. Verify `at+jwt`, audience, subject, resource claims,
+  scope denial and five-minute expiry without exposing credentials. Back up state.
+- [ ] **Native Lore cutover and workflow regression.** Configure native OIDC/Tier 2,
+  direct discovery/JWKS and public CA trust. Remove adapter auth/catalog references,
+  update trusted hook assignments to IdP subjects, and rerun bounded clone/push,
+  hook, protection, repo-denial and custody checks. Old signer and management
+  bearers must fail. Keep the smoke policy read-only. Empty native catalog listing
+  is expected; provide known assigned repository URLs.
+- [ ] **Automatic renewal and reconnect.** Observe at least two native automatic
+  refreshes, preserving the original opaque reference and running sandbox. Verify
+  real operations and a fresh connection after original `exp` plus verifier leeway.
+  No manual rotate/update/reconfiguration during the observation period. Human
+  OpenShell CLI refresh is not this credential path.
+- [ ] **Source withdrawal and renewal failure.** Disable only test A's IdP client,
+  observe native refresh failure, and verify new operations/reconnects fail within
+  the last issued token's expiry/leeway bound. Independent B continues to renew.
+- [ ] **Applied detach and established-work termination.** Separately detach A's
+  provider, await native `REVOKED`, and reject saved-reference requests. Observe a
+  real notification stream across withdrawal; do not claim detach/expiry cancels
+  already-forwarded requests. Stop A with native sandbox lifecycle, await stopped
+  state and verify termination while B remains operational. No Lore stream patch.
+- [ ] **Recovery and adapter retirement.** Verify native stored refresh after a
+  gateway restart and owned-resource cleanup. Remove the Desktop adapter/runtime,
+  routes, signer/manual token-file dependencies and active lock entries after the
+  direct path passes. Preserve source/history/private recovery state and durable
+  data. Update operator instructions and actual source/image acceptance records.
 
 Record the exact source/image/policy/grant scope, declared limits and measured
 results for each gate. Keep unimplemented or unrun cases open; do not infer them
@@ -178,7 +207,7 @@ from successful reads, rotation, cancellation tests or gateway restart recovery.
 Move compatible long-running Lore, database, storage and application services onto
 native OpenShell workloads with operator-owned workspaces and admitted persistent
 volumes. Use the same lifecycle and forwarding interfaces. Qualify storage access,
-backup/recovery and Desktop's native gRPC path before moving their durable state.
+backup/recovery and the accepted native Lore gRPC path before moving durable state.
 Do not add another Veoveo scheduler, token broker or log service.
 
 Local Keycloak, its dedicated PostgreSQL database and HTTPS endpoint stay outside
@@ -207,8 +236,8 @@ The first workable local path does not qualify the whole platform. Still require
   version/retention rules. No hardcoded environment labels.
 - Replace the Linux installation and qualify the same path with native CDI and a
   tiny checked CUDA computation. Do not inspect or migrate the old Linux setup now.
-- Complete Desktop remote graph/diff and automatic reauthentication acceptance, and
-  qualify external Entra/customer providers independently.
+- Qualify external Entra/customer providers independently against the native Lore
+  claim/refresh contract. Desktop graph/diff and reauthentication are withdrawn.
 
 Prefer native schemas, APIs and extension points. Maintain narrow VeoveoAI patches
 only for demonstrated gaps, preserving Lore/OpenShell security and ordinary logic.

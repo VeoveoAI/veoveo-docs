@@ -1,6 +1,6 @@
 # Infrastructure Candidate
 
-Status: leading infrastructure candidate, revised on 2026-10-16. The direction is
+Status: leading infrastructure candidate, revised on 2026-10-17. The direction is
 accepted for further design and qualification; it is not a completed migration or a
 replacement for the recorded runtime status in the
 [Repository Split Plan](REPOSITORY_SPLIT_PLAN.md).
@@ -322,8 +322,11 @@ Veoveo makes application decisions and sends traffic through its authenticated r
 Its existing short-lived upstream tokens encode evaluated permissions, actor and
 context; these are distinct from human login/refresh tokens. Keep that narrow
 application authority unless a maintained replacement proves the same contracts.
-Lore's published client authentication protocol may still require its existing
-adapter and repository-scoped grants; OpenShell login does not replace that protocol.
+Lore's factory path uses native OIDC repository grants issued by the installation
+IdP and renewed/injected by OpenShell. Desktop acceptance is withdrawn; retire its
+authentication adapter after the [direct credential path](LORE_DIRECT_OIDC_PLAN.md)
+qualifies. No new Veoveo machine-token service or signer is required. OpenShell
+management credentials remain separate from Lore resource credentials.
 
 The current gateway hosts OAuth authorization, refresh and session storage itself.
 Migration must qualify MCP client discovery/registration, issuer token formats and
@@ -390,9 +393,10 @@ factory assignments; ordinary authorization and transport remain unchanged. Trus
 awaits migration to native workloads. Keep only the necessary identity bootstrap
 outside OpenShell. See [execution status](OPENSHELL_HARDCUT_PLAN.md) and the
 [installation design](../veoveo-template-installation/DESIGN.md).
-Desktop remote catalog reload works; graph/diff and automatic expired-session
-recovery remain acceptance work. Entra and Linux/CUDA are not qualified by the local
-first-path checks.
+The former Desktop catalog result is historical; graph/diff and automatic
+expired-session recovery are withdrawn requirements. Direct IdP Lore credentials,
+native renewal and access removal remain open. Entra and Linux/CUDA are not
+qualified by the local first-path checks.
 
 The gateway currently selects the newest registration per service slug, and its
 [registration snapshot](../veoveo-service-gateway/crates/veoveo-service-gateway/src/registration/snapshot.rs)

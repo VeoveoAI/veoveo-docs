@@ -1,11 +1,16 @@
 # Lore And OpenShell Integration
 
 Status: accepted infrastructure direction for design and qualification, revised on
-2026-10-16. Lore is the source and revision authority. OpenShell owns execution
+2026-10-17. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
 native Lore/private MCP path pass focused acceptance; general deployment and
 composition remain pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
+
+Desktop is no longer an acceptance requirement. The next slice is
+[direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md),
+followed by retirement of the Desktop authentication adapter. This is the selected
+design, not a claim that the currently deployed adapter has already been removed.
 
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted
@@ -39,7 +44,7 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
 | Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
-| Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Qualify Lore gRPC and current private-key JWT requirements |
+| Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Direct IdP Lore grants, native client-credentials renewal and access-removal qualification |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
 | Factory user access | Native OIDC and workspace membership | Mapping approved source authority to runtime access |
@@ -252,8 +257,11 @@ resource audiences. Do not forward an OpenShell bearer as a gateway bearer or le
 an environment manifest add an unapproved issuer. Keep the product's permissions,
 context admission, narrowed actor/delegation tokens and Task authority in Veoveo;
 OpenShell roles describe factory access rather than permission to use arbitrary
-MCP services or production data. The existing Lore client authentication adapter
-remains until its published protocol has an equivalent qualified replacement.
+MCP services or production data. Lore will validate the IdP's access tokens through
+its native OIDC/resource-grants authorizer. Desktop compatibility is withdrawn;
+retire its authentication adapter after the direct factory path qualifies. Do not
+extend that adapter with a machine-token endpoint or preserve its signer as a
+second trust authority. See [the cutover design](LORE_DIRECT_OIDC_PLAN.md).
 
 The gateway already supports configured authorization servers but also implements
 its own authorization codes, refresh families, rotation and revocation. Its
@@ -333,8 +341,9 @@ success from successful source publication.
 Use OpenShell's existing OIDC validation and workspace membership for factory access.
 Configure the installation's issuer and explicit roles; the local no-OIDC platform
 admin default is not suitable for a shared factory. Reuse the same identity provider
-as appropriate, with audience separation for OpenShell, Lore and Veoveo. Human
-Desktop login and application authorization retain their own protocol contracts.
+as appropriate, with audience separation for OpenShell, Lore and Veoveo.
+Application authorization retains its own protocol contract. Human Lore Desktop
+login is outside the accepted factory scope.
 
 Use a
 [gateway interceptor](https://docs.nvidia.com/openshell/v0.1.4/extensibility/gateway-interceptors)
@@ -378,16 +387,16 @@ receives the real token or a private signing key. Network rules and credential
 endpoint bindings must both authorize the request. Renewal must cover long-running
 sessions and re-established connections, not merely initial login.
 
-Use OpenShell provider profiles and supported refresh strategies wherever they
-match. Its ordinary `oauth2_client_credentials` refresh currently uses client ID and
-client secret; Veoveo's existing Lore refresher uses private-key JWT authentication.
-Qualify that difference explicitly. A generic private-key JWT refresh addition is a
-possible upstreamable OpenShell patch. The current installation has no accepted
-automatic ordinary Lore renewal path; qualify this separately through native
-providers rather than adding another token worker.
-The existing SPIFFE JWT-SVID token-grant path is another option when an installation
-already has workload identity, but requires SPIRE or a compatible Workload API and
-additional trust bindings. It is not required infrastructure for the first slice.
+Use native `oauth2_client_credentials` against the installation IdP, with client ID
+and secret held as OpenShell refresh material. Local Keycloak supplies ordinary
+Lore repository grants using built-in claim mappers and optional client scopes;
+Lore validates that issuer directly. The old token worker is gone, and the Desktop
+adapter is not a required factory issuer. No private-key JWT refresh patch, Veoveo
+machine-token endpoint or SPIFFE/SPIRE deployment is needed for this slice.
+Automatic renewal and access removal remain unqualified until the
+[direct-credential execution steps](LORE_DIRECT_OIDC_PLAN.md#implementation-order-and-acceptance)
+pass. That plan specifies issuer/profile configuration, native expiry limits and
+adapter retirement; successful manual rotation does not satisfy it.
 
 Use native OpenShell provider APIs and its encrypted database credential driver.
 Qualify protected persistent state, encryption-key custody, refresh, rotation and
@@ -397,7 +406,9 @@ in this candidate.
 Lore's existing
 [resource grants](https://github.com/EpicGames/lore/blob/v0.10.1/lore-server/src/authnz/resource_grants_authorizer.rs)
 are repository-scoped. Factories use ordinary granted repository access and normal
-Lore commands. The selected work branch is a workflow assignment, not a new
+Lore commands. An empty action array still permits ordinary unprotected pushes;
+the smoke sandbox stays read-only through its OpenShell RPC policy. The selected
+work branch is a workflow assignment, not a new
 security boundary inside that repository. The pre-push hook above guards normal
 pushes only; it does not establish complete isolation against low-level storage
 APIs or every form of branch administration. The earlier comprehensive branch
@@ -448,8 +459,9 @@ requests. No transition may expose a real token to the author as a workaround.
 Retire duplicated agent-egress, credential injection and refresh machinery only
 after the replacement passes the same checks. Envoy has no blanket ownership of
 service ingress: native OpenShell forwarding owns supported service routes. Retain
-only independently demonstrated gaps, such as Lore Desktop gRPC ingress or required
-TLS/auth mediation, and remove each bridge when native support qualifies.
+only independently demonstrated gaps, such as required bootstrap TLS mediation,
+and remove each bridge when native support qualifies. Desktop-only ingress is
+retired with its authentication adapter under the direct-credential cutover.
 
 ## Optional QUIC Storage Transport
 
@@ -569,7 +581,9 @@ cutting the old stack. Use focused checks as each changed boundary becomes runna
    policy advisor review/reload and prover limits. Validate admitted
    volume persistence and cleanup. Exercise missed events, delayed operations and
    gateway crashes; generic recovery fixes belong in OpenShell. Use its native
-   diagnostics and credential driver.
+   diagnostics and credential driver. Implement the credential portion in the
+   exact order in [the direct IdP plan](LORE_DIRECT_OIDC_PLAN.md); Desktop is not a
+   prerequisite and no new Veoveo authentication adapter is required.
 4. **Linux CUDA.** Repeat the runtime boundary with native GPU requests and execute
    a small CUDA kernel with a checked result. No CPU substitution or `nvidia-smi`-only
    acceptance. Use the same selected Docker driver and security boundary.
