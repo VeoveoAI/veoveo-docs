@@ -407,7 +407,7 @@ They are not supplied by deploying additional containers alone.
 
 The general Lore-to-OpenShell source adapter, environment overrides and complete
 application/infrastructure migration remain unimplemented candidate work. Existing
-installation contracts and Git-based component locks also need explicit changes to
+installation contracts also need explicit changes to
 represent Lore revisions and resolved environment compositions.
 
 The first [qualification gates](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence)

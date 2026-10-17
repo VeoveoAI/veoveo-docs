@@ -15,27 +15,6 @@ Use one native OpenShell Docker-driver path for factories, checks and managed
 services. No Kubernetes, Helm, Flux, OpenBao, alternate preview host or compatibility
 launcher. Preserve source and durable data independently of workload lifecycle.
 
-## Completed Cut
-
-The recovery checkpoint is the ignored, private installation directory
-`state/hardcut/20261016-213611`. It contains twelve Git bundles, five author/reviewer
-workspace archives and their manifest/checksums. Eleven repositories initially had
-unpublished commits. Original source histories and durable service volumes remain.
-
-Removed the four `vv-dev-*` containers, reviewer, autonomy edge and token worker,
-Compose application gateway/MCP containers and obsolete tunnel. Removed the old
-`autonomy/`, `runtime/` and agent Envoy SDS launch paths. Removed seven captured
-sandbox/cache/secret volumes, six disposable networks and the identified legacy
-factory/application image tags. No global Docker prune was used.
-
-The application gateway's `lore-tokens` command and its Envoy filesystem SDS worker
-have been deleted. OpenShell owns workload credential custody and policy. Envoy
-remains only for trusted bootstrap OIDC egress and identity ingress.
-
-Durable Lore, PostgreSQL, SeaweedFS, identity and Desktop session/signing state have
-not been deleted. Unattached application data and recovery archives are retained;
-retaining data does not preserve an executable legacy launcher.
-
 ## Current Native Path
 
 Homebrew manages the stock OpenShell 0.1.4 CLI and gateway. The gateway runs as its
@@ -70,9 +49,9 @@ The first service is a deterministic MCP echo fixture in OpenShell workspace
 service URL. The management bearer is separate from its fixture application token.
 Creation, deletion and deletion waits must all select the same workspace.
 
-Exact source revisions, official runtime digest and machine-local build outputs
-are recorded in [the component lock](../veoveo-template-installation/openshell/component-lock.json).
-Operating commands are in [the native setup](../veoveo-template-installation/openshell/README.md).
+Source selection, builds and explicit-image provisioning are in
+[the native setup](../veoveo-template-installation/openshell/README.md).
+Native OpenShell configuration and Docker build inputs determine what runs.
 
 Keycloak now issues ordinary repository-scoped grants directly. Lore uses native
 OIDC discovery/JWKS, one issuer, strict type/audience/expiry checks and denied baseline
@@ -80,8 +59,7 @@ access. The native provider owns client-secret custody, automatic renewal and in
 The smoke RPC policy remains read-only. No manual token file or Veoveo signer is in
 this path. Empty native catalog listing is expected; factories receive known assigned URLs.
 
-
-## Historical First-Path Smoke Acceptance
+## Native Regression Checks
 
 Keep these checks narrow; no inference or coding agent session is required.
 
@@ -90,13 +68,9 @@ Keep these checks narrow; no inference or coding agent session is required.
 - Real credentials are absent from the workload environment. Bootstrap/operator
   paths and Docker socket are inaccessible. Raw TCP attempts to a public endpoint,
   identity administration and the OpenShell management endpoint are denied.
-- Native provider rotation is installed and a subsequent Lore read succeeds without
-  restarting the factory. The initial smoke policy is read-only and its credential
-  expires in fifteen minutes; operator reprovisioning is explicit, with no
-  replacement token daemon.
-  This proves installation of a replacement credential, not automatic Lore grant
-  renewal, expiry handling or revocation. OpenShell CLI OIDC refresh is a separate
-  credential path and does not establish Lore grant renewal either.
+- Native automatic Lore credential renewal crosses expiry/reconnect without
+  replacing the factory or its captured reference. The smoke policy remains read-only;
+  bounded authoring and timed lifecycle checks use disposable fixtures below.
 - MCP initialization, notification, tool discovery and echo invocation succeed over
   native forwarding. Missing application credentials and an authenticated workspace
   nonmember fail. Native target authorization hides the resource with `NOT_FOUND`.
@@ -106,13 +80,10 @@ Keep these checks narrow; no inference or coding agent session is required.
   header custody, message framing, policy-generation fencing and cancellation before
   and after response headers. More cancellations than the slot limit must succeed.
 - Restart the native gateway, then repeat the Lore and private service checks.
-- Historical Desktop catalog reload passed for the adapter deployment. Desktop
-  graph/diff and automatic expired-session recovery were not completed; the user
-  withdrew those requirements on 2026-10-17. They no longer block this plan.
 
-The [committed acceptance record](../veoveo-qualify-openshell/README.md#focused-macos-native-path)
-and component lock identify the exact tested source and running images. A prior image's successful check cannot qualify a later build. Record local
-commits separately from publication and upstream PRs.
+Run the [current qualification commands](../veoveo-qualify-openshell/README.md#focused-macos-native-path)
+and use their generated output to investigate failures. A prior build's successful
+check cannot qualify a later build.
 
 ## Required Lore Acceptance
 
@@ -123,9 +94,8 @@ read-only through its OpenShell RPC policy. Native Lore grants with an empty
 action array still allow ordinary unprotected pushes. Use ordinary repository
 credentials for the disposable authoring fixture; never add a service-account
 protection bypass merely because it is a factory.
-The broad `068cf857` server changes are set aside by a revert; preserve the earlier
-CLI auth fixes and unrelated work. Hook modules, configuration and tests own this
-slice; identify a concrete hook API gap before expanding it.
+Preserve the existing CLI auth fixes and unrelated work. Hook modules, configuration
+and tests own this slice; identify a concrete hook API gap before expanding it.
 
 - [x] **Bounded clone and push.** Use a disposable fixture repository and an assigned
   branch with normal Lore CLI commands. Declare file/byte limits and operation
@@ -142,30 +112,6 @@ slice; identify a concrete hook API gap before expanding it.
 
 The former comprehensive branch-confinement gate is **replaced**, not passed by
 these narrower hook tests. Ordinary repository authorization remains in force.
-
-Local evidence (2026-10-17): Lore `cb2c191f` is a hook/config/test extension of
-`162df649`; the broad `068cf857` patch was reverted by `cb56081e`. The source diff
-contains no authorization, RPC handler or transport edits. Seven focused hook tests
-pass, including both existing push API calls with verified identity and spoofed
-metadata. The native CLI fixture pushed a 7-byte final file and independently
-cloned it, committed a separate change on `other-author`, and received the exact
-assignment rejection. It read native protection metadata, verified the protected
-push failed and remote content stayed unchanged, then pushed as an unassigned
-human. Stock clients hide details of native `PermissionDenied`; the hook uses its
-existing `FailedPrecondition` status so the workflow message remains visible.
-Native push-handler tests separately check the specific protection status.
-
-The qualification harness (`2021ddb`) also passed injected failures after workspace,
-profile, provider and sandbox admission, including admission before readiness.
-Cleanup runs for partial setup and workflow failures, attempts all owned resources,
-and preserves a labelled pre-existing workspace. Each workload command is limited to
-20 seconds, the workflow to 120 seconds, and setup plus workflow to 180 seconds.
-Temporary OpenShell resources were removed and test assignments were cleared.
-Exact source and running image IDs are in the installation component lock. This
-fixture made no inference calls and kept the original smoke path read-only.
-
-These completed checks used the former Veoveo signer. Preserve them as historical
-evidence and rerun the workflow under the direct IdP before accepting that cutover.
 
 ## Separate Credential Lifecycle Qualification
 
@@ -202,46 +148,24 @@ in order; it supplies the exact configuration, limits and evidence requirements.
   state and verify termination while B remains operational. No Lore stream patch.
 - [x] **Recovery and adapter retirement.** Verify native stored refresh after a
   gateway restart and owned-resource cleanup. Remove the Desktop adapter/runtime,
-  routes, signer/manual token-file dependencies and active lock entries after the
+  routes and signer/manual token-file dependencies after the
   direct path passes. Preserve source/history/private recovery state and durable
-  data. Update operator instructions and actual source/image acceptance records.
+  data. Update operator instructions.
 
+Current local acceptance (2026-10-17): direct-issuer preflight, authoring, custody,
+native protection, management-token denial and automatic renewal pass. Two native
+refreshes and post-expiry/leeway operations retained the original reference and
+process, verified by unique launch IDs in fresh replies. Source withdrawal produced
+native renewal failure; first observed fresh-request denial was 299 seconds after
+disable. Detach reached applied `REVOKED` 10 seconds after its request, after binding
+removal had already become active. Native stop terminated the workloads; B stayed
+operational. Gateway recovery preserved sandbox identity and stored refresh while
+restarting the process. Recovery preserved an already-disabled A; cleanup and the
+pre-existing-workspace regression pass. The earlier detach probe does not establish
+uninterrupted process lifetime. Durable data is preserved and the adapter is retired.
 
-Local direct-issuer evidence (2026-10-17): six identities passed signed-token and
-scope-negative preflight. The workflow, custody, former-signer/management-token
-rejection and idempotent provisioning checks passed. Automatic renewal observed
-two native refreshes and successful operations after original expiry plus 60-second
-leeway. The corrected renewal run verified the original reference and unchanged
-process using unique per-launch IDs in fresh replies. This is separate from human
-CLI refresh and the historical manual-rotation test.
-
-Disabling only A's client produced native `oauth_invalid_client` with recovery
-`fix_configuration`. First observed fresh-request denial was 299 seconds after disable and
-55 seconds before the recorded expiry/leeway bound. A received a branch event after
-disable; none was observed after expiry. Native stopped state, execution rejection
-and exited workload containers were checked. B remained operational and renewed.
-Binding removal was applied before detach; its applied `REVOKED` receipt followed
-10 seconds after the detach request. Saved-reference access failed, and no event was
-observed after that combined transition. Native stop ended the detached factory.
-
-The corrected gateway recovery probe preserved sandbox identity and automatic stored
-refresh while its unique launch markers confirmed a workload process restart.
-Starting recovery with A disabled left A disabled; the outer regression restored
-only its own change afterward. Earlier PID-only records cannot establish uninterrupted
-process lifetime. Their process-continuity fields are unqualified, including the
-older detach probe; this does not change its removal/termination observations.
-The qualification corpus records renewal, recovery and remaining gates separately with their
-actual fixture images; interrupted attempts are not complete runs. Four partial-setup
-failure points and a pre-existing workspace sentinel passed. The adapter/container,
-Desktop edge, legacy provider/profile, manual signer helpers and old Desktop IdP
-registration are retired. Private recovery is under installation
-`state/recovery/direct-oidc-20261017-012804`; durable data volumes were preserved.
-No new Lore authorization/transport changes or OpenShell core patches were needed.
-Exact sources, image IDs, sanitized timestamps and receipt are in the component lock.
-
-Record the exact source/image/policy/grant scope, declared limits and measured
-results for each gate. Keep unimplemented or unrun cases open; do not infer them
-from successful reads, rotation, cancellation tests or gateway restart recovery.
+Generated test reports remain under installation `state/openshell/lore-direct/`.
+Keep unrun cases open; do not infer them from unrelated successful checks.
 
 ## Infrastructure Placement
 

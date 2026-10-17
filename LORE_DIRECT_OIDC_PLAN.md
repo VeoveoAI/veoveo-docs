@@ -235,8 +235,8 @@ HTTP/2 mediation patch. No new OpenShell core change is planned.
 
 ## Implementation Order And Acceptance
 
-The execution checklist and installation component lock record the local gates
-below. Use disposable, owned test resources and the existing small fixture seeder.
+The execution checklist records the current status of the local gates below.
+Use disposable, owned test resources and the existing small fixture seeder.
 Do not add a public seed API, new Lore fixture service or
 production auth test endpoint. Keep behavioral test logic in the Rust qualification
 repository; the existing offline seeder may remain colocated in Lore test support.
@@ -305,8 +305,8 @@ repository; the existing offline seeder may remain colocated in Lore test suppor
    from sandbox identity.
    Reuse the harness's ownership-aware partial-setup cleanup and pre-existing-workspace
    sentinel. Preserve durable Lore data and unrelated providers/workspaces.
-   Record source SHAs, image IDs, policy/grant scope,
-   sanitized timestamps, expiry/leeway, readiness receipts and measured outcomes.
+   Keep generated probe output with image, policy/grant scope, sanitized timestamps,
+   expiry/leeway, readiness receipts and measured outcomes.
    Retire the old adapter only after the direct path passes these checks.
 
 Reuse the fixture's 20-second ordinary CLI command deadlines and 180-second setup
@@ -318,14 +318,10 @@ probe leaves its gate open; it is not silently skipped or converted to a pass.
 
 ## Retirement And Boundaries
 
-After direct-path acceptance, remove the `vv-srv-lore` runtime, Desktop-only
-`vv-desktop-edge` routes/profile, adapter bootstrap and active component-lock
-dependencies. Disable the old Desktop IdP registration only after checking that
-it is not the OpenShell CLI/controller registration. Remove adapter signing/manual
-token-minting dependencies from `factory_hook` and the old smoke `sync-factory`
-path; ordinary operations should require no manual token file. Remove obsolete
-Desktop recovery commands from the active operator path. Retain historical test
-records with their original issuer clearly identified.
+The Desktop adapter runtime, ingress, signer and manual-token helpers are retired.
+The old Desktop IdP registration is disabled; the native OpenShell CLI/controller
+registrations remain separate. Ordinary provisioning uses the existing
+`factory --image IMAGE --replace` command and requires no manual token file.
 
 Keep private recovery copies of retired signing/session state and source history;
 they are not active trust or runtime dependencies. Do not delete Lore repositories,
@@ -335,7 +331,7 @@ there is no permanent dual-issuer mode. Stop old sandboxes when their establishe
 sessions must end during cutover.
 
 The coding scope is installation provisioning/configuration/CA packaging,
-`veoveo-qualify-openshell` scenarios, component records and operator documentation.
+`veoveo-qualify-openshell` scenarios and operator documentation.
 Preserve the small hook and existing CLI/supervisor patches. No new
 `veoveo-service-lore` feature, generic token endpoint, custom Lore permission,
 server authorization/transport patch, SPIRE deployment, QUIC project or second
@@ -349,55 +345,8 @@ when it cannot; do not weaken Lore or restore a Veoveo signer solely to claim
 provider independence. Linux/CUDA, actual MCP adoption, composition and
 source-to-runtime reconciliation follow separately after this slice.
 
-## Local Acceptance Record
-
-The native server and supervisor source were unchanged for this cutover. Installation
-changes configure native OIDC, public CA trust, ordinary IdP grants and trusted hook
-assignments. No new Lore authorization/transport layer or OpenShell core patch was added.
-
-The focused corpus combines completed renewal evidence with an independent remaining-
-gates run. It does not call an interrupted run complete or imply every gate ran on
-one fixture image. Both test images inherit the same accepted factory/Lore CLI;
-exact images, timestamps and scope are in the component lock.
-
-- Verified IdP signatures, at+jwt, subject/audience, 300-second signed lifetime,
-  single-repository grants and omitted/unlinked-scope denial for six local identities.
-- Direct clone/edit/push and independent content verification passed; every wrong-branch
-  attempt cloned the current branch and committed first. Native protection and an
-  unassigned identity's ordinary permissions passed. Existing hook tests cover both RPC
-  call sites. Credential custody and raw-egress/operator-file boundaries passed.
-- At least two automatic renewals and post-original-expiry/leeway operations were
-  requalified using the original reference and unchanged per-launch IDs in fresh
-  replies. No manual provider rotation, replacement credential file or factory
-  restart supplied those renewals. This corrects the earlier PID-only evidence.
-- Source withdrawal produced oauth_invalid_client/fix_configuration. The first observed
-  fresh-request denial was 299 seconds after disable, 55 seconds before the recorded expiry/leeway bound.
-  The stream received an event after client disable, then no new event was observed
-  after expiry. Native stop reached Stopped and execution was rejected; the actual
-  workload containers were observed exited. B continued reading, pushing and renewing.
-- Native policy binding removal followed by applied REVOKED detach passed in 10 seconds
-  from detach request to applied receipt. The retained reference was rejected. No event
-  was observed after the combined transition; no detach-only stream claim is made.
-- A fresh healthy native OnFailure fixture recovered after a gateway restart with
-  the same sandbox identity and subsequently renewed from stored native configuration, without
-  provider reconfiguration or manual rotation. The corrected probe's unique launch IDs
-  confirm the workload process restarted. Starting recovery with A disabled left it
-  disabled; the outer test restored only its own change afterward. Partial-setup
-  cleanup and the pre-existing workspace sentinel passed. All temporary
-  qualification resources were removed.
-- A valid, unexpired former-signer token with verified signature and an OpenShell
-  management bearer were rejected by Lore. The old Desktop IdP client was disabled;
-  the separate native registrations remained enabled. Durable data and private recovery
-  state were preserved. No inference or coding-agent session was run.
-
-Entra/customer issuers, interactive human Lore login and Linux/CUDA remain unqualified
-by these local tests. They are separate adoption gates, not reasons to restore a signer.
-
-The original PID-only process markers could repeat after restart, and recovery could
-read a stale readiness file. Those records do not establish uninterrupted process
-lifetime; their process-only fields are explicitly unqualified, including the older
-detach probe. Corrected renewal and recovery probes use random per-launch IDs in
-fresh command replies and qualify only their own runs.
-Original private records are preserved alongside corrected interpretations. The
-299-second first observed denial and 10-second detach-request-to-applied-receipt
-measurements remain valid; the latter starts after policy binding removal.
+Current acceptance and remaining work are in the
+[execution checklist](OPENSHELL_HARDCUT_PLAN.md). Qualification commands produce
+their normal reports under installation `state/openshell/lore-direct/`; use those
+reports to inspect measurements and failures. Build commands select the patched
+sources directly in the [native setup](../veoveo-template-installation/openshell/README.md#build-and-provision).
