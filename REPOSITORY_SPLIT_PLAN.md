@@ -23,6 +23,11 @@ contracts. This supersedes D49's hosting split; it does not claim migration of t
 recorded Compose runtime below. Shared human secret distribution is outside this
 focused plan; runtime custody uses OpenShell.
 
+The [OpenShell hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) records the requested
+execution order: preserve work and durable data, remove old launchers and workloads,
+then implement and run focused checks on the selected native path. Runtime deletion
+has not occurred as part of documenting that plan.
+
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
 identity, Tasks and the audit envelope. `veoveo-sdk-rust` builds MCP on top of it, and

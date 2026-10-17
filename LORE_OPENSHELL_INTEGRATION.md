@@ -516,6 +516,11 @@ existing clients and configurations working within their documented contracts.
 
 ## Qualification Sequence
 
+The [hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) sets the implementation order: preserve
+work/data, remove the old execution path, then implement and qualify the new path.
+The gates below describe required behavior, not a demand to run a broad suite before
+cutting the old stack. Use focused checks as each changed boundary becomes runnable.
+
 1. **Native execution and service hosting.** On OpenShell's native Docker driver,
    run a tiny prebuilt MCP service as the canonical process, with a native template,
    scoped provider, restart policy and authenticated `ForwardTcp` access. Verify
