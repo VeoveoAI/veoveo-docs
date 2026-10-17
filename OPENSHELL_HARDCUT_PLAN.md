@@ -200,6 +200,13 @@ rebuild and replace local services directly. Complete integration and debugging 
 the main development session before assigning work to the factory model. These
 steps remain open:
 
+- [ ] **Follow the code-based implementation decisions:** use
+  [Implementation Decisions For The Prepared Time Pass](LORE_OPENSHELL_INTEGRATION.md#implementation-decisions-for-the-prepared-time-pass)
+  as the coding handoff. In particular, reuse Time's `dev` image through factory
+  `BASE`, prepare writable Cargo state, add the SDK CLI's missing opaque-bearer
+  input, configure Gateway's actual token/context contract, and qualify the
+  bounded in-process native transport. Preserve current MCP streaming/retry and
+  registration behavior; this pass plans no Lore/OpenShell core changes.
 - [ ] **Gateway + Time:** explicit runtime images in native service sandboxes;
   gateway in an operator-owned control workspace, Time in an approved service
   workspace. Qualify local application-token admission, service registration and

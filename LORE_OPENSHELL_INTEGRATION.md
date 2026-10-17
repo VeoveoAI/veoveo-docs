@@ -327,6 +327,89 @@ backup. Cargo still resolves Core, SDK and other dependencies from pinned Git
 revisions. Keep those pins for this first pass; publish a changed dependency to Git
 before updating a consumer. Removing that dependency on Git is a separate decision.
 
+### Implementation Decisions For The Prepared Time Pass
+
+These decisions follow the current code, not just the desired topology. Read the
+linked implementations and each repository's `AGENTS.md` before changing them.
+The implementation is still pending; the checks below must establish that the
+selected mechanisms work together. Do not turn an unproven connection into a
+broader architecture change to make the checklist pass.
+
+| Concern | Existing code to reuse | Decision for this pass |
+|---|---|---|
+| Factory image | [installation factory Dockerfile](../veoveo-template-installation/factory/Dockerfile), [Time Dockerfile](../veoveo-mcp-time/Dockerfile) | The shared factory already accepts `ARG BASE`. Build Time's `dev` target and use that image as `BASE`; retain the existing Lore/CA/agent additions. Do not duplicate Time's toolchain or create another universal factory image. |
+| Factory filesystem | [native factory policy](../veoveo-template-installation/openshell/factory.yaml), [Time shell profile](../veoveo-mcp-time/env/profile.d/rust.sh), [offline SQL metadata](../veoveo-mcp-time/.cargo/config.toml) | `/usr` is read-only, but Time defaults `CARGO_HOME` to `/usr/local/cargo`. Use an explicit writable cache under `/sandbox`, set it after any login-shell profile, and use a fresh target directory for the proof. Keep the installed toolchain read-only. SQLX_OFFLINE already permits this release build without a running database. |
+| Factory MCP client | [SDK CLI access](../veoveo-sdk-rust/crates/veoveo-sdk-rust-cli/src/main.rs), [CLI connection](../veoveo-sdk-rust/crates/veoveo-sdk-rust-cli/src/gateway.rs), [SDK bearer sources](../veoveo-sdk-rust/crates/veoveo-sdk-rust/src/client.rs) | The CLI currently requires caller keys. Add a generic bearer-from-environment input using the existing `StaticBearer` and `GatewayClient`; make key-based inputs conditional on that authentication mode. In the factory, supply only the native OpenShell opaque reference. No private caller key, token fetcher or refresh worker belongs there. |
+| Application admission | [JWT verification](../veoveo-service-gateway/crates/veoveo-service-gateway/src/auth/access_token.rs), [claim shape](../veoveo-service-gateway/crates/veoveo-service-gateway/src/auth/claims.rs), [current client authority](../veoveo-service-gateway/crates/veoveo-service-gateway/src/oauth_clients.rs), [context membership](../veoveo-service-gateway/crates/veoveo-service-gateway/src/catalog.rs) | Configure the local IdP and existing Gateway catalog to satisfy this contract. Generic OIDC login or a valid Lore token does not establish application access. Preserve the verifier and authority checks. |
+| Private MCP transport | [per-server HTTP pool](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_http.rs), [request authorization](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_authorized_http.rs), [discovery recovery](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_connection.rs), [native forwarding proof](../veoveo-qualify-openshell/src/bin/first-path.rs) | Keep reqwest/rmcp and per-request authorization. Add the native transport inside the existing Gateway process, using the bounded Unix-socket approach below. The fixture's buffered one-shot request is evidence of admission, not a reusable streaming client. |
+| Service startup | [Time registration](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/registration.rs), [startup](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/mod.rs), [configuration](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/config.rs), [SDK registration](../veoveo-sdk-rust/crates/veoveo-sdk-rust/src/registration/client.rs) | Start PostgreSQL, then Gateway, then Time. Time registers before serving, receives its database login and token trust from registration, migrates its own schema and holds a process-instance lock. Preserve this lifecycle instead of inventing a heartbeat, database credential distribution API or registration controller. |
+| Acceptance | [Time live acceptance](../veoveo-mcp-time/crates/veoveo-mcp-time/tests/acceptance.rs), [Gateway transport tests](../veoveo-service-gateway/crates/veoveo-service-gateway/src/mcp/upstream_connection/tests.rs) | Reuse existing behavior assertions. Time's live tests currently obtain tokens using caller private keys; adapt their authentication input to the prepared bearer path rather than copying keys into the author factory. Keep domain tests in Time and generic transport tests in Gateway. |
+
+**Application identity must be configured before diagnosing MCP transport.** The
+Gateway requires `typ=at+jwt`, the selected profile's audience and scopes, `client_id`
+and the existing namespaced principal, Work Context and invocation-mode claims.
+The catalog must contain the OAuth client, allowed resource/scopes, tenant/context
+and membership. For a non-delegated machine caller use the existing `automated`
+mode: service principal, subject equal to client ID, matching tenant, and no
+initiator/delegation claims. These are current Gateway requirements. Configure
+Keycloak's supported token settings/mappers and the existing catalog; prove
+admission with one deterministic request. OIDC identity-provider claim mapping
+does not automatically supply this access-token contract. Keep Lore's issuer and
+grants independent; the Gateway's existing application and forwarded-token signing
+responsibilities do not make it a Lore issuer.
+
+**Use existing HTTP machinery over native forwarding.** The pinned reqwest 0.13.5
+supports [`ClientBuilder::unix_socket`](https://docs.rs/reqwest/0.13.5/reqwest/struct.ClientBuilder.html#method.unix_socket),
+which retains the request URI and uses TLS over the socket for an HTTPS URI.
+Prefer a private, process-owned Unix listener per approved endpoint: each accepted
+connection opens a fresh authenticated native `ForwardTcp` stream to the bound
+workspace/sandbox/loopback port and pumps bytes in both directions with bounded
+buffers and cancellation. Configure that server's existing reqwest client to use
+the socket. This is a transport module in Gateway, not a daemon, public port,
+new MCP implementation or upstream patch. The existing `connector_layer` API wraps
+reqwest's connector; it is not an arbitrary raw-stream injection API.
+
+The binding belongs in Gateway's existing typed configuration, populated by the
+installation, keyed by the admitted logical endpoint rather than hardcoded Time
+knowledge. Keep the registered URI, Host and token audience intact; the service
+still arrives through registration. A missing binding fails explicitly. Preserve
+per-server connection pooling, disposal on transport failure, request-specific
+tokens, streaming response bodies and the existing one retry of read-only discovery.
+Do not add a total timeout to long-lived subscriptions or replay a mutating tool
+request after an ambiguous failure. Close the socket/stream tasks with their owner
+and recreate connections after service replacement. Prove ordinary calls, streamed
+updates and reconnect with this small module before wiring the rest of the stack.
+If it cannot meet those requirements, report the concrete limitation before
+replacing the HTTP stack or changing Lore/OpenShell internals.
+
+**Distinguish application ingress from private service access.** For Gateway's
+application origin, qualify native `ServiceExposure` with `BearerPassthrough`,
+TLS/host routing and Gateway's own application authentication. Use that origin for
+factory calls and Time's return traffic. The native
+[service HTTP route](../openshell/crates/openshell-server/src/http.rs) and
+[bearer handling](../openshell/crates/openshell-server/src/service_routing.rs)
+do not provide the workspace authorization of `ForwardTcp`; do not substitute
+an exposed Time URL for the private MCP connection. Bind the registration bootstrap
+secret only to its initial registration request through the native provider path.
+Preserve the SDK's subsequent registration management credentials. Time's own
+signing key and registration-issued database password remain with the trusted Time
+service, never with the author factory. Permit its real PostgreSQL connection,
+including session locks and LISTEN/NOTIFY; an HTTP credential proxy is not a
+PostgreSQL transport. Mount Time's state for its runtime UID 10001; the author
+factory uses UID 1000 and does not receive that state directory.
+
+**Keep changes in their owners.** Installation owns images, native definitions,
+providers, endpoints and the local IdP/catalog choices. Gateway owns endpoint
+bindings and its native upstream transport; it remains server-agnostic. SDK CLI
+owns the generic bearer input; the SDK already has the bearer implementation.
+Time owns any demonstrated Time defect and its live acceptance input. Extend the
+existing Rust qualification support only for deployment/credential assertions;
+do not make it another launcher or move fixture code into Lore. Core, SDK hosting,
+Lore and OpenShell need no planned behavior changes for this pass. A discovery
+requiring such a change must identify the missing native capability and the
+smallest alternative before expanding the agreed scope. Leave version upgrades,
+general composition and automatic deployment out of these edits.
+
 ### Connections To Qualify
 
 1. **Client to gateway:** the existing SDK CLI or another MCP client calls
