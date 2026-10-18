@@ -199,9 +199,11 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 The first workable local path does not qualify the whole platform.
 
-The next application slice is specified in
+The remaining Media application slice is specified in
 [Planned Adoption Of Existing Veoveo Components](LORE_OPENSHELL_INTEGRATION.md#planned-adoption-of-existing-veoveo-components)
 and drawn as planned in the [visual guide](diagrams/veoveo-platform.html#next).
+Hub, Time and private Artifact belong to the guide's
+[current platform](diagrams/veoveo-platform.html#platform), alongside Lore and OpenShell.
 The completed local milestone is **working Hub → Time integration, followed by a
 build-only factory pass over prepared Time source and deployment from that revision**.
 This is a local Mac installation with no users or live deployment to preserve:
@@ -780,10 +782,12 @@ Temporary credential-bearing IAM/provisioning diagnostics were removed after the
 safe results were recorded. The guide's static scene/label/link checks cover this
 update. Chrome browser QA on 2026-10-17 verified all three views, component detail
 panels (including Artifact), keyboard component activation, navigation and zoom/fit.
-Each view produced valid SVG and PNG downloads; the complete integration PNG was
-visually checked. Stale planned labels for the qualified Time factory, Git/Lore
-checkpoint and private Artifact path were corrected. No browser warnings or
-JavaScript errors were recorded during the final check.
+Each view produced valid SVG and PNG downloads; the complete current-platform and
+Media-integration PNGs were visually checked. The current-platform view includes
+deployed Hub, Time and private Artifact alongside the Lore/OpenShell foundation
+and qualified Time factory. The next-integration view shows planned Media using
+those existing dependencies. No browser warnings or JavaScript errors were
+recorded during the final check.
 
 See [native Artifact setup](../veoveo-template-installation/openshell/ARTIFACT.md)
 and [component acceptance](../veoveo-mcp-artifact/README.md#acceptance).

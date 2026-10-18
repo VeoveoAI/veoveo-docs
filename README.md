@@ -6,7 +6,7 @@ component owns.
 
 | Document | Contents |
 |---|---|
-| [Platform Visual Guide](diagrams/veoveo-platform.html) | Interactive diagrams of the current platform, credential path and next integration, using the whitepaper palette. Open the HTML locally in a browser. |
+| [Platform Visual Guide](diagrams/veoveo-platform.html) | Interactive diagrams of the qualified Lore/OpenShell + Hub/Time/Artifact platform, credential path and planned Media integration, using the whitepaper palette. Open the HTML locally in a browser. |
 | [Repository Split Plan](REPOSITORY_SPLIT_PLAN.md) | The repository catalog, the contracts between repositories, server registration and authorization, component environments, and the decisions and tasks with their status |
 | [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) | Lore-managed environment definitions without fixed stages, service overrides, native OpenShell execution, identity delegation, CUDA and provider custody |
 | [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | Native Rust interfaces and component flow, OpenShell Docker-driver factory/service execution and MCP enforcement, Lore hooks, identity and credential boundaries, HTTP/2 and optional QUIC integration, extension/fork policy and qualification order |

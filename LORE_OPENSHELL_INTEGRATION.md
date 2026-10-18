@@ -4,13 +4,16 @@ Status: accepted infrastructure direction for design and qualification, revised 
 2026-10-17. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
-native Lore/private MCP path, Hub → Time integration and prepared Time factory
-build/deployment pass local acceptance; general deployment and composition remain
-pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
+native Lore/private MCP path, Hub → Time integration, prepared Time factory
+build/deployment and private Artifact integration pass local acceptance. Media,
+general deployment and composition remain pending. See
+[execution status](OPENSHELL_HARDCUT_PLAN.md).
 
-The [platform visual guide](diagrams/veoveo-platform.html) shows the current platform,
-credential path and next integration. Update it alongside this document after every
-major architecture change; keep planned paths visibly distinct from qualified ones.
+The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
+platform with Lore, OpenShell, Hub, Time and private Artifact. Its other views
+explain the credential path and Media's planned integration with those existing
+services. Update it alongside this document after every major architecture change;
+keep planned paths visibly distinct from qualified ones.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
 [direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md).
@@ -239,20 +242,21 @@ cannot grant providers, host mounts, administrative credentials or a weaker boun
 This describes the application integration sequence. Hub/Time, the prepared Time
 factory pass and private Artifact now have local acceptance recorded in the
 execution checklist; Media remains planned.
-The [visual guide's Next integration view](diagrams/veoveo-platform.html#next)
-shows the same placement and sequence. Prepare Hub plus Time first, then run
-a build-only factory task from a known-good Lore revision before adding Artifact
-and Media. This is an unused local Mac installation: replace and restart local
+The [visual guide's Platform now view](diagrams/veoveo-platform.html#platform)
+shows the qualified deployment; its [Next integration view](diagrams/veoveo-platform.html#next)
+shows Media's planned use of the existing Hub and Artifact. Hub plus Time were
+qualified first, followed by a build-only factory task from a known-good Time Lore
+revision and then private Artifact. This is an unused local Mac installation: replace and restart local
 services directly. Production continuity, parallel deployments and rollout
 automation are not prerequisites. Select explicit runtime images; automatic
 Lore-to-image deployment remains later work.
 
-| Existing component | Use in this integration | Planned placement |
+| Existing component | Use in this integration | Placement and status |
 |---|---|---|
-| `veoveo-hub` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
-| `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | First private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
-| `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
-| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and the existing fake provider for initial qualification |
+| `veoveo-hub` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Qualified locally: trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
+| `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | Qualified locally: first private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
+| `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Qualified locally: second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
+| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Planned: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and the existing fake provider for initial qualification |
 | `veoveo-core` | Database kernel, identity, durable Tasks, audit and usage | Libraries inside the Hub/services; their durable state remains in the installation PostgreSQL database |
 | `veoveo-hub-sdk` | MCP hosting/client, registration, forwarded-token checks, Task adapter, subscriptions and delegated calls | Libraries inside the Hub/services; its existing CLI is an initial application client |
 | `veoveo-template-installation` | Assemble images, native workload/policy/provider definitions, approved endpoints and volumes | Existing installation repository; no second deployment manifest or component lock |
