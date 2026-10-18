@@ -801,15 +801,15 @@ to the qualified Hub, Artifact and durable stores. It does not extend the
 Time-specific Lore/factory proof or add dynamic placement.
 
 The guide distinguishes deployed Media evidence from pending acceptance.
-Chrome review on 2026-10-17 checked all three views, component details,
-navigation and zoom/fit; each view exported valid SVG and PNG files. The current
-platform view retains the qualified foundation, while the integration view shows
-the deployed Media sandbox and fixture. The updated lifecycle snapshot was reviewed
-again after both restart proofs passed, including visible component details and
-the exported diagrams. This browser check is separate from the
-application qualification below.
+Chrome review on 2026-10-18 checked all three views, component details,
+navigation and zoom/fit; each view exported valid SVG and PNG files, which were
+also visually inspected. The current platform view now includes deployed Media
+alongside Hub, Time and Artifact. The integration view shows its fixture and
+qualified lifecycle paths while retaining the failed final OpenCode gate. The Mac
+download is recorded as passed. This browser check is separate from application
+qualification below.
 
-- [ ] **0 — Complete the client byte-transfer prerequisites.** SDK revision
+- [x] **0 — Complete the client byte-transfer prerequisites.** SDK revision
   `026902ae73eaa56533dbc49bd66c39481c8b9494` is reviewed and published. Its
   `hosting/results.rs` adds serialized JSON text alongside `structuredContent`,
   preserving the product ResourceLink at index 1. Five focused tests and the
@@ -828,7 +828,14 @@ application qualification below.
   records were retained. The later Media cases verified live signed-transfer JSON
   text equality and exact 65,536-byte and 20,971,643-byte downloads from native
   sandboxes; their independent stored digests match. The Mac signed-byte leg
-  remains pending. Publish reviewed component revisions, deliberately update consumer pins
+  passed on 2026-10-18 after normal local hostname setup completed. The actual
+  OpenCode `McpClient` source requested a fresh signed download for retained
+  Artifact `01a14d9d-af86-76d0-a568-ae16567e3611`, confirmed JSON text equals
+  structured content, and saved exactly 65,536 bytes with unchanged method, URL
+  and headers. SHA-256 is
+  `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`;
+  the mode-0600 file is `tmp-client/media-mac-preflight.bin`. No inference or new
+  generation was used. Publish reviewed component revisions, deliberately update consumer pins
   and pass their gates before replacing a runtime. Prove an Artifact signed download with
   the typed SDK and actual saved bytes first. Establish one signed S3 authority
   reachable unchanged from both the Mac client and native sandboxes; the currently
@@ -1064,9 +1071,58 @@ application qualification below.
   automatic updates for this local build and retains the explicit MiMo default;
   an exact-binary no-inference inventory also listed
   `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` and recognized the existing DeepInfra
-  credential through a child-only environment. The final billed-client/model
-  scenario remains pending on the Mac storage-hostname prerequisite. No model
-  calls were made during this work.
+  credential through a child-only environment. The Mac storage-hostname and
+  unchanged signed-byte download prerequisite passed under gate 0. An authenticated
+  read-only DeepInfra model inventory succeeded with the final run's exact binary
+  environment and CA settings; this made no inference call.
+  The single bounded final MiMo scenario then failed acceptance: it reached the
+  eight-step limit while inspecting the workspace and looking for tools, without
+  calling any Hub Time, Media or Artifact tool. The CLI exited zero, but that is
+  not application success. No Task, Artifact or output file was created; the
+  fixture retained the same nine submissions and nine prediction identities.
+  The transcript records eight step starts and seven step finishes; its final
+  finish event is absent. The persisted OpenCode session supplies complete reported
+  accounting: 29,546 input, 1,466 output, 1,254 reasoning and 74,720 cache-read tokens,
+  costing $0.015340172, with the requested DeepInfra MiMo model and build agent.
+  That session records the workspace root as its directory, whereas the Hub MCP
+  configuration lives in nested `tmp-client`. The qualification driver set Python's
+  child `cwd` but inherited the workspace-root `PWD`; OpenCode's `run.ts` selects
+  `options.root ?? process.env.PWD ?? process.cwd()` and changes directory there.
+  Thus the driver selected the wrong project and did not load Hub. Correct the
+  child `PWD` to the intended project and verify the actual agent tool registry
+  without model calls before proposing another final attempt. This is a
+  qualification-launcher repair, not a Hub or MCP protocol change. A subsequent
+  no-model check used the exact compiled CLI with a disposable loopback provider
+  that returned a fixed refusal and generated no text or tool calls. It confirmed
+  stale `PWD` selects the workspace and corrected `PWD` selects `tmp-client`.
+  However, both first-request tool projections contained only 12 built-ins and no
+  Hub tools. A same-server diagnostic then confirmed the correct project loaded
+  `veoveo`, but its connection was `pending` at the first request and `connected`
+  afterward. This is expected OpenCode behavior: MCP connections and catalog
+  updates are asynchronous so they cannot block unrelated tools or the app.
+  Do not change startup or tool-refresh semantics to satisfy this test. Use the
+  existing persistent server, observe native connection status, and accommodate
+  normal catalog updates in qualification. The first immediate request is not
+  required to contain every configured tool. Each probe case sent one request to
+  the local fixture only.
+  A later request on the same persistent instance exposed 18 Hub tools: eight
+  Time, eight Artifact and two Media browsing tools. This matches the ordinary
+  member used for the no-model probe: `media.run` requires Write plus Billed risk,
+  which the dedicated billed-test identity has. Existing deployed cases prove
+  billed generation and exact member refusal. OpenCode selects a fresh tool
+  snapshot on every model step, so later catalog updates also become available
+  within the same prompt. No additional product change is needed or retained.
+  The corrected, unexecuted qualification candidate sets child `PWD` explicitly,
+  starts an owned native `serve --stdio --port 0` process, observes its MCP
+  connection status, and runs the unchanged bounded scenario against that same
+  server with `run --server`. It retains the installed binary, model, prompt,
+  eight-step limit and 240-second model-phase deadline; timeout stops both owned
+  processes. Candidate SHA-256 is
+  `d20f25bad9c05e08a2a7681f38f533b2329eac4794e72a0f441fdb586319a55e`.
+  One replacement paid attempt is awaiting explicit authorization under the
+  recorded no-rerun limit below.
+  The failed MiMo run was not repeated. Low-level client execution and `mcp.list`
+  connectivity alone did not prove this agent path.
   Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
   Task support. Test the actual selected OpenCode build's Tasks extension,
   capability declaration, get/subscription/completion and cancellation handling
@@ -1103,8 +1159,8 @@ application qualification below.
   in OpenCode, use supported SDK extension hooks and preserve ordinary tool calls,
   errors, cancellation and existing elicitation handling. Resolve this native client
   integration with a no-model interoperability probe. The committed-source probe
-  above now passes; the final binary scenario still depends on the remaining
-  deployed acceptance and Mac byte-transfer gates. Add no wrapper, plain-call fallback or weaker Media Task contract, and
+  above now passes, as do deployed acceptance and Mac byte transfer; the full agent
+  scenario failed at discovery as recorded above. Add no wrapper, plain-call fallback or weaker Media Task contract, and
   do not silently replace the requested client. Only after every deterministic,
   component, integration and deployed probe passes and expected behavior works,
   run one bounded OpenCode scenario with explicit

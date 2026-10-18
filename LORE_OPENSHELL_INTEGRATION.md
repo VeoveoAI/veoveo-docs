@@ -667,9 +667,22 @@ and schema. Native credential renewal and in-flight recovery across actual Hub/M
 restarts also passed, retaining the Task and service identities without duplicate
 provider submission. A separate completed Task retained its result, Artifact bytes
 and fresh-subscription delivery after actual Hub/Media restarts. The Mac's unchanged
-signed-byte download and final bounded OpenCode MiMo scenario remain open. The
-reviewed local OpenCode build supports Tasks and passed no-model client preflight;
-no model was called during implementation.
+signed-byte download also passed with exact bytes and checksum. The reviewed local
+OpenCode build supports Tasks and passed no-model client preflight, but its single
+bounded final MiMo scenario stopped at the step limit during tool discovery,
+without calling Hub or creating a generation/output. Its qualification launcher
+inherited a stale `PWD`, causing OpenCode to select the workspace root instead of
+the nested client project and omit Hub configuration. Full agent qualification
+remains open; the corrected launcher has been checked without model calls.
+A local no-model fixture also observed the corrected launch starting its first
+request while MCP was still pending; it connected afterward. This is expected
+asynchronous behavior and must remain nonblocking. Qualification must accommodate
+connection and catalog updates through the existing native client lifecycle.
+A later request in the same instance exposed the expected member catalog; the
+billed-test identity additionally permits `media.run`. Each model step refreshes
+its tool snapshot, so normal catalog updates also reach an ongoing prompt.
+The replacement bounded final run awaits authorization; no further OpenCode
+startup or catalog change is needed.
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
 persistent registration key and the existing PostgreSQL metadata. A dedicated
