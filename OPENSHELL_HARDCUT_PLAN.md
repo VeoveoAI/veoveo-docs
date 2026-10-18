@@ -1501,7 +1501,8 @@ Deploy native OpenShell, Hub, Time, Artifact and Media on the reference Linux ho
 `veoveo.bioma.ai`, qualify one real signed WaveSpeed callback, then run final
 bounded OpenCode MiMo acceptance. The goal permits at most one paid WaveSpeed
 generation in total; final MiMo reuses that retained Task/Artifact rather than
-submitting another generation by default. All gates below remain open. Historical Mac
+submitting another generation by default. Runtime qualification remains open;
+completed preparation is recorded below. Historical Mac
 Git/Lore correspondence and factory proofs retain their exact source revisions;
 this goal does not retroactively change or repeat those receipts.
 
@@ -1517,9 +1518,13 @@ issuers and interactive human Lore login remain separate.
 
 The authorized read-only inventory observed Ubuntu 24.04.5 x86_64 with an RTX 4090,
 an unavailable old gateway and Cloudflare HTTP 530/error 1033 at the hostname.
-That proves neither a working public route nor Linux deployment. Preserve remote
-source, configuration, secrets and durable data before replacement. GPU/CDI/CUDA
-qualification is separate from this CPU/service/webhook goal.
+That proves neither a working public route nor Linux deployment. The operator
+subsequently selected a fresh reference, stated that this old application data is
+unimportant, and explicitly requested no backups and deletion of old containers,
+clusters and data volumes. Stop backup/migration work and remove the retired Linux
+stack and task-created backup copies after checking ownership. Preserve source,
+the Mac installation, the active native OpenShell/Entra control plane and unrelated
+services. GPU/CDI/CUDA qualification remains separate from this goal.
 
 Preparation checkpoint (2026-10-18; deployment gates still open):
 
@@ -1528,7 +1533,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   and creates no caller signer. Twenty-three helper tests, default/TLS Compose
   rendering, provider-profile lints, generated Hub catalog validation and native
   gateway configuration preflight pass. Native policy admission remains a runtime
-  gate. The existing Mac configuration is unchanged.
+  gate. Existing Mac services retain their deployed configuration.
 - Native Linux x86_64 OpenShell `6589a918a7a84640969f9f77b852695e210d713f`
   compiled from a clean detached checkout: CLI SHA-256
   `4867727a9d9429e563038af0b8a97ecc4aa12893b9bea1ea8580e3073f7d7b10`,
@@ -1539,34 +1544,95 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   gateway is now active on loopback with the retained, verified TLS certificate;
   no application workload has been activated. Initialization reported four old
   stopped sandbox records with absent backend containers and refreshed the default
-  mutable sandbox image. Pinning the exact-source runtime is required before use.
+  mutable sandbox image. The exact-source trusted sandbox runtime is now pinned to
+  `sha256:d87ca9c45c4cd8bc7876f5b1cb86768f4dd42b3babc2398dc00bff206d993a75`.
+  Restart preserved authenticated OIDC/TLS and no longer pulled the mutable image.
+  Installation `6f4552f` documents that runtime's role separately from the
+  supervisor and application images. The native user unit is enabled and active;
+  `loginctl enable-linger rozgo` succeeded and read-back is `Linger=yes`.
+  Reboot recovery has not yet been tested.
 - Entra has separate single-tenant resource, public CLI and Hub-forwarder
   registrations. The existing Veoveo Web application and grants are unchanged.
   The operator completed native device login and the gateway reports connected,
   authenticated OIDC with `openshell-admin`. The separate forwarder's v2 token
   passed live-JWKS signature, issuer, audience, expiry and exact role checks
-  (`openshell-user`, `sandbox:write`); deployed workspace/forwarding admission and
-  renewal remain open. Standard Graph receipts and the token-free claim check
+  (`openshell-user`, `sandbox:write`). Its validated subject is a user in
+  `vv-services` only, with no `vv-control` membership or admin role. Native custody
+  is configured and an explicit provisioning rotation succeeded at 20:09:43 UTC;
+  scheduled automatic renewal and forwarded workload use remain open. Standard
+  Graph receipts and the token-free claim check
   are retained privately under
   `/home/rozgo/VeoveoAI-reference/evidence/entra-native-applications/`.
-- The old Linux containers, their channel volumes, PostgreSQL/RustFS volumes and
-  native OpenShell state/configuration have private backups. An isolated restored
+- Initial preservation work created private backups of old Linux containers,
+  channel volumes, PostgreSQL/RustFS and native state/configuration. An isolated restored
   PostgreSQL clone with no network starts under the pinned PostgreSQL 18.6 image;
   private logical dumps pass `pg_restore --list`. The original data remains
-  untouched. The old database contains a `gateway` schema, 15 Artifact records,
+  untouched at that checkpoint. The old database contains a `gateway` schema, 15 Artifact records,
   11 Media predictions and 21 Tasks. Its applied migration histories predate the
-  current flattened migrations; fresh-reference versus history-migration scope
-  needs an explicit decision before activating new services against a database.
+  current flattened migrations. The operator's subsequent fresh/no-backups decision
+  supersedes this preservation work: no history migration, no more backup checks,
+  and these task-created backup copies and retired resources have been removed.
+  Cleanup removed eight stopped containers, nineteen unused old/scratch volumes,
+  the empty old Compose network, the 115 GiB backup directory and retired-key
+  staging. No cluster runtime was present; native sandbox inventories are empty.
+  Source, the active native gateway/TLS/credential state and the unrelated agent
+  tunnel remain intact. Measured free disk after cleanup: 513,749,954,560 bytes.
+- During backup preparation, a builder diagnostic printed a prefix of each old
+  Linux Time, Artifact and Media `server-key.p8` into its tool output. Treat all
+  three Ed25519 private keys as disclosed and retired; never deploy their staged
+  copies. No key material was committed or published. Source review of old SDK `7446181` and
+  current SDK `026902a` confirms these keys sign registration statements and OAuth
+  client assertions; they do not encrypt objects or durable Task/service data.
+  The selected fresh database will register new keys normally; the retired old
+  containers, database volumes, exports and staged key copies have been deleted.
+  No namespace-pin migration is needed.
+  New Hub signing/registration credentials must also isolate the new deployment
+  from old tokens and sessions. No replacement key or application has been activated.
 - Linux/amd64 component checks pass: Hub `00a7e7b` 203 tests (one skipped),
   Time `90eabf9` 152 (ten skipped), Artifact `40e95be` 114 (nine skipped),
   Media `20e2c6e` 71 (eleven skipped). These are component checks, not deployed
-  acceptance; runtime builds and native policy admission remain in progress.
+  acceptance. Runtime builds at those exact sources also passed; their immutable
+  image IDs are recorded below. Published Artifact `83d6910` replaces acceptance
+  fixtures' Mac identity constants with required typed tenant, administrator and
+  work-context inputs; exact ownership, quota, digest and provenance assertions
+  remain. Its macOS and Linux component checks pass 116 tests (nine skipped) each.
+  The final Artifact runtime was rebuilt from clean `83d6910`; its release build
+  stage took 91.8 seconds and its image revision label matches that commit.
+  Published qualifier `4f7fdbd` makes OAuth scope and issuer CA explicit inputs:
+  six focused tests pass (two ignored), strict Clippy passes, and a read-only Mac
+  native SDK status probe passes verified TLS/OIDC. Linux deployed qualifier use
+  remains open. Installation `bc78b8e` emits the local issuer CA explicitly;
+  only the corresponding ignored Mac qualifier JSON inputs were updated.
+- Native Cloudflare ingress validation and five rule-selection checks pass for
+  the Hub, callback-only Media and separate S3 routes. The dedicated tunnel now
+  runs natively through its own enabled user unit; API read-back confirms ingress
+  version 6, healthy status and four connections at 20:41:17 UTC. Public S3 DNS
+  points to that tunnel. The unrelated existing agent tunnel is unchanged.
+  Application origins are not yet active, so this is not an end-to-end request
+  receipt. SeaweedFS's staged origin certificate verifies against the
+  retained native CA for `veoveo-objects.bioma.ai`, expires 2027-01-16 20:12:52 UTC
+  and remains outside images. Actual S3 TLS/signed transfers remain unqualified.
+- A trusted-host read-only `GET /api/v3/webhook/secret` returned HTTP 200 at
+  20:13:47 UTC and confirmed the selected WaveSpeed secret matches. No secret was
+  rotated. The token-free receipt is
+  `/home/rozgo/VeoveoAI-reference/evidence/wavespeed-secret-preflight.json`.
+  This proves neither sandbox credential mediation nor callback delivery.
   No paid generation or OpenCode model call has occurred in this goal.
 
-- [ ] **0 — Inventory, preserved backup and reviewed native placement.** Reconcile
+| Built Linux runtime | Immutable image ID |
+| --- | --- |
+| Hub `00a7e7b` | `sha256:d348cee423cc698d7030f9aa40f1e566a42df35d962f92ce7c7b19f8b0fade0e` |
+| Time `90eabf9` | `sha256:f5608dbb15bdf54447b0e979d203f0ccc0d1e358d2cc8cbecf743bf5c1732495` |
+| Artifact `83d6910` | `sha256:60c3100d8d12b5acebb8080eae56d3a2fe560c02764507de50a2d715f3ecf238` |
+| Media `20e2c6e` | `sha256:4074d31aabd225dcd5518aab234beadffa2149543aa1bc28502a43b194a5b87f5` |
+| Media test provider `20e2c6e` | `sha256:83b0d544639ccfe51202852b5cbf28d55560618fad566f69cc41a3aa3dc9bb8b` |
+
+- [x] **0 — Inventory, retired-stack cleanup and reviewed native placement.** Reconcile
   the current remote processes, images, policies, identity, public routing and
-  durable PostgreSQL/Lore/S3/key ownership. Verify preserved backups and recovery
-  inputs before replacing anything. Bring unsupported native capabilities or
+  PostgreSQL/Lore/S3/key ownership. Remove the explicitly retired Linux containers,
+  clusters, volumes and task-created backups; preserve the active control plane,
+  source checkouts, Mac and unrelated services. Use fresh application state and
+  keys. Bring unsupported native capabilities or
   responsibility changes to coordinator review; add no proxy, second launcher or
   infrastructure fallback to hide an unresolved failure.
 - [ ] **1 — Pinned native Linux builds and installation.** Select reviewed source
@@ -1574,8 +1640,10 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   and executable revisions. Install the native OpenShell gateway/supervisor and
   approved service definitions, providers, private placements and persistent
   mounts through existing installation/native contracts. Preserve the established
-  Lore/IdP custody and service signing identities. Mac ARM64 evidence is historical,
-  not Linux x86_64 acceptance.
+  Lore/IdP custody and durable service ownership. Generate fresh Linux service keys
+  and register them into the fresh database; never reuse the retired key material.
+  Mac ARM64 evidence is historical, not Linux
+  x86_64 acceptance.
 - [ ] **2 — Identity, TLS and public routing.** Qualify verified TLS, canonical
   issuer/audience/JWKS admission, native credential custody/renewal, workspace
   isolation and Hub's approved private forwarding bindings. Establish and verify
