@@ -1553,7 +1553,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   is Linux/amd64 and passes a no-network executable smoke check. The native
   gateway is now active on loopback with the retained, verified TLS certificate;
   the initial checkpoint preceded application startup. Initialization reported four
-  old   stopped sandbox records with absent backend containers and refreshed the default
+  old stopped sandbox records with absent backend containers and refreshed the default
   mutable sandbox image. The exact-source trusted sandbox runtime is now pinned to
   `sha256:d87ca9c45c4cd8bc7876f5b1cb86768f4dd42b3babc2398dc00bff206d993a75`.
   Restart preserved authenticated OIDC/TLS and no longer pulled the mutable image.
@@ -1569,7 +1569,9 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   (`openshell-user`, `sandbox:write`). Its validated subject is a user in
   `vv-services` only, with no `vv-control` membership or admin role. Native custody
   is configured and an explicit provisioning rotation succeeded at 20:09:43 UTC;
-  scheduled automatic renewal and forwarded workload use remain open. Standard
+  a scheduled renewal was subsequently observed at 21:06:55 UTC, with expiry
+  22:06:54 and next refresh 22:03:54. No manual rotation triggered it. Hub-routed
+  user MCP forwarding remains open. Standard
   Graph receipts and the token-free claim check
   are retained privately under
   `/home/rozgo/VeoveoAI-reference/evidence/entra-native-applications/`.
@@ -1642,12 +1644,51 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   produced one active Hub registration and its namespace pin, Time migration v1
   succeeded, and operator native forwarding returned HTTP 200 readiness. These
   prove startup/registration, not user-authenticated Hub MCP calls or Tasks.
+- Artifact is Ready in native `vv-services/artifact`, sandbox
+  `f25bbb62-b37a-4304-ae24-40e37274c2fc`, from the immutable `83d6910` image
+  below and Bioma `a70a38f`. Native admission, state/config mount checks, normal
+  registration, migration v1 and forwarded readiness all pass. Its dedicated S3
+  identity passes Put/Get with exact byte comparison, Delete, lifecycle setup,
+  multipart create/upload/list/complete/abort and rejection of another bucket.
+  All probe objects/uploads and the temporary unrelated bucket were removed.
+  SeaweedFS's built-in readwrite preset lacked required startup/multipart actions;
+  source review of 4.48 established the exact three bucket and eight object
+  actions. Template `b4e2f99` now supplies the native scoped policy and procedure;
+  Bioma merged it normally. No administrator privilege or broad `s3:*` was added.
+  The S3 endpoint's IAM ListUsers probe returned `Unknown`, not a proven explicit
+  IAM denial. The sanitized receipt is
+  `/home/rozgo/VeoveoAI-reference/evidence/artifact-native-deployment.json`.
+  User-authenticated Artifact MCP transfers and persistence remain open.
+- Bioma Media qualification now binds to the same two-identity native provider as
+  Hub and Artifact qualification. The member and administrator+billed grants each
+  have one refresh owner; a rotating refresh token is not duplicated into two
+  independent providers. The inherited separate Media profile remains an unused
+  example. Actual application custody and acceptance await both human sessions.
 - The public guide's new Bioma link was checked in Chrome over the temporary local
   HTTP server. All three views render, component details and navigation work, and
   the console reports no warnings/errors. Both exports produced files: SVG
   114,421 bytes (parsed SVG root) and PNG 399,643 bytes (2960 x 2310). The browser
   automation download event timed out despite Chrome saving the SVG successfully;
   filesystem inspection confirmed both new downloads. This is browser QA only.
+- Published installation `4b35192` corrects native application refresh profiles:
+  initial PKCE requests `scope=mcp`, while refresh omits the optional scope field
+  and retains the original grant. Hub currently rejects any explicit refresh
+  scope. Four profile lints and thirteen helper tests pass. Bioma merged the
+  template normally at `389a234`; the Linux checkout is clean at that revision.
+- The administrator completed public Entra-to-Hub S256 PKCE as client `opencode`,
+  resource `https://veoveo.bioma.ai/mcp/local`, context `reference-work`. The
+  independent live-JWKS EdDSA signature check passes. The issued grant represents
+  the configured administrator plus billed authority, not a billed-only caller.
+  No bearer or refresh token is published. The ordinary member's saved password
+  was rejected once by Entra; user sign-in is pending. The bounded callback
+  listener ended after 600 seconds with zero token exchanges; start a fresh PKCE
+  attempt when the user is ready. Two-principal permission acceptance remains open.
+- Public edge probes found Cloudflare Browser Integrity Check rejects the default
+  `Python-urllib/3.13` User-Agent with HTTP 403/error 1010. The same discovery
+  request succeeds with curl, absent User-Agent and the honest one-shot client
+  identifier `veoveo-reference-qualification/1.0`. The temporary PKCE client uses
+  its own identifier; no browser impersonation or edge setting was applied. This
+  records an edge client restriction, not universal public-client acceptance.
 - A trusted-host read-only `GET /api/v3/webhook/secret` returned HTTP 200 at
   20:13:47 UTC and confirmed the selected WaveSpeed secret matches. No secret was
   rotated. The token-free receipt is
