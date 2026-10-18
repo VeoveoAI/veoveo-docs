@@ -7,7 +7,7 @@ it moves.
 
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
-Current push: the macOS native OpenShell foundation, Lore clone/edit/push, branch hook and direct-IdP credential lifecycle pass. The Desktop adapter and signer are retired. Deployed Hub → Time integration now passes, including Tasks, credential renewal and restart recovery. Its checked source is published to Git. Exact Time source correspondence in Lore, factory preflight, the bounded model build and deployment from that revision remain open under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption). Linux replacement is separate.
+Current push: the macOS native OpenShell foundation, Lore clone/edit/push, branch hook and direct-IdP credential lifecycle pass. The Desktop adapter and signer are retired. Deployed Hub → Time integration now passes, including Tasks, credential renewal and restart recovery. Its checked source is published to Git and verified identical in Lore. Factory preflight, the bounded model build and deployment from that revision remain open under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption). Linux replacement is separate.
 
 Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
 and [Lore/OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) make OpenShell the

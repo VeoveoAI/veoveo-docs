@@ -275,8 +275,8 @@ Use these names throughout the application integration. Local checkouts use the
 new names. Core, SDK, Time, Artifact and the MCP template have committed preparation.
 Hub, Time's acceptance changes, Media's rename and native installation preparation
 are checked, committed and published. The documentation records qualification
-separately from source publication; exact Lore correspondence and the factory pass
-remain open.
+separately from source publication; exact Git/Lore correspondence is now verified, while factory preflight and the
+bounded model/deployment pass remain open.
 The execution checklist records source revisions, publication status and open gates.
 Links below point to the renamed local checkouts.
 
