@@ -283,6 +283,12 @@ Lore's current service and authoring path stay as already qualified during this 
 
 The active Linux reference goal selects the existing Bioma Microsoft Entra tenant,
 with operator authorization to configure the required applications and grants.
+[BiomaAI/veoveo-installation](https://github.com/BiomaAI/veoveo-installation) owns
+the concrete public reference configuration, derived from the shared
+[installation template](https://github.com/VeoveoAI/veoveo-template-installation)
+with common Git history. Reusable installation fixes go to the template first;
+Bioma records its selected native policies, source revisions, public routes and
+qualification status. Private runtime state and credentials stay outside Git.
 OpenShell uses native OIDC validation for a separate management audience and a
 restricted Hub forwarder. Hub uses its existing Entra authorization-code broker:
 Entra authenticates the human, while Hub issues its application access/refresh

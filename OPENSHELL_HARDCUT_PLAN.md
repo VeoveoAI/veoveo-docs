@@ -1528,6 +1528,16 @@ services. GPU/CDI/CUDA qualification remains separate from this goal.
 
 Preparation checkpoint (2026-10-18; deployment gates still open):
 
+- The operator requested a public Bioma installation derived from the reusable
+  template, linked from VeoveoAI as a real implementation example.
+  [BiomaAI/veoveo-installation](https://github.com/BiomaAI/veoveo-installation)
+  is published at `31fb50be1ebc0e2e07e34f4bc7568c6a8a85e5b0`, sharing template
+  history through `1ca4f3062a11c0f6d46de2e898a0e427929fc7eb`. It contains the
+  reviewed native reference policies, provider-profile schemas, Cloudflare ingress
+  and explicit source/qualification status. Credentials, generated grants and
+  private runtime state are excluded. The existing Linux checkout now tracks this
+  origin at the published commit, keeping runtime state paths stable; its ignored
+  `.env` checksum is unchanged and generic template updates remain its upstream.
 - Installation `c5e5c328eb80e005b62aa13f99fbb356c79d259c` is published. Its
   Entra preparation uses existing Hub schemas, preserves private keys on reruns
   and creates no caller signer. Twenty-three helper tests, default/TLS Compose
@@ -1542,8 +1552,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   image `sha256:22368e9fd71ebbb887402a91ca4ba7e5c754146179a4f53f7495f41d15644f51`
   is Linux/amd64 and passes a no-network executable smoke check. The native
   gateway is now active on loopback with the retained, verified TLS certificate;
-  no application workload has been activated. Initialization reported four old
-  stopped sandbox records with absent backend containers and refreshed the default
+  the initial checkpoint preceded application startup. Initialization reported four
+  old   stopped sandbox records with absent backend containers and refreshed the default
   mutable sandbox image. The exact-source trusted sandbox runtime is now pinned to
   `sha256:d87ca9c45c4cd8bc7876f5b1cb86768f4dd42b3babc2398dc00bff206d993a75`.
   Restart preserved authenticated OIDC/TLS and no longer pulled the mutable image.
@@ -1574,7 +1584,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   and these task-created backup copies and retired resources have been removed.
   Cleanup removed eight stopped containers, nineteen unused old/scratch volumes,
   the empty old Compose network, the 115 GiB backup directory and retired-key
-  staging. No cluster runtime was present; native sandbox inventories are empty.
+  staging. No cluster runtime was present; native sandbox inventories were empty
+  after cleanup.
   Source, the active native gateway/TLS/credential state and the unrelated agent
   tunnel remain intact. Measured free disk after cleanup: 513,749,954,560 bytes.
 - During backup preparation, a builder diagnostic printed a prefix of each old
@@ -1587,7 +1598,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   containers, database volumes, exports and staged key copies have been deleted.
   No namespace-pin migration is needed.
   New Hub signing/registration credentials must also isolate the new deployment
-  from old tokens and sessions. No replacement key or application has been activated.
+  from old tokens and sessions. Fresh Hub credentials and a new Time service key
+  are now active in the clean database.
 - Linux/amd64 component checks pass: Hub `00a7e7b` 203 tests (one skipped),
   Time `90eabf9` 152 (ten skipped), Artifact `40e95be` 114 (nine skipped),
   Media `20e2c6e` 71 (eleven skipped). These are component checks, not deployed
@@ -1608,10 +1620,34 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   runs natively through its own enabled user unit; API read-back confirms ingress
   version 6, healthy status and four connections at 20:41:17 UTC. Public S3 DNS
   points to that tunnel. The unrelated existing agent tunnel is unchanged.
-  Application origins are not yet active, so this is not an end-to-end request
-  receipt. SeaweedFS's staged origin certificate verifies against the
+  Subsequent Hub discovery and S3 anonymous-denial probes traverse that tunnel.
+  SeaweedFS's origin certificate verifies against the
   retained native CA for `veoveo-objects.bioma.ai`, expires 2027-01-16 20:12:52 UTC
-  and remains outside images. Actual S3 TLS/signed transfers remain unqualified.
+  and remains outside images. Native and public S3 TLS probes both return HTTP 403
+  with certificate verification passing. Signed transfers remain unqualified.
+- Fresh PostgreSQL 18.6 and SeaweedFS 4.48 are running from pinned images with
+  newly generated credentials and empty application state. PostgreSQL is healthy;
+  its initial inventory contained zero application schemas. SeaweedFS reads its
+  origin leaf/key from a read-only mount. No old keys or database history were
+  imported. Dedicated bucket-scoped Artifact credentials and signed transfers
+  remain subsequent gates.
+- Hub is Ready in native workspace `vv-control`, sandbox
+  `235f1e07-d4a9-4b51-a87d-37563798b1c8`, using the immutable image below and
+  committed Bioma policy. Its three private configuration files are mounted
+  read-only, owned by UID 10001 with mode 0600. Exact-image catalog validation
+  passes (one profile). Native verified-TLS readiness and discovery return 200;
+  public discovery/JWKS also return 200 with canonical issuer and matching key ID.
+  Time is Ready in `vv-services`, sandbox
+  `29bb3e6d-d8fc-4062-a587-b7e173ec2a50`. Normal mediated initial registration
+  produced one active Hub registration and its namespace pin, Time migration v1
+  succeeded, and operator native forwarding returned HTTP 200 readiness. These
+  prove startup/registration, not user-authenticated Hub MCP calls or Tasks.
+- The public guide's new Bioma link was checked in Chrome over the temporary local
+  HTTP server. All three views render, component details and navigation work, and
+  the console reports no warnings/errors. Both exports produced files: SVG
+  114,421 bytes (parsed SVG root) and PNG 399,643 bytes (2960 x 2310). The browser
+  automation download event timed out despite Chrome saving the SVG successfully;
+  filesystem inspection confirmed both new downloads. This is browser QA only.
 - A trusted-host read-only `GET /api/v3/webhook/secret` returned HTTP 200 at
   20:13:47 UTC and confirmed the selected WaveSpeed secret matches. No secret was
   rotated. The token-free receipt is
