@@ -281,6 +281,22 @@ under OpenShell only after volume access and backup/restore qualification. Local
 Keycloak, its dedicated database and HTTPS bootstrap remain outside OpenShell.
 Lore's current service and authoring path stay as already qualified during this slice.
 
+The active Linux reference goal selects the existing Bioma Microsoft Entra tenant,
+with operator authorization to configure the required applications and grants.
+OpenShell uses native OIDC validation for a separate management audience and a
+restricted Hub forwarder. Hub uses its existing Entra authorization-code broker:
+Entra authenticates the human, while Hub issues its application access/refresh
+tokens and enforces explicit principal membership and permissions. This retains
+Hub's application OAuth responsibility and does not restore its retired Lore
+issuer. Two clients for the same human do not create different risk grants;
+concurrent ordinary-member and billed/admin acceptance needs distinct principals.
+The existing dedicated public tunnel will route Hub and only Media's signed
+callback path to verified native service exposures. Artifact's signed byte
+requests use a separate public S3 authority and SeaweedFS's native HTTPS listener.
+These reference paths are planned and under implementation; Mac qualification
+does not establish Linux, Entra or public-webhook acceptance. See the
+[reference gates](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal).
+
 ### Hub And SDK Naming And Ownership
 
 Use these names throughout the application integration. Local checkouts use the

@@ -1505,11 +1505,63 @@ submitting another generation by default. All gates below remain open. Historica
 Git/Lore correspondence and factory proofs retain their exact source revisions;
 this goal does not retroactively change or repeat those receipts.
 
+The operator selected the reference's existing Microsoft Entra tenant and
+authorized the required application configuration on 2026-10-18. Entra is now
+part of this goal. Reuse the existing Veoveo Web registration where applicable;
+preserve existing grants and redirects. Native OpenShell validates its own Entra
+resource tokens. Hub uses its existing Entra OIDC authorization-code broker and
+retains application access/refresh issuance, explicit principal membership and
+risk grants. Generic Entra JWTs do not replace Hub's application token contract.
+These are selected configuration paths, not yet Linux acceptance. Other customer
+issuers and interactive human Lore login remain separate.
+
 The authorized read-only inventory observed Ubuntu 24.04.5 x86_64 with an RTX 4090,
 an unavailable old gateway and Cloudflare HTTP 530/error 1033 at the hostname.
 That proves neither a working public route nor Linux deployment. Preserve remote
 source, configuration, secrets and durable data before replacement. GPU/CDI/CUDA
 qualification is separate from this CPU/service/webhook goal.
+
+Preparation checkpoint (2026-10-18; deployment gates still open):
+
+- Installation `c5e5c328eb80e005b62aa13f99fbb356c79d259c` is published. Its
+  Entra preparation uses existing Hub schemas, preserves private keys on reruns
+  and creates no caller signer. Twenty-three helper tests, default/TLS Compose
+  rendering, provider-profile lints, generated Hub catalog validation and native
+  gateway configuration preflight pass. Native policy admission remains a runtime
+  gate. The existing Mac configuration is unchanged.
+- Native Linux x86_64 OpenShell `6589a918a7a84640969f9f77b852695e210d713f`
+  compiled from a clean detached checkout: CLI SHA-256
+  `4867727a9d9429e563038af0b8a97ecc4aa12893b9bea1ea8580e3073f7d7b10`,
+  gateway `e27d990119d9dd85d22a232ebe76992b60d1be965a6621f89be5d4dc0c9a1456`.
+  The release build completed in 3m30s; executable smoke checks pass. Supervisor
+  image `sha256:22368e9fd71ebbb887402a91ca4ba7e5c754146179a4f53f7495f41d15644f51`
+  is Linux/amd64 and passes a no-network executable smoke check. The native
+  gateway is now active on loopback with the retained, verified TLS certificate;
+  no application workload has been activated. Initialization reported four old
+  stopped sandbox records with absent backend containers and refreshed the default
+  mutable sandbox image. Pinning the exact-source runtime is required before use.
+- Entra has separate single-tenant resource, public CLI and Hub-forwarder
+  registrations. The existing Veoveo Web application and grants are unchanged.
+  The operator completed native device login and the gateway reports connected,
+  authenticated OIDC with `openshell-admin`. The separate forwarder's v2 token
+  passed live-JWKS signature, issuer, audience, expiry and exact role checks
+  (`openshell-user`, `sandbox:write`); deployed workspace/forwarding admission and
+  renewal remain open. Standard Graph receipts and the token-free claim check
+  are retained privately under
+  `/home/rozgo/VeoveoAI-reference/evidence/entra-native-applications/`.
+- The old Linux containers, their channel volumes, PostgreSQL/RustFS volumes and
+  native OpenShell state/configuration have private backups. An isolated restored
+  PostgreSQL clone with no network starts under the pinned PostgreSQL 18.6 image;
+  private logical dumps pass `pg_restore --list`. The original data remains
+  untouched. The old database contains a `gateway` schema, 15 Artifact records,
+  11 Media predictions and 21 Tasks. Its applied migration histories predate the
+  current flattened migrations; fresh-reference versus history-migration scope
+  needs an explicit decision before activating new services against a database.
+- Linux/amd64 component checks pass: Hub `00a7e7b` 203 tests (one skipped),
+  Time `90eabf9` 152 (ten skipped), Artifact `40e95be` 114 (nine skipped),
+  Media `20e2c6e` 71 (eleven skipped). These are component checks, not deployed
+  acceptance; runtime builds and native policy admission remain in progress.
+  No paid generation or OpenCode model call has occurred in this goal.
 
 - [ ] **0 — Inventory, preserved backup and reviewed native placement.** Reconcile
   the current remote processes, images, policies, identity, public routing and
@@ -1575,8 +1627,9 @@ Further adoption remains open:
   a verified source snapshot to a separate Git checkout and remote, with the Lore
   revision in the Git commit message. Use one editing path per task; no automatic
   bidirectional sync. Git remains a build input while Cargo uses Git revision pins.
-- Qualify Entra/customer issuers and interactive human Lore login separately. The
-  local direct-issuer authoring/credential lifecycle gates above are complete.
+- Qualify other customer issuers and interactive human Lore login separately.
+  Entra is selected for the active Linux reference goal above; the local
+  direct-issuer authoring/credential lifecycle gates remain complete.
 - Move the remaining compatible infrastructure and actual MCP components to native
   definitions; qualify persistence, registration and relevant service operations.
 - Put thin source/revision-to-runtime bindings in an existing trusted Veoveo process.
