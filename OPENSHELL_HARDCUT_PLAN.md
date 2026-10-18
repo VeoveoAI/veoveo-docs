@@ -800,11 +800,13 @@ This is the active execution plan for the existing placement shown in the
 to the qualified Hub, Artifact and durable stores. It does not extend the
 Time-specific Lore/factory proof or add dynamic placement.
 
-The guide now distinguishes the deployed basic Media path from pending lifecycle
-acceptance. Chrome review on 2026-10-17 checked all three views, component details,
+The guide distinguishes deployed Media evidence from pending acceptance.
+Chrome review on 2026-10-17 checked all three views, component details,
 navigation and zoom/fit; each view exported valid SVG and PNG files. The current
 platform view retains the qualified foundation, while the integration view shows
-the deployed Media sandbox and fixture. This browser check is separate from the
+the deployed Media sandbox and fixture. The updated lifecycle snapshot was reviewed
+again after both restart proofs passed, including visible component details and
+the exported diagrams. This browser check is separate from the
 application qualification below.
 
 - [ ] **0 — Complete the client byte-transfer prerequisites.** SDK revision
@@ -823,24 +825,27 @@ application qualification below.
   and existing records. Five serial deployed private cases passed: upload/range
   transfer, role/tool denial, grants/revocation, access request and quota. The
   expected quota refusal left one new failed diagnostic record; existing available
-  records were retained. Those deployed transfer cases use typed structured output;
-  live JSON-text equality and the Mac signed-byte leg remain pending. Publish reviewed component revisions, deliberately update consumer pins
+  records were retained. The later Media cases verified live signed-transfer JSON
+  text equality and exact 65,536-byte and 20,971,643-byte downloads from native
+  sandboxes; their independent stored digests match. The Mac signed-byte leg
+  remains pending. Publish reviewed component revisions, deliberately update consumer pins
   and pass their gates before replacing a runtime. Prove an Artifact signed download with
   the typed SDK and actual saved bytes first. Establish one signed S3 authority
   reachable unchanged from both the Mac client and native sandboxes; the currently
   qualified sandbox address `host.openshell.internal:9000` is not proof of Mac
   reachability. Preserve SigV4 host/headers, direct byte transfer and Artifact's
   dedicated bucket-scoped signing-key custody. Add no byte proxy or URL rewrite.
-- [ ] **1 — Reconcile Media source and client contracts.** Media revision
+- [x] **1 — Reconcile Media source and client contracts.** Initial Media revision
   `0589cb6dc192f8734bd2e5d183160868d682a102` is reviewed and published. Native
   bearer inputs, advertised fake-provider origin, runtime CA/key preparation and
   the SDK/Artifact repins passed five focused tests and the local Docker component
   gate (69 tests, four skipped, six feature combinations, SQLx metadata, formatting,
   Clippy and dependency checks). The runtime and fake provider are now deployed in native sandboxes; the basic
   fake-provider generation and ordinary-member billed-run denial passed (two
-  cases, 10.84 seconds). OpenCode's reviewed Tasks integration has passed its
-  no-model source probe; binary/client and broader lifecycle qualification
-  remain pending. Replace stale Compose
+  cases, 10.84 seconds). Subsequent runtime and qualification revisions are recorded
+  in gate 3. OpenCode's reviewed Tasks integration has passed its no-model source
+  probe and compiled-CLI Hub connection check; the final model/client scenario
+  remains pending under gate 4. Replace stale Compose
   and copied caller-key instructions in its README/acceptance documentation with
   the qualified native IdP/opaque-reference pattern. Adapt acceptance member/admin
   input selection as in Time/Artifact, with clear missing/ambiguous-input errors and
@@ -853,7 +858,7 @@ application qualification below.
   Prepare the UID 10001 runtime key directory and CA support using the existing
   component Dockerfile. Run the full component gate, including existing durable
   Task, usage, operation, tenant/object isolation and streamed-output tests.
-- [ ] **2 — Prepare native placement and the private fake provider.** Extend the
+- [x] **2 — Prepare native placement and the private fake provider.** Extend the
   existing trusted installation helper/configuration with Media's startup-approved
   Hub binding, registration provider, persistent signing-key volume and narrow
   PostgreSQL admission. Inventory/adopt any existing key before generating one;
@@ -887,8 +892,8 @@ application qualification below.
   passed. The fresh-sandbox `native.service_ingress` probe passed positive calls,
   authentication/authority/path denials, exposure deletion/recreation and cleanup
   using probe image `sha256:645f78445073be55a5d248ca1b568c86eb6b79bae8a357ffb8766325844cf87b`.
-  Media and its fake provider are now Ready under the admitted mixed policy.
-  The deployed generation case completed a Task through Hub, delegated to Artifact
+  Media and its fake provider became Ready under the admitted mixed policy.
+  The initial deployed generation case completed a Task through Hub, delegated to Artifact
   and downloaded its 65,536-byte output. Media image
   `sha256:ecfdbe176e899a830d80b02f5e6d70c4f35ad28cfc1b4bd0dbe337f356df36da`
   and fixture image
@@ -904,7 +909,86 @@ application qualification below.
   traffic as generic REST or bypass L7.
   Admit only necessary provider API/output paths and direct signed S3 transfers;
   verify large-output streaming against the selected inspection policy.
-- [ ] **3 — Qualify deterministic deployed behavior.** Use a dedicated billed-test
+- [x] **3 — Qualify deterministic deployed behavior.** Reviewed Media
+  `392c2c1000c2b96fb8ee823bbf0996444c547623` is now
+  published with the cancellation repair, safe fixture controls/observations and
+  expanded acceptance suite. Its full local Docker check passed 71 tests (11
+  ignored), SQLx metadata, formatting, strict Clippy, dependency and all six
+  feature checks. The check image is
+  `sha256:dcdeee04c0637c6766a19b97c02484a290dc8183873fbbf74abec2c29af73029`.
+  An earlier full run failed during temporary SeaweedFS bucket setup before
+  application execution; an isolated rerun, all 19 affected run tests and the
+  subsequent full gate passed. Test-only diagnostics now retain safe process,
+  port and HTTP-status evidence before cleanup; the original cause is unproven.
+  No production timeout or test concurrency was changed. The matching native pair
+  is now Ready: Media image
+  `sha256:7487ff1f22b97725f7ff2cff0f8ba3995d8ab046cb16e3da77a9076edb7bca9a`
+  and fixture image
+  `sha256:d89e1437cb6d3c85d59f9b27bab5e7877a43ecbcfe7f622ee2c7beeba798781b`.
+  Both carry the exact `392c2c1` revision label. Media's state/configuration volumes
+  and key pin were retained; native registration/database/provider access passed.
+  The existing qualification runner loaded the fixture-control policy and checked
+  executable. Its first six-case attempt was blocked before any application call:
+  the old supervisor's native executable-integrity pin rejected the replaced
+  binary. Native stop/start retained the runner/workload and provider bindings
+  while creating a fresh supervisor; no policy relaxation or manual cache reset
+  was used. No Media Task was created by that blocked attempt. The first application
+  run passed both cancellation cases and member billed-call refusal. Two completed
+  downloads then hit an incorrect bare-hex comparison against the canonical
+  `sha256:`-prefixed type; independent stored hashes and exact bytes matched for
+  both sizes. The ordinary-call case expected the wrong error: live Hub correctly
+  preserved Media's `INVALID_REQUEST` and exact Task-required message. Published
+  qualification revision `293553e554e9f337e2e10fe7382e932a131ff703` corrects only
+  those assertions and records installed Discover/list/catalog/schema readiness
+  under C31. Acceptance compilation, strict Clippy and three input tests passed;
+  executable SHA-256 is
+  `820d972bd0ac421293ebdf4b18aa52d14f5245ba467ce0ee7f9c6509a9ed8772`.
+  Runtime and fixture code are unchanged from deployed `392c2c1`. The corrected
+  six-case native run passed 6/6 in 36.06 seconds (06:14:38–06:15:14 UTC): ordinary
+  member browsing/billed refusal, catalog/schema/Task-only refusal, 65,536-byte and
+  20,971,643-byte exact downloads, signed-request JSON text, stored typed checksums,
+  owner/Work Context/labels/delegation metadata, estimate/actual usage, pushed Task
+  completion and cancellation before/after provider dispatch. It ran after both
+  credentials were applied at 06:14:02/03 UTC, before their next refresh.
+  The after-dispatch cancellation receipt for Media Task
+  `01a14d9d-c42f-7db1-9663-e3b1c667a702` is persisted with
+  `{"deleted":true,"deletedCount":1}` and both cancellation timestamps.
+  Native automatic refresh also applied at 06:05:02/03 UTC; fresh member and
+  billed calls succeeded after the recorded original expiry of 06:04:03 UTC.
+  The runner retained its sandbox/provider/binding/authorization inputs. Handle
+  continuity across its supervisor restart is source-grounded in deterministic
+  native reference derivation, not a claimed pre/post byte comparison.
+  The external in-flight restart proof passed in 50.35 seconds: Hub Task
+  `gtr_iw_SyLyObK5jy32Pj9aMC4b1WNYqR5aTt1-orfrbli0` was Working before and
+  after actual native Media/Hub stop/start, then a fresh subscription received
+  Completed with one provider submission and the exact retained 65,536-byte output.
+  Sandbox identities, Hub signing identity and Media key pin were retained;
+  process identities changed. A fresh Time call through Hub also passed afterward.
+  An earlier attempt lost stdin before any service restart; it was canceled and
+  its cancellation receipt verified. Native exec with an attached TTY supplied the
+  required operator continuation without changing application code.
+  Terminal-persistence prepare passed for Media Task
+  `01a14dab-0911-71c0-9915-e63adc02784c`. After a separate actual Media/Hub
+  restart, verification retrieved the Completed Task and result but stopped on
+  equality with the prediction resource: the completion snapshot uses the worker's
+  timestamp, while that resource uses the persisted Task completion timestamp
+  (about 2.086 ms later in this case). Both remain valid; the acceptance comparison
+  must verify their respective contracts and all other result fields. Published
+  qualification revision `20e2c6edb13d86cf981cf78e2a45fa41cbc94ff5` corrects this
+  test comparison, preserves both required timestamps, compares the resource to
+  the authoritative prediction, and compares every other typed result field exactly.
+  It also synchronizes the authoritative C31 compliance profile with the previously
+  qualified documentation; the stale profile initially blocked component-test setup.
+  Three input tests, strict acceptance/run Clippy and the focused real output-store
+  regression passed. Production Rust and fixture behavior are unchanged; embedded
+  compliance metadata changed. The new AArch64 acceptance executable has SHA-256
+  `3045b1e6712ca3f45d3a6527186838a4b1b346af1068d95cd73ae3872b180ae6`.
+  After native QA stop/start applied that binary, verification of the original
+  prepared Task passed once in 1.80 seconds: retained Completed result,
+  authoritative prediction, Artifact metadata, exact 65,536 bytes and checksum,
+  and a new subscription delivering retained completion. No replacement generation
+  was needed. Both external Media/Hub restart proofs are now qualified.
+  Use a dedicated billed-test
   caller eligible for `media.generations.run`, Artifact read/write delegation and
   required prediction reads. Preserve the ordinary member's model browsing and
   billed-run denial. All credentials remain in native custody; callers receive
@@ -963,8 +1047,17 @@ application qualification below.
   path against actual Hub passed: eight Time, eight Artifact and three Media tools,
   the typed fake-model schema, and one completed fake generation with its Artifact
   ID in model-visible JSON text. This directly exercised the client source with Bun;
-  the native binary build/smoke is separate evidence. The installed client has not
-  yet been replaced, and the final binary/model scenario remains pending. No model
+  the native binary build/smoke is separate evidence. The compiled CLI also ran
+  its ordinary persistent `serve` process on an ephemeral loopback port;
+  `mcp.list` reported `veoveo` connected using the existing project configuration,
+  a fresh member JWT and verified CA. Its temporary local-server authentication
+  was kept in process environments, and the owned server was stopped afterward.
+  The reviewed executable is now installed at `~/.opencode/bin/opencode`, version
+  `0.0.0-mcp-tasks-202610180531`, with the previous binary retained at
+  `~/.opencode/bin/opencode.backup-20261018T055004Z`. Existing running user
+  processes were not restarted. The project's existing member launcher disables
+  automatic updates for this local build and retains the explicit MiMo default;
+  the final billed-client/model scenario remains pending. No model
   calls were made during this work.
   Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
   Task support. Test the actual selected OpenCode build's Tasks extension,
@@ -1009,14 +1102,22 @@ application qualification below.
   run one bounded OpenCode scenario with explicit
   `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`: discover, models/schema, eligible `media.run`
   Task, Artifact download, save bytes and independently compare their hash.
+  Use a fresh billed-test JWT only for that run, leaving the ordinary member
+  launcher unchanged. Apply a per-run limit of eight agent steps and a 240-second
+  wall-clock deadline, with no rerun of a failed scenario or generation. Restore the
+  controlled fake's automatic completion first; no real provider is selected.
+  Use the exact installed binary hash above, `--agent build`, explicit model/title,
+  and per-run `agents.build.steps: 8` with `warming: false`. Load the existing
+  installation `.env` value `DEEPINFRA_API_TOKEN` privately into the child-only
+  `DEEPINFRA_API_KEY` expected by OpenCode; do not print it or change saved auth.
   Record actual tool outcomes, Task/usage records and model token/cost evidence.
   Stop on failure and return to development; no OpenCode model calls during
   iteration, automatic repair or model substitution.
 
 Real providers and billed qualification, signed webhook ingress, Artifact public
 shares, general Lore/factory automation, environment composition and remote
-Linux/GPU remain separate work. All aggregate gates above remain unchecked until
-their remaining acceptance conditions pass; the individual source and runtime
+Linux/GPU remain separate work. Aggregate gates are checked only when
+their acceptance conditions pass; the individual source and runtime
 results are recorded separately. Component responsibilities remain unchanged.
 
 ### Remaining Adoption

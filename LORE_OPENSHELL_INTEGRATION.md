@@ -659,11 +659,17 @@ restart persistence. Media then adds delegated Artifact access, Task recovery wi
 duplicate output publication, cancellation, output provenance and usage records.
 The [Media native integration plan](OPENSHELL_HARDCUT_PLAN.md#media-native-integration-plan)
 records the source, native-policy and client-Task gates. Native Media and its private
-fake provider are now deployed: the basic billed generation Task, Task-bound
-Artifact output/download and ordinary-member billed-run denial passed. Media
-adopted its existing signing key and schema. Detailed provenance/usage, large
-outputs, cancellation, renewal, restart recovery and final OpenCode qualification
-remain pending; the basic path does not establish those outcomes.
+fake provider are now deployed. Six deterministic native cases passed: Task-bound
+Artifact delegation, exact 64 KB and 20 MB output transfers, provenance and usage,
+pushed completion, ordinary-member billed-run refusal, Task-only invocation and
+cancellation before and after dispatch. Media adopted its existing signing key
+and schema. Native credential renewal and in-flight recovery across actual Hub/Media
+restarts also passed, retaining the Task and service identities without duplicate
+provider submission. A separate completed Task retained its result, Artifact bytes
+and fresh-subscription delivery after actual Hub/Media restarts. The Mac's unchanged
+signed-byte download and final bounded OpenCode MiMo scenario remain open. The
+reviewed local OpenCode build supports Tasks and passed no-model client preflight;
+no model was called during implementation.
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
 persistent registration key and the existing PostgreSQL metadata. A dedicated
@@ -675,7 +681,7 @@ access requests. A retained object and its metadata/access survive actual
 Artifact/Hub restarts; a newly opened subscription delivers its opening update.
 Tenant and object isolation remain component
 test evidence in this one-tenant installation. Public shares, in-flight Artifact
-verification recovery and Media remain separate qualifications. See the
+verification recovery and the remaining Media gates stay separate. See the
 [Artifact evidence](OPENSHELL_HARDCUT_PLAN.md#native-artifact-follow-up-2026-10-17).
 This slice used the existing staged Hub placement configuration and a Git-built
 Artifact image; it did not extend the Time-specific Lore/factory acceptance to
