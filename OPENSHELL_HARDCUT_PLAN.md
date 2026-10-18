@@ -207,7 +207,8 @@ rebuild and replace local services directly. Complete integration and debugging 
 the main development session before assigning work to the factory model. These
 steps now pass on this Mac. Hub/Time application qualification, exact Git/Lore
 source correspondence, factory preflight, the bounded model build and final Time
-readiness/Hub-call verification are recorded below. Artifact and Media follow separately.
+readiness/Hub-call verification are recorded below. The private native Artifact
+follow-up also passes; Media remains the next separate application slice.
 
 Inspected source state (2026-10-17):
 
@@ -216,12 +217,12 @@ Inspected source state (2026-10-17):
 | Core | `0e4f26a` | Committed naming preparation; clean |
 | Hub SDK | `a1d9d65` | Committed rename and generic environment-bearer CLI input; clean |
 | Time | `90eabf9` | Naming/dependencies, environment-bearer acceptance, restart probes and diagnostics checked, committed and pushed; clean |
-| Artifact / MCP template | `4fc0cc9` / `21be15c` | Committed naming preparation; clean; Artifact adoption follows Time |
+| Artifact / MCP template | `302d038` / `21be15c` | Artifact native bearer acceptance, restart probes and runtime trust/key preparation checked, committed and pushed; MCP template unchanged |
 | Hub | `00a7e7b` | Rename, Lore-issuer removal, external-issuer handling, native transport and SQLx metadata checked, committed and pushed; clean |
-| Media | `031c913` | Reviewed naming changes checked, committed and pushed; clean; runtime adoption follows Time |
-| Installation | `ce1d0b6` | Native Hub/Time setup, factory preparation and verified replacement instructions committed and published; local milestone passed |
+| Media | `031c913` | Reviewed naming changes checked, committed and pushed; clean; runtime adoption follows Artifact |
+| Installation | `e1d8800` | Native Hub/Time setup and factory workflow retained; private Artifact policies, mounts, registration and explicit Hub binding committed and published |
 | OpenShell qualifier | `447bd88` | Native ingress probe and operator harness checked and committed locally; push refused because the GitHub repository is archived; local work preserved |
-| Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time evidence; browser/export QA remains unverified |
+| Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time and private Artifact evidence; browser/export QA remains unverified |
 | Lore / OpenShell | `cb2c191f` / `0e85111e` | Lore clean; native DNS/TLS and Tasks qualified; Tasks runtime source `45f3b534`, followed by a docs-only clarification; OpenShell branch pushed to the maintained VeoveoAI fork |
 
 Prior component test reports and committed preparation do not replace fresh
@@ -670,14 +671,118 @@ retaining its logs; the qualified replacement remains Ready.
 
 After the prepared Time build pass:
 
-- [ ] **Artifact:** add its native service, registration-key volume and approved
+- [x] **Artifact:** add its native service, registration-key volume and approved
   PostgreSQL/S3 access. Qualify signed upload/download, integrity and ranges,
-  tenant/access denial, quota enforcement and restart persistence. Bytes go to S3
-  directly; the Hub carries metadata/authorization.
+  access denial, quota enforcement and restart persistence. Bytes go to S3
+  directly; the Hub carries metadata/authorization. Six private native cases and
+  both restart phases pass below. Tenant/object isolation is proven by component
+  tests; this one-tenant deployment does not claim cross-tenant acceptance.
 - [ ] **Media:** add its native service with the existing fake provider and status
   checks. Qualify Task-bound delegation through the Hub to Artifact, streamed
   output storage, cancellation/recovery, provenance and usage. Real billed providers,
   webhooks and Artifact share-link ingress remain separate qualifications.
+
+### Native Artifact Follow-up (2026-10-17)
+
+Artifact `302d03884368d6915cce7b9496c96401eaf4b9d5` and installation
+`e1d88003ec777d7655ce5214703358416af6d6c6` are committed and pushed. The component
+gate passed SQLx metadata validation, formatting, Clippy, dependency checks,
+feature checks and **113 tests**; nine live cases were deliberately skipped by the
+component gate. Three installation-helper regressions passed independently.
+The runtime image is
+`sha256:40599b622df9c5fe92e79551b2efb705ceb0eb461a0d9a54b8b3e51377316657`,
+with the exact Artifact revision in its OCI label. Its release compile took 69
+seconds on this Mac's Linux ARM64 Docker runtime. This is a Git build and native
+deployment slice; the earlier Lore/factory result remains specific to Time.
+
+The installation adds only the approved
+`http://artifact.internal:8801/artifact/mcp` → `vv-services/artifact:8801` binding
+to the existing Hub configuration. It preserves the Time binding on initial setup
+and later helper reruns. Hub still reads placements at startup; general Lore
+composition and dynamic placement remain later work. Artifact has no public
+OpenShell service exposure. Its registration uses native credential custody;
+private requests use authenticated `ForwardTcp`, preserving authority and audience.
+
+The existing PostgreSQL migration checksum matched exactly; no schema or migration
+ledger repair was needed. Only the legacy registration key was adopted from
+`vv-local_vv-mcp-artifact` into the workspace-labelled `vv-artifact-state` volume.
+Its SHA-256 fingerprint over SPKI DER remains
+`139421c9b60a64b76fd25498e75d4af263414ed0832541203dc2d32f38c25d99`.
+Key ownership is UID/GID 10001, with directory mode 0700 and file mode 0600. The
+legacy volume and existing object data remain intact.
+
+SeaweedFS's native IAM stores a dedicated `vv-artifact` credential scoped to the
+existing `artifacts` bucket. Its required Read/Write/List/Tagging/Admin actions all
+carry that bucket restriction. Allowed bucket HEAD/list calls succeeded; a list
+against another bucket was refused. The same identity's IAM ListUsers request
+returned HTTP 403 with XML `AccessDenied`; the AWS CLI displays this native error
+as `Unknown`. The bootstrap administrator still succeeds at bucket listing and
+ListUsers. Only the dedicated credential is staged in the private read-only
+`vv-artifact-config` volume. It never enters the acceptance runner. Both internal
+and signed endpoints are `http://host.openshell.internal:9000`; TCP admission
+preserves SigV4 authority and headers, and bytes bypass Hub.
+
+The private live suite and retained-object restart phases qualify deployed
+behavior separately from these source/preparation checks. From native Artifact
+acceptance sandboxes in `vv-time-qa`, all six private live cases passed: the **1 GiB + 3 MiB**
+multipart upload, verification Task, subscription update, cross-part range and
+deletion/sweep case took **39.37 seconds**; the other five took **2.22 seconds**.
+Those cases cover declared-checksum upload/range download, exact admitted admin
+owner/provenance, member tool refusals, grant listing/revocation, quota enforcement
+and approval of a member's access request. Transfers use signed URLs; the runner
+holds only native member/admin references, never the S3 signing key.
+
+The retained-object prepare phase created a 256 KiB object, then the trusted
+operator stopped Artifact and Hub and started Hub followed by Artifact. The same
+sandbox IDs, images, state/config volumes, provider bindings and workspace
+placements were retained. The verify phase passed in **1.55 seconds** with a fresh
+subscription, the same availability timestamp, metadata, owner/provenance, Work
+Context access and exact downloaded bytes, then deleted the test object.
+Artifact sandbox `eb50af7d-b5b0-4478-84a4-adadc45a1253` is Ready with process
+`6cfdb981-6209-4d3e-9975-5ce60e7ea794`; Hub sandbox
+`33c2c8ff-c2dc-42fd-83af-845b17db097f` has new process
+`2a99c11c-ae76-4ac0-93d1-d481bcc6abeb`. The adopted Ed25519 public JWK thumbprint is
+`D7zqKCokp5-W-CGAkcIFtwSxDVn_qua0Ki-nHybhdwk`. Hub's namespace claim matches that
+thumbprint, and post-restart registration
+`artifact-01a14cf86f877262aff044e800cb0d2d` is active, linking the deployed identity
+to the adopted key. The prepare phase passed in 1.40 seconds.
+
+After restart, a temporary operator-authenticated native TCP forward returned
+**HTTP 200 `ready`** from `/readyz`, with canonical
+`Host: artifact.internal:8801`. The temporary forward was closed. A fresh member
+Time discovery/call through Hub passed in 0.12 seconds. Time kept its sandbox,
+image and process `96218f87-1e8d-462a-8d6a-28f330ad9007`; Hub and Time kept their
+previous runtime images. All three services are Ready. Four task-created completed
+Artifact acceptance sandboxes were removed; the existing Time QA runner, shared
+qualification provider and unrelated sandboxes remain intact.
+
+The runner's checked ELF is Linux AArch64; its QA-only image is
+`sha256:131c8b8a2a0bf45f8da9f096f8e1285f5fc9f347042ba99ea8ee8638615414c3`,
+derived from the passing check image
+`sha256:acc00a0844b0e89794ea3d3fe26079bb423b34a74bfb7b90b913b38f8f6b177d`.
+No management credential or application signing key enters that runner. Both
+qualification credentials and Hub's forwarder renewed before the restart probe
+(observed applied refresh at 03:04:13 UTC). Scheduled refresh time is not proof of
+application: the preceding scheduled update applied one minute later. Native
+renewal still fences existing connections; these tests used explicit fresh
+connections and did not suppress fencing or replay mutations.
+
+Public share ingress, in-flight verification-Task restart recovery and deployed cross-tenant isolation
+are outside this slice. The one-tenant live suite proves Hub permission refusals
+and Work Context access; component tests in `tests/access.rs` prove tenant,
+label and object-access isolation. Media, remote Linux/GPU and automatic
+source-to-deployment integration remain open.
+
+Sanitized build/test logs are retained under `/private/tmp/artifact-*.log`.
+Temporary credential-bearing IAM/provisioning diagnostics were removed after their
+safe results were recorded. The guide's static scene/label/link checks cover this
+update; browser navigation and exports remain unverified under the previously
+recorded browser restriction.
+
+See [native Artifact setup](../veoveo-template-installation/openshell/ARTIFACT.md)
+and [component acceptance](../veoveo-mcp-artifact/README.md#acceptance).
+
+### Remaining Adoption
 
 During this slice, retain PostgreSQL/SeaweedFS in their trusted installation
 placement and the qualified Lore/IdP path. Qualify persistent-volume access and

@@ -236,7 +236,9 @@ cannot grant providers, host mounts, administrative credentials or a weaker boun
 
 ## Planned Adoption Of Existing Veoveo Components
 
-This is the next application integration, not a claim of installed acceptance.
+This describes the application integration sequence. Hub/Time, the prepared Time
+factory pass and private Artifact now have local acceptance recorded in the
+execution checklist; Media remains planned.
 The [visual guide's Next integration view](diagrams/veoveo-platform.html#next)
 shows the same placement and sequence. Prepare Hub plus Time first, then run
 a build-only factory task from a known-good Lore revision before adding Artifact
@@ -651,7 +653,22 @@ authority acquisition and clock-observation sockets are separate qualifications.
 Artifact then adds byte-transfer integrity, range download, access denial, quotas and
 restart persistence. Media then adds delegated Artifact access, Task recovery without
 duplicate output publication, cancellation, output provenance and usage records.
-Time’s corresponding cases now pass on this path; Artifact and Media cases remain open in the execution checklist.
+Time's corresponding cases and Artifact's private follow-up now pass on this path.
+Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
+persistent registration key and the existing PostgreSQL metadata. A dedicated
+SeaweedFS identity holds only bucket-scoped permissions for `artifacts`; both
+internal access and signed URLs use `http://host.openshell.internal:9000` over
+native TCP admission. Six native cases cover signed transfers (including more than
+1 GiB), checksum verification, ranges, Hub permission refusals, quotas, grants and
+access requests. A retained object and its metadata/access survive actual
+Artifact/Hub restarts; a newly opened subscription delivers its opening update.
+Tenant and object isolation remain component
+test evidence in this one-tenant installation. Public shares, in-flight Artifact
+verification recovery and Media remain separate qualifications. See the
+[Artifact evidence](OPENSHELL_HARDCUT_PLAN.md#native-artifact-follow-up-2026-10-17).
+This slice used the existing staged Hub placement configuration and a Git-built
+Artifact image; it did not extend the Time-specific Lore/factory acceptance to
+Artifact or implement general composition.
 
 Automatic source-to-deployment integration remains a later, thin module in the existing
 trusted Hub process: Lore notification plus authoritative revision read, fresh

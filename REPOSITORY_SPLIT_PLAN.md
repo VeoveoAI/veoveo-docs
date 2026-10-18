@@ -7,7 +7,7 @@ it moves.
 
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
-Current push: the macOS native OpenShell foundation, Lore clone/edit/push, branch hook and direct-IdP credential lifecycle pass. The Desktop adapter and signer are retired. Deployed Hub → Time integration now passes, including Tasks, credential renewal and restart recovery. Its checked source is published to Git and verified identical in Lore. Factory preflight, the bounded model build and Time deployment from that same revision also pass under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption). Linux replacement is separate.
+Current push: the macOS native OpenShell foundation, Lore clone/edit/push, branch hook and direct-IdP credential lifecycle pass. The Desktop adapter and signer are retired. Deployed Hub → Time integration now passes, including Tasks, credential renewal and restart recovery. Its checked source is published to Git and verified identical in Lore. Factory preflight, the bounded model build and Time deployment from that same revision also pass under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption). The private Artifact follow-up now passes six native cases and retained-object restart verification through Hub, with the existing PostgreSQL/SeaweedFS, recovered signing identity and a dedicated bucket-scoped storage credential. Artifact source `302d038` and installation `e1d8800` are published; the Lore/factory proof remains Time-specific. Media is next. Linux replacement is separate.
 
 Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
 and [Lore/OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) make OpenShell the
@@ -26,8 +26,9 @@ focused plan; runtime custody uses OpenShell.
 The [OpenShell hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) records the requested
 execution order: preserve work and durable data, remove old launchers and workloads,
 then implement and run focused checks on the selected native path. Runtime deletion and the direct-IdP
-Lore credential lifecycle are recorded there as complete on macOS; Hub/Time and
-remaining infrastructure migration are open. [D55](#decisions) withdraws Desktop acceptance
+Lore credential lifecycle, Hub/Time and private Artifact are recorded there as
+complete on macOS; Media and remaining infrastructure migration are open.
+[D55](#decisions) withdraws Desktop acceptance
 and selects [direct Lore OIDC](LORE_DIRECT_OIDC_PLAN.md), with no Veoveo token broker.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.

@@ -404,7 +404,11 @@ native renewal, source withdrawal, applied binding-removal/detach and terminatio
 are locally qualified, and the adapter/signer/ingress are retired. Entra and
 Linux/CUDA are not qualified by the local checks. The local Hub → Time integration,
 exact Git/Lore Time source handoff, bounded factory build and Time deployment from
-that Lore revision now pass. Artifact, Media and automatic deployment remain later work.
+that Lore revision now pass. Private native Artifact also passes signed transfers,
+permissions, quotas and retained-object restart checks through Hub, using the
+existing PostgreSQL and SeaweedFS with a bucket-scoped service credential. The
+Artifact slice builds from pinned Git source; the Lore/factory proof is still
+Time-specific. Media and automatic deployment remain later work.
 
 The Hub currently selects the newest registration per service slug, and its
 [registration snapshot](../veoveo-hub/crates/veoveo-hub/src/registration/snapshot.rs)
