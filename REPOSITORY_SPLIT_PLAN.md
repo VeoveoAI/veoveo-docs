@@ -7,7 +7,7 @@ it moves.
 
 Baseline: Veoveo main `0c33cf8a7` on 2026-10-11.
 
-Current push: the macOS native OpenShell hard cut and focused Lore push-hook slice pass. Direct IdP Lore credentials, automatic renewal, access removal and Desktop adapter retirement are next under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md). Linux replacement is separate.
+Current push: the macOS native OpenShell foundation, Lore clone/edit/push, branch hook and direct-IdP credential lifecycle pass. The Desktop adapter and signer are retired. Deployed Hub → Time integration now passes, including Tasks, credential renewal and restart recovery. Its checked source is published to Git. Exact Time source correspondence in Lore, factory preflight, the bounded model build and deployment from that revision remain open under [the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption). Linux replacement is separate.
 
 Infrastructure direction: [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md)
 and [Lore/OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) make OpenShell the
@@ -25,21 +25,23 @@ focused plan; runtime custody uses OpenShell.
 
 The [OpenShell hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) records the requested
 execution order: preserve work and durable data, remove old launchers and workloads,
-then implement and run focused checks on the selected native path. Runtime deletion
-is recorded there as completed on macOS; credential lifecycle and remaining
-infrastructure migration are open. [D55](#decisions) withdraws Desktop acceptance
+then implement and run focused checks on the selected native path. Runtime deletion and the direct-IdP
+Lore credential lifecycle are recorded there as complete on macOS; Hub/Time and
+remaining infrastructure migration are open. [D55](#decisions) withdraws Desktop acceptance
 and selects [direct Lore OIDC](LORE_DIRECT_OIDC_PLAN.md), with no Veoveo token broker.
 
 This plan moves Veoveo from one repository into a `VeoveoAI` GitHub organization.
 `veoveo-core` holds the protocol-independent platform: types, the database kernel,
-identity, Tasks and the audit envelope. `veoveo-sdk-rust` builds MCP on top of it, and
+identity, Tasks and the audit envelope. `veoveo-hub-sdk` builds MCP on top of it, and
 each MCP server publishes its own contract. Each running service, MCP server, runtime
 and application becomes its own repository and releases on its own schedule.
 Installations compose released components instead of forking the platform.
 
 The goal is that a change to one component rebuilds, qualifies and deploys that
-component alone. Today a change to a shared crate rebuilds every Rust image family,
-and the Gateway binary rebuilds whenever one of ten domain servers changes.
+component alone. In the 2026-10-11 monorepo baseline, a change to a shared crate
+rebuilt every Rust image family, and the Gateway binary rebuilt whenever one of ten
+domain servers changed. This describes the extraction starting point, not the
+current component repositories.
 
 ## Standards And Protocols
 
@@ -51,11 +53,11 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 | OCI images | Each host builds component images locally; a registry for distributing them is an open decision (D15) |
 | Dockerfile multi-stage builds with BuildKit | `dev`, `check`, `build` and `runtime` stages in every component repository |
 | Docker Engine and the Compose specification | Remaining trusted bootstrap/data services; factory and managed MCP execution uses native OpenShell (D52/D54) |
-| Envoy 1.40.0 | Remaining trusted bootstrap TLS/egress; Desktop ingress retires under D55, native OpenShell owns workload mediation |
-| Lore v0.10.1 extension build | Existing CLI auth patches and small native push hook; native authorization/transport unchanged. Direct IdP grants are the next cutover (D55) |
+| Envoy 1.40.0 | Retained `vv-identity-edge` HTTPS for local Keycloak and its restricted public JWKS alias. Hub ingress and private service forwarding use native OpenShell; Desktop and application Envoy routes are retired |
+| Lore v0.10.1 extension build | Existing CLI auth patches and small native push hook; native authorization/transport unchanged. Direct IdP grants and local credential lifecycle are qualified (D55) |
 | OpenShell native workloads | Native Docker execution, templates/specs, policy, providers, restart and forwarding; focused macOS path accepted, general adoption pending |
 | MCP `2026-07-28` | Extension identifiers and `_meta` keys use the `ai.veoveo/` namespace; every name and format follows the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md) |
-| Veoveo MCP extensions `ai.veoveo/registration` and `ai.veoveo/authorization` | Repository-owned declarations a server sends when it registers with the Gateway |
+| Veoveo MCP extensions `ai.veoveo/registration` and `ai.veoveo/authorization` | Repository-owned declarations a server sends when it registers with the Hub |
 | OAuth 2.0 private-key JWT client authentication, RFC 7523 | Existing MCP application identities; not a requirement for the native Lore client-credentials provider |
 | OAuth 2.0 Token Exchange, RFC 8693 | Delegation when a server or agent calls another server for a caller, narrowed to the permissions the calling server declares |
 | Cedar | Authorization conditions; the version is pinned when adopted |
@@ -67,9 +69,9 @@ and the Gateway binary rebuilds whenever one of ten domain servers changes.
 1. `veoveo-core` holds protocol-independent platform libraries: types and macros, the
    database kernel, identity, the Task runtime and the audit envelope. It names no MCP
    method, server or domain, runs no service and depends on no component repository.
-2. `veoveo-sdk-rust` holds the Rust MCP layer on top of core: hosting, the client that
+2. `veoveo-hub-sdk` holds the Rust MCP layer on top of core: hosting, the client that
    servers use to call each other, registration, the MCP extensions, the Task MCP
-   adapter and MCP conformance. The Gateway and every Rust server depend on it.
+   adapter and MCP conformance. The Hub and every Rust server depend on it.
 3. A server publishes its contract through its crate's `contract` feature, which builds
    without the server's runtime dependencies. A component that uses another server
    depends on that feature by Git revision, never by path and never in a cycle, and
@@ -90,18 +92,20 @@ Repository names follow `veoveo-<kind>[-<name>]`. The kind comes first so a clon
 directory never collides with another project and related repositories sort
 together. Third parties follow the same pattern in their own organizations, for
 example `acme/veoveo-mcp-inventory`, and add the matching GitHub topic.
+The named Hub family is an explicit role-naming exception: `veoveo-hub`,
+`veoveo-hub-sdk` and its SDK companion crates keep those accepted names.
 
 | Kind | Meaning | Example |
 |---|---|---|
 | `core` | Protocol-independent platform libraries | `veoveo-core` |
-| `service` | Platform process that is not an MCP server | `veoveo-service-gateway` |
+| `service` | Platform process that is not an MCP server | `veoveo-service-lore` |
 | `mcp` | MCP server, which publishes its contract through its crate's `contract` feature | `veoveo-mcp-time` |
 | `runtime` | Native or GPU runtime used by a service | `veoveo-runtime-embedding` |
 | `app` | User-facing application | `veoveo-app-console` |
-| `sdk` | Library for building Veoveo servers, clients and apps in one language | `veoveo-sdk-rust` |
+| `hub` (named family) | Application Hub and its shared SDK; explicit role-naming exception | `veoveo-hub`, `veoveo-hub-sdk` |
 | `template` | GitHub template repository | `veoveo-template-mcp-rust` |
 | `showcase` | Demonstration workload | `veoveo-showcase-uav` |
-| `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell`, archived with D40 |
+| `qualify` | Qualification suite for a third-party runtime | `veoveo-qualify-openshell`, reactivated for native qualification under D52–D55 after D40 |
 | none | Organization singletons | `veoveo-docs`, `veoveo-website` |
 
 `veoveo-template-installation` is the template every installation starts from,
@@ -124,9 +128,10 @@ Each component uses its repository name for every artifact it produces:
 | Image | `veoveo-mcp-time` |
 | Chart | `veoveo-mcp-time` |
 
-Today these differ. Time's crate is `veoveo-time-mcp`, its image is `veoveo/time-mcp`
-and the Gateway image is `veoveo/mcp-gateway`. The rename happens when each component
-is extracted. No Veoveo crate, wire name or format has been released, so renames have
+In the 2026-10-11 monorepo baseline these differed: Time's crate was
+`veoveo-time-mcp`, its image was `veoveo/time-mcp`, and the Gateway image was
+`veoveo/mcp-gateway`. These are historical names; extraction and the naming
+preparation recorded in the execution checklist establish the current names. No Veoveo crate, wire name or format has been released, so renames have
 no external consumers. Wire names, format identifiers and other identifiers follow the
 [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md).
 
@@ -142,7 +147,7 @@ the [naming and format conventions](https://github.com/VeoveoAI/veoveo-core/blob
 
 | Kind | Code | Example runtime name |
 |---|---|---|
-| `service` | `srv` | `vv-srv-gateway` |
+| `service` | `srv` | `vv-hub` |
 | `mcp` | `mcp` | `vv-mcp-time` |
 | `runtime` | `rt` | `vv-rt-embedding` |
 | `app` | `app` | `vv-app-console` |
@@ -160,9 +165,9 @@ suffix (D19).
 
 | Repository | Source today | Publishes |
 |---|---|---|
-| `veoveo-core` | `platform/{types,macros,http,oauth,store,task-runtime,audit,installation/contract}` without their MCP, Gateway and domain items, `testing/fixtures` (see [Core Contents](#core-contents)) | crates |
-| `veoveo-sdk-rust` | `mcp/{contract,ext-registration,ext-apps,conformance}`, the Task runtime's MCP adapter, `testing/fixtures/modular-mcp`, and the client servers use to call each other | crates, conformance CLI |
-| `veoveo-service-gateway` | `platform/gateway/{src,catalog,composition,queries,contract}`, `platform/policy`, the store's Gateway module and the `gateway` schema | image, OpenShell workload definitions |
+| `veoveo-core` | `platform/{types,macros,http,oauth,store,task-runtime,audit,installation/contract}` without their MCP, Hub and domain items, `testing/fixtures` (see [Core Contents](#core-contents)) | crates |
+| `veoveo-hub-sdk` | `mcp/{contract,ext-registration,ext-apps,conformance}`, the Task runtime's MCP adapter, `testing/fixtures/modular-mcp`, and the client servers use to call each other | crates, conformance CLI |
+| `veoveo-hub` | `platform/gateway/{src,catalog,composition,queries,contract}`, `platform/policy`, the store's Hub module and the `hub` schema | image, OpenShell workload definitions |
 | `veoveo-service-agents` | Agent reasoning and application Task behavior from `agents/{kernel,manager,runtime}`; execution/session responsibilities move to OpenShell | images, OpenShell workload definitions, agent templates |
 | `veoveo-service-knowledge` | `platform/knowledge` with its contract, the `ai.veoveo/knowledge-source` extension, `servers/knowledge-mcp` | image, OpenShell workload definitions |
 | `veoveo-service-recording` | `platform/recordings/{hub,forwarder,store,reader,rrd,video}`, `servers/recording-mcp` | images, OpenShell workload definitions |
@@ -206,12 +211,12 @@ built from `examples/bioma`.
 
 ### Core Contents
 
-`veoveo-core` keeps its protocol-independent crates, with every MCP, Gateway and domain
+`veoveo-core` keeps its protocol-independent crates, with every MCP, Hub and domain
 item removed:
 
 | Crate | Keeps |
 |---|---|
-| `veoveo-types`, `veoveo-macros` | IDs, names, resource addresses and vocabularies, without MCP tool, prompt and Task route names, Gateway profile and authentication types, agent IDs or Artifact access rules |
+| `veoveo-types`, `veoveo-macros` | IDs, names, resource addresses and vocabularies, without MCP tool, prompt and Task route names, Hub profile and authentication types, agent IDs or Artifact access rules |
 | `veoveo-http`, `veoveo-oauth` | Request body admission and RS256 client assertions |
 | `veoveo-store` | The `kernel`, `identity`, `tasks` and `audit` schemas, process instances, change notification and paging |
 | `veoveo-task-contract`, `veoveo-task` | Durable Tasks with claims, recovery and subscriptions; durable steps arrive with M4 |
@@ -223,11 +228,11 @@ Everything else leaves core:
 
 | Today in core | Moves to |
 |---|---|
-| `veoveo-mcp-contract` hosting, protocol, transport, subscriptions, docs resources and forwarded identity; `veoveo-mcp-ext-registration`; `veoveo-mcp-ext-apps`; `veoveo-mcp-conformance`; `veoveo-modular-fixture-mcp`; the Task runtime's MCP adapter; the tool-input fixtures; the MCP audit details for discovery and tool admission and completion | `veoveo-sdk-rust` |
-| `veoveo-policy`; `veoveo-gateway-contract`; the control plane, OAuth, profile and policy types in `veoveo-mcp-contract`; the store's Gateway module; the `gateway` schema with its Task routes; the Gateway's audit details for registration, administration, profiles and clients | `veoveo-service-gateway` (D30) |
+| `veoveo-mcp-contract` hosting, protocol, transport, subscriptions, docs resources and forwarded identity; `veoveo-mcp-ext-registration`; `veoveo-mcp-ext-apps`; `veoveo-mcp-conformance`; `veoveo-modular-fixture-mcp`; the Task runtime's MCP adapter; the tool-input fixtures; the MCP audit details for discovery and tool admission and completion | `veoveo-hub-sdk` |
+| `veoveo-policy`; `veoveo-gateway-contract`; the control plane, OAuth, profile and policy types in `veoveo-mcp-contract`; the store's Hub module; the `hub` schema with its Task routes; the Hub's audit details for registration, administration, profiles and clients | `veoveo-hub` (D30) |
 | `veoveo-artifact-contract` | `veoveo-mcp-artifact`'s `contract` feature, trimmed to signed transfers |
-| `veoveo-artifact-client`, the upload grant in internal authentication, the Artifact service trait and access module, the Artifact policy targets, Gateway actions and profile section, `gateway.artifact_upload_authority` with its two digest functions, and the Artifact audit vocabulary | Deleted with the old byte path |
-| `veoveo-knowledge-contract`, `veoveo-embedding-contract`, `veoveo-mcp-ext-knowledge`, the Knowledge audit details and the `audit.indexing_*` objects | Deleted. Knowledge and Embedding bring their own when they are ported, and Time and the Gateway drop their Knowledge source declarations until then |
+| `veoveo-artifact-client`, the upload grant in internal authentication, the Artifact service trait and access module, the Artifact policy targets, Hub actions and profile section, `gateway.artifact_upload_authority` with its two digest functions, and the Artifact audit vocabulary | Deleted with the old byte path |
+| `veoveo-knowledge-contract`, `veoveo-embedding-contract`, `veoveo-mcp-ext-knowledge`, the Knowledge audit details and the `audit.indexing_*` objects | Deleted. Knowledge and Embedding bring their own when they are ported, and Time and the Hub drop their Knowledge source declarations until then |
 | The LiveView, Computers, Recording, Dictation, Agents and Console audit vocabularies and types | Deleted. Each owner declares its own when it is ported |
 | `provider.rs`, `usage.rs`, `waiters.rs`, `bootstrap.rs`, `fixture_client.rs`, `policy::internal_clients` and other items no consumer uses | Deleted |
 
@@ -243,13 +248,13 @@ tag:
 | Contract | path dependency through the `contract` feature | the server crate's `contract` feature, consumed by Git revision |
 | Image | built inside shared Rust families | built by the component's repository |
 | Runtime definition | shared Helm templates and current Compose configuration | native OpenShell workload/template, policy/provider references and service exposure; no per-component chart requirement |
-| Catalog declaration | the server's entry written by hand in the installation's `gateway.json` | declared by the running server when it [registers](#server-registration) |
-| Permissions and roles | per-profile scopes and the rule list in `gateway.json` | declared by the running server through `ai.veoveo/authorization` |
-| Module schema | owned per module, compiled into the Gateway's module registry | submitted by the running server through `ai.veoveo/module` |
+| Catalog declaration | the server's entry written by hand in the installation's `hub.json` | declared by the running server when it [registers](#server-registration) |
+| Permissions and roles | per-profile scopes and the rule list in `hub.json` | declared by the running server through `ai.veoveo/authorization` |
+| Module schema | owned per module, compiled into the Hub's module registry | submitted by the running server through `ai.veoveo/module` |
 
 Registration lets an installation add a server by deploying it. Today every server
-change requires an edit to the installation's central Gateway configuration, which
-declares all 19 servers in `examples/bioma/gateway.json`.
+change requires an edit to the installation's central Hub configuration, which
+declares all 19 servers in `examples/bioma/hub.json`.
 
 ### Installation Composition
 
@@ -261,13 +266,13 @@ An installation repository contains:
 - Lore environment definitions mapped to admitted OpenShell resources through the native SDK;
 - installed acceptance for that installation.
 
-The Gateway catalog is the installation configuration plus the current
+The Hub catalog is the installation configuration plus the current
 registrations. Catalog publication Jobs, module plan and migration Jobs and the
-Gateway's compiled module registry are retired.
+Hub's compiled module registry are retired.
 
 ### Compatibility
 
-Each component declares the `veoveo-core` range and Gateway protocol versions it
+Each component declares the `veoveo-core` range and Hub protocol versions it
 supports. Installation validation rejects a lock that combines incompatible
 versions. A breaking `veoveo-core` change follows the versioned adapter and support
 window rules in [`CONTRACT_EVOLUTION.md`](https://github.com/BiomaAI/veoveo/blob/0c33cf8a7e5a1d46f953702553ac6643f99c1363/docs/CONTRACT_EVOLUTION.md).
@@ -276,25 +281,28 @@ window rules in [`CONTRACT_EVOLUTION.md`](https://github.com/BiomaAI/veoveo/blob
 
 ```text
 installation     composes released components
-app              depends on its language's sdk and reaches servers through the Gateway
-mcp              depends on veoveo-sdk-rust and on other servers' contract features
-service          depends on veoveo-sdk-rust or veoveo-core
+app              depends on its language's sdk and reaches servers through the Hub
+mcp              depends on veoveo-hub-sdk and on other servers' contract features
+service          depends on veoveo-hub-sdk or veoveo-core
 runtime          depends on veoveo-core
-veoveo-sdk-rust  depends on veoveo-core and rmcp
+veoveo-hub-sdk  depends on veoveo-core and rmcp
 veoveo-core      depends on third-party crates only
 ```
 
 ## Server Registration
 
-The Gateway knows no server in its code or its configuration. A Gateway starts with
-an empty catalog, and every server reaches it only by registering. The installation
-configuration names no server either.
+The Hub contains no server-specific code. Its application catalog is populated
+through registration. The installation separately configures approved logical
+endpoint bindings to native workspace, sandbox and port coordinates; these authorize
+transport placement without replacing service registration.
 
 ### Registration
 
-Each installation has one registration secret. The installation's Envoy edge holds it
-and adds it to `POST /oauth/register` at the Gateway's name, so an environment holds
-only a placeholder and no agent inside an environment can read it (D42).
+Each installation has one registration secret. The native OpenShell provider owns
+its custody and binds it only to the initial `POST /oauth/register` at the approved
+Hub origin. The Time sandbox receives an opaque reference. Subsequent registration
+management uses the SDK's existing service credentials. This supersedes the D42
+Envoy injection path.
 
 Registration follows open standards, and every Veoveo addition uses the extension
 mechanism of the standard it extends. Its URIs, paths and identifiers carry no version
@@ -311,9 +319,9 @@ segment such as `/v1`.
 | Declaration schemas | JSON Schema 2020-12 | none |
 
 A server generates its own key pair in its environment on first start and registers at
-the Gateway's RFC 7591 registration endpoint. The installation's registration secret is
+the Hub's RFC 7591 registration endpoint. The installation's registration secret is
 the RFC 7591 initial access token, and the key travels as the `jwks` client metadata.
-Its three declarations, whose types live in `veoveo-sdk-rust`, travel as client metadata:
+Its three declarations, whose types live in `veoveo-hub-sdk`, travel as client metadata:
 
 | Extension | Declares |
 |---|---|
@@ -323,30 +331,30 @@ Its three declarations, whose types live in `veoveo-sdk-rust`, travel as client 
 
 The registration response returns the client identifier, the RFC 7592 registration
 access token, the server's database credentials and the keys that sign forwarded
-identities. `veoveo-sdk-rust` holds the normative protocol document and a registration
+identities. `veoveo-hub-sdk` holds the normative protocol document and a registration
 client that every server uses.
 
 The server advertises the same declarations under `extensions` in its MCP discovery
 result, so they have one source. Tools, resources and prompts are not declared twice:
-the Gateway reads them through MCP discovery, as it does today.
+the Hub reads them through MCP discovery, as it does today.
 
-The first registration of a namespace claims it. The Gateway pins the server's public
+The first registration of a namespace claims it. The Hub pins the server's public
 key to its slug, URI scheme, database schema and permission prefix, such as `time`,
 `time://`, the schema `time` and `time.*`. Later registrations of that namespace, including new
 versions, must be signed by the pinned key, and a claim by another key is rejected.
 Releasing a namespace is an explicit administrative action. A declaration outside the
 pinned namespace is rejected with the exact reason.
 
-The Gateway gives each registration its own PostgreSQL login, a member of the
+The Hub gives each registration its own PostgreSQL login, a member of the
 server's group role, which owns the server's schema. The server applies its own
 migrations in that schema at startup. PostgreSQL grants and row-level security confine
 a server to its schema and to its own rows in shared kernel tables, and a server never
 holds administrator credentials.
 
-A registration has no lease and the server renews nothing. The Gateway keeps a
+A registration has no lease and the server renews nothing. The Hub keeps a
 registration while the server's login holds a live kernel instance, a session advisory
 lock on the server's database connection, and removes the registration and its login
-after a 60-second grace period otherwise. Every Gateway replica follows registrations
+after a 60-second grace period otherwise. Every Hub replica follows registrations
 through PostgreSQL notifications and builds a new immutable catalog snapshot on each
 change, and requests in flight finish on the snapshot they started with. A removed
 server leaves routing, and its Tasks stay bound to the version that created them.
@@ -356,7 +364,7 @@ Several versions of one server may register at the same time, and a builder's se
 selects among them as described in [Session Version Selection](#session-version-selection).
 A server first registers a reachable address. A later step lets a server dial in over
 an authenticated connection and receive MCP requests on it, so a build on a laptop or
-in a factory sandbox joins a shared Gateway without inbound networking.
+in a factory sandbox joins a shared Hub without inbound networking.
 
 Destructive schema changes run as expand and contract. A version adds the new shape
 first. The contract step runs only when no registered version declares reads of the
@@ -364,12 +372,12 @@ removed shape, and a snapshot precedes the drop.
 
 Artifact storage belongs to the Artifact server, which registers like any other server.
 Clients move bytes directly to and from object storage through URLs the Artifact server
-signs, and the Gateway has no byte routes.
+signs, and the Hub has no byte routes.
 
 ## Authorization Model
 
 A server declares permissions. The installation declares roles and grants. The
-Gateway evaluates them, and the server checks the result again.
+Hub evaluates them, and the server checks the result again.
 
 ### Permissions
 
@@ -423,10 +431,10 @@ no server.
 
 ### Evaluation
 
-For each request the Gateway resolves the caller's roles from grants, selects the
+For each request the Hub resolves the caller's roles from grants, selects the
 permissions those roles allow and checks the permission that the target tool, resource
 template or prompt requires. Anything the server did not declare is denied. The signed
-identity the Gateway forwards carries only the granted permissions in the target
+identity the Hub forwards carries only the granted permissions in the target
 server's namespace, together with the caller's tenant, Work Context and membership.
 The server checks the permission again through its typed enum.
 
@@ -435,24 +443,24 @@ type on each permission lets shared relationship checks, such as Work Context me
 and Artifact sharing, attach later in the style of Google Zanzibar without changing the
 server declaration. Cedar conditions, custom roles, bindings scoped to a Work Context
 or a single resource and token-exchange delegation extend the evaluation in the
-Gateway; none of them changes what a server declares.
+Hub; none of them changes what a server declares.
 
 ### Calls Between Servers
 
 A server that uses another server declares the permissions it uses in
 `ai.veoveo/authorization`. Media, for example, declares `artifact.artifacts.read` and
 `artifact.artifacts.write`. When no registered server provides a declared permission,
-the Gateway refuses the call with a message that names the missing permission.
+the Hub refuses the call with a message that names the missing permission.
 
-The calling server reaches the other server through the Gateway with a token from RFC
+The calling server reaches the other server through the Hub with a token from RFC
 8693 token exchange. The token names the original caller and an `act` chain of the
-calling server and the Gateway, and it carries only the declared permissions that the
+calling server and the Hub, and it carries only the declared permissions that the
 caller holds. The target server authorizes the call as it would any other, and it
 records the acting server as provenance. A Task keeps its delegation while it is live,
 so work that finishes after the request returned, such as Media storing a provider's
 output from its webhook, still acts for the Task's caller.
 
-`veoveo-sdk-rust` gives each handler and Task a client, `ctx.client()`, that performs the
+`veoveo-hub-sdk` gives each handler and Task a client, `ctx.client()`, that performs the
 exchange, caches the token until it expires and sends typed calls. A provider's
 `contract` feature supplies the request and result types and its permission constants,
 and its optional `client` feature supplies helpers for flows of several calls, such as
@@ -475,7 +483,7 @@ step's typed result on the Task so a restarted Task resumes at its first unfinis
 | `time.epochs.write` | `time.epoch` | write | administer | publishing mission epochs |
 | `time.clock-policies.write` | `time.clock-policy` | write | administer | setting the clock quality policy |
 
-Time's administration is a set of MCP tools, so the Gateway authorizes it like any
+Time's administration is a set of MCP tools, so the Hub authorizes it like any
 other call. Acquisition is a job tool with its own idempotency key, phases and
 cancellation, and releases, calendars, epochs and the clock policy are read through
 resources.
@@ -494,9 +502,10 @@ remain separate from these authoring workspaces.
 
 ### Image Stages
 
-Each repository has one Dockerfile. The `dev` stage is the image an environment runs
-under the installation's layer (D40), and editors attach through `docker compose exec`
-or a container-attach extension.
+Each repository has one Dockerfile. Its `dev` stage supplies the component toolchain;
+the shared factory layer uses it as `BASE` in a native OpenShell sandbox. Use native
+OpenShell exec/attach for that workload. The earlier Compose attachment described by
+D40 is superseded by the [current execution plan](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption).
 
 | Stage | Contents | Purpose |
 |---|---|---|
@@ -535,18 +544,18 @@ component (D41).
 ### Environment Loop
 
 ```text
-pull -> build -> check -> run -> register with the Gateway -> verify through the Gateway
+pull -> build -> check -> run -> register with the Hub -> verify through the Hub
   ^                                                                  |
   +------- on failure the agent inside diagnoses, fixes, commits <---+
 ```
 
 An environment verifies its component the way a real client uses it. Time's
 environment calls Time's tools and runs a Task and a subscription through the
-Gateway. The Gateway's environment registers the Observatory test server from
-`veoveo-sdk-rust-fixture` as its test peer. Acceptance tests live in the component's repository
+Hub. The Hub's environment registers the Observatory test server from
+`veoveo-hub-sdk-fixture` as its test peer. Acceptance tests live in the component's repository
 and run inside its environment.
 
-The Gateway returns the exact reason for a rejected registration or migration to the
+The Hub returns the exact reason for a rejected registration or migration to the
 server that attempted it. An environment's identity can read its own namespace's
 logs, health and audit records. An agent that finds a fault in another component
 files an issue on that component's `VeoveoAI` repository, and that component's
@@ -555,7 +564,13 @@ exists.
 
 ### Environment Runtime
 
-A local installation runs on Docker Compose (D40, revised by D44). Trusted runtime
+**Historical Compose baseline (D40–D44), superseded by D52–D55.** The runtime,
+credential issuer, broker and Envoy paths below record the earlier split design.
+Use the native placement and ordered remaining gates in
+[the execution checklist](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption) for current
+work; these paragraphs are not native installation instructions.
+
+That earlier local installation ran on Docker Compose (D40, revised by D44). Trusted runtime
 containers keep approved source snapshots and service state, with no Lore client or
 credential mounts. Separate `vv-dev-*` containers hold source, test fixtures and caches;
 OpenCode v2 is their preconfigured coding agent and starts only when invoked. Both
@@ -564,7 +579,7 @@ Each dev has its own internal network and reaches Lore, DeepInfra inference and
 allowlisted dependency downloads only through Envoy.
 
 PostgreSQL, SeaweedFS and Lore share that network, which no route leaves. The Envoy edge
-is the environments' only other path (D42): it publishes the Gateway and the servers on
+is the environments' only other path (D42): it publishes the Hub and the servers on
 the host's loopback interface, serves an HTTPS proxy to the hosts environments fetch
 from, adds the registration secret to `POST /oauth/register`, and adds the media
 provider's key on a network only Media's environment joins. Secrets an environment
@@ -573,21 +588,21 @@ Artifact with the object store's credential, receives that secret as an owner-on
 file.
 
 Lore builds directly from unmodified upstream `EpicGames/lore` v0.10.1 (D44).
-The Gateway issues repository-scoped tokens; a trusted refresher writes only Envoy
+The Hub issues repository-scoped tokens; a trusted refresher writes only Envoy
 SDS responses. The proxy selects credentials from each listener's private network
 and actual TCP peer. Clients never read a token. The isolated reviewer has a separate
 admin listener and never runs repository code. QUIC and the setgid token loader are
 not used; all Lore client operations go through `grpcs://lore-proxy.internal:7443`.
 The earlier macOS qualification on October 14 showed:
 
-- the Gateway, Time, Artifact and Media register through the edge and pass their
+- the Hub, Time, Artifact and Media register through the edge and pass their
   acceptance tests, Artifact's gibibyte upload and share route included;
 - each environment clones its own repository and gets "Not found" for another, a push
   to protected `main` is refused, a branch push and the admin's merge succeed;
 - no environment can read its Lore token, the registration secret or the provider key,
   and the egress proxy refuses every host outside its allowlist.
 
-An MCP server needs no inbound path beyond the edge's published port, and the Gateway
+An MCP server needs no inbound path beyond the edge's published port, and the Hub
 reaches servers on the internal network. A coding agent in an environment that
 sandboxes its own commands with `no-new-privileges` keeps `lore` outside that sandbox.
 
@@ -603,7 +618,7 @@ installation's Lore admin, a Lore service account, merges into the protected `ma
 commit on `main`. The factory's source broker takes over the admin's merges once it
 exists, because `FACTORY_ISOLATION.md` keeps push authority with brokers.
 
-An environment on one machine reaches a Gateway on another by dialing in, so the
+An environment on one machine reaches a Hub on another by dialing in, so the
 dial-in connection (A7) comes before environments span machines.
 
 On macOS the environments run as `linux/arm64`, and on the Linux host as
@@ -625,7 +640,7 @@ short commands.
 | Code rules | `[workspace.lints]`, `clippy.toml` and rustfmt |
 | Dependencies | cargo-deny for licenses, advisories, bans and sources limited to crates.io, `github.com/VeoveoAI` and explicitly approved revision-pinned upstream Lore/OpenShell client dependencies (D54) |
 | Feature isolation | cargo-hack, proving that each `contract` feature builds alone, and `cargo tree`, proving that it pulls in no server runtime dependency |
-| Public API | cargo-semver-checks for `veoveo-core` and `veoveo-sdk-rust` against their previous tags |
+| Public API | cargo-semver-checks for `veoveo-core` and `veoveo-hub-sdk` against their previous tags |
 | Wire formats and schemas | insta snapshots |
 | Parsers, IDs and URIs | proptest |
 | Store tests | a private PostgreSQL 18 cluster per test process from the PGDG packages in the `dev` image, with a fresh database cloned from a migrated template for each test |
@@ -642,7 +657,7 @@ section records the slice as it ran on OpenShell before D40;
 |---|---|
 | OpenShell gateway 0.1.3 | the official package, outside the sandboxes |
 | PostgreSQL 18.6 | the official image, outside the sandboxes, with a non-superuser installation owner |
-| Gateway environment | an OpenShell sandbox from `veoveo-service-gateway` |
+| Hub environment | an OpenShell sandbox from `veoveo-hub` |
 | Time environment | an OpenShell sandbox from `veoveo-mcp-time` |
 
 `veoveo-template-installation` provides the local installation. It holds the Compose file for PostgreSQL and SeaweedFS,
@@ -650,7 +665,7 @@ the installation configuration, the namespace bindings and a component lock that
 each component's Git revision. Each component repository describes its own launch:
 its policy, providers, GPU use and exposure under `openshell/`. Installation
 configuration uses the same core contract that production installation repositories
-use. The Gateway environment fetches its installation repository and applies its bindings at first
+use. The Hub environment fetches its installation repository and applies its bindings at first
 start, so a binding changes through a commit. Starting PostgreSQL and creating the
 sandboxes are the only steps taken outside an environment, and each environment
 generates its own private key. The slice is up when every environment reports itself
@@ -674,7 +689,7 @@ into its new repository, stripped of everything outside the slice, made to pass 
 gate on both machines and committed with a message that names its source commit. The
 slice leaves behind `xtask`, the `testing-support` process supervisor, the installed
 acceptance harnesses (including Time's eleven test files built on `testing-support`),
-the Gateway's compiled optional-module registry and server-specific integrations,
+the Hub's compiled optional-module registry and server-specific integrations,
 and every core crate the slice does not use.
 
 ## Bootstrap
@@ -689,7 +704,7 @@ as soon as the environments could work. This record predates D40.
 | 3 | `veoveo-qualify-openshell` from the spike, with its probes turned into Rust scenarios | The suite reproduces the October 11 results on both hosts |
 | 4 | `veoveo-template-mcp-rust`: the starting Dockerfile stages, `/etc/profile.d` variables, `rust-toolchain.toml`, `rustfmt.toml`, `clippy.toml`, `deny.toml`, nextest profiles and an OpenShell policy that allows rustup, crates.io, GitHub fetches and model providers | An environment created from the template builds and checks a crate on both hosts |
 | 5 | Qualify Git push through a GitHub provider (T4) and Claude Code with an API-key provider (T5) | Push succeeds for the environment's own repository only, and the agent completes an edit |
-| 6 | Skeletons for `veoveo-core`, `veoveo-mcp-time`, `veoveo-service-gateway` and `veoveo-template-installation`: README, AGENTS.md, LICENSE, workspace manifest with lint tables, toolchain pin, Dockerfile stages and `openshell/policy.yaml` | `docker build --target check` passes and each environment starts on both hosts |
+| 6 | Skeletons for `veoveo-core`, `veoveo-mcp-time`, `veoveo-hub` and `veoveo-template-installation`: README, AGENTS.md, LICENSE, workspace manifest with lint tables, toolchain pin, Dockerfile stages and `openshell/policy.yaml` | `docker build --target check` passes and each environment starts on both hosts |
 | 7 | Port the slice into the skeletons by copying, cutting and solving | First slice tasks S2 to S7 |
 
 Until step 5 passes, work runs in outside-author mode. A coding agent on the host,
@@ -713,7 +728,7 @@ an owning document.
 
 ### Session Version Selection
 
-The leading model is now [personal overrides of a shared environment](INFRASTRUCTURE_CANDIDATE.md#personal-overrides-and-gateway-routing).
+The leading model is now [personal overrides of a shared environment](INFRASTRUCTURE_CANDIDATE.md#personal-overrides-and-hub-routing).
 A workspace selects any authorized configured environment and explicitly replaces
 individual service deployments. Names do not determine policy or a fixed promotion
 sequence; Lore configuration defines optional inheritance, bindings and lifecycle.
@@ -787,7 +802,7 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D10. No task runner. Tools keep their own configuration, Cargo aliases provide short commands and test logic lives in Rust.
 - [x] D11. Each environment builds, verifies and repairs its own component. Outside an environment, people and tools only launch environments and perform the bootstrap step.
 - [x] D12. OpenShell 0.1.3 is the environment runtime on macOS and Linux, with telemetry disabled. Replaced by D40.
-- [x] D13. MCP servers dial out to the Veoveo Gateway. Native gRPC endpoints use dial-in or port forwarding, never service exposure.
+- [x] D13. MCP servers dial out to the Veoveo Hub. Native gRPC endpoints use dial-in or port forwarding, never service exposure.
 - [x] D14. Every repository is licensed under Apache-2.0. Its Section 6 grants no trademark rights, and it carries an explicit patent grant. The current repository has no `LICENSE` file and no Cargo `license` metadata, so every new repository's first commit adds both.
 - [ ] D15. Image distribution: whether and where images are published, decided when an installation needs images it did not build. Taken up with E6.
 - [ ] D16. Register the Veoveo name and logo as trademarks, and publish a `TRADEMARKS.md` policy that covers forks and `veoveo-*` names. Taken up before the first public release.
@@ -798,26 +813,26 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D21. `veoveo-template-installation` is the starting point for every installation, including Veoveo's local one and `BiomaAI/veoveo-bioma`.
 - [x] D22. Registration is an RFC 7591/7592 profile and the forwarded identity an RFC 9068 access token with RFC 9396 grants; plain HTTP is allowed only on local hosts.
 - [x] D23. PostgreSQL 18 replaces SurrealDB as the database of every installation, decided on October 12 as a hard cut. SurrealDB Community runs as one node, and its multi-node failover and cross-node LIVE queries require Enterprise with online licence validation; PostgreSQL provides replication, advisory locks, `SKIP LOCKED` claims, `LISTEN`/`NOTIFY` and row-level security in its open-source release. Leases and renewals are gone: process liveness is a session advisory lock, released work moves to recovery through a foreign-key cascade, and registrations renew nothing. Every static query is checked at compile time by sqlx.
-- [x] D24. `veoveo-core` holds no MCP and no server or domain vocabulary, audit included. The Rust MCP layer moves to `veoveo-sdk-rust`, and Knowledge and Embedding leave core with Artifact. Decided on October 12.
-- [x] D25. A server that uses another server declares the permissions it uses at registration and calls through the Gateway with an RFC 8693 token narrowed to the declared permissions the caller holds. Typed consumers depend on the provider's `contract` feature by Git revision. Decided on October 12.
-- [x] D26. The rmcp fork `VeoveoAI/rust-sdk` at `917e791` stays as it is. It is rmcp 3.5.0 plus Task status subscriptions, a typed HTTP rejection and a quieter drain log, and upstream 3.5.1 has none of the three. `veoveo-sdk-rust` records that reason beside its pin. Decided on October 12.
+- [x] D24. `veoveo-core` holds no MCP and no server or domain vocabulary, audit included. The Rust MCP layer moves to `veoveo-hub-sdk`, and Knowledge and Embedding leave core with Artifact. Decided on October 12.
+- [x] D25. A server that uses another server declares the permissions it uses at registration and calls through the Hub with an RFC 8693 token narrowed to the declared permissions the caller holds. Typed consumers depend on the provider's `contract` feature by Git revision. Decided on October 12.
+- [x] D26. The rmcp fork `VeoveoAI/rust-sdk` at `917e791` stays as it is. It is rmcp 3.5.0 plus Task status subscriptions, a typed HTTP rejection and a quieter drain log, and upstream 3.5.1 has none of the three. `veoveo-hub-sdk` records that reason beside its pin. Decided on October 12.
 - [ ] D27. Whether a model without a sandbox may write a small artifact inline through a `write_artifact` tool, and the size limit. Programs and sandboxed agents upload through signed URLs. Taken up with the agents (E4), when an agent and a chat client exist to qualify it; nothing before them needs it.
 - [x] D28. An owner declares each audit detail as a JSON Schema at registration, and the audit writer checks details against it. Decided on October 12.
 - [ ] D29. The repository names of Knowledge, Recording, Computers and Agents, each of which contains an MCP server. Taken up with their extraction (E4).
-- [x] D30. The Gateway's schema, migrations, policy evaluator and contract move into `veoveo-service-gateway`, since only the Gateway uses them. Decided on October 12.
+- [x] D30. The Hub's schema, migrations, policy evaluator and contract move into `veoveo-hub`, since only the Hub uses them. Decided on October 12.
 - [x] D31. The kernel migrations change in place for the core cut, and every local installation resets, because no installation has a release to preserve. Decided on October 12.
 - [x] D32. Clients reach RustFS directly at one address the installation configures. Artifact records each authorization, and an installation that must prove each transfer adds RustFS's audit feed. Release states are private and released. The Artifact server owns each tenant's upload limits. RustFS is accepted while it stays private behind the server's credential, current, and used only through standard S3 calls. Decided on October 12.
-- [x] D33. `veoveo-sdk-rust` has one library crate, `veoveo-sdk-rust`, that absorbs the hosted server contract, hosting, the client, registration, MCP Apps and the Task adapter behind `contract`, `client` and `server` features. The conformance CLI `veoveo-sdk-rust-conformance` and the test server `veoveo-sdk-rust-fixture` are separate crates because they are binaries. Decided on October 12.
+- [x] D33. `veoveo-hub-sdk` has one library crate, `veoveo-hub-sdk`, that absorbs the hosted server contract, hosting, the client, registration, MCP Apps and the Task adapter behind `contract`, `client` and `server` features. The conformance CLI `veoveo-hub-sdk-conformance` and the test server `veoveo-hub-sdk-fixture` are separate crates because they are binaries. Decided on October 12.
 - [x] D34. Outside results are operations on a Task in core's Task runtime: a waiting Task holds no worker, a webhook or a declared status check wakes it, the first final result wins, and a restart leaves it waiting. Each server writes only its provider's calls and event parser. Decided on October 13.
-- [x] D35. Cost and usage records live in a `usage` ledger in core, separate from audit, shaped by FOCUS 1.4 with ISO 4217 currencies. Servers declare their usage kinds under their own prefix, an estimate is a reservation that a later budget can refuse, each Task carries its totals and the Gateway serves totals across servers. Spending limits follow the Media port. Decided on October 13.
+- [x] D35. Cost and usage records live in a `usage` ledger in core, separate from audit, shaped by FOCUS 1.4 with ISO 4217 currencies. Servers declare their usage kinds under their own prefix, an estimate is a reservation that a later budget can refuse, each Task carries its totals and the Hub serves totals across servers. Spending limits follow the Media port. Decided on October 13.
 - [x] D36. Core's audit record is the minimal envelope NIST SP 800-53 Rev. 5 AU-3 asks for, mapped to OCSF 1.9: source from the writer's login, an owner-declared class with its OCSF class, a four-value outcome, an owner-defined reason, actor, acting server and Task, target URI, request and details of at most 16 KiB. The writer checks details against the owner's schema; core keeps the hash chain, sealing and export. This revises D28's write-time check. Decided on October 13.
 - [x] D37. Revoking a caller's session for a replayed refresh token ends the delegation of that caller's running Tasks; a logout does not. Decided on October 13.
-- [x] D38. An installation keeps one PostgreSQL database, and server logins keep their row-filtered table access to core's schemas, so core and the Gateway can still join across servers' data. Server code reaches core state only through the SDK and core's runtime API: a server's SQL names only its own schema, and each server's tests run the SDK's confinement check. When the API lacks something a server needs, core or the SDK gains it as a general feature. Decided on October 14.
+- [x] D38. An installation keeps one PostgreSQL database, and server logins keep their row-filtered table access to core's schemas, so core and the Hub can still join across servers' data. Server code reaches core state only through the SDK and core's runtime API: a server's SQL names only its own schema, and each server's tests run the SDK's confinement check. When the API lacks something a server needs, core or the SDK gains it as a general feature. Decided on October 14.
 - [x] D39. SeaweedFS replaces RustFS as the installation's object store, revising the store D32 accepted: SeaweedFS 4.48, unmodified and pinned by digest, in its `weed mini` mode for the local installation, on the same loopback port and credential. Artifact's object-storage tests pass against it unchanged, including size and SHA-256 checks while it writes, create-only multipart completion, attachment downloads with ranges, CORS and the lifecycle rule for abandoned uploads. Clients still reach the store directly at the one address the installation configures, and an installation that must prove each transfer adds SeaweedFS's S3 audit log. Decided on October 14.
 - [x] D40. Plain Docker replaces OpenShell as the environment runtime, replacing D12, so environments can use transports OpenShell's proxy does not carry, such as Lore's QUIC. An environment is a Compose service built from its component's `dev` image and an installation layer. It runs as its non-root user with every capability dropped, on an internal network, and reaches anything else only through the installation's Envoy edge (D42). Environments run without `no-new-privileges` so the setgid Lore client can read its token, and their images carry no other setuid or setgid program. Decided on October 14; the privilege and transport choices are superseded by D44.
 - [x] D41. Lore is the version control environments use inside an installation. The installation builds the Lore server and client from `VeoveoAI/lore`, which is Lore v0.10.1 with two patches: the client presents its token on QUIC sessions when the server has no separate auth service, and a client installed setgid reads an installation token the agent cannot read and sends it only to the installation's Lore server. Lore otherwise runs as Epic ships it, storing on disk. A component's Lore repository starts from a snapshot of its locked GitHub revision, and later revisions arrive as snapshot commits on `main`; nothing returns to GitHub. Agents push branches, and the installation's admin client merges into the protected `main`. Decided on October 14; the fork and credential mechanism are superseded by D44.
-- [x] D42. One Envoy edge per installation is the only path into and out of environments. It publishes the environments' ports on the host's loopback interface, serves environments an HTTPS proxy that opens tunnels only to the hosts they fetch from, and adds each secret on its own route under an `.internal` name: the registration secret on `POST /oauth/register` at the Gateway's name, and the media provider key at the provider's. A secret's route admits only the network of the environments entitled to it, and the edge terminates TLS for those routes with a certificate from the installation's CA. Decided on October 14.
-- [x] D43. **Historical; Lore issuance/refresh superseded by D55 and the native hard cut.** The Gateway issues Lore tokens. Lore is a protected resource in the installation configuration, with grants per client: repository IDs or `*`, Lore actions and the service-account flag. A client-credentials request for that resource returns an RFC 9068 access token whose `lore_resources` claim carries the grants, and stock Lore enforces them. An installation service refreshes each environment's token file before the token expires; it holds the environments' client keys, so no environment does. Decided on October 14.
+- [x] D42. One Envoy edge per installation is the only path into and out of environments. It publishes the environments' ports on the host's loopback interface, serves environments an HTTPS proxy that opens tunnels only to the hosts they fetch from, and adds each secret on its own route under an `.internal` name: the registration secret on `POST /oauth/register` at the Hub's name, and the media provider key at the provider's. A secret's route admits only the network of the environments entitled to it, and the edge terminates TLS for those routes with a certificate from the installation's CA. Decided on October 14.
+- [x] D43. **Historical; Lore issuance/refresh superseded by D55 and the native hard cut.** The Hub issues Lore tokens. Lore is a protected resource in the installation configuration, with grants per client: repository IDs or `*`, Lore actions and the service-account flag. A client-credentials request for that resource returns an RFC 9068 access token whose `lore_resources` claim carries the grants, and stock Lore enforces them. An installation service refreshes each environment's token file before the token expires; it holds the environments' client keys, so no environment does. Decided on October 14.
 
 - [x] D44. Remove all legacy Lore authentication paths. Build the client and server directly from upstream EpicGames/lore v0.10.1, commit `95a9a834`, with no source patches. Lore clients run only in isolated development/review containers and use Envoy-authenticated gRPC; disable QUIC. Replace setgid loaders and raw token volumes with trusted Envoy SDS storage. Runtime containers contain no Lore client, keep approved snapshots and service state, and enable `no-new-privileges`. OpenCode v2.0.29 is installed in every dev, using DeepInfra MiMo through Envoy; no agent starts automatically. Supersedes the fork and privilege exceptions in D40/D41 and the client token files in D43. Decided on October 15.
 
@@ -833,19 +848,19 @@ between Reason on the Linux GPU host and a hosted provider is open.
 - [x] D53. Remove OpenBao entirely from the active candidate and qualification sequence. Use OpenShell's native provider/credential-driver capabilities for runtime custody. Shared human `.env` distribution is outside the focused plan. Accepted on October 16; no runtime change is implied.
 - [x] D54. Remove Kubernetes, k3d, K3s, Helm and Flux completely from the candidate, including optional installation paths. Select OpenShell's native Docker driver on both Mac and Linux, using native NVIDIA CDI for Linux CUDA. No alternate backend menu or cluster orchestration is in scope. Use the official source-pinned OpenShell Rust SDK and version-pinned Lore Rust client interfaces across authenticated service boundaries; keep source-to-runtime integration in an existing trusted process. This withdraws D52's optional Kubernetes clause and the earlier cluster direction, without changing the single workload path or data-driven environments. Accepted on October 16; runtime qualification and migration remain pending. See [Rust interfaces and component flow](LORE_OPENSHELL_INTEGRATION.md#rust-interfaces-and-component-flow).
 
-- [x] D55. Withdraw official Lore Desktop as a product/acceptance requirement and retire its authentication adapter after the direct factory path qualifies. The configured IdP issues ordinary native Lore repository grants; OpenShell owns client-secret custody, OAuth client-credentials renewal and injection; Lore validates issuer/audience/expiry and repository authority. Keep the existing small BranchPush assignment hook and native branch protection. No new Veoveo machine-token endpoint, signer, refresh worker or Lore authorization/transport patch. Desktop graph/diff and automatic sign-in recovery are withdrawn, not passed. This supersedes D45/L8, the old Lore issuer/worker portions of D43, and any component instruction making Desktop completion a blocker. Accepted October 17; [the direct credential plan](LORE_DIRECT_OIDC_PLAN.md) defines configuration, cutover, proof and retirement. The new path is not yet deployed/qualified.
+- [x] D55. Withdraw official Lore Desktop as a product/acceptance requirement and retire its authentication adapter after the direct factory path qualifies. The configured IdP issues ordinary native Lore repository grants; OpenShell owns client-secret custody, OAuth client-credentials renewal and injection; Lore validates issuer/audience/expiry and repository authority. Keep the existing small BranchPush assignment hook and native branch protection. No new Veoveo machine-token endpoint, signer, refresh worker or Lore authorization/transport patch. Desktop graph/diff and automatic sign-in recovery are withdrawn, not passed. This supersedes D45/L8, the old Lore issuer/worker portions of D43, and any component instruction making Desktop completion a blocker. Accepted October 17; [the direct credential plan](LORE_DIRECT_OIDC_PLAN.md) defines configuration, cutover, proof and retirement. The local direct-IdP path, native renewal/reconnect, withdrawal, applied detach, termination and recovery are now qualified as recorded in the execution checklist; the adapter/signer/ingress are retired. Hub/Time application and management-credential acceptance remains open.
 
 ### Registration And Authorization
 
 - [x] N1. Qualify the networking the first slice needs on macOS: one sandbox reaching another sandbox's service through exposure and through a port forward, and a custom endpointless provider whose placeholder resolves only on requests to a bound endpoint. Done on macOS (`veoveo-qualify-openshell`): port forwards reach between sandboxes, exposure does not, and a policy-bound provider secret resolves only on its endpoint.
 - [x] A1. In `veoveo-core`: the normative protocol document, typed RFC 7591/7592 registration requests and responses, the `ai.veoveo/registration`, `ai.veoveo/authorization` and `ai.veoveo/module` declarations, the registration client for servers, the installation configuration without servers (roles, grants, overrides and the registration secret), and the forwarded identity as an RFC 9068 access token carrying granted permissions in RFC 9396 `authorization_details`. Done in `veoveo-core` (`veoveo-mcp-ext-registration`).
 - [x] A2. Load module manifests in `veoveo-modules` through the same admission as Rust declarations. Done in `veoveo-core`.
-- [x] A3. Gateway registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog. Done in `veoveo-service-gateway` `92d8a25`; the newest registration of a slug routes until session version selection exists.
-- [x] A4. Gateway authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists. Done in `veoveo-service-gateway` `92d8a25`.
-- [x] A5. Token exchange (RFC 8693) for calls between servers and from an agent to a sub-agent. The Gateway issues a token for the target server that names the caller and the acting server, carries the declared permissions the caller holds, and stays available to a live Task (D25). Done for calls between servers in `veoveo-service-gateway` `6548d71` on `veoveo-sdk-rust` `4f2773f`: a registered server exchanges its forwarded token, or one of its live Tasks, at `/oauth/token` with an RFC 7523 assertion, and receives a token for its profile whose permissions are the requested uses the caller holds, re-evaluated at each exchange. An exchanged identity is never exchanged again, and a Task's delegation ends with the Task. A running Task's delegation does not end when the caller logs out. Agent to sub-agent delegation returns with the agents.
-- [x] A9. A server declares the permissions it uses on other servers, and the Gateway refuses a call when no registered server provides one, naming the missing permission (D25). Done in the same revisions: `uses` in `ai.veoveo/authorization`, `invalid_authorization_details` for an undeclared use and `invalid_target` naming each permission no registered server provides.
-- [x] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Gateway. Done in `veoveo-mcp-time` `fa049c3`: nine permissions from one requirement table, administration as MCP tools, and six acceptance tests through the Gateway on macOS and Linux.
-- [ ] A7. Let a server dial in to the Gateway over an authenticated connection.
+- [x] A3. Hub registration: the registration endpoint, namespace pinning, leases in SurrealDB with LIVE distribution, catalog snapshots, migrations through the core runner and per-server database users. Every call site that reads a configured server list reads the registration catalog. Done in `veoveo-hub` `92d8a25`; the newest registration of a slug routes until session version selection exists.
+- [x] A4. Hub authorization by roles over access and risks, overrides, and granted permissions in the signed identity, replacing policy rules and profile server lists. Done in `veoveo-hub` `92d8a25`.
+- [x] A5. Token exchange (RFC 8693) for calls between servers and from an agent to a sub-agent. The Hub issues a token for the target server that names the caller and the acting server, carries the declared permissions the caller holds, and stays available to a live Task (D25). Done for calls between servers in `veoveo-hub` `6548d71` on `veoveo-hub-sdk` `4f2773f`: a registered server exchanges its forwarded token, or one of its live Tasks, at `/oauth/token` with an RFC 7523 assertion, and receives a token for its profile whose permissions are the requested uses the caller holds, re-evaluated at each exchange. An exchanged identity is never exchanged again, and a Task's delegation ends with the Task. A running Task's delegation does not end when the caller logs out. Agent to sub-agent delegation returns with the agents.
+- [x] A9. A server declares the permissions it uses on other servers, and the Hub refuses a call when no registered server provides one, naming the missing permission (D25). Done in the same revisions: `uses` in `ai.veoveo/authorization`, `invalid_authorization_details` for an undeclared use and `invalid_target` naming each permission no registered server provides.
+- [x] A6. Time declares its permissions, checks granted permissions through one typed requirement table, registers at startup and verifies itself through the Hub. Done in `veoveo-mcp-time` `fa049c3`: nine permissions from one requirement table, administration as MCP tools, and six acceptance tests through the Hub on macOS and Linux.
+- [ ] A7. Let a server dial in to the Hub over an authenticated connection.
 - [x] A8. Limit each server's database user to its own table prefix. Done by the PostgreSQL cut (S9): each server owns one schema through its group role, and row-level security confines it to its own rows in kernel tables.
 
 ### OpenShell Qualification
@@ -871,72 +886,72 @@ D40 retired OpenShell, and the open items below closed unrun.
 
 ### First Slice Tasks
 
-- [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-service-gateway` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
-- [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `75c05e6`, which the Gateway and Time pin. The store fixture accepts only a `surreal` child it started and that signs in with the fixture's credentials, and knowledge member replacement retries SurrealDB write conflicts; with both, the suite passes 823 of 823 tests in five consecutive environment runs and in three Linux image checks.
-- [x] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Gateway (A6). Done at `fe08624`.
-- [x] S4. `veoveo-service-gateway`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `b69f16f`; dial-in remains A7.
+- [x] S1. `veoveo-template-mcp-rust` (`1167397`), a GitHub template repository, passes its check stage, runtime image and in-sandbox gates on macOS and Linux. Skeletons for `veoveo-core` (`2eb7d48`), `veoveo-mcp-time` (`0cd9273`) and `veoveo-hub` (`213e257`) are created from it and pass the same gates on both hosts. `veoveo-deploy` (`35446d9`) starts SurrealDB 3.3.0 from an image pinned by digest.
+- [x] S2. `veoveo-core`: its environment and the slice's crates, plus A1 and A2. Done: `veoveo-core` `75c05e6`, which the Hub and Time pin. The store fixture accepts only a `surreal` child it started and that signs in with the fixture's credentials, and knowledge member replacement retries SurrealDB write conflicts; with both, the suite passes 823 of 823 tests in five consecutive environment runs and in three Linux image checks.
+- [x] S3. `veoveo-mcp-time`: its environment, self-registration, migration and self-verification through the Hub (A6). Done at `fe08624`.
+- [x] S4. `veoveo-hub`: its environment, registration (A3), dial-in (A7) and self-verification with the `modular-mcp` fixture. The first slice leaves out managed-agent token admission, which returns through registration, and the Console's snapshot, stream, artifact summary and cluster authorization endpoints, which return with the Console's repository. Registration and self-verification done at `b69f16f`; dial-in remains A7.
 - [x] S5. `veoveo-template-installation` (renamed from `veoveo-deploy`, marked as a template at `c0eec52`): the installation configuration with roles, grants and the registration secret, the component lock and launch descriptions, so the local installation runs from the template's defaults. Done at `798e030`: the `vv-local` Compose project, the provider profile, and bootstrap, stop and reset instructions. The installation configuration is generated because it embeds per-run key thumbprints. The component lock is S8.
-- [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done on October 12 with core `75c05e6`, Gateway `b69f16f` and Time `fe08624`. The README bootstrap from a reset passes Time's six acceptance tests and the Gateway's registration test on macOS. On Linux, it passes the acceptance tests from fresh clones, and the reset leaves no sandbox, forward, container, volume or registration provider. On macOS, SIGTERM removes Time's registration row and a restart registers again within 6 seconds.
-- [x] S9. The PostgreSQL cut (D23): core, the Gateway, Time, the installation template, the server template and the qualification harness carry no SurrealDB code, dependency, image or document. Done on October 12 with core `61f913e` (640 tests), Gateway `2e1daba` (123 tests), Time `6079b6a` (144 tests), `veoveo-template-installation` `9c115c4`, `veoveo-template-mcp-rust` `2c25a8b` and `veoveo-qualify-openshell` `d99b915`; every image check passes on macOS and Linux. The slice runs on PostgreSQL 18.6 on both hosts and passes Time's six acceptance tests. On macOS, SIGTERM deletes Time's registration, login and instance at once, and after SIGKILL the Gateway removes the registration and drops the login 64 seconds later.
+- [x] S6. The slice is up: every environment reports itself registered and verified on macOS and on the Linux host after a fresh `git pull`. Done on October 12 with core `75c05e6`, Hub `b69f16f` and Time `fe08624`. The README bootstrap from a reset passes Time's six acceptance tests and the Hub's registration test on macOS. On Linux, it passes the acceptance tests from fresh clones, and the reset leaves no sandbox, forward, container, volume or registration provider. On macOS, SIGTERM removes Time's registration row and a restart registers again within 6 seconds.
+- [x] S9. The PostgreSQL cut (D23): core, the Hub, Time, the installation template, the server template and the qualification harness carry no SurrealDB code, dependency, image or document. Done on October 12 with core `61f913e` (640 tests), Hub `2e1daba` (123 tests), Time `6079b6a` (144 tests), `veoveo-template-installation` `9c115c4`, `veoveo-template-mcp-rust` `2c25a8b` and `veoveo-qualify-openshell` `d99b915`; every image check passes on macOS and Linux. The slice runs on PostgreSQL 18.6 on both hosts and passes Time's six acceptance tests. On macOS, SIGTERM deletes Time's registration, login and instance at once, and after SIGKILL the Hub removes the registration and drops the login 64 seconds later.
 - [ ] S7. A second Time version registers and one session selects it.
-- [x] S8. A component lock in `veoveo-template-installation` that names each component's repository and Git revision, with a format URI and JSON Schema under the conventions, read by the bootstrap instead of cloning `main`. Done at `5fae4b3`, which locks Gateway `36cdec8` and Time `f4f1b1b`; the core cut (C6) qualifies the next lock on both hosts.
+- [x] S8. A component lock in `veoveo-template-installation` that names each component's repository and Git revision, with a format URI and JSON Schema under the conventions, read by the bootstrap instead of cloning `main`. Done at `5fae4b3`, which locks Hub `36cdec8` and Time `f4f1b1b`; the core cut (C6) qualifies the next lock on both hosts.
 
 ### Cuts During Porting
 
 These cuts happen in the new repositories while code is copied, not in the current repository.
 
-- [x] P1. Remove the Gateway's compiled module registry and the twelve optional module declarations it links: Reason, Stream, Computers, agents, Workspace, Recording, Map, Time, UAV, Frames, Media and Optimization. Kernel modules stay compiled in, and every other module arrives through registration. Done in `veoveo-service-gateway`.
-- [x] P2. Move server-specific Gateway code to its owners: agent runtime authentication, bindings and catalog import; the Console stream over Recording and agent tables; Computers routes; Workspace modules; Speech routes; and the Gateway catalog's direct agent runtime, Computers and Recording dependencies. Done in `veoveo-service-gateway`; managed-agent admission returns through registration and the Console endpoints return with the Console's repository.
+- [x] P1. Remove the Hub's compiled module registry and the twelve optional module declarations it links: Reason, Stream, Computers, agents, Workspace, Recording, Map, Time, UAV, Frames, Media and Optimization. Kernel modules stay compiled in, and every other module arrives through registration. Done in `veoveo-hub`.
+- [x] P2. Move server-specific Hub code to its owners: agent runtime authentication, bindings and catalog import; the Console stream over Recording and agent tables; Computers routes; Workspace modules; Speech routes; and the Hub catalog's direct agent runtime, Computers and Recording dependencies. Done in `veoveo-hub`; managed-agent admission returns through registration and the Console endpoints return with the Console's repository.
 - [ ] P3. Port Media onto Artifact's `client` feature (M6). Its write-capability table, the `media://artifact` proxy, in-memory output buffering and the public `/media/files` directory are cut.
 - [ ] P4. Remove the Knowledge and Reason dev-dependency cycle.
 - [ ] P5. Split `platform/workspace` into a contract and services.
 - [ ] P6. Split the agent runtime contract from `agents/runtime`.
 - [ ] P7. Give Artifact, Knowledge, Embedding and Recording acceptance suites in their own repositories that run over MCP against any implementation.
-- [x] P8. Replace the hand-written server entries in `gateway.json` with registration. Done: the Gateway and the installation name no server.
+- [x] P8. Replace the hand-written server entries in `hub.json` with registration. Done: the Hub and the installation name no server.
 - [ ] P9. Replace the planned per-component chart split with native OpenShell workload definitions and a qualified service execution path (D52). Retire replaced packaging after migration; use upstream installation tooling for OpenShell bootstrap.
 - [ ] P10. Leave `cargo xtask` and the `testing-support` process supervisor behind; nextest and environment self-verification replace them.
 - [x] P11. Owners declare their audit classes and details at registration (D28), and core's audit contract keeps only the envelope (C3). Done with C5: a registered server declares its classes through `audit.declare_server_classes`, confined to its own prefix.
-- [ ] P12. Remove the Artifact and Knowledge sections of the Gateway configuration contract, and take its Audit section from registration data.
+- [ ] P12. Remove the Artifact and Knowledge sections of the Hub configuration contract, and take its Audit section from registration data.
 - [x] P13. Remove the Knowledge and Artifact schemas, queries and service contract from core (C3). Done with C3.
-- [ ] P14. Move each server's contract-document conformance check into that server's repository; `veoveo-sdk-rust` provides the check as a library.
+- [ ] P14. Move each server's contract-document conformance check into that server's repository; `veoveo-hub-sdk` provides the check as a library.
 - [x] P15. Remove `mcp/apps-extension/browser` and its `image-asset-inputs` metadata from `veoveo-core`; the browser runtime and its Node tests move to `veoveo-sdk-typescript` when the App-shipping servers are extracted. Done in `veoveo-core`.
 
 ### Core Cut
 
-- [x] C1. Create `veoveo-sdk-rust` from the server template with the crates of D33: the MCP crates, the Task runtime's MCP adapter and the MCP audit details merge into `veoveo-sdk-rust`, `veoveo-mcp-conformance` becomes `veoveo-sdk-rust-conformance`, and the `modular-mcp` fixture with the tool-input fixtures becomes `veoveo-sdk-rust-fixture`. The Gateway and Time pin it. Done in `veoveo-sdk-rust` `5c6e1ba`, pinned to core `7a6c210` and the rmcp fork with its reason beside the pin; the check stage passes 216 tests on macOS and Linux. The forwarded-token verifier accepts only its own server's audience, and the resource-token path of the old byte routes is gone.
-- [x] C2. Move the Gateway's schema and migrations, the store's Gateway module, `veoveo-policy` and `veoveo-gateway-contract` into `veoveo-service-gateway` (D30). Done in `veoveo-service-gateway` `72bbd6a` on core `dd7394e` and the SDK `3524b83`: the Gateway migrates its own `gateway` schema with its own history, refuses a server registering `gateway`, declares its audit classes, reads other owners' records through the stored declarations, and passes core's database checks through `Conformance::owner`. Time `708d689` and the server template `1cf9b6c` run on the same core.
-- [x] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Gateway drop their Knowledge source declarations. Done in `veoveo-core` `7a6c210`: 19 commits remove 67,895 lines and leave 11 crates; Time and the Gateway follow in C2.
-- [x] C4. Replace the Gateway profile and the MCP input method in the `tasks` schema with protocol-neutral owner data. Done in `7a6c210`: `task.surface` is an opaque key the creating adapter fills, and `task_input.kind` an opaque input name.
+- [x] C1. Create `veoveo-hub-sdk` from the server template with the crates of D33: the MCP crates, the Task runtime's MCP adapter and the MCP audit details merge into `veoveo-hub-sdk`, `veoveo-mcp-conformance` becomes `veoveo-hub-sdk-conformance`, and the `modular-mcp` fixture with the tool-input fixtures becomes `veoveo-hub-sdk-fixture`. The Hub and Time pin it. Done in `veoveo-hub-sdk` `5c6e1ba`, pinned to core `7a6c210` and the rmcp fork with its reason beside the pin; the check stage passes 216 tests on macOS and Linux. The forwarded-token verifier accepts only its own server's audience, and the resource-token path of the old byte routes is gone.
+- [x] C2. Move the Hub's schema and migrations, the store's Hub module, `veoveo-policy` and `veoveo-gateway-contract` into `veoveo-hub` (D30). Done in `veoveo-hub` `72bbd6a` on core `dd7394e` and the SDK `3524b83`: the Hub migrates its own `hub` schema with its own history, refuses a server registering `gateway`, declares its audit classes, reads other owners' records through the stored declarations, and passes core's database checks through `Conformance::owner`. Time `708d689` and the server template `1cf9b6c` run on the same core.
+- [x] C3. Delete the Artifact, Knowledge, Embedding, Computers, Recording, Dictation, LiveView, Agents and Console items and the unused modules from core, as [Core Contents](#core-contents) lists. Time and the Hub drop their Knowledge source declarations. Done in `veoveo-core` `7a6c210`: 19 commits remove 67,895 lines and leave 11 crates; Time and the Hub follow in C2.
+- [x] C4. Replace the Hub profile and the MCP input method in the `tasks` schema with protocol-neutral owner data. Done in `7a6c210`: `task.surface` is an opaque key the creating adapter fills, and `task_input.kind` an opaque input name.
 - [x] C5. Core's check stage fails when a core crate depends on rmcp or on an MCP crate, or when the audit vocabulary names a server. Done in `7a6c210`: a Rust test reads core's lock file, audit classes are owner-declared with a JSON Schema stored in `audit.detail_type`, and core declares only Task and audit classes. The check stage passes 299 tests on macOS and Linux.
-- [x] C6. Every repository passes its image check on macOS and Linux, and the local installation passes Time's acceptance tests after a reset (D31). Done on October 13 with core `f685fbf`, the SDK `c9742c0`, Gateway `8ea3e5d`, Time `bc6b8be`, Artifact `cd4445b`, the server template `1a7b734` and `veoveo-template-installation` `ff883ee`. After a reset from the README on macOS and Linux, the Gateway's registration test, Time's six acceptance tests and Artifact's five pass on both hosts, and SIGTERM removes Time's and Artifact's registrations, logins and instances at once.
+- [x] C6. Every repository passes its image check on macOS and Linux, and the local installation passes Time's acceptance tests after a reset (D31). Done on October 13 with core `f685fbf`, the SDK `c9742c0`, Hub `8ea3e5d`, Time `bc6b8be`, Artifact `cd4445b`, the server template `1a7b734` and `veoveo-template-installation` `ff883ee`. After a reset from the README on macOS and Linux, the Hub's registration test, Time's six acceptance tests and Artifact's five pass on both hosts, and SIGTERM removes Time's and Artifact's registrations, logins and instances at once.
 
 ### Artifact And Media
 
-- [x] M1. `veoveo-mcp-artifact` foundation: the repository from the server template, the `artifact` schema, RustFS in the installation, single and multipart uploads, downloads, metadata, lists and paging, grants, deletion and retention, quotas, audit and notifications. Size and SHA-256 are optional on `create_upload`; RustFS checks them during the write when given, and the server computes the SHA-256 at completion otherwise. `create_upload` carries labels, retention, metadata and an idempotency key, and objects are stored by artifact ID. Acceptance passes through the Gateway on macOS and Linux. Done in `veoveo-mcp-artifact` `cd4445b`: the `artifact` schema with `artifact.effective_level`, quota reservation under a locked usage row, idempotent creates, keyset listings and the sweep; nine tools, their resources and subscriptions, signed RustFS transfers through aws-sdk-s3, inline or Task digest verification, and an audit record in each decision's transaction through core's server audit functions, with 75 tests on both hosts. Artifact's five acceptance tests pass through the Gateway and RustFS on both hosts, including 1 GiB of unknown size uploaded in parallel parts through OpenShell's TCP pass-through (44 s on macOS, 87 s on Linux), a ranged download, grants, a quota refusal and deletion releasing the bytes. A read refused across tenants is covered by database tests, because the local installation has one tenant.
+- [x] M1. `veoveo-mcp-artifact` foundation: the repository from the server template, the `artifact` schema, RustFS in the installation, single and multipart uploads, downloads, metadata, lists and paging, grants, deletion and retention, quotas, audit and notifications. Size and SHA-256 are optional on `create_upload`; RustFS checks them during the write when given, and the server computes the SHA-256 at completion otherwise. `create_upload` carries labels, retention, metadata and an idempotency key, and objects are stored by artifact ID. Acceptance passes through the Hub on macOS and Linux. Done in `veoveo-mcp-artifact` `cd4445b`: the `artifact` schema with `artifact.effective_level`, quota reservation under a locked usage row, idempotent creates, keyset listings and the sweep; nine tools, their resources and subscriptions, signed RustFS transfers through aws-sdk-s3, inline or Task digest verification, and an audit record in each decision's transaction through core's server audit functions, with 75 tests on both hosts. Artifact's five acceptance tests pass through the Hub and RustFS on both hosts, including 1 GiB of unknown size uploaded in parallel parts through OpenShell's TCP pass-through (44 s on macOS, 87 s on Linux), a ranged download, grants, a quota refusal and deletion releasing the bytes. A read refused across tenants is covered by database tests, because the local installation has one tenant.
 - [x] M2. The server uses aws-sdk-s3 1.152.0 without default features, with rustls on ring and without aws-config. It is the only Rust S3 crate that signs Content-Length, Content-Type, the SHA-256 checksum and `If-None-Match` into a URL, completes a multipart upload create-only, and sets bucket CORS and lifecycle rules. Done in M1.
-- [x] M3. `ctx.client()` in `veoveo-sdk-rust`: calls through the Gateway for the current caller or Task with token exchange (A5), typed calls from a provider's `contract` feature, builders that run when awaited, and a typed handle for tools that run as Tasks. Done in `veoveo-sdk-rust` `4f2773f`: the `client` feature's `GatewayClient`, `ToolCall` and `TaskHandle`, which waits on Task status subscriptions, `ctx.client()` and Task bindings in `server`, and `TestMesh` in `testing`; the Gateway's tests and the SDK's own pass on macOS and Linux. Time `16f150d` and the server template `4ecd9b3` follow.
+- [x] M3. `ctx.client()` in `veoveo-hub-sdk`: calls through the Hub for the current caller or Task with token exchange (A5), typed calls from a provider's `contract` feature, builders that run when awaited, and a typed handle for tools that run as Tasks. Done in `veoveo-hub-sdk` `4f2773f`: the `client` feature's `HubClient`, `ToolCall` and `TaskHandle`, which waits on Task status subscriptions, `ctx.client()` and Task bindings in `server`, and `TestMesh` in `testing`; the Hub's tests and the SDK's own pass on macOS and Linux. Time `16f150d` and the server template `4ecd9b3` follow.
 - [x] M4. Durable steps in core's Task runtime: `ctx.step` stores each finished step's typed result on the Task, and a restarted Task resumes at its first unfinished step. Done in `veoveo-core` `6898a77`: `tasks.task_step`, steps that record their operation ID before they run, and an unsettled step reported with the same ID.
 - [x] M5. Artifact's `client` feature: `ArtifactClient` uploads a stream of unknown size and downloads, built on `ctx.client()`. Done in `veoveo-mcp-artifact` `92d38e1`: typed calls for every tool, streamed uploads whose memory stays at part size times parallelism (64 MiB by default), ranged downloads, and the acting server recorded on each artifact and audit record; 82 tests pass on macOS and Linux.
-- [x] M6. `veoveo-mcp-media` on PostgreSQL with `ArtifactClient` (P3), on operations and the usage ledger (M9, M10). The provider address is required configuration, so every gate test names a fake provider; a qualification test reaches the real one only when its environment enables it. Done with `veoveo-mcp-media` `1fe31f7`: `run` as a Task parked on a provider operation, completed by signed webhooks under the installation's public origin or, without one, by bounded status checks; outputs streamed into Artifact as durable steps through a client that admits only the provider's output hosts on every redirect; estimated and actual costs in the usage ledger. The port also fixed core `d5353ac` (a caller's cancellation of a parked Task reaches the provider through its claim), added the installation's public origin to `veoveo-sdk-rust` `67314b4`, and moved Artifact `ce550f8` to share links under that origin; every check stage passes on macOS and Linux.
+- [x] M6. `veoveo-mcp-media` on PostgreSQL with `ArtifactClient` (P3), on operations and the usage ledger (M9, M10). The provider address is required configuration, so every gate test names a fake provider; a qualification test reaches the real one only when its environment enables it. Done with `veoveo-mcp-media` `1fe31f7`: `run` as a Task parked on a provider operation, completed by signed webhooks under the installation's public origin or, without one, by bounded status checks; outputs streamed into Artifact as durable steps through a client that admits only the provider's output hosts on every redirect; estimated and actual costs in the usage ledger. The port also fixed core `d5353ac` (a caller's cancellation of a parked Task reaches the provider through its claim), added the installation's public origin to `veoveo-hub-sdk` `67314b4`, and moved Artifact `ce550f8` to share links under that origin; every check stage passes on macOS and Linux.
 - [x] M7. Artifact sharing: release states, share links and their route, and access requests. Done in `veoveo-mcp-artifact` `c2e541c`: release and private states, share links for released artifacts without data labels that live up to 30 days with an optional redemption limit, the public `GET /artifact/shares/{token}` route answering a live link with a five-minute signed GET and every refusal with the same 404, access requests whose approval writes the grant in the same transaction, and the two review prompts; 101 tests pass on macOS and Linux. The SDK's request span must stop recording raw paths before share links run in an installation.
 - [ ] M8. The Artifact library App, delivered with the Console port.
 - [x] M9. Operations, the usage ledger and the minimal audit record in `veoveo-core` (D34, D35, D36), with durable steps (M4). Done in `veoveo-core` `50e72a3`: Tasks park on operations that settle through events, checks and deadlines; the `usage` ledger in FOCUS 1.4 columns with Task costs and daily totals; the audit record cut to an envelope with owner reason codes, URI targets and the acting server, mapped to OCSF 1.9. 328 tests pass on macOS and Linux. Migration `0503` requires a reset of every installation's database.
-- [x] M10. The SDK, the Gateway, Time and Artifact adopt M9: `ctx.step`, `ctx.operation`, `ctx.usage` and the callback route in the SDK; the Gateway's own reason codes, the session rule of D37 and its cost views. Done with `veoveo-sdk-rust` `25d9ea5` (`TaskWorker` with a shutdown drain, steps, operations with the callback route, usage with per-Task costs), Gateway `a8843f2` (its own reason codes, D37, usage partitions and cost views at `/admin/{profile}/usage/daily`), Time `ffeec94` on `TaskWorker`, Artifact `128fe01` and the server template `399da40`; every check stage passes on macOS and Linux. Gateway `0689f2b` qualifies D37 end to end through a real login at Keycloak 26.8.1: after a logout a Task keeps exchanging, and after a replayed refresh token its exchange is refused with `invalid_grant` and its earlier token is no longer admitted.
+- [x] M10. The SDK, the Hub, Time and Artifact adopt M9: `ctx.step`, `ctx.operation`, `ctx.usage` and the callback route in the SDK; the Hub's own reason codes, the session rule of D37 and its cost views. Done with `veoveo-hub-sdk` `25d9ea5` (`TaskWorker` with a shutdown drain, steps, operations with the callback route, usage with per-Task costs), Hub `a8843f2` (its own reason codes, D37, usage partitions and cost views at `/admin/{profile}/usage/daily`), Time `ffeec94` on `TaskWorker`, Artifact `128fe01` and the server template `399da40`; every check stage passes on macOS and Linux. Hub `0689f2b` qualifies D37 end to end through a real login at Keycloak 26.8.1: after a logout a Task keeps exchanging, and after a replayed refresh token its exchange is refused with `invalid_grant` and its earlier token is no longer admitted.
 - [ ] M11. Spending limits over the usage ledger, and the OCSF audit export and FOCUS usage export checked by their projects' validators.
-- [x] M12. Reset the local installation from the README on macOS and Linux with a new component lock, and pass the acceptance tests of the Gateway, Time, Artifact with sharing, and Media with a fake provider. Media's real provider is qualified once in the same run, with one generation of its cheapest image model, completed through bounded status checks and through its webhook, which reaches the local installation through the template's optional `tunnel` Compose profile: a named Cloudflare tunnel that carries the installation's single public origin, such as `veoveo.example.com`, one per host's installation, whose remote ingress passes only Media's callback route and Artifact's share route and answers 404 to everything else. The Linux host is the permanent Bioma reference installation, whose public origin `veoveo.bioma.ai` stays untouched until E6; the API key reaches Media's environment only as an OpenShell provider placeholder. Done on October 14: both installations were reset with the new lock and passed the acceptance tests of the Gateway, Time, Artifact with sharing through the tunnel, and Media with the fake provider by webhook and by status checks. One real generation per host completed, by webhook through the tunnel on macOS and by status checks on Linux, stored its output in Artifact and recorded its actual cost. The run's findings were fixed in core `cec2f9f` (a server keeps its instance and Tasks across a lost database connection, reaped only after a 30 s grace, and a parked Task's cancellation reaches its provider), SDK `7446181` (newest-first owner pages, batch reads, `PreserveOutcome` and the SQL confinement check of D38), Gateway `c9f16cd` (a per-server connection pool discarded after a restart, and the Keycloak login that qualifies D37 inside its environment), Time `5706256`, Artifact `5588fc4` (verifications on `TaskWorker`) and Media `2d2f2d0` (state read through the runtime API, provider quotes as estimates, unique fake identifiers), with served binaries built apart from test builds. The macOS installation runs these revisions and passes every acceptance suite and the live checks: policy reloads, ended database sessions and server restarts. The Linux installation moves to them after macOS is accepted.
+- [x] M12. Reset the local installation from the README on macOS and Linux with a new component lock, and pass the acceptance tests of the Hub, Time, Artifact with sharing, and Media with a fake provider. Media's real provider is qualified once in the same run, with one generation of its cheapest image model, completed through bounded status checks and through its webhook, which reaches the local installation through the template's optional `tunnel` Compose profile: a named Cloudflare tunnel that carries the installation's single public origin, such as `veoveo.example.com`, one per host's installation, whose remote ingress passes only Media's callback route and Artifact's share route and answers 404 to everything else. The Linux host is the permanent Bioma reference installation, whose public origin `veoveo.bioma.ai` stays untouched until E6; the API key reaches Media's environment only as an OpenShell provider placeholder. Done on October 14: both installations were reset with the new lock and passed the acceptance tests of the Hub, Time, Artifact with sharing through the tunnel, and Media with the fake provider by webhook and by status checks. One real generation per host completed, by webhook through the tunnel on macOS and by status checks on Linux, stored its output in Artifact and recorded its actual cost. The run's findings were fixed in core `cec2f9f` (a server keeps its instance and Tasks across a lost database connection, reaped only after a 30 s grace, and a parked Task's cancellation reaches its provider), SDK `7446181` (newest-first owner pages, batch reads, `PreserveOutcome` and the SQL confinement check of D38), Hub `c9f16cd` (a per-server connection pool discarded after a restart, and the Keycloak login that qualifies D37 inside its environment), Time `5706256`, Artifact `5588fc4` (verifications on `TaskWorker`) and Media `2d2f2d0` (state read through the runtime API, provider quotes as estimates, unique fake identifiers), with served binaries built apart from test builds. The macOS installation runs these revisions and passes every acceptance suite and the live checks: policy reloads, ended database sessions and server restarts. The Linux installation moves to them after macOS is accepted.
 
 ### Docker Environments And Lore
 
 - [x] L1. Record D40 to D43 and these tasks. Done with this record.
-- [x] L2. The Gateway issues Lore tokens (D43), and stock Lore accepts them: a client clones the repositories it is granted and gets "Not found" for any other. Done in `veoveo-service-gateway` `dcaf880` on core `c0c8254` and the SDK `3ea1a32`: the typed `lore` section, Lore tokens at the token endpoint, the authorization server's metadata at `/oauth/.well-known/openid-configuration`, Lore clients from `generate-local-installation` and the `lore-tokens` refresher; stock Lore v0.10.1 clones a granted repository with an EdDSA token of that shape and answers "Not found" for another. Core admits plain HTTP for names under `.internal` in place of OpenShell's host alias.
+- [x] L2. The Hub issues Lore tokens (D43), and stock Lore accepts them: a client clones the repositories it is granted and gets "Not found" for any other. Done in `veoveo-hub` `dcaf880` on core `c0c8254` and the SDK `3ea1a32`: the typed `lore` section, Lore tokens at the token endpoint, the authorization server's metadata at `/oauth/.well-known/openid-configuration`, Lore clients from `generate-local-installation` and the `lore-tokens` refresher; stock Lore v0.10.1 clones a granted repository with an EdDSA token of that shape and answers "Not found" for another. Core admits plain HTTP for names under `.internal` in place of OpenShell's host alias.
 - [x] L3. Qualify the Envoy edge on macOS before the installation adopts it: HTTPS egress to the fetch hosts only, the registration secret added only on `POST /oauth/register`, published ports reaching environments that sit only on internal networks, and the media provider key resolving only from Media's network. Done with Envoy v1.40.0: a CONNECT proxy reaches crates.io, `static.rust-lang.org` and GitHub, where Cargo fetches a crate and a Git dependency, and refuses other hosts; a matcher limits the registration secret to `POST /oauth/register`, so registration access tokens pass unchanged and the published port adds nothing; RBAC on the source subnet limits the provider key to Media's network; no secret appears in an environment.
 - [x] L4. `veoveo-template-installation` runs the Lore server, the Envoy edge, the token service and the environments as Compose services, generates the installation CA, and describes Lore bootstrap and merges in its README. It keeps no OpenShell file. Done at `f220a75`.
-- [x] L5. The Gateway, Time, Artifact, Media and `veoveo-template-mcp-rust` drop their OpenShell policies and wording, and their READMEs launch environments through Compose. Done with Gateway `c3db10a`, Time `1098651`, Artifact `a559daa`, Media `9786adb` and the server template `cc989e0`, each passing its image check, and core `2b4dc94` and the SDK `d06d9fe` for their documents; every component moved to core `c0c8254`, the SDK `3ea1a32` and rustls 0.23.46.
+- [x] L5. The Hub, Time, Artifact, Media and `veoveo-template-mcp-rust` drop their OpenShell policies and wording, and their READMEs launch environments through Compose. Done with Hub `c3db10a`, Time `1098651`, Artifact `a559daa`, Media `9786adb` and the server template `cc989e0`, each passing its image check, and core `2b4dc94` and the SDK `d06d9fe` for their documents; every component moved to core `c0c8254`, the SDK `3ea1a32` and rustls 0.23.46.
 - [x] L6. Reset the local installation from the README on macOS and pass M12's acceptance tests, the Lore checks (a granted clone, a refused repository, a branch push, a refused push to `main`, an admin merge) and the secret checks (no Lore token, registration secret or provider key readable inside an environment). Done on October 14: Time passes 6 acceptance tests, Artifact 7 and Media 2 with the fake provider, again after every environment was recreated; every Lore and secret check holds, tokens refresh every ten minutes, and the egress proxy refuses hosts outside its allowlist.
 - [x] L7. Retire OpenShell: archive `veoveo-qualify-openshell` and rewrite this plan's environment sections and every repository's documents for D40. Done: the repository is archived, and OpenShell appears only in the records of completed work.
-- L8. **Withdrawn by D55 on October 17, not completed.** The following records the former D45 Desktop acceptance work and its then-open limitations; it imposes no current implementation gate. On October 15, the official macOS Desktop 0.10.100 completed trusted TLS, Keycloak browser SSO and explicit account confirmation through the separate `veoveo-service-lore` adapter (`cb31c30`), then displayed all four authorized remote repositories. Provider refresh after the revalidation interval, catalog reload after an adapter restart, and catalog reconnect after a Desktop relaunch passed. Upstream Lore stays unmodified. Six Rust security tests, format/Clippy, runtime image build, Compose validation, write/unknown RPC rejection and unauthenticated catalog/exchange rejection passed. Agent catalog filtering still returns only its assigned repository, and all four coding containers remain isolated from the adapter and its private credential/session volumes. The adapter implements published `UrcAuthApi` and environment contracts, keeps provider refresh tokens private, issues two-minute repository tokens and limits human sessions to eight hours. Its local component revision is pinned; Linux deployment and publication remain pending. **Still unfinished:** opening a live graph and revision diff from the remote-only Desktop UI. Tested row/revision clicks and menus expose no working navigation; blank revision counts and zero branch counts are not verified repository statistics. No local checkout was created. Do not claim full Desktop completion, per-repository token renewal in the UI, or a definitive upstream limitation from this result. Gateway canonical external OAuth discovery remains separate work. Later on October 15, Keycloak rejected the existing refresh token as inactive and the adapter correctly removed the session. Desktop then showed an authentication error without reopening sign-in; neither relaunch nor recreating the same remote entry recovered it. Automatic provider-expiry recovery was therefore also an open Desktop acceptance requirement at that time (now withdrawn by D55). Recovery was subsequently verified on the L11 revision: the official macOS CLI 0.10.1 initiated browser sign-in, the user completed it, and quitting/reopening Desktop loaded the renewed shared credential. Desktop again displayed four remote repositories; live reload, provider refresh after the revalidation interval, and catalog reload after an adapter restart passed. This restores the connection but does not satisfy automatic reauthentication within Desktop. The tested manual recovery procedure is documented in the installation README.
-- [x] L9. Deploy D46 on macOS, done with `veoveo-template-installation` `8b44524`: unmodified, digest-pinned Keycloak 26.8.1 in production mode, PostgreSQL 18.6 with a non-superuser application owner, loopback HTTPS through Envoy, an operator-owned external identity volume and protected bootstrap credentials. The local Gateway uses a confidential S256 PKCE client and stable user subjects; the temporary bootstrap service account and credential are removed. Authorization code login, authenticated MCP access, refresh and logout pass before and after all identity containers are recreated. All four coding containers are denied access to identity HTTP, PostgreSQL and the host listener, and carry no identity credentials or runtime mounts. The macOS user trusts only the identity leaf certificate. Compose validation and macOS deployment pass; Linux deployment is not claimed. The installer guide records provider choice, backup/restore responsibilities and an Entra configuration fragment.
-- [ ] L10. Qualify Entra on the remote Linux reference separately, using its tenant-specific v2 issuer. The Gateway's human OAuth/client-registration and Task contracts remain separate work. For Lore, qualify direct issuer access-token type, native repository claim mapping, supported OpenShell refresh, expiry/reconnect and access removal under D55; do not register or extend a Lore Desktop adapter. Preserve the reference public origin. Local Keycloak acceptance does not provision an Entra tenant or qualify its claim shape, and this macOS slice does not modify the remote host.
+- L8. **Withdrawn by D55 on October 17, not completed.** The following records the former D45 Desktop acceptance work and its then-open limitations; it imposes no current implementation gate. On October 15, the official macOS Desktop 0.10.100 completed trusted TLS, Keycloak browser SSO and explicit account confirmation through the separate `veoveo-service-lore` adapter (`cb31c30`), then displayed all four authorized remote repositories. Provider refresh after the revalidation interval, catalog reload after an adapter restart, and catalog reconnect after a Desktop relaunch passed. Upstream Lore stays unmodified. Six Rust security tests, format/Clippy, runtime image build, Compose validation, write/unknown RPC rejection and unauthenticated catalog/exchange rejection passed. Agent catalog filtering still returns only its assigned repository, and all four coding containers remain isolated from the adapter and its private credential/session volumes. The adapter implements published `UrcAuthApi` and environment contracts, keeps provider refresh tokens private, issues two-minute repository tokens and limits human sessions to eight hours. Its local component revision is pinned; Linux deployment and publication remain pending. **Still unfinished:** opening a live graph and revision diff from the remote-only Desktop UI. Tested row/revision clicks and menus expose no working navigation; blank revision counts and zero branch counts are not verified repository statistics. No local checkout was created. Do not claim full Desktop completion, per-repository token renewal in the UI, or a definitive upstream limitation from this result. Hub canonical external OAuth discovery remains separate work. Later on October 15, Keycloak rejected the existing refresh token as inactive and the adapter correctly removed the session. Desktop then showed an authentication error without reopening sign-in; neither relaunch nor recreating the same remote entry recovered it. Automatic provider-expiry recovery was therefore also an open Desktop acceptance requirement at that time (now withdrawn by D55). Recovery was subsequently verified on the L11 revision: the official macOS CLI 0.10.1 initiated browser sign-in, the user completed it, and quitting/reopening Desktop loaded the renewed shared credential. Desktop again displayed four remote repositories; live reload, provider refresh after the revalidation interval, and catalog reload after an adapter restart passed. This restores the connection but does not satisfy automatic reauthentication within Desktop. The tested manual recovery procedure is documented in the installation README.
+- [x] L9. Deploy D46 on macOS, done with `veoveo-template-installation` `8b44524`: unmodified, digest-pinned Keycloak 26.8.1 in production mode, PostgreSQL 18.6 with a non-superuser application owner, loopback HTTPS through Envoy, an operator-owned external identity volume and protected bootstrap credentials. The local Hub uses a confidential S256 PKCE client and stable user subjects; the temporary bootstrap service account and credential are removed. Authorization code login, authenticated MCP access, refresh and logout pass before and after all identity containers are recreated. All four coding containers are denied access to identity HTTP, PostgreSQL and the host listener, and carry no identity credentials or runtime mounts. The macOS user trusts only the identity leaf certificate. Compose validation and macOS deployment pass; Linux deployment is not claimed. The installer guide records provider choice, backup/restore responsibilities and an Entra configuration fragment.
+- [ ] L10. Qualify Entra on the remote Linux reference separately, using its tenant-specific v2 issuer. The Hub's human OAuth/client-registration and Task contracts remain separate work. For Lore, qualify direct issuer access-token type, native repository claim mapping, supported OpenShell refresh, expiry/reconnect and access removal under D55; do not register or extend a Lore Desktop adapter. Preserve the reference public origin. Local Keycloak acceptance does not provision an Entra tenant or qualify its claim shape, and this macOS slice does not modify the remote host.
 - [x] L11. Remove Keycloak assumptions from the Lore adapter deployment. Done on October 15 in `veoveo-service-lore` `e096f6f` and `veoveo-template-installation` `be4e789`: explicit issuer/client/scopes, discovery-checked Basic or Post client authentication, asymmetric ID-token algorithm allowlists, optional private CA, and issuer/client-bound sessions. Local Keycloak registration is isolated in `identity/configure-lore-client`; generic deployment accepts operator-supplied OIDC configuration and credentials without provider administration. Entra and generic customer examples include refresh scopes, and external issuer requests use trusted Envoy egress with explicit host allowlists. Ten Rust tests cover full fixture login and renewal for both client-auth methods plus fail-closed security checks; format, Clippy, runtime image build, installer syntax, Compose validation and local startup pass. Agent catalog filtering still returns only its assigned repository. This is protocol-fixture qualification, not live Entra/customer or automatic Desktop reauthentication acceptance. L10 remains separate; D55 withdraws L8 and schedules adapter retirement, so adapter Linux deployment/publication is no longer required.
 
 ### Extraction

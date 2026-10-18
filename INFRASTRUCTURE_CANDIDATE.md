@@ -34,8 +34,8 @@ external dependency needs a concrete requirement OpenShell does not satisfy.
 | OpenShell compute driver | Use the native Docker driver on Mac and Linux, with NVIDIA CDI for Linux CUDA workloads |
 | OpenShell credential driver | Store and resolve runtime credentials through its native encrypted database store |
 | Configured identity provider | User login, MFA and OAuth grants/refresh; Keycloak locally, Entra for the reference, customer-selected providers elsewhere |
-| Veoveo gateway | Application permissions, context selection, MCP catalogs/routing, narrowed delegation and Tasks |
-| Envoy, only for a demonstrated gap | Existing Lore gRPC credential bridge and ingress requirements not met by native forwarding; retire replaced routes |
+| Veoveo Hub | Application permissions, context selection, MCP catalogs/routing, narrowed delegation and Tasks |
+| Remaining trusted bootstrap TLS | The retained `vv-identity-edge` terminates HTTPS only for local Keycloak, including its restricted public JWKS alias. Hub ingress and private service forwarding use native OpenShell |
 
 Use OpenShell's CLI, SDK, TUI, logs and policy workflow. Do not add a separate
 factory console, terminal relay, runtime inventory, supervisor, approval queue or
@@ -113,9 +113,9 @@ replicas are counted separately. Environment count is not container count.
 Use native OpenShell access workspaces for runtime access. They are distinct from
 environment composition and Veoveo execution contexts. OpenShell's Docker driver
 owns runtime placement and isolation; environment definitions contain no backend menu.
-Reuse inherited services through authorized gateway routing.
+Reuse inherited services through authorized Hub routing.
 
-## Personal Overrides And Gateway Routing
+## Personal Overrides And Hub Routing
 
 The proposed resolution rule for a service is:
 
@@ -144,7 +144,7 @@ it registered later.
 
 Selection belongs to an authenticated workspace or execution context, so one person
 can work on two experiments at the same time. Context selection is validated by the
-gateway and propagated through trusted delegation; a caller-supplied environment
+Hub and propagated through trusted delegation; a caller-supplied environment
 name is not authority. Agents, subagents and service-to-service calls inherit the
 same selection without acquiring additional permissions. A shared service handling
 calls from several contexts must preserve each call's context rather than changing
@@ -182,7 +182,7 @@ restart policy and compute cleanup. Its `Ready` state confirms runtime/superviso
 readiness, not application health. Admit an MCP route only after service registration
 and the application probe pass. A new revision gets a separate service sandbox;
 existing Tasks retain their old revision until drain/cancellation policy permits
-retirement. Do not add gateway-triggered starts or autosleep in the first slice.
+retirement. Do not add Hub-triggered starts or autosleep in the first slice.
 
 An environment explicitly bound to its branch lifetime is removed when that branch
 is authoritatively deleted. Stop accepting new work, drain or explicitly cancel its
@@ -280,7 +280,7 @@ services and their compatible state in the preview.
 Treat core identity, Tasks and audit state coherently where services share the
 kernel database. Pair artifact metadata with the object storage it describes.
 Changing a database binding requires qualification of that composition; this is
-not implemented by adding an arbitrary connection string to the gateway. Reverting
+not implemented by adding an arbitrary connection string to the Hub. Reverting
 an environment revision does not roll back database contents or reverse migrations.
 
 Identity is configured through OIDC. Local development keeps permanent Keycloak;
@@ -295,7 +295,7 @@ boundary.
 Delegate ordinary identity operations to the configured OAuth/OIDC provider: sign-in,
 MFA, authorization-code grants, client authentication, refresh rotation and identity
 session management. Clients use that provider's supported flows and renewal. The
-MCP gateway advertises the configured authorization server through protected-resource
+Hub advertises the configured authorization server through protected-resource
 metadata and validates tokens intended for its resource. Its browser login and
 refresh-family implementation should not remain a parallel identity system after
 the external flow is qualified.
@@ -308,7 +308,7 @@ does not send MCP requests to OpenShell to obtain unrelated application permissi
 See [OpenShell authentication](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/gateways/authentication)
 and [MCP authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization).
 
-Configure separate audiences and client registrations for OpenShell, the MCP gateway
+Configure separate audiences and client registrations for OpenShell, the Hub
 and Lore as their protocols require. Browser SSO can reuse the identity provider's
 session; an OpenShell access token is not a universal Veoveo bearer. Identity is
 keyed by trusted issuer and subject, with explicit cross-provider mappings. A test
@@ -323,39 +323,42 @@ Its existing short-lived upstream tokens encode evaluated permissions, actor and
 context; these are distinct from human login/refresh tokens. Keep that narrow
 application authority unless a maintained replacement proves the same contracts.
 Lore's factory path uses native OIDC repository grants issued by the installation
-IdP and renewed/injected by OpenShell. Desktop acceptance is withdrawn; retire its
-authentication adapter after the [direct credential path](LORE_DIRECT_OIDC_PLAN.md)
-qualifies. No new Veoveo machine-token service or signer is required. OpenShell
+IdP and renewed/injected by OpenShell. Desktop acceptance is withdrawn; its
+authentication adapter is retired after local [direct credential acceptance](LORE_DIRECT_OIDC_PLAN.md). No new Veoveo machine-token service or signer is required. OpenShell
 management credentials remain separate from Lore resource credentials.
 
-The current gateway hosts OAuth authorization, refresh and session storage itself.
+The current Hub hosts OAuth authorization, refresh and session storage itself.
 Migration must qualify MCP client discovery/registration, issuer token formats and
 claim mapping, rotation/revocation, and Task compromise semantics. In particular it
 currently requires RFC 9068 `at+jwt` access tokens; accepting Entra is not just changing
 an issuer URL. Preserve the distinction between ordinary logout, which leaves an
 authorized running Task alive, and compromised credentials, which end delegation.
-Use existing identity libraries and Envoy's supported validation where suitable,
+Use the configured IdP and existing identity libraries through supported interfaces,
 with one authoritative verified identity and no caller-forgeable forwarded headers.
 Do not add a second custom SSO broker or make OpenShell an identity-provider fork.
 Retire replaced OAuth routes and storage after qualification rather than retaining
-a permanent legacy mode. No authentication code has been removed by this design.
+a permanent legacy mode. The Hub's hosted MCP authentication remains until that
+separate qualification passes; the direct-IdP Lore cutover and retirement of the
+Desktop adapter/signer are already complete locally.
 
 ## Agent Isolation And CUDA
 
 Any coding or service task may need CUDA. Request it through OpenShell resource
 fields and the Docker driver's NVIDIA CDI support on Linux. The selected runtime
 is OpenShell's Docker driver on Mac and Linux, with CUDA on Linux. This uses a
-separate trusted supervisor and fenced workload; the current bare Compose author
-containers do not supply that architecture. See
+separate trusted supervisor and fenced workload. The former bare Compose author
+containers are retired; the native Mac factory path is locally qualified. Linux
+isolation and CUDA remain separate acceptance work. See
 [native runtimes](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/runtimes).
 
 OpenShell is the execution platform; migration remains gated on qualification.
 
-The reviewed v0.1.4 inspected proxy is HTTP/1.1-only, so Lore gRPC needs a qualified
-bridge or generic HTTP/2 support. General external UDP is also denied, and native
+The original v0.1.4 review found HTTP/1.1-only proxying. The maintained native
+HTTP/2 supervisor path now qualifies local Lore gRPC mediation and credential
+custody. General external UDP is still denied, and native
 Lore QUIC requires a separate mediation and credential-custody design. QUIC is an
 optional measured optimization; gRPC remains acceptable. See
-[transport integration](LORE_OPENSHELL_INTEGRATION.md#grpc-integration-gap-and-envoy-transition)
+[transport integration](LORE_OPENSHELL_INTEGRATION.md#qualified-native-grpc-mediation)
 and [QUIC](LORE_OPENSHELL_INTEGRATION.md#optional-quic-storage-transport).
 Prove actual CUDA execution before migration. GPU device visibility alone is not a
 CUDA test. Shared kernels and GPU drivers remain part of the isolation model;
@@ -364,7 +367,9 @@ this candidate makes no VM-grade isolation claim.
 Factory sandboxes and untrusted build workers receive source, toolchains and permitted
 network access, but no Docker socket, host credentials, cluster administration or
 production secret files. Provider credentials remain with OpenShell's trusted
-supervisor and credential driver, or a qualified trusted bridge during transition.
+supervisor and credential driver. A new bridge requires a demonstrated native
+limitation and coordinator decision; it is not an approved fallback for unfinished
+Hub application ingress.
 Service sandboxes use the same provider-custody rules. A real secret deliberately
 delivered in process environment remains readable by that code; OpenShell launching
 the process does not hide it.
@@ -399,8 +404,8 @@ native renewal, source withdrawal, applied binding-removal/detach and terminatio
 are locally qualified, and the adapter/signer/ingress are retired. Entra and
 Linux/CUDA are not qualified by the local checks.
 
-The gateway currently selects the newest registration per service slug, and its
-[registration snapshot](../veoveo-service-gateway/crates/veoveo-service-gateway/src/registration/snapshot.rs)
+The Hub currently selects the newest registration per service slug, and its
+[registration snapshot](../veoveo-hub/crates/veoveo-hub/src/registration/snapshot.rs)
 holds one routed entry per slug. Multiple isolated environment selections require
 changes to registration identity, routing, catalogs, delegation and Task ownership.
 They are not supplied by deploying additional containers alone.
@@ -413,8 +418,11 @@ represent Lore revisions and resolved environment compositions.
 The first [qualification gates](LORE_OPENSHELL_INTEGRATION.md#qualification-sequence)
 prove native execution/service forwarding and Lore coexistence with small fixtures,
 without model inference. Verify ordinary repository permissions, the normal-push
-assignment guard, credential custody, renewal, restart/reconnect and then actual
-Linux CUDA. The hook is not complete isolation against low-level storage APIs. Forks may close verified gaps
+assignment guard, credential custody, renewal and restart/reconnect. The immediate
+remaining milestone is working Hub → Time integration, then the factory build of
+prepared Time source, in the [execution checklist's order](OPENSHELL_HARDCUT_PLAN.md#subsequent-adoption).
+Linux/CUDA and durable-infrastructure migration follow later. The hook is not
+complete isolation against low-level storage APIs. Forks may close verified gaps
 while preserving native contracts; see
 [fork policy](LORE_OPENSHELL_INTEGRATION.md#extension-builds-and-fork-policy).
 
