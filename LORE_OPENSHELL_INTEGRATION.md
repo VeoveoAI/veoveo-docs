@@ -1,18 +1,19 @@
 # Lore And OpenShell Integration
 
 Status: accepted infrastructure direction for design and qualification, revised on
-2026-10-17. Lore is the source and revision authority. OpenShell owns execution
+2026-10-18. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
 native Lore/private MCP path, Hub → Time integration, prepared Time factory
-build/deployment and private Artifact integration pass local acceptance. Media,
-general deployment and composition remain pending. See
+build/deployment, private Artifact integration and the private fake-provider Media
+slice pass local acceptance, including the final bounded OpenCode MiMo client
+scenario. Real providers, general deployment and composition remain later work. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
-platform with Lore, OpenShell, Hub, Time and private Artifact. Its other views
-explain the credential path and Media's planned integration with those existing
-services. Update it alongside this document after every major architecture change;
+platform with Lore, OpenShell, Hub, Time, private Artifact and Media. Its other
+views explain the credential path and Media's qualified private workflow with
+those existing services. Update it alongside this document after every major architecture change;
 keep planned paths visibly distinct from qualified ones.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
@@ -240,11 +241,11 @@ cannot grant providers, host mounts, administrative credentials or a weaker boun
 ## Planned Adoption Of Existing Veoveo Components
 
 This describes the application integration sequence. Hub/Time, the prepared Time
-factory pass and private Artifact now have local acceptance recorded in the
-execution checklist; Media remains planned.
+factory pass, private Artifact and private fake-provider Media now have local
+acceptance recorded in the execution checklist.
 The [visual guide's Platform now view](diagrams/veoveo-platform.html#platform)
 shows the qualified deployment; its [Next integration view](diagrams/veoveo-platform.html#next)
-shows Media's planned use of the existing Hub and Artifact. Hub plus Time were
+shows Media's qualified private use of the existing Hub and Artifact. Hub plus Time were
 qualified first, followed by a build-only factory task from a known-good Time Lore
 revision and then private Artifact. This is an unused local Mac installation: replace and restart local
 services directly. Production continuity, parallel deployments and rollout
@@ -256,7 +257,7 @@ Lore-to-image deployment remains later work.
 | `veoveo-hub` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Qualified locally: trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
 | `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | Qualified locally: first private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
 | `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Qualified locally: second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
-| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Planned: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and the existing fake provider for initial qualification |
+| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Qualified locally: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and a separate native fake-provider fixture; real providers remain later work |
 | `veoveo-core` | Database kernel, identity, durable Tasks, audit and usage | Libraries inside the Hub/services; their durable state remains in the installation PostgreSQL database |
 | `veoveo-hub-sdk` | MCP hosting/client, registration, forwarded-token checks, Task adapter, subscriptions and delegated calls | Libraries inside the Hub/services; its existing CLI is an initial application client |
 | `veoveo-template-installation` | Assemble images, native workload/policy/provider definitions, approved endpoints and volumes | Existing installation repository; no second deployment manifest or component lock |
@@ -668,21 +669,26 @@ restarts also passed, retaining the Task and service identities without duplicat
 provider submission. A separate completed Task retained its result, Artifact bytes
 and fresh-subscription delivery after actual Hub/Media restarts. The Mac's unchanged
 signed-byte download also passed with exact bytes and checksum. The reviewed local
-OpenCode build supports Tasks and passed no-model client preflight, but its single
-bounded final MiMo scenario stopped at the step limit during tool discovery,
-without calling Hub or creating a generation/output. Its qualification launcher
-inherited a stale `PWD`, causing OpenCode to select the workspace root instead of
-the nested client project and omit Hub configuration. Full agent qualification
-remains open; the corrected launcher has been checked without model calls.
-A local no-model fixture also observed the corrected launch starting its first
-request while MCP was still pending; it connected afterward. This is expected
-asynchronous behavior and must remain nonblocking. Qualification must accommodate
-connection and catalog updates through the existing native client lifecycle.
-A later request in the same instance exposed the expected member catalog; the
-billed-test identity additionally permits `media.run`. Each model step refreshes
-its tool snapshot, so normal catalog updates also reach an ongoing prompt.
-The replacement bounded final run awaits authorization; no further OpenCode
-startup or catalog change is needed.
+OpenCode build supports Tasks and passed no-model client preflight. The initial
+bounded MiMo attempt reached the step limit without calling Hub: its launcher
+inherited a stale `PWD`, selecting the workspace root instead of the nested
+client project and omitting Hub configuration. No generation was submitted.
+Correcting the launcher required no Hub, MCP protocol or OpenCode product change.
+No-model fixtures confirmed expected nonblocking asynchronous MCP connection and
+catalog updates; each model step refreshes the tool snapshot, and the billed-test
+identity additionally permits `media.run`.
+The user explicitly authorized one replacement final run using the corrected
+`PWD`, an owned native persistent server, the exact reviewed Tasks executable,
+Build agent and `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. It passed in 224.975 seconds
+within eight agent steps and the 240-second deadline. Time, model/schema discovery,
+exactly one fake-model generation, durable Task settlement, Artifact inspection
+and signed download all succeeded. The Mac saved exactly 65,536 bytes with the
+unchanged signed request and independently matching SHA-256; independent fixture
+counts prove one submission. The output is synthetic fixture data, not a rendering
+claim. The [execution receipt](OPENSHELL_HARDCUT_PLAN.md#media-native-integration-plan)
+records identities, byte hash, exact driver, model usage/cost and the retained
+initial failure. The private native slice is complete; no further model attempt
+is authorized or needed.
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
 persistent registration key and the existing PostgreSQL metadata. A dedicated
@@ -694,7 +700,8 @@ access requests. A retained object and its metadata/access survive actual
 Artifact/Hub restarts; a newly opened subscription delivers its opening update.
 Tenant and object isolation remain component
 test evidence in this one-tenant installation. Public shares, in-flight Artifact
-verification recovery and the remaining Media gates stay separate. See the
+verification recovery, real Media providers/public webhooks and Media Lore/factory
+work stay separate. See the
 [Artifact evidence](OPENSHELL_HARDCUT_PLAN.md#native-artifact-follow-up-2026-10-17).
 This slice used the existing staged Hub placement configuration and a Git-built
 Artifact image; it did not extend the Time-specific Lore/factory acceptance to

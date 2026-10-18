@@ -9,6 +9,9 @@ Linux remains outside this phase and its existing installation is untouched.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
 preflight, one bounded model build and Time deployment from that same Lore revision.
+Private Artifact and the private fake-provider Media slice also pass, including
+Media lifecycle qualification, direct Mac byte transfer and the final bounded
+OpenCode MiMo client scenario.
 
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
@@ -199,10 +202,10 @@ Their lifecycle owner may be OpenShell without making them preview-owned data.
 
 The first workable local path does not qualify the whole platform.
 
-The remaining Media application slice is specified in
+The qualified private Media application slice is specified in
 [Planned Adoption Of Existing Veoveo Components](LORE_OPENSHELL_INTEGRATION.md#planned-adoption-of-existing-veoveo-components)
-and drawn as planned in the [visual guide](diagrams/veoveo-platform.html#next).
-Hub, Time and private Artifact belong to the guide's
+and detailed in the [visual guide](diagrams/veoveo-platform.html#next).
+Hub, Time, private Artifact and Media belong to the guide's
 [current platform](diagrams/veoveo-platform.html#platform), alongside Lore and OpenShell.
 The completed local milestone is **working Hub → Time integration, followed by a
 build-only factory pass over prepared Time source and deployment from that revision**.
@@ -212,7 +215,8 @@ the main development session before assigning work to the factory model. These
 steps now pass on this Mac. Hub/Time application qualification, exact Git/Lore
 source correspondence, factory preflight, the bounded model build and final Time
 readiness/Hub-call verification are recorded below. The private native Artifact
-follow-up also passes; Media remains the next separate application slice.
+follow-up and private fake-provider Media slice also pass. Real providers and
+broader source-to-deployment automation remain separate work.
 
 Inspected source state (2026-10-17):
 
@@ -487,7 +491,7 @@ retaining its logs; the qualified replacement remains Ready.
   Envoy configuration validation passed. These source/component checks do not
   provision or qualify a native Hub. Media's full Docker component gate also passed for the identical rename tree
   (cached steps), image `sha256:05b8ff4207caec2b9f2237801bab3e4cc88e86611d6487c015c6592c27837710`.
-  Media runtime adoption remains later work.
+  Media runtime adoption subsequently passed in the private Media slice below.
 - [x] **Review the drafted integration:** use
   [Implementation Decisions For The Prepared Time Pass](LORE_OPENSHELL_INTEGRATION.md#implementation-decisions-for-the-prepared-time-pass).
   Reuse the committed SDK CLI bearer input and review Hub's drafted bounded
@@ -774,8 +778,8 @@ connections and did not suppress fencing or replay mutations.
 Public share ingress, in-flight verification-Task restart recovery and deployed cross-tenant isolation
 are outside this slice. The one-tenant live suite proves Hub permission refusals
 and Work Context access; component tests in `tests/access.rs` prove tenant,
-label and object-access isolation. Media, remote Linux/GPU and automatic
-source-to-deployment integration remain open.
+label and object-access isolation. Media's completed private follow-up is recorded
+below; remote Linux/GPU and automatic source-to-deployment integration remain open.
 
 Sanitized build/test logs are retained under `/private/tmp/artifact-*.log`.
 Temporary credential-bearing IAM/provisioning diagnostics were removed after their
@@ -794,20 +798,20 @@ and [component acceptance](../veoveo-mcp-artifact/README.md#acceptance).
 
 ### Media Native Integration Plan
 
-This is the active execution plan for the existing placement shown in the
+This records completed local acceptance for the existing placement shown in the
 [guide](diagrams/veoveo-platform.html#next). It adds private
 `vv-services/media:8802`, logical endpoint `http://media.internal:8802/media/mcp`,
 to the qualified Hub, Artifact and durable stores. It does not extend the
 Time-specific Lore/factory proof or add dynamic placement.
 
-The guide distinguishes deployed Media evidence from pending acceptance.
+The guide distinguishes the qualified private Media slice from later work.
 Chrome review on 2026-10-18 checked all three views, component details,
 navigation and zoom/fit; each view exported valid SVG and PNG files, which were
 also visually inspected. The current platform view now includes deployed Media
 alongside Hub, Time and Artifact. The integration view shows its fixture and
-qualified lifecycle paths while retaining the failed final OpenCode gate. The Mac
-download is recorded as passed. This browser check is separate from application
-qualification below.
+qualified lifecycle paths. Browser and export review was repeated after the final
+OpenCode pass and guide update; no console warnings or errors were observed.
+Browser review remains separate from application qualification.
 
 - [x] **0 — Complete the client byte-transfer prerequisites.** SDK revision
   `026902ae73eaa56533dbc49bd66c39481c8b9494` is reviewed and published. Its
@@ -852,7 +856,7 @@ qualification below.
   cases, 10.84 seconds). Subsequent runtime and qualification revisions are recorded
   in gate 3. OpenCode's reviewed Tasks integration has passed its no-model source
   probe and compiled-CLI Hub connection check; the final model/client scenario
-  remains pending under gate 4. Replace stale Compose
+  also passed under gate 4. Replace stale Compose
   and copied caller-key instructions in its README/acceptance documentation with
   the qualified native IdP/opaque-reference pattern. Adapt acceptance member/admin
   input selection as in Time/Artifact, with clear missing/ambiguous-input errors and
@@ -860,8 +864,8 @@ qualification below.
   rather than accepting them as Hub permission denials. Keep signed URLs out of
   failure diagnostics. Media now pins reviewed SDK `026902ae` and Artifact
   `40e95be3`; preserve deliberate published dependency selection.
-  Resolve the no-model OpenCode Task-client interoperability blocker described in
-  gate 4 during this early preflight, before any final model scenario is scheduled.
+  The no-model OpenCode Task-client interoperability gate passed before the final
+  model scenario, as recorded in gate 4 with the later bounded client acceptance.
   Prepare the UID 10001 runtime key directory and CA support using the existing
   component Dockerfile. Run the full component gate, including existing durable
   Task, usage, operation, tenant/object isolation and streamed-output tests.
@@ -1044,7 +1048,7 @@ qualification below.
   interruptions, never replay mutations automatically, and run isolated restart
   proofs with measured margin after an applied refresh. No real billed provider
   or public webhook is needed for this slice.
-- [ ] **4 — Preflight client Tasks without a model, then final MiMo qualification.**
+- [x] **4 — Preflight client Tasks without a model, then final MiMo qualification.**
   OpenCode local revision `46b24290c5a2976e351d56e48f6c27a90dd71c2d`
   on branch `mcp-tasks` integrates the official Tasks package and the narrowly
   reviewed SDK subscription corrections. Both MCP test files passed (85 tests),
@@ -1075,7 +1079,7 @@ qualification below.
   unchanged signed-byte download prerequisite passed under gate 0. An authenticated
   read-only DeepInfra model inventory succeeded with the final run's exact binary
   environment and CA settings; this made no inference call.
-  The single bounded final MiMo scenario then failed acceptance: it reached the
+  The initial bounded final MiMo attempt failed acceptance: it reached the
   eight-step limit while inspecting the workspace and looking for tools, without
   calling any Hub Time, Media or Artifact tool. The CLI exited zero, but that is
   not application success. No Task, Artifact or output file was created; the
@@ -1088,9 +1092,9 @@ qualification below.
   configuration lives in nested `tmp-client`. The qualification driver set Python's
   child `cwd` but inherited the workspace-root `PWD`; OpenCode's `run.ts` selects
   `options.root ?? process.env.PWD ?? process.cwd()` and changes directory there.
-  Thus the driver selected the wrong project and did not load Hub. Correct the
-  child `PWD` to the intended project and verify the actual agent tool registry
-  without model calls before proposing another final attempt. This is a
+  Thus the driver selected the wrong project and did not load Hub. The child
+  `PWD` was corrected and the actual agent tool registry checked without model
+  calls before another final attempt was proposed. This was a
   qualification-launcher repair, not a Hub or MCP protocol change. A subsequent
   no-model check used the exact compiled CLI with a disposable loopback provider
   that returned a fixed refusal and generated no text or tool calls. It confirmed
@@ -1112,21 +1116,44 @@ qualification below.
   billed generation and exact member refusal. OpenCode selects a fresh tool
   snapshot on every model step, so later catalog updates also become available
   within the same prompt. No additional product change is needed or retained.
-  The corrected, unexecuted qualification candidate sets child `PWD` explicitly,
+  The corrected qualification driver sets child `PWD` explicitly,
   starts an owned native `serve --stdio --port 0` process, observes its MCP
   connection status, and runs the unchanged bounded scenario against that same
   server with `run --server`. It retains the installed binary, model, prompt,
   eight-step limit and 240-second model-phase deadline; timeout stops both owned
-  processes. Candidate SHA-256 is
+  processes. Driver SHA-256 is
   `d20f25bad9c05e08a2a7681f38f533b2329eac4794e72a0f441fdb586319a55e`.
-  One replacement paid attempt is awaiting explicit authorization under the
-  recorded no-rerun limit below.
-  The failed MiMo run was not repeated. Low-level client execution and `mcp.list`
-  connectivity alone did not prove this agent path.
+  The user explicitly authorized one replacement attempt after the launcher repair;
+  this was an exception to the no-rerun default, not automatic retry. That replacement
+  **passed** in 224.975 seconds, below the 240-second deadline, with exit 0 and
+  eight agent steps. Session `ses_eb0818664ffeGZFS7iYZlhRwF0` records the intended
+  `tmp-client` directory, Build agent and exact
+  `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` model. Reported accounting is $0.0284300672:
+  56,354 input, 1,666 output, 2,676 reasoning and 116,752 cache-read tokens.
+  Direct calls succeeded for `media__models`, `time__assess_clock`,
+  `media__model_schema`, exactly one `media__run` and `artifact__create_download`.
+  The ordinary `execute` tool also performed read-only MCP resource discovery
+  (26 resources and 13 templates) and read the resulting Artifact resource.
+  One shell call saved the signed download without changing its URL or GET method;
+  the signed response and command both had zero explicit headers.
+  The completed Media Task is `01a14f80-6ba0-7b12-861b-a382eaee461a`, prediction
+  `01a14f806bd270828758cab4de2d397d`, and Artifact
+  `01a14f80-77f3-7260-bdd7-e8a27848f823`. Its private, Available `output-0.png`
+  contains 65,536 synthetic fixture bytes. The mode-0600 file
+  `/Users/rozgo/VeoveoAI/tmp-client/media-mimo-output.bin` independently matches
+  that length and SHA-256
+  `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`.
+  These bytes were not rendered or transformed; the filename is not an image-validity
+  claim. Independent fixture observations prove one matching submission/prediction:
+  submissions 9→10, predictions 9→10, quotes 11→12, pending quotes 0,
+  cancellations unchanged at 3, status reads 20→21 and output reads 6→7.
+  The owned temporary server stopped; preexisting OpenCode processes were untouched.
+  No further attempt is authorized or needed. Low-level client execution and
+  `mcp.list` connectivity alone were not treated as proof of this agent path.
   Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
   Task support. Test the actual selected OpenCode build's Tasks extension,
   capability declaration, get/subscription/completion and cancellation handling
-  without spending model tokens. Installed OpenCode 2.0.32's application MCP
+  without spending model tokens. The original OpenCode 2.0.32's application MCP
   `callTool` wrapper passes only name/arguments/session metadata; static inspection
   found no Tasks extension in that call path: its ordinary tool execution cannot
   execute Media’s currently served Task-required `run`. Modern `server/discover`
@@ -1139,8 +1166,8 @@ qualification below.
   OpenCode's pinned MCP SDK `2.0.0` also omits Task `Mcp-Name` routing headers;
   upstream client `2.3.1` derives these from `params.taskId`. Use that upstream
   support while retaining OpenCode's existing OAuth behavior and testing the
-  dependency update. Its wire codec currently strips extension fields from
-  subscription acknowledgements. A narrowly scoped patch may preserve extension
+  dependency update. Its original wire codec stripped extension fields from
+  subscription acknowledgements. The reviewed narrow patch preserves extension
   fields on `SubscriptionFilter`, with the official Tasks extension validating
   actual acknowledged task IDs; SDK `Client.listen` must retain stream ownership.
   Test invalid known fields and absent/narrowed/malformed acknowledgements rather
@@ -1157,19 +1184,21 @@ qualification below.
   Its modern SDK integration requires the host's raw request coordinator and
   request framing together. Keep connection, authentication and transport ownership
   in OpenCode, use supported SDK extension hooks and preserve ordinary tool calls,
-  errors, cancellation and existing elicitation handling. Resolve this native client
-  integration with a no-model interoperability probe. The committed-source probe
-  above now passes, as do deployed acceptance and Mac byte transfer; the full agent
-  scenario failed at discovery as recorded above. Add no wrapper, plain-call fallback or weaker Media Task contract, and
-  do not silently replace the requested client. Only after every deterministic,
-  component, integration and deployed probe passes and expected behavior works,
-  run one bounded OpenCode scenario with explicit
+  errors, cancellation and existing elicitation handling. The native client
+  integration passed its no-model interoperability probe, deployed acceptance,
+  Mac byte transfer and the final full-agent scenario recorded above. Add no
+  wrapper, plain-call fallback or weaker Media Task contract, and do not silently
+  replace the requested client. The final qualification followed successful
+  deterministic, component, integration and deployed probes, using one bounded
+  OpenCode scenario with explicit
   `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`: discover, models/schema, eligible `media.run`
   Task, Artifact download, save bytes and independently compare their hash.
   Use a fresh billed-test JWT only for that run, leaving the ordinary member
   launcher unchanged. Apply a per-run limit of eight agent steps and a 240-second
-  wall-clock deadline, with no rerun of a failed scenario or generation. Restore the
-  controlled fake's automatic completion first; no real provider is selected.
+  wall-clock deadline, with no automatic rerun of a failed scenario or generation.
+  The one explicit replacement authorization is recorded above; further attempts
+  are not authorized. The controlled fake's automatic completion was restored
+  first; no real provider was selected.
   Use the exact installed binary hash above, `--agent build`, explicit model/title,
   and per-run `agents.build.steps: 8` with `warming: false`. Load the existing
   installation `.env` value `DEEPINFRA_API_TOKEN` privately into the child-only
