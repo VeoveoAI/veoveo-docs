@@ -681,8 +681,8 @@ After the prepared Time build pass:
   directly; the Hub carries metadata/authorization. Six private native cases and
   both restart phases pass below. Tenant/object isolation is proven by component
   tests; this one-tenant deployment does not claim cross-tenant acceptance.
-- [ ] **Media:** add its native service with the existing fake provider and status
-  checks. Qualify Task-bound delegation through the Hub to Artifact, streamed
+- [ ] **Media:** follow the [Media native integration plan](#media-native-integration-plan)
+  to add its native service with the existing fake provider and status checks. Qualify Task-bound delegation through the Hub to Artifact, streamed
   output storage, cancellation/recovery, provenance and usage. Real billed providers,
   webhooks and Artifact share-link ingress remain separate qualifications.
 
@@ -785,12 +785,239 @@ panels (including Artifact), keyboard component activation, navigation and zoom/
 Each view produced valid SVG and PNG downloads; the complete current-platform and
 Media-integration PNGs were visually checked. The current-platform view includes
 deployed Hub, Time and private Artifact alongside the Lore/OpenShell foundation
-and qualified Time factory. The next-integration view shows planned Media using
+and qualified Time factory. At that review, the next-integration view showed planned Media using
 those existing dependencies. No browser warnings or JavaScript errors were
 recorded during the final check.
 
 See [native Artifact setup](../veoveo-template-installation/openshell/ARTIFACT.md)
 and [component acceptance](../veoveo-mcp-artifact/README.md#acceptance).
+
+### Media Native Integration Plan
+
+This is the active execution plan for the existing placement shown in the
+[guide](diagrams/veoveo-platform.html#next). It adds private
+`vv-services/media:8802`, logical endpoint `http://media.internal:8802/media/mcp`,
+to the qualified Hub, Artifact and durable stores. It does not extend the
+Time-specific Lore/factory proof or add dynamic placement.
+
+The guide now distinguishes the deployed basic Media path from pending lifecycle
+acceptance. Chrome review on 2026-10-17 checked all three views, component details,
+navigation and zoom/fit; each view exported valid SVG and PNG files. The current
+platform view retains the qualified foundation, while the integration view shows
+the deployed Media sandbox and fixture. This browser check is separate from the
+application qualification below.
+
+- [ ] **0 — Complete the client byte-transfer prerequisites.** SDK revision
+  `026902ae73eaa56533dbc49bd66c39481c8b9494` is reviewed and published. Its
+  `hosting/results.rs` adds serialized JSON text alongside `structuredContent`,
+  preserving the product ResourceLink at index 1. Five focused tests and the
+  prescribed local Docker `check` gate passed (296 tests, three skipped, all 15
+  feature combinations); this is macOS-hosted Linux ARM64 container evidence, not
+  remote Linux/GPU qualification. Artifact revision
+  `40e95be37b56b5e389a2b1dd908ef6c667aeae32` is reviewed and published with the
+  corresponding description/transfer regression and SDK repin. Its focused signed
+  download test and local Docker component gate passed (114 tests, nine skipped,
+  all six feature combinations). Artifact now runs image
+  `sha256:5004b47cbd8bf5eb0764c2d8fc93400f80f7905899417c75677bf3667eab3046`
+  in native `vv-services/artifact`, retaining its key, state/configuration volumes
+  and existing records. Five serial deployed private cases passed: upload/range
+  transfer, role/tool denial, grants/revocation, access request and quota. The
+  expected quota refusal left one new failed diagnostic record; existing available
+  records were retained. Those deployed transfer cases use typed structured output;
+  live JSON-text equality and the Mac signed-byte leg remain pending. Publish reviewed component revisions, deliberately update consumer pins
+  and pass their gates before replacing a runtime. Prove an Artifact signed download with
+  the typed SDK and actual saved bytes first. Establish one signed S3 authority
+  reachable unchanged from both the Mac client and native sandboxes; the currently
+  qualified sandbox address `host.openshell.internal:9000` is not proof of Mac
+  reachability. Preserve SigV4 host/headers, direct byte transfer and Artifact's
+  dedicated bucket-scoped signing-key custody. Add no byte proxy or URL rewrite.
+- [ ] **1 — Reconcile Media source and client contracts.** Media revision
+  `0589cb6dc192f8734bd2e5d183160868d682a102` is reviewed and published. Native
+  bearer inputs, advertised fake-provider origin, runtime CA/key preparation and
+  the SDK/Artifact repins passed five focused tests and the local Docker component
+  gate (69 tests, four skipped, six feature combinations, SQLx metadata, formatting,
+  Clippy and dependency checks). The runtime and fake provider are now deployed in native sandboxes; the basic
+  fake-provider generation and ordinary-member billed-run denial passed (two
+  cases, 10.84 seconds). OpenCode's reviewed Tasks integration has passed its
+  no-model source probe; binary/client and broader lifecycle qualification
+  remain pending. Replace stale Compose
+  and copied caller-key instructions in its README/acceptance documentation with
+  the qualified native IdP/opaque-reference pattern. Adapt acceptance member/admin
+  input selection as in Time/Artifact, with clear missing/ambiguous-input errors and
+  tests that avoid process-environment races. Preserve transport errors as errors,
+  rather than accepting them as Hub permission denials. Keep signed URLs out of
+  failure diagnostics. Media now pins reviewed SDK `026902ae` and Artifact
+  `40e95be3`; preserve deliberate published dependency selection.
+  Resolve the no-model OpenCode Task-client interoperability blocker described in
+  gate 4 during this early preflight, before any final model scenario is scheduled.
+  Prepare the UID 10001 runtime key directory and CA support using the existing
+  component Dockerfile. Run the full component gate, including existing durable
+  Task, usage, operation, tenant/object isolation and streamed-output tests.
+- [ ] **2 — Prepare native placement and the private fake provider.** Extend the
+  existing trusted installation helper/configuration with Media's startup-approved
+  Hub binding, registration provider, persistent signing-key volume and narrow
+  PostgreSQL admission. Inventory/adopt any existing key before generating one;
+  retain old data and unrelated Time/Artifact configuration. Hub placement changes
+  require its documented restart. Keep endpoint, provider and placement selection
+  in installation-owned configuration and preserve the existing Work Context;
+  add no hardcoded dev/stage/release environments or new Media registry.
+  Keep `VEOVEO_PUBLIC_ORIGIN` unset so completion
+  uses provider status checks. Provider URL, fixture credential and required webhook
+  secret are explicit trusted service inputs, never model credentials. Build the
+  existing testing-only fake-provider binary as an ordinary component image input.
+  The initial fake derived status/output URLs from its bound socket, which could
+  not advertise a usable private origin when bound to `0.0.0.0`. Media `0589cb6`
+  adds an explicit advertised origin, retaining loopback port 8803 for its listener.
+  Installation preparation `a7c766e` selects the native HTTPS fixture exposure and
+  narrow API/output admission, with no relay or new launcher. Media also needs both
+  Hub `/oauth/token` REST and `/mcp/{profile}` MCP through SDK `ServerCalls`;
+  stock OpenShell rejected MCP/REST mixing on one host/port. Builder confirmed its
+  host/port contract comparison in `merge.rs:1070–1144`; existing disjoint-path relay
+  tests (`relay.rs:9745,9999–10030`) bypass that policy-admission restriction.
+  OpenShell revision `6589a918a7a84640969f9f77b852695e210d713f` is reviewed and
+  published: shared native policy validation admits only provably disjoint
+  REST/MCP paths and rejects overlapping paths at every specificity. Its local
+  checks passed 298 policy tests, 1,547 network tests (two ignored), strict Clippy,
+  formatting and documentation checks, including admitted-policy routing and
+  canonicalized-path regressions. The native Mac gateway/CLI now report
+  `0.1.5-dev.6+g6589a918a`; all seven existing supervisors reconciled to
+  `sha256:2bc7eb108130556f6dd5df2e8f8c47f7d27b2500e69983460442d9a2a02d48d7`,
+  while Hub/Time/Artifact workload container identities stayed unchanged. Verified
+  HTTPS Hub readiness/metadata/JWKS and native-forwarded Time/Artifact readiness
+  passed. The fresh-sandbox `native.service_ingress` probe passed positive calls,
+  authentication/authority/path denials, exposure deletion/recreation and cleanup
+  using probe image `sha256:645f78445073be55a5d248ca1b568c86eb6b79bae8a357ffb8766325844cf87b`.
+  Media and its fake provider are now Ready under the admitted mixed policy.
+  The deployed generation case completed a Task through Hub, delegated to Artifact
+  and downloaded its 65,536-byte output. Media image
+  `sha256:ecfdbe176e899a830d80b02f5e6d70c4f35ad28cfc1b4bd0dbe337f356df36da`
+  and fixture image
+  `sha256:2defc5368ca05d4158bb8d57b81f80660c14a17091173ba061fdfc5924611899`
+  both carry source revision `0589cb6`. The adopted Media signing key and existing
+  schema migration checksum were retained. Media does not serve `/readyz`; its
+  application readiness evidence is the actual MCP/catalog and Task path, not a
+  nonexistent health route. These two basic cases do not qualify lifecycle recovery.
+  Homebrew's existing service wrapper remains; the CLI/gateway binaries are local
+  builds replacing its stock binaries, with originals/configuration backed up.
+  A Homebrew upgrade/reinstall can overwrite that local adoption and requires
+  deliberate revision selection and requalification. Do not permit all application
+  traffic as generic REST or bypass L7.
+  Admit only necessary provider API/output paths and direct signed S3 transfers;
+  verify large-output streaming against the selected inspection policy.
+- [ ] **3 — Qualify deterministic deployed behavior.** Use a dedicated billed-test
+  caller eligible for `media.generations.run`, Artifact read/write delegation and
+  required prediction reads. Preserve the ordinary member's model browsing and
+  billed-run denial. All credentials remain in native custody; callers receive
+  opaque references, services retain their own signing keys. Prove catalog/schema
+  discovery, Task-only invocation, provider status-check completion, Task-bound
+  exchange through Hub to Artifact, exact streamed/downloaded bytes, owner/Work
+  Context/labels/provenance and estimate/actual usage. Prove cancellation before
+  dispatch and after dispatch, the provider cancellation receipt, terminal outcome
+  and no duplicate output publication. Extend domain acceptance only where current
+  cases lack those assertions: existing component tests already cover worker
+  recovery/no resubmission, cancellation and multipart output. The initial live
+  suite had two fake-provider cases and one separately gated real-provider case;
+  the expanded candidate adds six ordinary fake cases and separate restart phases.
+  Coordinate actual native Media/Hub restart externally while the test holds an
+  ordinary Task identity; prove recovery from a parked in-flight Task, pushed
+  completion, one provider submission/output and retained result/key identity.
+  Establish no resubmission with independent fixture request evidence: the
+  initial standalone fake had no component-counter API, and a single output does
+  not prove a single submission. The reviewed candidate adds fixture-only safe
+  request counts and prediction IDs/status, outside Media's allowed paths.
+  Include cancellation while the provider quote is pending, before generation
+  dispatch; the existing component case covers cancellation before worker claim
+  only. Review found that the deployed baseline checks cancellation before awaiting the
+  quote, then records the estimate and dispatches. A controlled held-quote regression reproduced an unwanted provider submission
+  after cancellation (one submission, expected zero). The reviewed repair adds
+  a cancellation checkpoint after the quote returns, before usage estimate and
+  external dispatch; it must not interrupt the durable dispatch-to-wait sequence.
+  Verify the regression and deployed boundary before claiming the cancellation gate. Fixture-only
+  quote/completion controls and submission/cancellation observations may serve
+  deterministic acceptance; they must stay outside the production binary and
+  outside Media's allowed provider paths. Do not introduce production worker
+  switches or infer dispatch counts from the number of stored outputs.
+  Keep terminal persistence distinct from in-flight recovery and component tests
+  distinct from deployment evidence. Qualify automatic credential renewal beyond
+  expiry plus actual verifier leeway, then explicit fresh-client calls with the
+  same opaque reference. Deployed Hub `00a7e7be` explicitly rejects at `exp`
+  after JWT decoding (`auth/access_token.rs:90–96`), so its effective leeway is
+  zero despite the JWT library's default 60 seconds. Measure against the later
+  original member/billed expiry with clock margin; expiry plus 61 seconds is
+  conservative. Native refresh can fence existing connections: record
+  interruptions, never replay mutations automatically, and run isolated restart
+  proofs with measured margin after an applied refresh. No real billed provider
+  or public webhook is needed for this slice.
+- [ ] **4 — Preflight client Tasks without a model, then final MiMo qualification.**
+  OpenCode local revision `46b24290c5a2976e351d56e48f6c27a90dd71c2d`
+  on branch `mcp-tasks` integrates the official Tasks package and the narrowly
+  reviewed SDK subscription corrections. Both MCP test files passed (85 tests),
+  and the canonical repository check passed all 34 tasks plus lint. The first
+  full regression run caught an ordinary-call timeout error-message change;
+  the corrected deadline applies only to the Tasks path and preserves the SDK
+  path's existing timeout behavior. The supported build script produced a Mac
+  ARM64 executable with SHA-256
+  `3f155f1426b7e5d97a940adba3a703fafdbb01ef993e6d96feee4cb65f1caf9b`.
+  This source is a local commit based on upstream `origin/dev`, not an upstream
+  release. A no-model probe of the committed product `McpClient.connect/callTool`
+  path against actual Hub passed: eight Time, eight Artifact and three Media tools,
+  the typed fake-model schema, and one completed fake generation with its Artifact
+  ID in model-visible JSON text. This directly exercised the client source with Bun;
+  the native binary build/smoke is separate evidence. The installed client has not
+  yet been replaced, and the final binary/model scenario remains pending. No model
+  calls were made during this work.
+  Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
+  Task support. Test the actual selected OpenCode build's Tasks extension,
+  capability declaration, get/subscription/completion and cancellation handling
+  without spending model tokens. Installed OpenCode 2.0.32's application MCP
+  `callTool` wrapper passes only name/arguments/session metadata; static inspection
+  found no Tasks extension in that call path: its ordinary tool execution cannot
+  execute Media’s currently served Task-required `run`. Modern `server/discover`
+  support alone does not satisfy this gate. The official
+  [`@modelcontextprotocol/ext-tasks`](https://tasks.extensions.modelcontextprotocol.io/typescript/migrating-from-the-sdk)
+  package (stable `0.2.2`, verified at its package registry) supplies client execution
+  and settlement. Revision `2026-07-28` advertises Tasks through per-request
+  `io.modelcontextprotocol/tasks` capabilities and receives server-directed Task
+  results; do not send legacy `params.task` or use legacy `tasks/result` polling.
+  OpenCode's pinned MCP SDK `2.0.0` also omits Task `Mcp-Name` routing headers;
+  upstream client `2.3.1` derives these from `params.taskId`. Use that upstream
+  support while retaining OpenCode's existing OAuth behavior and testing the
+  dependency update. Its wire codec currently strips extension fields from
+  subscription acknowledgements. A narrowly scoped patch may preserve extension
+  fields on `SubscriptionFilter`, with the official Tasks extension validating
+  actual acknowledged task IDs; SDK `Client.listen` must retain stream ownership.
+  Test invalid known fields and absent/narrowed/malformed acknowledgements rather
+  than treating the requested filter as accepted. Pushed updates are optional in
+  the Tasks specification: a valid declined subscription uses the official
+  extension's polling mode, without repeating the initiating tool call or claiming
+  pushed completion. Malformed acknowledgements and transport failures stay errors.
+  Tools with `x-mcp-header` schema annotations retain the ordinary SDK path, which
+  owns header projection. The SDK exposes no public projection API for raw
+  extension calls, and modern tool declarations do not retain the legacy
+  `execution.taskSupport` field. If such a tool requires Tasks, preserve its
+  missing-capability refusal with a clear limitation diagnostic; do not repeat it
+  through a path that drops routing headers. Media has no such annotations.
+  Its modern SDK integration requires the host's raw request coordinator and
+  request framing together. Keep connection, authentication and transport ownership
+  in OpenCode, use supported SDK extension hooks and preserve ordinary tool calls,
+  errors, cancellation and existing elicitation handling. Resolve this native client
+  integration with a no-model interoperability probe. The committed-source probe
+  above now passes; the final binary scenario still depends on the remaining
+  deployed acceptance and Mac byte-transfer gates. Add no wrapper, plain-call fallback or weaker Media Task contract, and
+  do not silently replace the requested client. Only after every deterministic,
+  component, integration and deployed probe passes and expected behavior works,
+  run one bounded OpenCode scenario with explicit
+  `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`: discover, models/schema, eligible `media.run`
+  Task, Artifact download, save bytes and independently compare their hash.
+  Record actual tool outcomes, Task/usage records and model token/cost evidence.
+  Stop on failure and return to development; no OpenCode model calls during
+  iteration, automatic repair or model substitution.
+
+Real providers and billed qualification, signed webhook ingress, Artifact public
+shares, general Lore/factory automation, environment composition and remote
+Linux/GPU remain separate work. All aggregate gates above remain unchecked until
+their remaining acceptance conditions pass; the individual source and runtime
+results are recorded separately. Component responsibilities remain unchanged.
 
 ### Remaining Adoption
 

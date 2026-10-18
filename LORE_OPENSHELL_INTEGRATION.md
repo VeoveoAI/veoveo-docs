@@ -657,6 +657,13 @@ authority acquisition and clock-observation sockets are separate qualifications.
 Artifact then adds byte-transfer integrity, range download, access denial, quotas and
 restart persistence. Media then adds delegated Artifact access, Task recovery without
 duplicate output publication, cancellation, output provenance and usage records.
+The [Media native integration plan](OPENSHELL_HARDCUT_PLAN.md#media-native-integration-plan)
+records the source, native-policy and client-Task gates. Native Media and its private
+fake provider are now deployed: the basic billed generation Task, Task-bound
+Artifact output/download and ordinary-member billed-run denial passed. Media
+adopted its existing signing key and schema. Detailed provenance/usage, large
+outputs, cancellation, renewal, restart recovery and final OpenCode qualification
+remain pending; the basic path does not establish those outcomes.
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
 persistent registration key and the existing PostgreSQL metadata. A dedicated
