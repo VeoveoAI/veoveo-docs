@@ -1143,13 +1143,62 @@ Browser review remains separate from application qualification.
   `/Users/rozgo/VeoveoAI/tmp-client/media-mimo-output.bin` independently matches
   that length and SHA-256
   `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`.
-  These bytes were not rendered or transformed; the filename is not an image-validity
-  claim. Independent fixture observations prove one matching submission/prediction:
+  These fixed fixture bytes are not a valid PNG despite `image/png` metadata; the
+  prompt does not affect their content. Independent counters prove one submission:
   submissions 9→10, predictions 9→10, quotes 11→12, pending quotes 0,
   cancellations unchanged at 3, status reads 20→21 and output reads 6→7.
   The owned temporary server stopped; preexisting OpenCode processes were untouched.
   No further attempt is authorized or needed. Low-level client execution and
   `mcp.list` connectivity alone were not treated as proof of this agent path.
+
+  **Final client execution trace (read-only audit, 2026-10-18).** Persisted session
+  time is 14:50:51.165–14:54:36.134 UTC, or 224.969 seconds; the launcher's enclosing
+  measurement was 224.975 seconds. The actual generation arguments were
+  `{"model":"fake/text-to-image","input":{"prompt":"Veoveo native Media qualification"}}`.
+  MiMo was the agent model; no image inference model was called.
+
+  | Elapsed from session creation | Observed operation | Tool duration / outcome |
+  | --- | --- | --- |
+  | 74.724 s | `time__assess_clock({})` | 0.120 s; `clock acceptable: false` |
+  | 74.729 s | `media__models`, search `fake` | 0.112 s; three models; overlaps Time |
+  | 123.557 s | `media__model_schema` | 0.096 s; fake text-to-image schema |
+  | 126.906 s | `media__run` | 8.858 s; one succeeded Task and Artifact |
+  | 155.479 s | MCP resource discovery | 0.689 s; 26 resources, 13 templates |
+  | 164.262 s | Artifact resource read | 1.614 s; resulting Artifact inspected |
+  | 171.094 s | `artifact__create_download` | 0.525 s; signed GET request |
+  | 201.190 s | Shell download and hash | 8.646 s; exact bytes, exit 0 |
+  | 224.969 s | Final agent response | Finish reason `stop` |
+
+  Both initial Hub calls occurred in the first model turn. There was no failed
+  tool-discovery detour in this corrected run. The launcher observed MCP connected
+  before attaching the run, but did not timestamp connection/catalog readiness.
+  Thus 74.724 seconds measures first tool use, not discovery latency. The union
+  of tool-execution intervals is 20.548 seconds (20.660 seconds summed with the
+  overlapping first calls). The remaining 204.421 seconds includes model/provider
+  waits, client overhead and the final response; it cannot be split further from
+  the saved instrumentation. This run does not establish a latency distribution.
+
+  All eight tool invocations completed without recorded tool errors or refusals.
+  Time's negative clock assessment is a domain result, not a protocol error, and
+  MiMo explicitly flagged it in its final response. The recorded tool text gives
+  no violation details, so this trace does not establish which clock-quality
+  requirement failed or prove acceptable clock accuracy. The default/tenant
+  policy and synchronization/error-bound/source-quality checks are distinct from
+  this scenario's requirement to make one Time call.
+  Server stderr contains 24 nonfatal schema warnings: ignored `uint64` (12),
+  `uint8` (4) and `uint32` (8) formats. The pinned MCP client's Ajv validator skips
+  those unknown format checks while retaining types, required fields and explicit
+  numeric constraints. These warnings are not failed calls, but format-only bit
+  width enforcement was not proved. CLI stderr and server stdout were empty.
+
+  The deployed `fake.rs` at runtime revision `392c2c1` is identical to the audited
+  current source. It emits the fixed 65,536-byte offset-based pattern, checks only
+  that the prompt is nonempty, and labels the bytes `output-0.png` / `image/png`.
+  Every downloaded byte matches that pattern. Its first eight bytes are
+  `00 ef de cd bc ac 9b 8a`, not the PNG signature `89 50 4e 47 0d 0a 1a 0a`.
+  This proves the fake-provider orchestration, Task and Artifact byte path;
+  it does not prove image inference, prompt conditioning or image decoding.
+
   Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
   Task support. Test the actual selected OpenCode build's Tasks extension,
   capability declaration, get/subscription/completion and cancellation handling
