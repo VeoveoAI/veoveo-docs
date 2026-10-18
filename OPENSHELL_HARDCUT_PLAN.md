@@ -1664,6 +1664,42 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   have one refresh owner; a rotating refresh token is not duplicated into two
   independent providers. The inherited separate Media profile remains an unused
   example. Actual application custody and acceptance await both human sessions.
+- Media and its synthetic provider fixture are Ready in `vv-services`, sandboxes
+  `aaf95cb3-dfd3-4ec1-9056-8028bb3ee20d` and
+  `d3deaf79-fd53-4d9a-87f6-2c06513e97e6`. The clean installation checkout is
+  Bioma `d702148`, including template public-link corrections from `1ea5c8d`.
+  Runtime images match source `20e2c6e`. The Media digest below corrects an earlier
+  transcription error; live Docker inspection and the build receipt agree on
+  `4074d31a…b87a`, with no rebuild or runtime replacement. The fixture has its own
+  configuration volume and fake HMAC only; no WaveSpeed key or real webhook secret
+  is mounted there. Its catalog returns 200 with the expected fixture bearer and
+  401 with a wrong bearer. Media migration v1 and active registration pass.
+  Lifecycle, application transfers, Tasks and real-provider acceptance remain open.
+- Media's native HTTP exposure initially returned 421: OpenShell's service ingress
+  rewrites upstream Host to `127.0.0.1:8802`, while the deployment accepted only
+  its logical service authority. The existing SDK setting
+  `VEOVEO_ALLOW_LOOPBACK_HOSTS=true` is now in Media's private mounted `provider.env`.
+  Native stop/start applied it without replacing the sandbox, volumes, policy or
+  signing key. Startup registered a new client ID, as expected; the namespace key
+  thumbprint is unchanged. Native verified-TLS and public Cloudflare callback
+  probes now reach signature validation and return 401 for missing/invalid
+  signatures. A native ForwardTcp request with `Host: attacker.invalid` still
+  returns 421. TLS verification and signature enforcement remain enabled. These
+  synthetic requests name a nonexistent operation; they prove ingress and rejection,
+  not receipt of a real WaveSpeed event. `VEOVEO_PUBLIC_ORIGIN` remains unset for
+  the fake-provider baseline, so completion remains bounded status checks.
+  At the 22:47:40 UTC receipt checkpoint, all six missing/malformed/incorrect-HMAC
+  probes returned 401: native requests took 3.509–4.955 ms and public requests
+  172.942–183.575 ms. The unrelated-Host control took 3.476 ms. These are individual
+  request measurements, not latency benchmarks. Tasks, predictions and Artifact
+  counts stayed at zero. Builder GPT-6 Luna executed the deployed probes; coder
+  GPT-6.1 Sol documented the existing configuration and coordinator GPT-6 Astra
+  reviewed source and the sanitized receipt. No paid generation or model-driven
+  acceptance ran. Evidence:
+  `/home/rozgo/VeoveoAI-reference/evidence/media-native-deployment.json`, SHA-256
+  `05f93f87d75075edff54cf4325edc151f501748beb96f1e6744bee5bdcf49765`.
+  Template `7e113b2` and Bioma `09ee3d9` now document this native HTTP exposure
+  prerequisite independently of completion mode; both are published.
 - The public guide's new Bioma link was checked in Chrome over the temporary local
   HTTP server. All three views render, component details and navigation work, and
   the console reports no warnings/errors. Both exports produced files: SVG
@@ -1701,7 +1737,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
 | Hub `00a7e7b` | `sha256:d348cee423cc698d7030f9aa40f1e566a42df35d962f92ce7c7b19f8b0fade0e` |
 | Time `90eabf9` | `sha256:f5608dbb15bdf54447b0e979d203f0ccc0d1e358d2cc8cbecf743bf5c1732495` |
 | Artifact `83d6910` | `sha256:60c3100d8d12b5acebb8080eae56d3a2fe560c02764507de50a2d715f3ecf238` |
-| Media `20e2c6e` | `sha256:4074d31aabd225dcd5518aab234beadffa2149543aa1bc28502a43b194a5b87f5` |
+| Media `20e2c6e` | `sha256:4074d31aabd225dcd5518aab234beadffa2149543aa1bc28502a43b194a5b87a` |
 | Media test provider `20e2c6e` | `sha256:83b0d544639ccfe51202852b5cbf28d55560618fad566f69cc41a3aa3dc9bb8b` |
 
 - [x] **0 — Inventory, retired-stack cleanup and reviewed native placement.** Reconcile
