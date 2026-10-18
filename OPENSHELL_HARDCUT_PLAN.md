@@ -988,6 +988,11 @@ application qualification below.
   authoritative prediction, Artifact metadata, exact 65,536 bytes and checksum,
   and a new subscription delivering retained completion. No replacement generation
   was needed. Both external Media/Hub restart proofs are now qualified.
+  A subsequent local owner-credential rotation preserved database data, per-service
+  logins and signing keys. Only Hub restarted; the old owner password was rejected
+  and the replacement authenticated. Fresh Time, Media catalog/schema/Task-only
+  checks and verification of that same retained Task/Artifact passed afterward.
+  The fixture's quote hold is false and automatic delivery is restored.
   Use a dedicated billed-test
   caller eligible for `media.generations.run`, Artifact read/write delegation and
   required prediction reads. Preserve the ordinary member's model browsing and
@@ -1057,7 +1062,10 @@ application qualification below.
   `~/.opencode/bin/opencode.backup-20261018T055004Z`. Existing running user
   processes were not restarted. The project's existing member launcher disables
   automatic updates for this local build and retains the explicit MiMo default;
-  the final billed-client/model scenario remains pending. No model
+  an exact-binary no-inference inventory also listed
+  `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` and recognized the existing DeepInfra
+  credential through a child-only environment. The final billed-client/model
+  scenario remains pending on the Mac storage-hostname prerequisite. No model
   calls were made during this work.
   Media's plain `run` handler refuses ordinary `tools/call`; the operation requires
   Task support. Test the actual selected OpenCode build's Tasks extension,
