@@ -6,6 +6,9 @@ source withdrawal, applied binding-removal/detach, termination and gateway recov
 are qualified. The Desktop adapter/signer/ingress are retired and durable data is
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
 Linux remains outside this phase and its existing installation is untouched.
+The Hub → Time and prepared-source factory milestone now also passes locally:
+deployed application qualification, exact Git/Lore correspondence, no-model
+preflight, one bounded model build and Time deployment from that same Lore revision.
 
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
@@ -197,14 +200,14 @@ The first workable local path does not qualify the whole platform.
 The next application slice is specified in
 [Planned Adoption Of Existing Veoveo Components](LORE_OPENSHELL_INTEGRATION.md#planned-adoption-of-existing-veoveo-components)
 and drawn as planned in the [visual guide](diagrams/veoveo-platform.html#next).
-The next milestone is **working Hub → Time integration, followed by a build-only
-factory pass over prepared Time source**.
+The completed local milestone is **working Hub → Time integration, followed by a
+build-only factory pass over prepared Time source and deployment from that revision**.
 This is a local Mac installation with no users or live deployment to preserve:
 rebuild and replace local services directly. Complete integration and debugging in
 the main development session before assigning work to the factory model. These
-steps remain open. Hub and Time now pass deployed application qualification on
-this Mac, and exact Git/Lore source correspondence is verified. The factory pass
-remains open.
+steps now pass on this Mac. Hub/Time application qualification, exact Git/Lore
+source correspondence, factory preflight, the bounded model build and final Time
+readiness/Hub-call verification are recorded below. Artifact and Media follow separately.
 
 Inspected source state (2026-10-17):
 
@@ -216,7 +219,7 @@ Inspected source state (2026-10-17):
 | Artifact / MCP template | `4fc0cc9` / `21be15c` | Committed naming preparation; clean; Artifact adoption follows Time |
 | Hub | `00a7e7b` | Rename, Lore-issuer removal, external-issuer handling, native transport and SQLx metadata checked, committed and pushed; clean |
 | Media | `031c913` | Reviewed naming changes checked, committed and pushed; clean; runtime adoption follows Time |
-| Installation | `a7d4d16` | Native Hub/Time setup and factory preparation checked, committed and published; deployed Hub/Time application qualification passed |
+| Installation | `ce1d0b6` | Native Hub/Time setup, factory preparation and verified replacement instructions committed and published; local milestone passed |
 | OpenShell qualifier | `447bd88` | Native ingress probe and operator harness checked and committed locally; push refused because the GitHub repository is archived; local work preserved |
 | Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time evidence; browser/export QA remains unverified |
 | Lore / OpenShell | `cb2c191f` / `0e85111e` | Lore clean; native DNS/TLS and Tasks qualified; Tasks runtime source `45f3b534`, followed by a docs-only clarification; OpenShell branch pushed to the maintained VeoveoAI fork |
@@ -224,8 +227,8 @@ Inspected source state (2026-10-17):
 Prior component test reports and committed preparation do not replace fresh
 checks or qualify deployed Hub/Time sandboxes. Preserve these working trees,
 review the combined diff and record fresh validation against the source actually
-being deployed. Hub/Time acceptance and identical Git/Lore Time source now pass;
-the factory build remains open.
+being deployed. Hub/Time acceptance, identical Git/Lore Time source, the bounded
+factory build and deployment from that Lore revision now pass.
 
 First cleanup implementation (2026-10-17, now included in Hub `00a7e7b`): the combined Hub diff
 removes the obsolete Lore issuer/generator options
@@ -579,7 +582,7 @@ retaining its logs; the qualified replacement remains Ready.
   the trusted Lore container activated the new assignment with its existing image
   and durable volume; mounted configuration and remote branch metadata were verified.
   The disposable publisher resources were removed; repository, identity and data remain.
-- [ ] **Factory preparation without model calls:** layer the shared Lore/agent
+- [x] **Factory preparation without model calls:** layer the shared Lore/agent
   setup over Time's existing Dockerfile `dev` image through factory `BASE`. Prepare
   writable Cargo state under `/sandbox` after login-shell profile setup, dependency
   access, the Lore source revision, working directory and the exact build command. In
@@ -601,20 +604,29 @@ retaining its logs; the qualified replacement remains Ready.
   installed shell implementation confirms `timeout` milliseconds, a 120000 default,
   and an explicit 900000 accepted without clamping. Zero disables the timer and
   must not be used; select a finite foreground timeout from preflight measurements.
-  Real native policy admission,
-  exact Lore clone, dependency/release build and
-  Hub access remain separate gates. The trusted publisher completed the source
-  handoff above; no model call has run. Offline CLI/config inspection confirmed
+  Real native policy admission, exact Lore clone, dependency/release build and
+  Hub access then passed. The trusted publisher completed the source handoff above.
+  Offline CLI/config inspection confirmed
   `opencode run --agent prepared-time` selects the four-step agent. Use
   `OPENCODE_CONFIG=/etc/opencode/opencode.json`; the CLI exposes no `--config`
-  option. Native factory provisioning and its release/Hub preflight remain open.
-  The approved inference credential is absent from the trusted environment and
-  inspected native provider inventory. Its approved private source is requested;
-  no substitute account, partial factory setup or model call has been used.
-  Native source inspection confirms this profile's required static API key cannot
-  use `--runtime-credentials` for deferred provisioning; the factory remains
-  uncreated until that input is available. No native validation was bypassed.
-- [ ] **Bounded model task:** provide the exact Lore clone/revision instructions
+  option.
+  The approved inference credential is the existing `DEEPINFRA_API_TOKEN` in the
+  installation's ignored root `.env`. Trusted provisioning maps it to the native
+  provider input without printing it or copying the file into a workload. The
+  earlier environment-only check missed this existing input. The profile requires its static API key at
+  creation; no deferred-credential bypass or substitute account is needed.
+  Native sandbox `vv-time-build/factory-time`
+  (`27efc914-1d35-4194-a585-52ea532fbd88`) is Ready under image `e961b50c` with
+  exactly the dedicated Lore, production Hub-member and inference providers.
+  Native policy admission and provider installation passed. A fresh clone of the
+  recorded Lore revision built successfully with the exact locked release command
+  in 92 seconds, using Rust 1.99.0 ARM64, writable `/sandbox/cargo` and fresh
+  `/sandbox/time-preflight-target`. Its new ELF64/AArch64 binary has SHA-256
+  `b0b4730fb14029b15f293ab7448bb6039df0d6b9fd6988408bdb31af75b92adb`.
+  Source remains unchanged. TLS-verified member SDK discovery returned eight tools;
+  `time__resolve_time` returned typed UTC/GPS fields for `2026-10-17T12:00:00Z`.
+  All these checks ran without inference; the bounded model pass follows separately.
+- [x] **Bounded model task:** provide the exact Lore clone/revision instructions
   and run `cargo build --locked --release --bin veoveo-mcp-time` from the prepared
   checkout. The model reports the revision, command, exit status and output path.
   It is not assigned source edits, dependency changes, environment repair or
@@ -622,12 +634,39 @@ retaining its logs; the qualified replacement remains Ready.
   failure to the main development session; no model repair loop. This is task
   scope, not a new read-only grant, filesystem restriction or deny rule. Verify
   source is unchanged and the binary was built in this run, not supplied prebuilt.
-- [ ] **Local result:** from the same Lore revision, use the component Dockerfile
+  The single `prepared-time` model run passed: three model steps and two shell
+  calls in 95.044 seconds. One foreground shell call cloned the full recorded Lore
+  revision and ran the exact locked release build once; both exited zero. Cargo
+  reported 57.09 seconds. The second call only read the saved truncated output for
+  the final report. The build used a new `/sandbox/time-model-target`, proven absent
+  before invocation; its executable ELF64/AArch64 binary has the same SHA-256 as
+  the manual preflight and a modification time after the run began. Independent
+  post-run comparison of the downloaded model clone again matched all 362 files
+  and 29 directories against the Git export, excluding only `.lore`. No source
+  changes, repair loop, build retry or model deployment occurred. The operator's
+  runtime-image build and deployment passed the following separate gate.
+- [x] **Local result:** from the same Lore revision, use the component Dockerfile
   on the Mac for image construction and replace the local Time service through
   native OpenShell commands. Verify readiness and a Hub-routed Time call.
   Image construction/deployment stay outside the model's task; no Docker socket
   is added to the factory. Record the build, source correspondence and local Time
   result in this checklist.
+  A clean context exported from the verified model clone matched the same 362
+  files and 29 directories, excluding only `.lore`. The existing Time Dockerfile
+  built its `runtime` target on this Mac's Linux ARM64 Docker runtime in 61.5 seconds:
+  `sha256:3bd9eedbbffd350d91fc1e06588f2cd4989c47fa1a3ee34b06fcc5adb943743c`.
+  Only the owned `vv-services/time` sandbox was stopped/deleted/recreated; its
+  state volume, provider, policy, environment and restart policy were preserved.
+  New sandbox `c76a921f-1330-4b3c-ad59-028bc08863f1` is Ready on that exact image,
+  with process `96218f87-1e8d-462a-8d6a-28f330ad9007`. Native private forwarding
+  to the canonical `http://time.internal:8800/readyz` returned 200 `ready`.
+  The fresh active registration retains public-key thumbprint
+  `8lWPsaer8WU_jnMYlWiZqOHsClGVzFVyLXASqJU8zRU`. Hub process
+  `1ef27545-52b8-49b7-8e54-78da4154ded7` stayed unchanged. Fresh member SDK discovery
+  from the factory returned eight tools, and `time__resolve_time` returned
+  `isError:false` with the expected typed UTC/GPS result for `2026-10-17T12:00:00Z`.
+  Temporary readiness forwards were removed. No remote Linux/GPU qualification
+  or automatic source-to-deployment system is claimed by this local result.
 
 After the prepared Time build pass:
 

@@ -4,8 +4,9 @@ Status: accepted infrastructure direction for design and qualification, revised 
 2026-10-17. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
-native Lore/private MCP path pass focused acceptance; general deployment and
-composition remain pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
+native Lore/private MCP path, Hub → Time integration and prepared Time factory
+build/deployment pass local acceptance; general deployment and composition remain
+pending. See [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html) shows the current platform,
 credential path and next integration. Update it alongside this document after every
@@ -49,7 +50,7 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
 | Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
-| Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials and management renewal qualified locally; factory access remains to be preflighted |
+| Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials, management renewal and factory access qualified locally; wider issuer adoption remains separate |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
 | Factory user access | Native OIDC and workspace membership | Mapping approved source authority to runtime access |
@@ -275,8 +276,8 @@ Use these names throughout the application integration. Local checkouts use the
 new names. Core, SDK, Time, Artifact and the MCP template have committed preparation.
 Hub, Time's acceptance changes, Media's rename and native installation preparation
 are checked, committed and published. The documentation records qualification
-separately from source publication; exact Git/Lore correspondence is now verified, while factory preflight and the
-bounded model/deployment pass remain open.
+separately from source publication. Exact Git/Lore correspondence, factory preflight,
+the bounded model build and Time deployment from that revision now pass locally.
 The execution checklist records source revisions, publication status and open gates.
 Links below point to the renamed local checkouts.
 
@@ -402,10 +403,9 @@ before updating a consumer. Removing that dependency on Git is a separate decisi
 
 These decisions follow the current code, not just the desired topology. Read the
 linked implementations and each repository's `AGENTS.md` before changing them.
-Committed preparation and unfinished implementation are distinguished below; the
-checks must still establish that the selected mechanisms work together in deployed
-sandboxes. Fresh Hub component checks are recorded in the execution checklist;
-deployed Hub/Time acceptance remains open. Do not turn
+Implementation decisions and measured acceptance are distinguished below. The
+execution checklist records fresh component checks, deployed Hub/Time acceptance,
+exact Git/Lore correspondence, and the successful bounded factory build. Do not turn
 an unproven connection into a broader architecture change to make the checklist pass.
 
 | Concern | Existing code to reuse | Decision for this pass |
@@ -414,9 +414,9 @@ an unproven connection into a broader architecture change to make the checklist 
 | Factory filesystem | [native factory policy](../veoveo-template-installation/openshell/factory.yaml), [Time shell profile](../veoveo-mcp-time/env/profile.d/rust.sh), [offline SQL metadata](../veoveo-mcp-time/.cargo/config.toml) | `/usr` is read-only, but Time defaults `CARGO_HOME` to `/usr/local/cargo`. Use an explicit writable cache under `/sandbox`, set it after any login-shell profile, and use a fresh target directory for the proof. Keep the installed toolchain read-only. SQLX_OFFLINE already permits this release build without a running database. |
 | Factory MCP client | [SDK CLI access](../veoveo-hub-sdk/crates/veoveo-hub-sdk-cli/src/main.rs), [CLI connection](../veoveo-hub-sdk/crates/veoveo-hub-sdk-cli/src/hub.rs), [SDK bearer sources](../veoveo-hub-sdk/crates/veoveo-hub-sdk/src/client.rs) | The committed CLI supports `--bearer-env` / `VEOVEO_CLI_BEARER_ENV` through `HubAuthentication::BearerFromEnvironment`, `StaticBearer` and `HubClient`; caller keys are conditional. Reuse this input and qualify it from the actual factory network path. In the factory, supply only the native OpenShell opaque reference. No private caller key, token fetcher or refresh worker belongs there. |
 | Application admission | [JWT verification](../veoveo-hub/crates/veoveo-hub/src/auth/access_token.rs), [claim shape](../veoveo-hub/crates/veoveo-hub/src/auth/claims.rs), [current client authority](../veoveo-hub/crates/veoveo-hub/src/oauth_clients.rs), [context membership](../veoveo-hub/crates/veoveo-hub/src/catalog.rs) | Configure the local IdP and existing Hub catalog to satisfy this contract. Generic OIDC login or a valid Lore token does not establish application access. Preserve the verifier and authority checks. |
-| Private MCP transport | [per-server HTTP pool](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs), [request authorization](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs), [discovery recovery](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_connection.rs), [native forwarding proof](../veoveo-qualify-openshell/src/bin/first-path.rs) | Hub `00a7e7b` adds [typed bindings](../veoveo-hub/crates/veoveo-hub/src/control_plane/native_upstreams.rs) and [in-process Unix/native transport](../veoveo-hub/crates/veoveo-hub/src/mcp/native_upstreams.rs), wired into the existing reqwest pool. Deployed forwarding, renewal, subscriptions and reconnect pass; Task cancellation and coordinated restart checks remain open. The echo fixture alone does not qualify this client. |
+| Private MCP transport | [per-server HTTP pool](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs), [request authorization](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs), [discovery recovery](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_connection.rs), [native forwarding proof](../veoveo-qualify-openshell/src/bin/first-path.rs) | Hub `00a7e7b` adds [typed bindings](../veoveo-hub/crates/veoveo-hub/src/control_plane/native_upstreams.rs) and [in-process Unix/native transport](../veoveo-hub/crates/veoveo-hub/src/mcp/native_upstreams.rs), wired into the existing reqwest pool. Deployed forwarding, renewal, subscriptions, reconnect, Task cancellation and coordinated restart checks pass. The echo fixture alone does not qualify this client. |
 | Service startup | [Time registration](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/registration.rs), [startup](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/mod.rs), [configuration](../veoveo-mcp-time/crates/veoveo-mcp-time/src/server/config.rs), [SDK registration](../veoveo-hub-sdk/crates/veoveo-hub-sdk/src/registration/client.rs) | Start PostgreSQL, then Hub, then Time. Time registers before serving, receives its database login and token trust from registration, migrates its own schema and holds a process-instance lock. Preserve this lifecycle instead of inventing a heartbeat, database credential distribution API or registration controller. |
-| Acceptance | [Time live acceptance](../veoveo-mcp-time/crates/veoveo-mcp-time/tests/acceptance.rs), [Hub transport tests](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_connection/tests.rs) | Time `90eabf9` preserves behavior assertions, selects member/admin SDK static bearers through environment-variable names and adds coordinated restart probes. The trusted qualification runner can hold both references; the author factory gets only its member reference. No caller signing keys are copied. Component checks and deployed Hub/Time acceptance pass; the factory path requires its own preflight. Keep domain tests in Time and generic transport tests in Hub. |
+| Acceptance | [Time live acceptance](../veoveo-mcp-time/crates/veoveo-mcp-time/tests/acceptance.rs), [Hub transport tests](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_connection/tests.rs) | Time `90eabf9` preserves behavior assertions, selects member/admin SDK static bearers through environment-variable names and adds coordinated restart probes. The trusted qualification runner can hold both references; the author factory gets only its member reference. No caller signing keys are copied. Component checks, deployed Hub/Time acceptance and the factory path preflight pass. Keep domain tests in Time and generic transport tests in Hub. |
 
 **Application identity must be configured before diagnosing MCP transport.** The
 Hub requires `typ=at+jwt`, the selected profile's audience and scopes, `client_id`
@@ -506,12 +506,12 @@ Time's byte-preserving private `ForwardTcp` path retains `time.internal:8800` an
 keeps its loopback-host option disabled. Verified Hub metadata and unauthenticated
 MCP admission now pass, and the initial Time sandbox has registered and connected
 to PostgreSQL. Deployed client checks pass member calls, permission checks, event
-notifications and reconnect. Task get/cancel requests currently fail native L7
-revision validation before Hub; Task behavior and coordinated restart recovery
-remain open. Native management renewal passed through original token expiry with
+notifications and reconnect. The demonstrated native Task-inspection gap is closed
+by the narrow extension described below; Task completion/cancellation and
+coordinated restart recovery now pass. Native management renewal passed through original token expiry with
 a fresh forwarding connection and unchanged Hub process; see the checklist.
 The 2026-10-17 investigation demonstrated that generated `.openshell.localhost`
-service names have no sandbox DNS route, while a host-alias/Host override correctly
+service names lacked a sandbox DNS route, while a host-alias/Host override correctly
 fails authority enforcement. The approved narrow native extension resolves one
 label beneath that reserved suffix to the existing trusted HTTPS gateway socket,
 only when the supervisor endpoint agrees with the backend IP and requested port.
@@ -651,7 +651,7 @@ authority acquisition and clock-observation sockets are separate qualifications.
 Artifact then adds byte-transfer integrity, range download, access denial, quotas and
 restart persistence. Media then adds delegated Artifact access, Task recovery without
 duplicate output publication, cancellation, output provenance and usage records.
-The corresponding cases remain open in the execution checklist until run on this path.
+Time’s corresponding cases now pass on this path; Artifact and Media cases remain open in the execution checklist.
 
 Automatic source-to-deployment integration remains a later, thin module in the existing
 trusted Hub process: Lore notification plus authoritative revision read, fresh
@@ -892,7 +892,7 @@ transport semantics; it has no HTTP/1 facade or stream-expiry patch.
 Native OpenShell owns qualified Lore mediation, workload egress, application
 service ingress and private authenticated forwarding. Native application DNS,
 request authority and TLS verification have passed the fresh ingress fixture;
-the actual Hub and Time clients also pass deployed qualification. The factory client path remains a separate preflight. Desktop
+the actual Hub and Time clients also pass deployed qualification. The factory client path has also passed its separate preflight. Desktop
 adapter ingress and signer dependencies are retired. The retained identity
 listener serves Keycloak bootstrap and its restricted public-key alias only.
 Bring any concrete native limitation and proposed design change to the coordinator
@@ -1044,7 +1044,7 @@ the revised Lore gates explicitly. The stronger custom-isolation requirement is
 superseded, not marked passed by hook tests. Completed read-only smoke checks,
 push-hook tests and manual rotation alone do not establish automatic credential
 renewal or access removal. The separate local direct-IdP measurements are complete;
-Hub/Time application and management-credential qualification also passed locally; the prepared-source factory pass remains open.
+Hub/Time application and management-credential qualification, exact prepared source, the bounded factory build and Time deployment from that Lore revision also passed locally.
 The architecture is OpenShell-owned execution; qualification chooses supported configuration or closes a specific native
 gap, not whether to keep a duplicate Veoveo implementation by default.
 

@@ -402,7 +402,9 @@ The former Desktop catalog result is historical; graph/diff and automatic
 expired-session recovery are withdrawn requirements. Direct IdP Lore credentials,
 native renewal, source withdrawal, applied binding-removal/detach and termination
 are locally qualified, and the adapter/signer/ingress are retired. Entra and
-Linux/CUDA are not qualified by the local checks.
+Linux/CUDA are not qualified by the local checks. The local Hub → Time integration,
+exact Git/Lore Time source handoff, bounded factory build and Time deployment from
+that Lore revision now pass. Artifact, Media and automatic deployment remain later work.
 
 The Hub currently selects the newest registration per service slug, and its
 [registration snapshot](../veoveo-hub/crates/veoveo-hub/src/registration/snapshot.rs)
