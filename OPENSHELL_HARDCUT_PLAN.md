@@ -5,13 +5,16 @@ acceptance. Clone/edit/push, the small branch hook, native credential renewal,
 source withdrawal, applied binding-removal/detach, termination and gateway recovery
 are qualified. The Desktop adapter/signer/ingress are retired and durable data is
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
-Linux remains outside this phase and its existing installation is untouched.
+Remote Linux deployment/GPU qualification remains outside this phase; the existing
+installation is unchanged after the separately authorized read-only inventory below.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
 preflight, one bounded model build and Time deployment from that same Lore revision.
 Private Artifact and the private fake-provider Media slice also pass, including
 Media lifecycle qualification, direct Mac byte transfer and the final bounded
-OpenCode MiMo client scenario.
+OpenCode MiMo client scenario. A separately authorized one-shot real WaveSpeed
+polling run also passes: one decoded PNG through Hub/Media/Artifact, with exact
+bytes and USD 0.003 actual usage. Public webhooks remain unqualified.
 
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
@@ -1059,8 +1062,9 @@ Browser review remains separate from application qualification.
   ARM64 executable with SHA-256
   `3f155f1426b7e5d97a940adba3a703fafdbb01ef993e6d96feee4cb65f1caf9b`.
   This source is a local commit based on upstream `origin/dev`, not an upstream
-  release. A no-model probe of the committed product `McpClient.connect/callTool`
-  path against actual Hub passed: eight Time, eight Artifact and three Media tools,
+  release. The checkout has only the upstream `anomalyco/opencode` origin; no
+  organization fork carrying this commit has been published. A no-model probe of
+  the committed product `McpClient.connect/callTool` path against actual Hub passed: eight Time, eight Artifact and three Media tools,
   the typed fake-model schema, and one completed fake generation with its Artifact
   ID in model-visible JSON text. This directly exercised the client source with Bun;
   the native binary build/smoke is separate evidence. The compiled CLI also ran
@@ -1256,11 +1260,129 @@ Browser review remains separate from application qualification.
   Stop on failure and return to development; no OpenCode model calls during
   iteration, automatic repair or model substitution.
 
-Real providers and billed qualification, signed webhook ingress, Artifact public
-shares, general Lore/factory automation, environment composition and remote
-Linux/GPU remain separate work. Aggregate gates are checked only when
-their acceptance conditions pass; the individual source and runtime
+The separate real-provider polling receipt follows. Public signed webhook ingress,
+other real-provider models, Artifact public shares, general Lore/factory automation,
+environment composition and remote Linux/GPU qualification remain separate work.
+Aggregate gates are checked only when their acceptance conditions pass; the individual source and runtime
 results are recorded separately. Component responsibilities remain unchanged.
+
+### Real WaveSpeed Polling One-Shot — 2026-10-18
+
+The user separately authorized one real-provider generation through the existing
+native Hub → Media → Artifact path on this Mac. This is not a repeat of the earlier
+fake-provider/MiMo scenario. A private caller used the reviewed OpenCode
+`McpClient.connect/callTool` library at local revision
+`46b24290c5a2976e351d56e48f6c27a90dd71c2d`, without an agent or LLM call: zero
+model-driver tokens. The provider model itself performed real image inference.
+The reviewed caller SHA-256 is
+`3ad15b5891c60036fd7f316e6e187c490925c22f254e9fb1f2edc25cad6bc1f3`.
+An exclusive attempt guard and output-file creation prevent automatic rerun or
+overwrite; exactly one `media__run` was invoked, with a 240-second execution bound.
+A failed or ambiguous submission must return to the operator, never be resubmitted.
+
+The configured provider catalog/schema and an exact-input quote were checked before
+submission. Model: `wavespeed-ai/flux-schnell`. Exact input:
+
+```json
+{
+  "prompt": "A red ceramic cube and a blue glass sphere on a matte white table, soft studio lighting, no text.",
+  "size": "1024*1024",
+  "num_images": 1,
+  "output_format": "png",
+  "seed": 42
+}
+```
+
+The external quote was USD 0.003. Media's production Task separately quotes before
+recording estimated usage and dispatching. There is no atomic maximum-price input
+or rejection gate: the external quote is a preflight observation, with a price-change
+race before the Task's own quote. Own usage gained one estimate and one actual
+record, each USD 0.003 (the JSON receipt represents the floating-point delta as
+`0.0030000000000000027`). Independent trusted read-only verification found exactly
+two usage records for this Media Task: one USD 0.003 estimate and one USD 0.003
+actual. This is a per-Task match, not an inference from the aggregate delta alone.
+
+Media retained its signing identity, database and mounted state while its native
+sandbox was recreated for the real-provider configuration:
+`38bdb6a2-4142-4ca8-847b-f8475f3c5005`. It retained runtime image
+`sha256:7487ff1f22b97725f7ff2cff0f8ba3995d8ab046cb16e3da77a9076edb7bca9a`,
+built from Media source `392c2c1000c2b96fb8ee823bbf0996444c547623`.
+The provider API uses
+an exact-host native credential binding; the credential-free output host is admitted
+separately. `VEOVEO_PUBLIC_ORIGIN` remains unset. Both the settled result and the
+persisted prediction report `completion: checks`; this demonstrates provider status
+polling, not signed webhook delivery or public callback ingress. Native provider
+profile v2 was Ready; the effective policy SHA-256 was
+`eff2bd82b8a14df4b37dd8420b8c1dd6c3c7440013f58002e9d554bb301bd8c6`.
+
+The safe [private receipt](/var/folders/wv/ckzszrqd2d59czjf43q0fqdm0000gn/T/veoveo-wavespeed-one-shot-tl55sgbg/attempt/receipt.json)
+records UTC operation boundaries and monotonic elapsed milliseconds. It starts at
+`2026-10-18T16:55:32.566Z` and finishes at `2026-10-18T16:56:10.326Z`:
+
+| Operation | Measured elapsed |
+|---|---:|
+| Own usage before | 29.093 ms |
+| Verified MCP connection | 36.915 ms |
+| Read-only tool catalog, 19 tools including run/download | 29.969 ms |
+| Single `media__run` through completed Task | 37,508.627 ms |
+| Persisted prediction read | 25.369 ms |
+| Artifact resource read | 44.920 ms |
+| `artifact__create_download` | 51.396 ms |
+| Signed GET, body, hash and exclusive file save | 6.864 ms |
+| Native client cleanup | 1.889 ms |
+| Own usage after | 9.572 ms |
+| Whole caller, including preflight and validation | 37,760.537 ms |
+
+The Task duration includes provider execution, scheduled status checks, output
+retrieval, Artifact ingestion and billing reconciliation; it is not a measurement
+of pure provider inference latency. No model-agent discovery delay is involved.
+
+- Media Task: `01a14ff0-a276-7062-aee1-c33f0b08a08a`.
+- Provider prediction: `197e07f456044ad695c7035632845780`.
+- Artifact: `01a14ff1-2094-7c21-a97d-36b6ba11d9e4`, available, MIME `image/png`.
+- Original file: [wavespeed-first-image.png](/Users/rozgo/VeoveoAI/tmp-client/wavespeed-first-image.png),
+  802,505 bytes, mode 0600; SHA-256
+  `615779dfcba8a5b8e8e2f6688a21c481086fa4ad0b1f471fde18dd4f536445e3`.
+- Artifact's signed-request JSON text equals structured content. The caller parsed
+  that text and preserved the GET URL/method byte-for-byte with zero explicit signed
+  headers and no redirects. The downloaded size and canonical Artifact checksum match.
+
+**Bounded real-provider polling: PASS.** The caller passed generation, persisted
+completion-mode, Artifact and exact-download checks. Independent decoding verified
+a valid 1024 × 1024 PNG; MIME, size and canonical Artifact digest agree. The
+coordinator also opened the original and observed a red ceramic cube-shaped vessel
+and a blue glass spherical vessel; this is a visual description, not a claim of
+exact solid-cube/sphere geometric conformance. The Artifact is available/private and its provenance and
+metadata retain this Media Task and provider prediction. The fake fixture counters
+were unchanged across the real run, independently distinguishing it from another
+fake submission. No source/production code changed or Media image was rebuilt;
+only native provider/runtime configuration changed. The retained caller receipt
+still says `passed_pending_independent_decode`; the independent decode described
+above was a subsequent check and did not rewrite that receipt.
+
+Wrapper stderr was empty. Private console review found six ignored-schema-format
+notices (`uint32` × 4, `uint64` × 2) plus a background OpenCode transport error:
+`client.onerror` logged `mcp transport error` at `16:56:10.179Z`, just before the
+Task settled at `16:56:10.186Z`. Hub recorded `POST /mcp/local` HTTP 400 at
+`16:56:10.175907714Z`, request ID `01a14ff1-34ba-7501-b510-26e237cd4173`, with
+JSON-RPC `-32020`, `missing required Mcp-Method header`. The emitting client hook
+is `packages/core/src/mcp/client.ts` around line 222. The absent header and retained
+logs do not identify the underlying RPC method; neither cleanup nor a notification
+is established as its cause. The completed Media/Artifact/download/usage results
+passed independently, but this remains a client transport defect for separate
+investigation, not a harmless or warning-free result. No runtime/source fix or
+additional paid run was performed for this diagnostic.
+
+Guide QA after this update used Chrome through an ephemeral loopback HTTP server:
+all three views were visually inspected, with tab navigation and provider details
+checked; no browser console warnings or errors were observed. PNG/SVG export
+buttons were clicked without page errors. New exported-file inspection remains
+incomplete: the PNG automation download event timed out, and the browser tool
+blocked `chrome://downloads` under its HTTP/HTTPS-only URL policy; no workaround
+was attempted. Earlier successful file/export inspections remain historical proof.
+
+No Linux deployment, GPU/CDI execution, public webhook, additional model or Media
+Lore/factory qualification follows from this one-shot.
 
 ### Remaining Adoption
 
@@ -1287,7 +1409,10 @@ Further adoption remains open:
   overrides, authorization, no silent fallback, branch deletion and active-Task
   version/retention rules. No hardcoded environment labels.
 - Replace the Linux installation and qualify the same path with native CDI and a
-  tiny checked CUDA computation. Do not inspect or migrate the old Linux setup now.
+  tiny checked CUDA computation. The separately authorized read-only inventory
+  observed Ubuntu 24.04.5 x86_64 and an RTX 4090; the old gateway was unavailable,
+  and `veoveo.bioma.ai` returned Cloudflare HTTP 530/error 1033 with no current
+  route. That inspection performed no migration/deployment or GPU qualification.
 - Qualify external Entra/customer providers independently against the native Lore
   claim/refresh contract. Desktop graph/diff and reauthentication are withdrawn.
 

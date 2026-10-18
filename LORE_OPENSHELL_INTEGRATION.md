@@ -7,7 +7,9 @@ revisions to checks, service composition and promotion. The local hard cut and f
 native Lore/private MCP path, Hub → Time integration, prepared Time factory
 build/deployment, private Artifact integration and the private fake-provider Media
 slice pass local acceptance, including the final bounded OpenCode MiMo client
-scenario. Real providers, general deployment and composition remain later work. See
+scenario. A separately authorized real WaveSpeed polling one-shot also passes,
+producing a decoded image through the same native path. Public webhooks, other
+models, general deployment and composition remain later work. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
@@ -257,7 +259,7 @@ Lore-to-image deployment remains later work.
 | `veoveo-hub` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Qualified locally: trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
 | `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | Qualified locally: first private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
 | `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Qualified locally: second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
-| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Qualified locally: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and a separate native fake-provider fixture; real providers remain later work |
+| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Qualified locally: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and a separate native fake-provider fixture; one real WaveSpeed polling run also qualifies, while public webhooks and other models remain later work |
 | `veoveo-core` | Database kernel, identity, durable Tasks, audit and usage | Libraries inside the Hub/services; their durable state remains in the installation PostgreSQL database |
 | `veoveo-hub-sdk` | MCP hosting/client, registration, forwarded-token checks, Task adapter, subscriptions and delegated calls | Libraries inside the Hub/services; its existing CLI is an initial application client |
 | `veoveo-template-installation` | Assemble images, native workload/policy/provider definitions, approved endpoints and volumes | Existing installation repository; no second deployment manifest or component lock |
@@ -647,8 +649,9 @@ general composition and automatic deployment out of these edits.
 6. **Media outputs:** Media uses its existing Task-bound SDK delegation to call
    Artifact through the Hub, then streams provider output to signed storage
    URLs. Use the existing fake provider on a policy-approved private endpoint and
-   status-check completion (`VEOVEO_PUBLIC_ORIGIN` unset). Qualify real billed
-   providers and public signed webhook ingress separately. Keep provider credentials
+   status-check completion (`VEOVEO_PUBLIC_ORIGIN` unset). A separate one-shot now
+   qualifies real WaveSpeed polling for one model; public signed webhook ingress
+   and other models still require their own acceptance. Keep provider credentials
    with the trusted service/provider path, outside author/build jobs.
 
 Time's first acceptance covers discovery, resolve/convert, schedule Task completion
@@ -669,7 +672,9 @@ restarts also passed, retaining the Task and service identities without duplicat
 provider submission. A separate completed Task retained its result, Artifact bytes
 and fresh-subscription delivery after actual Hub/Media restarts. The Mac's unchanged
 signed-byte download also passed with exact bytes and checksum. The reviewed local
-OpenCode build supports Tasks and passed no-model client preflight. The initial
+OpenCode build supports Tasks and passed no-model client preflight. Its revision
+`46b2429` exists only in the local `mcp-tasks` checkout with the upstream origin;
+no organization fork carrying that commit is published. The initial
 bounded MiMo attempt reached the step limit without calling Hub: its launcher
 inherited a stale `PWD`, selecting the workspace root instead of the nested
 client project and omitting Hub configuration. No generation was submitted.
@@ -689,6 +694,22 @@ claim. The [execution receipt](OPENSHELL_HARDCUT_PLAN.md#media-native-integratio
 records identities, byte hash, exact driver, model usage/cost and the retained
 initial failure. The private native slice is complete; no further model attempt
 is authorized or needed.
+
+A separately authorized [real WaveSpeed polling one-shot](OPENSHELL_HARDCUT_PLAN.md#real-wavespeed-polling-one-shot--2026-10-18)
+then completed `wavespeed-ai/flux-schnell` through the same Hub → Media → Artifact
+path, without a model agent: one Task and a real-provider output downloaded on the
+Mac with matching Artifact checksum. The exact input requested one 1024 × 1024 PNG,
+seed 42. Independent decoding verifies a valid 1024 × 1024 PNG, 802,505 bytes, with
+the exact stored Artifact digest. Its USD 0.003 external quote matched both the
+own-usage delta and independent per-Task estimate/actual usage records. Both result
+and persisted prediction report status-check completion, with public origin unset.
+The measured 37.509-second Task interval includes execution, status polling, output
+ingestion and billing; it is not pure inference latency. Signing identity, database
+and mounted state were retained. Native configuration changed without a Media
+rebuild; the separate fake fixture counters were unchanged. Public signed webhook
+ingress and remote Linux/GPU qualification remain separate; this one-shot does not extend the fake-provider
+cancellation/recovery proof to a real provider.
+
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
 persistent registration key and the existing PostgreSQL metadata. A dedicated
@@ -700,8 +721,8 @@ access requests. A retained object and its metadata/access survive actual
 Artifact/Hub restarts; a newly opened subscription delivers its opening update.
 Tenant and object isolation remain component
 test evidence in this one-tenant installation. Public shares, in-flight Artifact
-verification recovery, real Media providers/public webhooks and Media Lore/factory
-work stay separate. See the
+verification recovery, public Media webhooks, other real-provider models and Media
+Lore/factory work stay separate. See the
 [Artifact evidence](OPENSHELL_HARDCUT_PLAN.md#native-artifact-follow-up-2026-10-17).
 This slice used the existing staged Hub placement configuration and a Git-built
 Artifact image; it did not extend the Time-specific Lore/factory acceptance to
