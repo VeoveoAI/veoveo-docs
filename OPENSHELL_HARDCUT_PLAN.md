@@ -17,10 +17,12 @@ The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.
 The [platform visual guide](diagrams/veoveo-platform.html) must be updated with every
 major architecture change and whenever an illustrated pending path is qualified.
 Static guide checks pass (three views, unique IDs, JavaScript/JSON and local links).
-Browser interaction and export QA remain unverified: the earlier browser tool
-rejected the local file URL and explicitly prohibited alternate access workarounds.
+Chrome browser QA passed on 2026-10-17 using a temporary, loopback-only HTTP server
+for the standalone guide: all three views, component details, navigation, zoom/fit
+and SVG/PNG exports. The earlier local-file URL restriction no longer blocks this
+check; no browser security settings were changed.
 Use one native OpenShell Docker-driver path for factories, checks and managed
-services. No Kubernetes, Helm, Flux, OpenBao, alternate preview host or compatibility
+services. No Kubernetes, Helm, Flux, OpenBao, alternate workload host or compatibility
 launcher. Preserve source and durable data independently of workload lifecycle.
 
 ## Current Native Path
@@ -222,7 +224,7 @@ Inspected source state (2026-10-17):
 | Media | `031c913` | Reviewed naming changes checked, committed and pushed; clean; runtime adoption follows Artifact |
 | Installation | `e1d8800` | Native Hub/Time setup and factory workflow retained; private Artifact policies, mounts, registration and explicit Hub binding committed and published |
 | OpenShell qualifier | `447bd88` | Native ingress probe and operator harness checked and committed locally; push refused because the GitHub repository is archived; local work preserved |
-| Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time and private Artifact evidence; browser/export QA remains unverified |
+| Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time and private Artifact evidence; Chrome browser/export QA passed |
 | Lore / OpenShell | `cb2c191f` / `0e85111e` | Lore clean; native DNS/TLS and Tasks qualified; Tasks runtime source `45f3b534`, followed by a docs-only clarification; OpenShell branch pushed to the maintained VeoveoAI fork |
 
 Prior component test reports and committed preparation do not replace fresh
@@ -776,8 +778,12 @@ source-to-deployment integration remain open.
 Sanitized build/test logs are retained under `/private/tmp/artifact-*.log`.
 Temporary credential-bearing IAM/provisioning diagnostics were removed after their
 safe results were recorded. The guide's static scene/label/link checks cover this
-update; browser navigation and exports remain unverified under the previously
-recorded browser restriction.
+update. Chrome browser QA on 2026-10-17 verified all three views, component detail
+panels (including Artifact), keyboard component activation, navigation and zoom/fit.
+Each view produced valid SVG and PNG downloads; the complete integration PNG was
+visually checked. Stale planned labels for the qualified Time factory, Git/Lore
+checkpoint and private Artifact path were corrected. No browser warnings or
+JavaScript errors were recorded during the final check.
 
 See [native Artifact setup](../veoveo-template-installation/openshell/ARTIFACT.md)
 and [component acceptance](../veoveo-mcp-artifact/README.md#acceptance).
