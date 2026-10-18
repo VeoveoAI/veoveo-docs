@@ -5,8 +5,10 @@ acceptance. Clone/edit/push, the small branch hook, native credential renewal,
 source withdrawal, applied binding-removal/detach, termination and gateway recovery
 are qualified. The Desktop adapter/signer/ingress are retired and durable data is
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
-Remote Linux deployment/GPU qualification remains outside this phase; the existing
-installation is unchanged after the separately authorized read-only inventory below.
+The next authorized goal is a native reference Linux deployment at
+`veoveo.bioma.ai`, real signed WaveSpeed webhook qualification and final bounded
+OpenCode MiMo acceptance. These gates are not yet qualified; GPU/CUDA remains
+separate. The existing remote installation has only been inspected read-only so far.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
 preflight, one bounded model build and Time deployment from that same Lore revision.
@@ -218,10 +220,12 @@ the main development session before assigning work to the factory model. These
 steps now pass on this Mac. Hub/Time application qualification, exact Git/Lore
 source correspondence, factory preflight, the bounded model build and final Time
 readiness/Hub-call verification are recorded below. The private native Artifact
-follow-up and private fake-provider Media slice also pass. Real providers and
+follow-up and private fake-provider Media slice also pass. One real WaveSpeed
+polling run also passes separately; other provider models, public webhooks and
 broader source-to-deployment automation remain separate work.
 
-Inspected source state (2026-10-17):
+Baseline source state (2026-10-17; later publication and cleanup are recorded in the
+[MCP/workspace follow-up](#mcp-conformance-and-workspace-sanitation-follow-up--2026-10-18)):
 
 | Repository | HEAD | State relevant to this milestone |
 |---|---|---|
@@ -232,7 +236,7 @@ Inspected source state (2026-10-17):
 | Hub | `00a7e7b` | Rename, Lore-issuer removal, external-issuer handling, native transport and SQLx metadata checked, committed and pushed; clean |
 | Media | `031c913` | Reviewed naming changes checked, committed and pushed; clean; runtime adoption follows Artifact |
 | Installation | `e1d8800` | Native Hub/Time setup and factory workflow retained; private Artifact policies, mounts, registration and explicit Hub binding committed and published |
-| OpenShell qualifier | `447bd88` | Native ingress probe and operator harness checked and committed locally; push refused because the GitHub repository is archived; local work preserved |
+| OpenShell qualifier | `447bd88` | Native ingress probe and operator harness checked; initial archive-related push refusal is resolved: this commit is now published on `origin/main`, with archive status restored |
 | Docs | This change | Candidate, architecture, checklist, split plan and visual guide reconciled with deployed Hub/Time and private Artifact evidence; Chrome browser/export QA passed |
 | Lore / OpenShell | `cb2c191f` / `0e85111e` | Lore clean; native DNS/TLS and Tasks qualified; Tasks runtime source `45f3b534`, followed by a docs-only clarification; OpenShell branch pushed to the maintained VeoveoAI fork |
 
@@ -468,8 +472,9 @@ retaining its logs; the qualified replacement remains Ready.
   The change is `veoveo-service-gateway` → `veoveo-hub` and `veoveo-sdk-rust` →
   `veoveo-hub-sdk`, including SDK companion crates and all active consumers.
   Hub, Time, Media and installation source changes are committed and published;
-  documentation is reconciled in this change. The qualifier commit is preserved locally because its remote
-  repository is archived. Remove Veoveo Gateway naming from owned source, configuration,
+  documentation is reconciled in this change. Qualifier `447bd88` is now published
+  on `origin/main`; the repository was temporarily unarchived for its ordinary push
+  and its archived status restored afterward. Remove Veoveo Gateway naming from owned source, configuration,
   schema/audit identifiers, build inputs and docs; retain native OpenShell gateway
   terminology and standard protocol routes/fields. Use the existing local setup
   path for stored-name changes, preserving Lore and unrelated durable data.
@@ -1061,9 +1066,10 @@ Browser review remains separate from application qualification.
   path's existing timeout behavior. The supported build script produced a Mac
   ARM64 executable with SHA-256
   `3f155f1426b7e5d97a940adba3a703fafdbb01ef993e6d96feee4cb65f1caf9b`.
-  This source is a local commit based on upstream `origin/dev`, not an upstream
-  release. The checkout has only the upstream `anomalyco/opencode` origin; no
-  organization fork carrying this commit has been published. A no-model probe of
+  This run used a local commit based on upstream `origin/dev`, not an upstream
+  release. At that time the checkout had only the upstream `anomalyco/opencode`
+  origin and no published organization fork. The later published/installed repair
+  is recorded separately in the [MCP/workspace follow-up](#mcp-conformance-and-workspace-sanitation-follow-up--2026-10-18). A no-model probe of
   the committed product `McpClient.connect/callTool` path against actual Hub passed: eight Time, eight Artifact and three Media tools,
   the typed fake-model schema, and one completed fake generation with its Artifact
   ID in model-visible JSON text. This directly exercised the client source with Bun;
@@ -1366,12 +1372,14 @@ notices (`uint32` × 4, `uint64` × 2) plus a background OpenCode transport erro
 Task settled at `16:56:10.186Z`. Hub recorded `POST /mcp/local` HTTP 400 at
 `16:56:10.175907714Z`, request ID `01a14ff1-34ba-7501-b510-26e237cd4173`, with
 JSON-RPC `-32020`, `missing required Mcp-Method header`. The emitting client hook
-is `packages/core/src/mcp/client.ts` around line 222. The absent header and retained
-logs do not identify the underlying RPC method; neither cleanup nor a notification
-is established as its cause. The completed Media/Artifact/download/usage results
-passed independently, but this remains a client transport defect for separate
-investigation, not a harmless or warning-free result. No runtime/source fix or
-additional paid run was performed for this diagnostic.
+is `packages/core/src/mcp/client.ts` around line 222. The original absent header and retained logs alone did not identify the underlying
+RPC method. The completed Media/Artifact/download/usage results passed independently;
+this was not a harmless or warning-free result. The separate deterministic
+[MCP follow-up](#mcp-conformance-and-workspace-sanitation-follow-up--2026-10-18)
+subsequently reproduced the same HTTP 400 in subscription teardown and repaired
+that path without another paid run. Attribution of the historical error to this
+path is a strong evidence-backed inference, not an original wire capture; the
+original RPC method remains unknown and its receipt/error evidence is unchanged.
 
 Guide QA after this update used Chrome through an ephemeral loopback HTTP server:
 all three views were visually inspected, with tab navigation and provider details
@@ -1383,6 +1391,175 @@ was attempted. Earlier successful file/export inspections remain historical proo
 
 No Linux deployment, GPU/CDI execution, public webhook, additional model or Media
 Lore/factory qualification follows from this one-shot.
+
+### MCP Conformance And Workspace Sanitation Follow-Up — 2026-10-18
+
+This follow-up is separate from both the original fake/MiMo acceptance and the real
+WaveSpeed receipt. It performs no new LLM call or paid generation and does not
+rewrite their original source identities, timestamps, errors or costs.
+
+**OpenCode transport repair, published and installed.** The maintained fork is
+[VeoveoAI/opencode](https://github.com/VeoveoAI/opencode), parent
+`anomalyco/opencode`. Local `origin` is `git@github.com:VeoveoAI/opencode.git`;
+`upstream` is `https://github.com/anomalyco/opencode`. Branch `mcp-tasks` is published
+at `7b12c6051d23d1afa7ef6659b835fe2345f2ccd5` and is the fork's default branch.
+The earlier `46b2429` receipts remain historical evidence for the binary/source
+used at that time.
+
+A local real-HTTP fixture reproduced the same HTTP 400 symptom while the tool
+result itself succeeded. The reproduced RPC method was captured directly; the
+original WaveSpeed trace did not capture its method. Their shared SDK teardown
+path strongly supports the historical attribution without proving it from that
+original trace alone. Capturing every POST exposed `notifications/cancelled`
+for the Task's `subscriptions/listen` request, without `Mcp-Method`. MCP SDK 2.3.1's
+`Client.listen` teardown unconditionally sent that notification after aborting its
+HTTP response stream. The existing pinned SDK patch now honors its native
+`hasPerRequestStream` transport trait: modern Streamable HTTP closes only the
+request stream; transports without per-request streams retain
+`notifications/cancelled`. The ESM/CJS behavior and declaration comments agree.
+There are no fabricated notification headers, Hub validation changes, custom wire
+methods, Task state machine or mutation replay.
+
+The regression was RED before the guard and GREEN afterward. Both MCP suites
+passed 88 tests / 399 assertions, covering successful settlement, acknowledgement
+timeout, user cancellation, Task execution timeout, actual HTTP stream cancellation,
+non-stream cancellation notifications and existing ordinary calls. Frozen offline
+installation reapplied the patch without a lockfile change. The canonical check
+passed all 34 tasks, with zero errors and 1,306 warnings; it was not warning-free.
+The native Mac ARM64 build is `0.0.0-mcp-tasks-202610181726`, 189,138,162 bytes,
+SHA-256 `cc597e8e45e3ff8fa7df12deb2345696243c703fa144650f9eec1878e833ac3f`.
+It was atomically installed at `~/.opencode/bin/opencode`; the previous binary is
+retained at `~/.opencode/backups/opencode.before-mcp-tasks-20261018`.
+The source-imported OpenCode Core `McpClient` at `7b12c60` then passed a live
+no-model Time check with a fresh ordinary-member token: 18 visible tools and one
+`time__expand_schedule` Task, `01a15012-0754-70b0-87c1-fcdbe474a599`, completed
+one occurrence. Discover/list/call/listen returned HTTP 200, with no HTTP 400 or
+`notifications/cancelled` observed; the inspected Hub window contained one
+Completed Task notification and no HTTP 400. Timing was not measured. The client
+scope closed its subscription, but server-side closure was not independently
+instrumented in this live probe; actual HTTP stream cancellation is component
+fixture evidence. These observations were reconstructed from console output,
+not a retained original wire trace. The locally built executable separately
+passed `--version` / `mcp --help` smoke checks; the live call used source imports,
+not that binary. No LLM or paid-provider call occurred.
+
+**Client contract. Hub requires Tasks; clients must implement the supported MCP
+specification.** Use the official `io.modelcontextprotocol/tasks` extension with
+per-request capability metadata and server-directed Task creation, as specified
+by the [versioned Tasks specification](https://github.com/modelcontextprotocol/ext-tasks/blob/main/specification/2026-07-28/tasks.md#capability-negotiation).
+The extension is optional in MCP as a whole; that does not make it optional for
+this Hub client contract. No taskless execution fallback, compatibility adapter,
+new client mode or reduced Hub capability is being added. Existing ordinary
+catalog/tools behavior is unchanged.
+
+The core [subscription cancellation contract](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions#cancellation)
+uses HTTP response-stream closure or a stdio cancellation notification. Cancelling
+a subscription is distinct from cancelling a durable Task, which uses
+`tasks/cancel`. The [HTTP binding](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#sending-messages)
+defines no core client-to-server notification over modern HTTP and leaves
+notification-POST header requirements undefined. Do not claim that all notifications
+must carry `Mcp-Method`; mirrored request-header validation remains intact.
+
+The unrequested, uncommitted Time/Media server-error and test detour was removed
+at the user's direction after verifying each owned diff. No candidate was
+committed, deployed or added to the current next steps. The published service
+behavior and historical acceptance receipts remain unchanged. Media is currently
+configured for real WaveSpeed status checks; the testing fixture is separately
+available. OpenCode's existing limitation for tools combining `x-mcp-header`
+projection with required Tasks remains documented: no retry or routing-header
+workaround was added. Media has no such annotation.
+
+**Publication and local sanitation.** No new registry or state format was added.
+The qualified native sources remain on their reviewed branches:
+
+- OpenShell qualifier `447bd88d243ac6dc99b557c695eff81d9d4da764` now matches
+  `origin/main`. Its ordinary push succeeded after temporary unarchiving, and
+  GitHub archive status was restored to true.
+- Lore `cb2c191feb2d317f989af40be287c2d6acb7fb4f` is published unchanged on
+  `origin/native-openshell`, which is the tracking branch and GitHub default;
+  local `origin/HEAD` agrees. Upstream remains `EpicGames/lore`. The diverged old
+  `origin/main` history was retained rather than reintroducing superseded credential
+  pinning changes.
+- OpenShell `6589a918a7a84640969f9f77b852695e210d713f` remains published unchanged
+  on `veoveo/grpc-credentials`.
+- Stale `vv` remotes were removed from Core, Hub and Time after confirming their
+  cached tips were ancestors and contained no unique commits.
+- Clean, unreferenced detached OpenShell worktrees `supervisor-source`,
+  `supervisor-source-45f3b534` and `supervisor-source-6589a918` were removed using
+  ordinary `git worktree remove`: 3,763,240 KiB of file sizes. Unused Cargo caches
+  `.qualify-target` and `.spike-target` accounted for another 2,092,004 KiB removed.
+  The combined approximately 5.58 GiB is file-size accounting, not a measured gain
+  in filesystem free space.
+- The retired `veoveo-service-lore` checkout remains local-only, clean at `eb6dc82`,
+  intentionally preserved as history. Workspace configuration, installation `.env`,
+  `tmp-client`, durable state volumes, keys and generated artifacts were preserved.
+
+### Reference Linux Deployment And Signed WaveSpeed Webhook Goal
+
+This is the new active goal after the completed Mac milestone and sanitation.
+Deploy native OpenShell, Hub, Time, Artifact and Media on the reference Linux host
+`veoveo.bioma.ai`, qualify one real signed WaveSpeed callback, then run final
+bounded OpenCode MiMo acceptance. The goal permits at most one paid WaveSpeed
+generation in total; final MiMo reuses that retained Task/Artifact rather than
+submitting another generation by default. All gates below remain open. Historical Mac
+Git/Lore correspondence and factory proofs retain their exact source revisions;
+this goal does not retroactively change or repeat those receipts.
+
+The authorized read-only inventory observed Ubuntu 24.04.5 x86_64 with an RTX 4090,
+an unavailable old gateway and Cloudflare HTTP 530/error 1033 at the hostname.
+That proves neither a working public route nor Linux deployment. Preserve remote
+source, configuration, secrets and durable data before replacement. GPU/CDI/CUDA
+qualification is separate from this CPU/service/webhook goal.
+
+- [ ] **0 — Inventory, preserved backup and reviewed native placement.** Reconcile
+  the current remote processes, images, policies, identity, public routing and
+  durable PostgreSQL/Lore/S3/key ownership. Verify preserved backups and recovery
+  inputs before replacing anything. Bring unsupported native capabilities or
+  responsibility changes to coordinator review; add no proxy, second launcher or
+  infrastructure fallback to hide an unresolved failure.
+- [ ] **1 — Pinned native Linux builds and installation.** Select reviewed source
+  revisions, build/check Linux x86_64 artifacts and record actual immutable images
+  and executable revisions. Install the native OpenShell gateway/supervisor and
+  approved service definitions, providers, private placements and persistent
+  mounts through existing installation/native contracts. Preserve the established
+  Lore/IdP custody and service signing identities. Mac ARM64 evidence is historical,
+  not Linux x86_64 acceptance.
+- [ ] **2 — Identity, TLS and public routing.** Qualify verified TLS, canonical
+  issuer/audience/JWKS admission, native credential custody/renewal, workspace
+  isolation and Hub's approved private forwarding bindings. Establish and verify
+  the actual public HTTPS callback route using the existing Media callback
+  contract; preserve signed URL authority and direct S3 bytes. Review any routing
+  gap before implementation rather than inventing a relay or bypass.
+- [ ] **3 — Deterministic deployed services.** Prove Hub registration and discovery,
+  Tasks, permissions, subscriptions, reconnect, renewal and restart/persistence
+  with Time, Artifact and Media on the actual Linux sandboxes. Preserve the
+  independent Artifact metadata/digest/byte and usage/provenance assertions.
+  Use deterministic fixtures before real-provider work, and distinguish component
+  results from deployed evidence. Hub requires Tasks; no taskless compatibility
+  work is part of this goal.
+- [ ] **4 — One cheap real signed WaveSpeed callback.** Review the actual model,
+  schema, exact input and current quote/bound with the coordinator before the one
+  user-authorized cheap submission. This is review within the approved goal, not
+  a new approval flow; at most one paid WaveSpeed generation is planned in total.
+  Select Media's event-completion mode and the matching provider webhook parameter
+  and signature verifier. Independently prove receipt and acceptance of the signed
+  callback and event-driven completion; status polling or a completed Task alone
+  cannot qualify a webhook. Require one provider submission, retained Task/result,
+  Artifact provenance, independent decode/exact download hash and per-Task
+  estimate/actual usage. Stop on ambiguous submission or failure; no automatic
+  generation retry. The Mac USD 0.003 polling receipt is separate historical proof,
+  not this callback gate or a guaranteed future price.
+- [ ] **5 — Final bounded OpenCode MiMo qualification.** Only after deterministic,
+  component, integration and deployed gates pass and expected behavior works,
+  preflight the selected OpenCode MCP client without inference, then run the
+  explicitly selected `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` Build agent once within
+  reviewed step/time bounds. Retrieve/reconcile the existing real Task and Artifact,
+  execute a Time Task and verify saved bytes; do not submit a second paid generation
+  by default. Refine the exact scenario after deployment. Record actual tool outcomes,
+  Task/Artifact identities, saved bytes/hash, errors, timings and model token/cost
+  evidence. Preserve normal asynchronous MCP connection/catalog behavior. Stop on
+  failure and return to development; no model calls during iteration, silent model
+  substitution, repair loop or automatic mutation replay.
 
 ### Remaining Adoption
 
@@ -1408,11 +1585,9 @@ Further adoption remains open:
 - Implement arbitrary Lore-defined compositions, inheritance and two private service
   overrides, authorization, no silent fallback, branch deletion and active-Task
   version/retention rules. No hardcoded environment labels.
-- Replace the Linux installation and qualify the same path with native CDI and a
-  tiny checked CUDA computation. The separately authorized read-only inventory
-  observed Ubuntu 24.04.5 x86_64 and an RTX 4090; the old gateway was unavailable,
-  and `veoveo.bioma.ai` returned Cloudflare HTTP 530/error 1033 with no current
-  route. That inspection performed no migration/deployment or GPU qualification.
+- After the [reference Linux/webhook goal](#reference-linux-deployment-and-signed-wavespeed-webhook-goal),
+  qualify native CDI and a tiny checked CUDA computation separately. The read-only
+  RTX 4090 inventory is not GPU execution or deployment acceptance.
 - Qualify external Entra/customer providers independently against the native Lore
   claim/refresh contract. Desktop graph/diff and reauthentication are withdrawn.
 

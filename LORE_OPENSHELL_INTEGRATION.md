@@ -8,8 +8,10 @@ native Lore/private MCP path, Hub → Time integration, prepared Time factory
 build/deployment, private Artifact integration and the private fake-provider Media
 slice pass local acceptance, including the final bounded OpenCode MiMo client
 scenario. A separately authorized real WaveSpeed polling one-shot also passes,
-producing a decoded image through the same native path. Public webhooks, other
-models, general deployment and composition remain later work. See
+producing a decoded image through the same native path. The next authorized goal
+is the reference Linux deployment and a real signed WaveSpeed webhook, followed
+by bounded OpenCode MiMo acceptance; none of those new gates has passed yet. Other
+models, general composition and GPU/CUDA remain separate. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
@@ -662,8 +664,9 @@ Artifact then adds byte-transfer integrity, range download, access denial, quota
 restart persistence. Media then adds delegated Artifact access, Task recovery without
 duplicate output publication, cancellation, output provenance and usage records.
 The [Media native integration plan](OPENSHELL_HARDCUT_PLAN.md#media-native-integration-plan)
-records the source, native-policy and client-Task gates. Native Media and its private
-fake provider are now deployed. Six deterministic native cases passed: Task-bound
+records the source, native-policy and client-Task gates. Native Media is deployed;
+its earlier private fake-provider qualification remains separate from the current
+real WaveSpeed status-check configuration, with the testing fixture still available. Six deterministic native cases passed: Task-bound
 Artifact delegation, exact 64 KB and 20 MB output transfers, provenance and usage,
 pushed completion, ordinary-member billed-run refusal, Task-only invocation and
 cancellation before and after dispatch. Media adopted its existing signing key
@@ -673,8 +676,10 @@ provider submission. A separate completed Task retained its result, Artifact byt
 and fresh-subscription delivery after actual Hub/Media restarts. The Mac's unchanged
 signed-byte download also passed with exact bytes and checksum. The reviewed local
 OpenCode build supports Tasks and passed no-model client preflight. Its revision
-`46b2429` exists only in the local `mcp-tasks` checkout with the upstream origin;
-no organization fork carrying that commit is published. The initial
+`46b2429` was local-only with the upstream origin when those probes ran. The later
+transport repair is now published as `7b12c6051d23d1afa7ef6659b835fe2345f2ccd5`
+on the maintained [VeoveoAI/opencode](https://github.com/VeoveoAI/opencode) fork's
+`mcp-tasks` default branch; the original receipts retain their actual revision. The initial
 bounded MiMo attempt reached the step limit without calling Hub: its launcher
 inherited a stale `PWD`, selecting the workspace root instead of the nested
 client project and omitting Hub configuration. No generation was submitted.
@@ -709,6 +714,50 @@ and mounted state were retained. Native configuration changed without a Media
 rebuild; the separate fake fixture counters were unchanged. Public signed webhook
 ingress and remote Linux/GPU qualification remain separate; this one-shot does not extend the fake-provider
 cancellation/recovery proof to a real provider.
+
+The separate [MCP conformance and workspace follow-up](OPENSHELL_HARDCUT_PLAN.md#mcp-conformance-and-workspace-sanitation-follow-up--2026-10-18)
+records the OpenCode repair, installation, branch publication and local cleanup.
+A deterministic wire regression captured an unnecessary `notifications/cancelled`
+POST during subscription teardown and reproduced the same HTTP 400 symptom. This
+strongly supports attribution of the historical WaveSpeed error to the same SDK
+path; the original trace did not capture its RPC method, so that attribution
+remains an evidence-backed inference. The pinned SDK now follows the
+[2026-07-28 cancellation contract](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions#cancellation):
+close the request stream for modern HTTP; retain cancellation notifications on
+transports without per-request streams. Eighty-eight MCP tests and the canonical
+check pass. The source is published on the maintained fork; the locally built
+ARM64 executable is installed, not uploaded as a binary release.
+
+A live no-model check used source-imported Core `McpClient` at `7b12c60`, with a
+fresh ordinary-member token and 18 tools. Time Task
+`01a15012-0754-70b0-87c1-fcdbe474a599` completed one schedule occurrence;
+discover/list/call/listen returned HTTP 200, with no HTTP 400 or cancellation
+notification observed. Timing was not measured and server-side stream closure
+was not independently instrumented; the component fixture proves that closure.
+The installed executable's version/help smoke checks are separate from this
+source-client proof. No new LLM or paid generation followed the repair.
+
+**Hub requires Tasks; clients must implement the supported MCP specification.**
+Use the [official Tasks extension](https://github.com/modelcontextprotocol/ext-tasks/blob/main/specification/2026-07-28/tasks.md#capability-negotiation)
+and its per-request capability declaration/server-directed execution. Its optional
+status in MCP as a whole does not add taskless support to this Hub contract. The
+uncommitted Time/Media detour was removed at the user's direction; no server
+candidate, fallback, compatibility adapter or reduced Hub capability is carried
+forward. Ordinary tools remain unchanged. Modern HTTP defines no core
+client-sent cancellation notification, and
+[notification-POST header requirements are undefined](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#sending-messages);
+the repair does not weaken mirrored request-header validation or assert a universal
+`Mcp-Method` requirement for notifications.
+
+The [reference Linux and signed-webhook execution gates](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
+now govern the next slice. Preserve remote data/identity first, then qualify pinned
+native builds, verified identity/TLS/public routing, all four deployed application
+services and one cost-bounded signed WaveSpeed callback. Callback receipt and
+event-mode completion must be independently observed; the Mac status-polling
+receipt is not webhook evidence. Final OpenCode MiMo acceptance follows successful
+deterministic gates. The existing native responsibilities and placement contracts
+remain authoritative; no new proxy or launcher is assumed. The read-only remote
+inventory is not Linux deployment or GPU/CUDA acceptance.
 
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
@@ -1069,7 +1118,9 @@ work/data, remove the old execution path, then implement and qualify the new pat
 The gates below describe required behavior, not a demand to run a broad suite before
 cutting the old stack. Use focused checks as each changed boundary becomes runnable.
 This list covers architecture-wide acceptance; the execution checklist puts
-Hub/Time and the prepared factory milestone first, with Linux qualification later.
+the completed Mac Hub/Time/prepared-factory milestone first. The active next goal
+is reference Linux deployment and signed webhook qualification; GPU/CUDA remains
+separate.
 
 1. **Native execution and service hosting.** On OpenShell's native Docker driver,
    run a tiny prebuilt MCP service as the canonical process, with a native template,
