@@ -3500,7 +3500,8 @@ installation work. No OpenCode/model calls during iteration.
   typed issuance results. Existing server delegation keeps its own authenticated
   contract. First source slice is implemented and reviewed; focused compilation
   found three repairable Rust error groups before tests. Those source fixes are in
-  the integrated freeze below; compilation and behavioral verification are pending.
+  the integrated slice below; focused compilation and behavioral verification now
+  pass, with both full component gates still pending.
 - [ ] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
   contribution at the executable composition boundary, outside the generic Hub
   OAuth library. A binary-only `contributions/lore` module is the minimal accepted
@@ -3596,6 +3597,78 @@ reconciliation. These fixtures have not yet passed and do not establish real Ent
 native Lore CLI/server, two-process propagation or Linux Computer acceptance.
 Builder validation owns the frozen Hub tree; installation configuration changes
 proceed separately in `computers-installation`. The live deployment is unchanged.
+
+**Integrated compilation update:** the first prepare attempt stopped after about
+38 seconds because a device-denial query with `RETURNING id` was consumed with
+`execute`; the source now uses `fetch_optional`. The next attempt stopped after
+about 36 seconds because the current SHA-256 output type does not implement
+`LowerHex`, in the device handler and its synthetic fixture; both now use the
+existing hex encoder. Both failures occurred before behavioral tests. Evidence:
+`/tmp/computers-hub-native-issuer-validation-20261019/attempt.json`.
+
+Re-frozen source fingerprint
+`2a6fe7f2eb499346806b275f12e365f2cd2722a2e6668ceebfb5c6bdd77cd429`
+passes full SQLx preparation against disposable PostgreSQL 18.6 with pinned Core
+and Hub 0001–0005 migrations. Fresh-target dependency-inclusive compilation
+produced 188 query metadata files: 17 added and seven removed from the 178-file
+baseline. `SQLX_OFFLINE=true cargo check --locked --workspace --all-targets
+--all-features` also passes, in 0.54 seconds using that prepared target. Focused
+behavioral tests and strict clippy are still running; no deployed claim follows.
+
+Installation review found an active legacy helper, `identity/configure-lore`, that
+hardcodes fixture repository/issuer data and provisions repository claims at the
+IdP. HLI6 retires that helper and its superseded tests and updates active runbooks
+to typed Hub publication. This is the requested hard cut in grant ownership,
+not an additional Lore authorization layer. Storage/TLS bootstrap and native
+factory integration stay under their existing responsibilities.
+
+**Focused gate completion and local commit:** Hub
+`c93a1c10e1b41bc84416631565ad41a39d481842` is committed and clean in the isolated
+worktree, with no push, merge or live selection. Its source matches reviewed
+fingerprint `e36cd6a12d79079b70f9de98dc252dbcb2f222f7276d33a12dbf26c9a878c79b`;
+all 188 regenerated SQLx entries are committed. GPT-6 Luna's focused gate is green:
+
+| Check | Measured result |
+|---|---|
+| Typed token profiles | 3 passed |
+| Device polling after boxed approval payload | 1 passed; 0.78 seconds runtime |
+| Native claims/templates, initiating-browser binding, database notifications/reconciliation | 4 passed, one per focused selection |
+| Hosted native issuer HTTP/JWT/refresh/live-grant/restart fixture | 1 passed; 14.78 seconds runtime on final representation |
+| Computer library regressions | 9 passed; 1.17 seconds runtime |
+| Hub state, refresh families, control store and control-plane fixtures | 9 passed; approximately 2.94 seconds combined runtime |
+| `cargo clippy --locked --workspace --all-targets --all-features -- -D warnings` | Passed; 2.27 seconds |
+
+These selections span the recorded non-SQL source fixes; unaffected passing tests
+were not rerun for unrelated fixture/lint edits. Final strict clippy compiles all
+targets/features, and both consumers of the changed device result were rerun.
+Full Mac-host Linux ARM64 and actual Ubuntu x86_64 `check` targets are now running
+from the committed source. The native issuer fixture approves a synthetic identity
+through trusted fixture storage and uses no real Lore server or Entra session.
+It proves live withdrawal of user/factory assignments, concurrent publication order
+and persistence across restart with a stale seed. The notification fixture uses
+two in-process catalog handles and a real database listener; it is not a deployed
+two-process propagation receipt.
+
+Additional failures resolved during this gate: native fixture resource names were
+corrected to Core's lowercase identifier contract; common direct-invocation
+admission now recognizes device authorization as well as authorization-code login;
+the test administrator was given an explicit fixture-only admin read/write rule
+after the intended policy denial. Production policy was not bypassed. Clippy's
+oversized `DevicePoll::Approved` payload became `Approved(Box<DeviceApproval>)`,
+preserving typed fields and exhaustive matching with one allocation on approval.
+A needless borrow and nested conditional were corrected without lint suppression.
+The complete sanitized attempt history and current verdict remain in
+`/tmp/computers-hub-native-issuer-validation-20261019/attempt.json`.
+
+Installation HLI6 is separately frozen on `caf5d04` in 17 source paths, fingerprint
+`627b40ba837621cb862d948be21d20328fe3f6122714e79d0a78a290a6c427b3` at
+`/tmp/computers-installation-hli6-source.json`. Source review confirms matching
+native issuer/audience/client/template settings, exact disjoint OAuth REST paths,
+Hub-owned factory grants and retirement of the old IdP provisioning helper. The
+native factory hook already accepts the canonical Hub identity string; its old
+UUID-only restriction belonged to the retired helper. No Lore source, image pin or
+copied Computer image input changed. Syntax/consistency checks pass; native Hub,
+OpenShell and Lore configuration admission is assigned to the builder and pending.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
