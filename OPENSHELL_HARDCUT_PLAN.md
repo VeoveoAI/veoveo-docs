@@ -3152,9 +3152,11 @@ on the live installation.
    Computer/native OpenShell images identified above. Both Computer platform images
    are built; the actual Linux image passes the isolated application-state checks.
    The user required no parallel deployment changes during the other team's Linux
-   qualification. Release of that installation and ownership of its private Lore
-   prerequisite remain unanswered coordination questions. Distinguish the reviewed
-   source/image identities from the unchanged live revisions.
+   qualification. Check current deployment activity before changing shared services;
+   do not turn that constraint into a request for the user to discover installation
+   ownership or technical setup. Resolve the native operator session and prepare
+   the private Lore configuration from existing installation inputs. Distinguish
+   the reviewed source/image identities from the unchanged live revisions.
 3. Open `/computer` as two separate users. Prove first-use provisioning, distinct
    owner workspaces/storage, HTTP/SSE/WebSocket access, cross-user refusal and
    session expiry/revocation. Repeat account switching in one browser profile.
@@ -3193,7 +3195,41 @@ host has no Lore-named Docker container or systemd unit and no listener on 41337
 this does not exclude a separately hosted private Lore endpoint. The latest
 reference execution record reports its completed Time-first MiMo scenario, but
 that separate client receipt does not qualify the hosted Computer or authorize
-parallel changes. Installation release and private Lore ownership remain pending.
+parallel changes. The earlier request for a formal installation release and private
+Lore owner was an overly broad coordination blocker, not a failed component gate.
 The documentation worktree's detail-data/static checks pass. Diagram visual
 review remains pending: automatic browser approval rejected its local `file://`
 preview, and the requested localhost preview has not been approved.
+
+The 2026-10-19 14:42 UTC read-only inventory narrows the remaining work. The live
+Hub is still `ed6778f6a7e61df4f4c42241a589d9450f2bd63f`, its selected catalog has
+no Computer client/binding, and its configuration volume has no Computer policy.
+The built `9da92b3` image has not been selected by the installation. Public
+`/readyz` returns 200 and `/computer` returns 404. System and user systemd job
+queues are empty; running QA sandboxes alone do not establish concurrent work.
+No services, data or credentials were changed by this inventory.
+
+The installed native CLI's mTLS profile fails authenticated `whoami` and provider
+listing with `missing authorization header`. Another saved OIDC profile has an
+expired access token; its refresh capability and compatibility with the selected
+CLI remain to be investigated using native session operations. These facts do not
+establish that the user must supply a new credential. Separately, the existing
+Linux Lore image already contains the server and CLI, and the installation's
+trusted `vv-lore` service supplies the private PostgreSQL/SeaweedFS deployment
+recipe. The remaining Lore investigation concerns Linux provisioning inputs and
+native per-repository authorization with Entra; factory Keycloak credentials and
+successful native refresh tests do not prove that human issuer interface. Safe
+preparation continues without a generic permission or endpoint question.
+
+Native operator recovery then succeeds without user input: the matching
+`ea9b680` CLI, with `XDG_CONFIG_HOME` selecting the existing `veoveo-reference`
+profile, completes authenticated `whoami` in 3.3 seconds including SSH and lists
+provider profiles, both with exit zero. Native session handling refreshes the
+saved grant; its store remains mode 0600 and its access expiry is now in the
+future. No token is manually exported or copied, and no service, sandbox or
+installation configuration is changed. The earlier operator failure came from
+the selected CLI/configuration context and expired access token, not a measured
+need for a new user credential. Private rollout preparation resumes using that
+existing native session. Entra/Lore per-repository grant compatibility remains a
+separate source/design investigation; it must not be replaced by global grants
+or an additional token issuer to make login pass.
