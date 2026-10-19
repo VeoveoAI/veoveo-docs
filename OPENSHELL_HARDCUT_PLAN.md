@@ -3839,6 +3839,33 @@ coordinator releases only private Lore start using the frozen overlay and
 the separately reviewed gateway/Hub switch. Source gates remain green; no new
 native user login, Computer provisioning or paid qualification is claimed here.
 
+**Private Lore starts on Linux:** GPT-6 Luna finishes the dedicated native storage
+inputs and starts only `vv-lore` with the frozen overlay, exit zero. Lore selects
+the reviewed immutable `d8ca55bb…` image and listens at `10.231.10.10:41337`.
+The endpoint's hostname/SAN and installation Lore CA verify; an HTTP/2 request
+returns 200 with TLS verification result zero. Startup creates five tables in the
+`lore` schema, all owned by `server_lore`; native database authentication and schema
+USAGE succeed while database CREATE remains false. The new data volume is owned
+by UID/GID 1000 with mode 0700. These are server/TLS/backend startup observations,
+not an authenticated native repository-operation receipt.
+The first TLS probe verified `vv-lore.internal`. A follow-up connects to the actual
+native endpoint's literal IP with `openssl s_client -verify_ip 10.231.10.10
+-verify_return_error`, using the installed Lore root; it exits zero with
+`Verification: OK` under TLS 1.3. Receipt:
+`/tmp/computers-lore-storage-20261019/receipt.json`, SHA-256
+`590dc2a48b39d2769d57c9ad1066e3b8417b209367c5f790bb851e4139b647eb`.
+
+The installed Lore S3 identity independently lists its own bucket and reads its
+versioning status (200), round-trips a unique 33-byte fixture with SHA-256
+`815a3d853f102f105283df8bc8c253649d27cbbba29cb09e7761d919e49bc6db`, deletes
+it (204) and observes 404 afterward. Listing `artifacts` and IAM ListUsers both
+return 403. Its credential file is mode 0600, owned by UID/GID 1000. Before adding
+the installed scoped key, the builder observes an existing `vv-lore` user/key and
+preserves it; that differs from the earlier no-user report, and the prior key's
+creation provenance has not yet been reconciled. No shared or administrative
+credential is used by the Lore service. The gateway/Hub window remains held for
+the final native inventory, binary and config-promotion preflight.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
