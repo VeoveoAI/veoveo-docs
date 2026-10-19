@@ -121,6 +121,23 @@ new daemon or permission database. The common signer owns standard claims and
 accepts an authorized typed issuance result. The integration supplies typed native
 grants, not arbitrary claim templates or request-provided JSON.
 
+Repository and grant management is live data, not executable registration. Typed
+deployment records carry audiences, endpoints/recipients, client bindings,
+repository scope templates and token lifetime policy; repository and assignment
+records carry IDs, tenants, principals and native actions. Only the native wire
+protocol, claim types and action vocabulary belong in code. The example
+`lore-repo-{id}` template is installation data, not a compiled prefix.
+
+Use the existing authenticated control-plane API to publish revisions and replace
+the running catalog. Each issuance resolves the current admitted section; no
+startup snapshot of repository rights survives in an issuer adapter or refresh
+family. Managing repositories or grants requires no Hub restart. PostgreSQL's
+active revision is authoritative across restarts; the configuration file seeds an
+empty installation only. Deliberately importing a complete installation catalog is
+an explicit trusted operator action. Do not preserve only Lore data through an
+ad hoc merge with a startup file. Existing in-flight requests retain their admitted
+snapshot; cross-replica propagation is not claimed by a local catalog replacement.
+
 Initial grant records identify the native repository, Lore deployment, tenant and
 explicit principal assignment with native action permissions. Publish them through
 the existing control-plane revision mechanism and administrative authority. Neither

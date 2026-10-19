@@ -3498,7 +3498,8 @@ installation work. No OpenCode/model calls during iteration.
   MCP remains a consumer; do not introduce a fake MCP profile for native Lore.
   Scope standard token claims to the common signer and accept only authorized
   typed issuance results. Existing server delegation keeps its own authenticated
-  contract. Implementation started; no new gate result yet.
+  contract. First source slice is implemented and reviewed; focused compilation
+  found three repairable Rust error groups before tests. Fixes are in progress.
 - [ ] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
   contribution at the executable composition boundary, outside the generic Hub
   OAuth library. A binary-only `contributions/lore` module is the minimal accepted
@@ -3551,6 +3552,31 @@ installation work. No OpenCode/model calls during iteration.
   a Time Task, no new generation. Record exact inputs, identities, hashes, timings,
   errors and source/deployed/model boundaries. Update this checklist and all
   three existing diagram views; merge/cleanup remain subsequent reviewed work.
+
+**Live data requirement, clarified by the user on 2026-10-19:** repositories,
+deployments, clients, scope templates, lifetime policy and explicit grants are typed
+control-plane data. Only Lore's native protocol/claim/action types are compiled.
+Reuse the authenticated live control-plane publication API and catalog replacement;
+do not register individual repositories in Rust or require a restart to edit
+assignments. Every issuance reads the request's current admitted section. Change
+generic startup so an existing active database revision is loaded, rather than
+overwritten by the seed file; seed only an empty installation. An explicit trusted
+operator import handles deliberate full installation replacement. Include the
+revision publication audit in the existing transaction, including revisions that
+only change contributed records. Prove a live assignment change affects the next
+exchange and survives an ordinary restart. Already-issued JWT expiry and
+in-flight snapshot semantics remain native; a local catalog replacement does not
+establish cross-replica propagation.
+
+The first frozen HLI1 source fingerprint was
+`b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
+on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
+disposable PostgreSQL 18. Full SQLx preparation stopped after 22.8 seconds on a
+registry-builder return-type mistake, a stale revocation test field/reference and
+a callback catalog borrow. No tests ran. The builder stopped the scratch database
+and retained logs under `/tmp/computers-hub-hli1-validation-20261019/`; its seven
+partial new SQLx cache files are not a completed metadata generation. Source work
+resumed to fix those errors and implement the native flow. No live reset occurred.
 
 Use a hard cut for stored authorization bindings. Do not infer historical token
 authority from the latest catalog or add a compatibility decoder/backfill to retain
