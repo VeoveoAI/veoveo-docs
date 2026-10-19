@@ -3649,6 +3649,13 @@ stale expectations from any unintended broadening of admission before updating
 these tests. The actual Ubuntu x86_64 gate was interrupted before nextest after
 the same-source failure; its task-owned build processes were verified stopped.
 There is no Linux gate result or completed check-target image for this revision.
+Follow-up Hub commit `adb4aa37d656e8da6f7e6a54a5814db1ed2c8a20` corrects those
+stale expectations and one actual admission/runtime inconsistency: hosted
+secret-post authentication resolves `OAuthClientSecret`, so its admitted secret
+reference must have that purpose. External issuer metadata retains its existing
+contract. Mixed methods and missing private-key JWKS remain rejected. Formatting
+and diff checks pass; focused tests and both full gates are assigned to the builder
+on this new frozen revision. There are no SQL, query-cache or dependency changes.
 The native issuer fixture approves a synthetic identity
 through trusted fixture storage and uses no real Lore server or Entra session.
 It proves live withdrawal of user/factory assignments, concurrent publication order
