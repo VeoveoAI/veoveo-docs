@@ -3866,6 +3866,127 @@ creation provenance has not yet been reconciled. No shared or administrative
 credential is used by the Lore service. The gateway/Hub window remains held for
 the final native inventory, binary and config-promotion preflight.
 
+At approximately 2026-10-19 18:12 UTC, the coordinator releases the reviewed
+gateway-wide maintenance sequence after read-only preflight. The native service
+remains the existing user unit/state directory; its eight non-Hub Ready sandboxes
+must retain logical identity and recover after the gateway restart. The current
+Hub owns no persistent working volume; only its stopped logical sandbox is to be
+replaced, preserving `vv-hub-config`, JWKS and application data. The absent
+`installation` workspace/Computer template are conditional native creations, and
+the already-linted global profiles are imported individually. Trusted config
+promotion writes only the three reviewed files as UID/GID 10001, mode 0600; the
+matching Hub performs explicit stopped-process control-plane import before its
+replacement starts. The native-control provider reports refreshed custody, last
+refresh 18:07:58 UTC and expiry 19:07:57 UTC; this status alone does not prove an
+authenticated management RPC. Runbook:
+`/tmp/computers-hli6-cutover-20261019/COMPUTER_CUTOVER.md`, SHA-256
+`a9e94291018afcf7c3c295cdc9ba244b4617809d8dd674f367653818827a0369`.
+Release is not a claim that the new gateway, Hub or public Computer is selected.
+
+The builder then stops the existing logical Hub through native lifecycle (exit
+zero, under one second) and replaces/restarts the existing gateway service. The
+selected gateway binary SHA-256 is
+`cba364c003f995ce541e69942fadde2fcf8aaa5cdd83c3d8afefeeb2e800bc46`,
+matched byte-for-byte against the immutable reviewed gateway image before stop.
+The selected native CLI is
+`f1b4e7cf58b460ff666a64b19081a489d49096e42fe2ea23d2da8bec90dc9b24`;
+its release source matches `ea9b680` except for the task's lifecycle-test
+registration. Both version strings are `0.0.0`, so hashes/source evidence, not
+that build metadata, identify these artifacts. Gateway preflight passes and the
+existing user service becomes active on the new binary. The actual encryption
+key remains in place at `gateway/credentials/key-encryption-key.bin` under the
+existing state tree; it is neither copied nor rekeyed.
+
+Five independent QA/provider workloads recover to Ready. Time, Artifact and
+Media instead enter `MainProcessRestartBackoff` while Hub remains intentionally
+Stopped. Source review identifies a runbook ordering error: all three application
+entrypoints register with Hub before opening their MCP listeners, and registration
+failure exits the process. Requiring them Ready before starting Hub can therefore
+prevent recovery. The coordinator corrects the order: confirm the bounded runtime
+error is Hub discovery/registration, complete the new Hub import/start/exposure,
+then require application registration/listener/Ready recovery. Preserve the three
+logical identities and native retry state; no application reset, policy workaround
+or source change is warranted by this dependency. Other failure causes still
+require diagnosis. Revised private runbook SHA-256:
+`819f17fb65aced0c4c07b0af244729318a066e52456f3f3245cb2af85f45182f`.
+The bounded runtime log classification subsequently reports repeated `could not
+register` errors with HTTP 502 at the Hub registration endpoint for all three.
+Native CLI log requests had returned no lines; the builder used privately
+captured Docker logs to classify these errors without exposing credentials.
+This establishes the failing startup phase. The builder resumes Hub setup/import/
+replacement/exposure; recovery after Hub returns remains the required result.
+
+Native setup then creates the absent `installation` workspace and persistent
+Computer template and imports the two linted global profiles. The networkless
+trusted helper promotes the exact three files into `vv-hub-config`, preserving
+the existing JWKS; matching Hub validation and explicit control-plane import both
+exit zero. Only the stopped old Hub is deleted. Its replacement, native ID
+`fa2c63d6-731a-4e0e-87bf-3086046e0775`, selects the reviewed image/provider/policy
+but exits before readiness: migrations are current, then `connect native upstream
+gateway` fails with `connect error: transport error`. The new public exposure has
+not yet been restored. This is a distinct failure from application registration
+502s and remains under diagnosis.
+
+Source review locates this error before bearer-interceptor installation and RPC
+authorization. Both configured gateway endpoints remain
+`https://host.openshell.internal:17670`, using the readable injected supervisor
+CA. Host-side TLS verifies against the installation gateway CA and negotiates TLS
+1.3/HTTP2 with the expected SAN. The different injected sandbox CA is expected for
+native interception; it is not justification to replace trust or bypass mediation.
+Container-root DNS/hosts observations do not establish the transient main process's
+namespace. A bounded process watcher did not capture that child. The coordinator
+therefore releases one temporary narrow Rustls/connector diagnostic through the
+existing supported `RUST_LOG` setting, with private capture and exact restoration
+of the original environment bytes. No role, grant, policy, TLS or source change is
+made to compensate for the unresolved transport error.
+
+That single diagnostic retry remains inconclusive: the Hub restart count advances
+from 11 to 12 with the same generic error and no lower-level connector/TLS lines.
+The builder restores the original environment bytes (SHA-256
+`f77545f01378e390aaa57c101f59868fcd2db3e0f7a811e02ac5a3610c5afb61`),
+UID/GID 10001 and mode 0600. Read-only inspection cannot establish the actual
+workload namespace: host `/proc` access is denied to the SSH user, and the native
+supervisor explicitly cannot inspect the workload's mount or PID namespace.
+Docker-root resolver observations remain noncanonical. No DNS, TLS, ALPN or
+authorization cause has been proved. Further blind retries are held while source
+review identifies a supported diagnostic or preserves the SDK's typed transport
+error chain. Hub is still unexposed; application registration recovery remains open.
+
+The source review subsequently establishes the distinction: the canonical child
+inherits the workload container's mount/network view, but its DNS and connection
+syscalls pass through native seccomp-notify mediation. A plain Docker-exec process
+does not exercise that broker. Native `policy_dns` resolves
+`host.openshell.internal` from the driver's trusted `host_gateway_ip`. Thus the
+missing Docker-root hosts alias is not a proved configuration defect. The chosen
+source fix retains tonic's original connection error as a typed SDK error source,
+so ordinary startup error reporting can reveal its cause without changing routing,
+trust, policy or authentication. That diagnostic fix has not yet been built or
+deployed.
+
+A subsequent read-only native `logs --source sandbox --since 30m` capture contains
+208 OCSF events: 52 resolved gateway-name events, 52 allowed destination events and
+13 allowed socket events for `127.0.0.1:17670`. It also contains 13 TLS/handshake
+events whose cause is still being inspected. These observations establish that the
+native broker resolves and permits this path; they do not establish successful
+application TLS. No new live retry or configuration change is made. The SDK's
+first regression run stops at its five-second test deadline (19.285 seconds total
+command time): a bound, non-listening loopback socket did not produce the assumed
+immediate refusal on this host. This is a test-fixture failure, not a new finding
+about the deployed connection. The coder is correcting the portable fixture;
+production transport behavior remains unchanged.
+
+The source-reviewed native acceptance checklist now includes an independent
+factory build, beyond repository clone/hash proof. A dependency-free locked Rust
+fixture is published at the real emitted repository/revision, then only the
+Computer's scratch source changes to a different marker. The separate factory
+must clone the published revision, build offline/frozen with its existing
+toolchain, and produce the published synthetic marker with retained byte/hash
+evidence. Its native provider attachments and absence of OpenCode/model access
+are checked separately. Checklist SHA-256
+`2586f3d769c87240d9f4ffe0d956d8249fb27361246a392267e3d11619bfc9fa`
+at `/tmp/computers-hli6-cutover-20261019/NATIVE_LORE_CHECKLIST.md`; none of these
+native user or factory operations has yet run.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
