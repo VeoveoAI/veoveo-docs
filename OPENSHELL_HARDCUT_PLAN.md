@@ -35,6 +35,111 @@ Use one native OpenShell Docker-driver path for factories, checks and managed
 services. No Kubernetes, Helm, Flux, OpenBao, alternate workload host or compatibility
 launcher. Preserve source and durable data independently of workload lifecycle.
 
+## Embedding Generation — 2026-10-19
+
+The user authorized implementation in isolated worktrees, Mac qualification,
+merge/push to main before Linux deployment, and subsequent Linux qualification.
+This goal restores generation only. The user explicitly excluded pgvector;
+Knowledge, vector storage and retrieval remain separate. No existing PostgreSQL
+image or extension change is part of this work.
+
+Architecture and component ownership are recorded in
+[Embedding Generation](LORE_OPENSHELL_INTEGRATION.md#embedding-generation).
+
+- [x] **Runtime prerequisite.** Pin the exact EmbeddingGemma 2 revision and upstream
+  Python dependencies. Prove real text/code inference on MPS with FP32 and fallback
+  disabled; record actual forward devices, token counts, finite/unit-normalized
+  768-dimensional vectors, rankings, timings and measured memory. Inventory alone
+  is not GPU execution evidence.
+  The isolated M3 Max probe used revision
+  `914f7f89142e33e77833254d9c9b90c3cef7303b` and recorded input/hidden-state
+  execution on `mps:0`, FP32, finite normalized 768-dimensional vectors and the
+  expected text/code rankings. Two 8,192-token inputs completed in 6.773 seconds;
+  observed MPS driver allocation reached 17.730 GB. These are prerequisite
+  measurements, not deployed Hub results or Linux qualification. Raw evidence is
+  currently in `/tmp/veoveo-embedding-qualification/qualification-report.md`.
+- [ ] **Component implementation and checks.** Build the isolated typed MCP contract
+  and private runtime; verify bounds, exact prompt/tokenization semantics, caller
+  permissions, authenticated runtime access, usage attribution and safe errors.
+  Qualify busy, timeout and malformed-provider behavior. Label synthetic fixtures
+  separately from real model inference. Run the component Docker gates on Mac and
+  Linux; compiling on Linux does not deploy a Linux service.
+  Mac Docker ARM64 MCP checks passed at
+  `8b35c870653e323aec5f44ea1deb5a74ccf613e8`: 15/15 tests, PostgreSQL 18.6
+  SQLx metadata, formatting, clippy, dependency audit and five feature combinations.
+  Native Linux AMD64 MCP checks also passed at that source: 15/15 tests.
+  Final runtime `2668a96d5f3bd55ba97db5f1cbb71d084ac1e000` passed 12/12
+  deterministic tests natively and in ARM64/AMD64 Docker checks. These tests use
+  synthetic provider/model fixtures. Rust test
+  corrections installed the TLS provider in test setup and aligned read-only
+  discovery expectations with the SDK's existing permission filtering.
+  Real runtime startup also exposed an invalid equality check against the native
+  tokenizer's unspecified-length sentinel. Removing that check preserves explicit
+  untruncated token counting and API limits; it does not change the tokenizer.
+  A second startup/inference qualification exposed a misplaced PyTorch hook:
+  Sentence Transformers calls its transformer forward method directly, bypassing
+  that hook. Runtime `2668a96d5f3bd55ba97db5f1cbb71d084ac1e000` removes production
+  hook instrumentation and keeps explicit GPU selection and FP32 parameter checks.
+  Separate qualification instrumentation observed actual MPS inputs and hidden
+  states; the serving process does not wrap upstream methods.
+  A separately ignored native Hub acceptance runner was added without production
+  MCP changes. At MCP `943181ed0a9f544e2744b678ad940265a0d92faf`, the ARM64 Docker
+  gate passed 17 component tests; the contract-only gate passed three tests. The
+  live test is intentionally excluded from those runs. Its initial digest-format
+  compile error was corrected with Core's existing digest type. It uses the
+  existing qualification client identifier accepted by the Linux Cloudflare edge.
+- [ ] **Mac deployment.** Qualify native launchd/MPS inference through the private
+  OpenShell provider path and the normal Hub service route. Verify readiness,
+  unauthorized access, real vectors and usage, plus restart recovery. Preserve
+  unrelated services, identities and concurrent work.
+  Direct private HTTP inference at runtime `2668a96` passed on M3 Max/MPS. The
+  six-item text/code corpus returned 98,754 bytes in 0.325 seconds, actual token
+  counts `[18,26,27,17,22,22]`, expected retrieval rankings and maximum norm error
+  `7.51e-8`. Two 8,192-token documents completed in 6.584 seconds; one 8,192-token
+  document plus seven short items completed in 6.037 seconds. Byte/item/batch
+  overflow rejected before inference. A concurrent request returned busy in
+  1.5 milliseconds; after a caller disconnected, admission remained occupied until
+  the real worker finished. These are real model outputs from test input text,
+  separate from synthetic component fixtures. The native provider route to the
+  loopback runtime now passes: credential-bound readiness/capabilities return 200,
+  missing authorization returns 401, the wrong path returns 403 and an unadmitted
+  executable cannot connect. Its initial 401 was a probe error: the caller must
+  supply the native opaque reference for substitution, not omit Authorization.
+  A launchd restart recovered readiness in 5.344 seconds and reproduced the six
+  vectors exactly (paired cosine 1.0, maximum component difference 0.0). Hub calls
+  and observable usage remain deployment gates.
+  The native Hub usage API exposes principal/kind/phase/token/count aggregates.
+  Live acceptance can verify bounded usage deltas; per-request context, source
+  and delegation metadata remain component-test evidence because that public API
+  does not expose them. No cross-domain SQL or extra Task is added to inspect them.
+  **Deployment prerequisite found:** the retained Mac Hub rejects the new native
+  registration document before metadata/signature validation. Its extracted binary
+  contains SDK `a1d9d653ae3d723821cdeeab92f4a67acdca39ce` and Core
+  `0e4f26ab0f15b27509bdf6a3796df2f8041cbfb0` source paths. That SDK expects permission
+  strings where the current typed contract sends route-access objects. Hub, Time,
+  Artifact and Media source mains already use the matching SDK `b3da412f` / Core
+  `433ed5f3`; no legacy registration adapter is being added. The required local
+  deployment cutover uses those published revisions and fresh disposable Veoveo
+  application state, after reviewing schema dependencies. Preserve the shared
+  PostgreSQL database, Lore schemas/roles, trusted identity/signing configuration
+  and native provider custody. The new embedding sandbox is stopped until this
+  prerequisite passes. This is separate from successful direct MPS runtime probes.
+- [ ] **Main integration.** Review, merge and push the Mac-qualified component and
+  installation changes to main before Linux workload deployment. Preserve other
+  agents' uncommitted changes and record exact source/image identities.
+- [ ] **Linux deployment.** Deploy the published source through native OpenShell
+  Docker/CDI on the RTX 4090. Verify CUDA execution, the private provider path,
+  Hub calls, usage, access denial and restart behavior. Compare the same model,
+  processing identity, input corpus and numerical/ranking results with Mac;
+  bitwise-identical vectors are not required.
+- [ ] **Final agent acceptance.** Only after deterministic and deployed probes pass,
+  use OpenCode with `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Independently verify its
+  recorded tool results, vector dimensions and model identity. Report source,
+  inputs, sequence, timings, output evidence and the limits of what was proved.
+- [ ] **Documentation.** Update this checklist, the architecture and all affected
+  views/details of `diagrams/veoveo-platform.html`; inspect all three views,
+  navigation, component details and exports in a browser.
+
 ## Current Native Path
 
 Homebrew manages the stock OpenShell 0.1.4 CLI and gateway. The gateway runs as its

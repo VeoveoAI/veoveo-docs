@@ -33,6 +33,45 @@ Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitte
 where a verified gap requires them. Preserve each project's extension contracts,
 security boundaries, source formats and ordinary operations.
 
+## Embedding Generation
+
+Implementation authorized on 2026-10-19. This is a standalone generation service;
+Knowledge, vector storage, pgvector and retrieval remain separate work. The user
+explicitly kept PostgreSQL changes out of this goal.
+
+`veoveo-mcp-embedding` owns the typed embedding contract, Hub registration,
+permissions, bounded requests and Core usage accounting. It runs as a native
+OpenShell Docker workload. Callers, including other services, use its contract
+through the Hub. It stores neither input text nor output vectors.
+
+`veoveo-runtime-embedding` executes the exact pinned `google/embeddinggemma-2`
+checkpoint using upstream Sentence Transformers and PyTorch. The private runtime
+authenticates the service through native OpenShell provider credential mediation.
+The Mac runtime is a native macOS launchd service using MPS; the Linux runtime is
+an OpenShell Docker workload using CUDA through native CDI. The Mac host process
+is not an OpenShell sandbox. These placements require separate deployed probes.
+
+The first contract accepts bounded text and code batches with explicit search-query,
+code-query and document purposes. It returns ordered, finite, normalized
+768-dimensional vectors, actual token counts, the model revision and processing
+identity, and separate execution device/dtype information. The initial execution
+profile is FP32 on the selected GPU, with no CPU fallback. The runtime counts
+untruncated upstream tokenizer output and rejects oversized input before inference;
+silently truncated input is invalid.
+One API batch is admitted at a time with bounded admission and request deadlines.
+Native Sentence Transformers executes microbatches of two items, bounding padded
+input to 16,384 tokens even when item lengths differ; it restores input order.
+
+The service uses ordinary Hub permissions and existing Core nonmonetary token
+usage records. There is no separate identity system, invented provider price,
+legacy model path or automatic retry of an ambiguous computation. A lost HTTP
+request does not imply cancellation of an already submitted GPU kernel.
+
+Work is isolated in component worktrees. Qualify the Mac path, merge and push the
+reviewed changes to main, then deploy that published source on Linux. Component
+checks, real GPU probes, deployed Hub acceptance and final OpenCode acceptance are
+distinct gates in the [execution checklist](OPENSHELL_HARDCUT_PLAN.md#embedding-generation--2026-10-19).
+
 ## Product Workflow
 
 A user starts an authorized factory workspace on a Lore branch. OpenShell creates
