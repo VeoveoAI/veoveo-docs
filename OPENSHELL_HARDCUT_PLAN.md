@@ -3491,7 +3491,7 @@ No implementation occurs in the main checkouts. Keep Lore unchanged. Serialize
 coding and validation of the same tree; preserve other agents' documentation and
 installation work. No OpenCode/model calls during iteration.
 
-- [ ] **HLI1 — Resource-based issuer foundation.** Generalize hosted OAuth resource
+- [x] **HLI1 — Resource-based issuer foundation.** Generalize hosted OAuth resource
   resolution, authorization requests/codes, refresh families, revocation and audit
   targets from mandatory MCP profile to a registered protected resource. Reuse
   typed catalog admission and existing signer/session/publication mechanisms.
@@ -3501,8 +3501,9 @@ installation work. No OpenCode/model calls during iteration.
   contract. First source slice is implemented and reviewed; focused compilation
   found three repairable Rust error groups before tests. Those source fixes are in
   the integrated slice below; focused compilation and behavioral verification now
-  pass, with both full component gates still pending.
-- [ ] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
+  pass. Hub `adb4aa37` passes both full platform gates. This completes the source
+  foundation; native client/deployed qualification remains HLI6–HLI7.
+- [x] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
   contribution at the executable composition boundary, outside the generic Hub
   OAuth library. A binary-only `contributions/lore` module is the minimal accepted
   boundary: it avoids a dependency cycle and unnecessary relocation of binary
@@ -3513,6 +3514,8 @@ installation work. No OpenCode/model calls during iteration.
   Publish typed assignments in the existing revisioned control plane with atomic
   audit; use existing administrative authority. No implicit administrator or
   Work Context grants, free-form JWT templates or duplicate permissions store.
+  Source admission, signed-claim and live-publication fixtures pass in both full
+  platform gates; actual native user grants remain deployed acceptance work.
 - [ ] **HLI3 — Native user login.** Add RFC 8628 device authorization, browser
   verification through the existing Entra broker, durable expiring device state,
   standard polling/error semantics, one-time redemption and refresh-family
@@ -3661,6 +3664,19 @@ and strict workspace/all-targets/all-features Clippy passing in 4.26 seconds.
 Both full Docker `check` gates are running against this exact revision. Linux uses
 an isolated source archive with SHA-256
 `a0331eb67ccd45484e342f03d4c74660c2ab791fe8c31a4258387b524eeea0e1`.
+
+**Full component gates complete on `adb4aa37`:** GPT-6 Luna ran the canonical
+`docker build --target check .` on the Mac's Linux ARM64 Docker host and the actual
+Ubuntu Linux x86_64 host. Both commands exited zero, each with 226 tests passed
+and one skipped. Nextest took 33.613 seconds on ARM64 and 34.536 seconds on x86_64;
+these are test-run durations, not complete build timings. The respective immutable
+check images are
+`sha256:5525941cdc83303d6883b343f1d23a8cda9537bf33f61174fa9a719dc8c39d15`
+and `sha256:fd7e352697db4ae72d1339bdc17b395b696aeb5c673a5658102b6519f7f01324`.
+Logs are retained under `/tmp/computers-hub-native-issuer-validation-20261019/`
+as `mac-adb4-full-check.log` and `linux-adb4-full-check.log`. The matching Linux
+runtime is building from that same isolated source export; no new image, catalog
+or gateway has been selected by the live installation.
 The native issuer fixture approves a synthetic identity
 through trusted fixture storage and uses no real Lore server or Entra session.
 It proves live withdrawal of user/factory assignments, concurrent publication order
@@ -3704,7 +3720,7 @@ a clean worktree. The actual private Linux catalog also passes the matching CLI
 (`ok: 2 profile(s)`), after an SSH copy to mode-0600 local input verified against
 SHA-256 `0a05bd216d1cd0d813158257b41e4c12c3e0a30a5fd14c123134a06bb4935bcf`.
 The corrected actual Computer policy passes native parsing/ambiguity admission as
-well. Both Hub platform gates remain in progress. This validates configuration;
+well. Both Hub platform gates subsequently pass as recorded above. This validates configuration;
 it does not import a catalog or select a live runtime.
 
 At 2026-10-19 17:25:15 UTC, a read-only public curl baseline with normal TLS
