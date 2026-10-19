@@ -36,53 +36,20 @@ There is no running Veoveo token broker, refresh daemon, signing service or new
 secrets store in this path. Application MCP authorization and Task delegation are
 separate; this change does not remove those responsibilities from the MCP gateway.
 
-## Hosted Computer Direct Repository Roles
+## Hosted Computer Native Lore Boundary
 
-Status: implemented in native Lore `b32265924ccf1d3c09de8f76ea4eecc8c2562b05`
-on 2026-10-19; 156 focused tests and CLI/server compilation pass on macOS.
-Not deployed or qualified with Entra. Native device login and the refresh path do not
-by themselves establish repository access. The inspected upstream resource-grant
-mode requires RFC 8693 exchange and object-array claims. Entra's documented OBO
-request differs, and its custom-claims provider does not emit JSON objects. Do not
-weaken this to global repository grants or restore the retired token signer.
+The user withdrew the custom Lore authorization work on 2026-10-19. Hosted
+Computers consume Lore's existing authentication, repository permissions and branch
+behavior. Do not add a direct-role mapping mode, repository-creation admission
+rules, a parallel permission service or another source-access gate for this work.
+Do not replace the withdrawn changes with global grants or a custom token issuer.
 
-Native Lore exposes explicit `server.auth.direct_repository_roles` configuration.
-Each literal role maps to a typed native repository ID and its native action
-set. IdP user/group role assignments remain authoritative; this mapping expresses
-what each signed role means, not an additional user-access database. The compiled
-mapping feeds the existing resource-grant authorizer and admitted partition grants,
-including synchronous privileged checks. Unknown or malformed claims grant no
-access. Empty actions retain ordinary native repository access, which includes
-unprotected writes. They do not mean read-only. No mapping sets the service-account
-branch-protection bypass or grants a wildcard repository. Native listing uses the
-same normalized grants and existing pagination.
-
-This mode excludes structured resource-claim configuration, external auth service
-selection and exchange templates. The existing native client can use the original
-access JWT when no exchange target is advertised; no new protocol or client token
-service is required. Existing structured-grant/exchange installations retain their
-native behavior. Keep signature, exact tenant issuer, API audience, expiry and
-recipient validation. Use distinct Lore API and public CLI registrations, so a
-CLI ID token does not satisfy the API audience. The selected API requests v2 access
-tokens and the explicit native `JWT` type profile used by Entra.
-
-Lore already accepts a signed scalar `root_domains` claim. Entra's resource service
-principal can supply that private Lore hostname through a static claims mapping;
-its policy must preserve existing claims. This is a documented candidate, not a
-tenant receipt. See Microsoft's [claims policy reference](https://learn.microsoft.com/en-us/entra/identity-platform/reference-claims-customization)
-and [resource application configuration](https://learn.microsoft.com/en-us/graph/how-to-claims-customization).
-The [API's role assignments](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps)
-must appear in its access tokens, not only the CLI's ID token. The installation's
-bounded role set must fit Entra's application role/scope limit; this does not claim
-an unlimited per-repository role scale.
-
-Before acceptance, measure two users' native listing/read/write and denied
-operations, device-issued and refreshed JWT bindings, role removal on newly issued
-credentials, and retained native login state after runtime restart. Self-contained
-JWTs are not immediately revoked by removing a role. Measure long-lived storage
-session behavior before claiming an expiry bound. Keep native Lore refresh custody
-separate from the Computer's Hub provider refresh; factory credentials prove neither
-human path.
+The explicitly requested native refresh bug fix remains in scope, alongside the
+existing upstream and storage implementation. Computer integration owns installing
+the native CLI, private connectivity and persistent client state. Lore's security
+model remains Lore's responsibility. The prior direct-role proposal and its
+component-test receipts are withdrawn implementation history, not an active plan
+or accepted deployment requirement.
 
 ## Local IdP Configuration
 

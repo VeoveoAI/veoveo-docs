@@ -48,16 +48,12 @@ and permissions. Everyone receives the CLI; repository and branch access remain
 Lore decisions. No shared administrator identity or additional source-access gate
 is introduced. The hosted path does not require public Lore gRPC ingress.
 
-For Bioma's Entra installation, native Lore `b322659` maps signed user roles to
-exact repository grants. Its focused tests and CLI/server compilation pass on
-macOS; deployment remains pending. In this explicit direct-grant mode, the IdP
-assigns roles, trusted Lore configuration maps
-their meaning, and Lore's existing repository/action/branch checks decide access.
-It does not require a token broker or Hub-issued Lore credentials. The separate
-Lore API receives the access JWT; its signed private-host claim preserves native
-recipient binding. Entra issuance, user login, refresh and permission removal
-remain deployed acceptance work. See the
-[direct-role decision](LORE_DIRECT_OIDC_PLAN.md#hosted-computer-direct-repository-roles).
+Hosted Computer integration uses Lore's existing authentication and security model
+as-is. The user explicitly withdrew the custom direct-role mode and additional
+repository-creation checks on 2026-10-19. Keep the requested native refresh fix;
+install and connect the native CLI without adding source-access rules or changing
+repository and branch permission semantics. See the
+[native Lore boundary](LORE_DIRECT_OIDC_PLAN.md#hosted-computer-native-lore-boundary).
 
 Working files, drafts and session state are private scratch. A Lore push publishes
 an immutable revision; an explicit Artifact upload publishes managed content.

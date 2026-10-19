@@ -3402,3 +3402,40 @@ per-human branch ACL that prevents the same member from unprotecting it. Preserv
 these native semantics. Cross-repository/no-role denial is the isolation gate;
 conditional protected-push refusal is reported separately, without a human
 service-account bypass or broader branch authorization change.
+
+
+### User correction: preserve Lore security behavior — 2026-10-19
+
+The user explicitly rejects changing Lore's security model or adding rules on top
+of it. This supersedes the coordinator's direct-role and body-ID creation-admission
+approvals above. Stop that authorization work. Remove the task-owned uncommitted
+creation patch and revert custom Lore commit `b322659`, preserving the explicitly
+requested native refresh fix at `821da217`, upstream authentication and the other
+agent's storage implementation. Withdraw the custom installation role-mode recipes
+and Graph payloads; do not substitute global grants, another signer, an additional
+authorization service or further branch rules.
+
+The finite Lore Graph script had already stopped on its first mutation, API
+application creation, with `Authorization_RequestDenied` at 15:30:22 UTC, request
+ID `55496760-00b1-49d0-85f1-5a69682cce93`. Its response file is empty and no later
+mutation ran. There is no successful creation response for a Lore API/CLI, service
+principal, recipient policy, consent or role assignment. The builder issues no
+further Lore Graph calls and has no Lore test or build running. This is not a new
+user permission request; the rejected authorization design is withdrawn regardless
+of that Graph failure.
+
+The Computer goal remains: OpenCode web at `/computer`, native Lore CLI and private
+connectivity, each user's Hub connection, persistence, and independent deterministic
+factories. Computer/OpenShell management credential custody and prepared Hub
+configuration remain valid work. No Lore security-model modification is a Computer
+completion gate. Source cleanup and its exact resulting identities follow below.
+
+
+Cleanup verifies the complete Lore source tree, not only selected files. Local
+revert commit `7ce28b6c576252c3fe743ceb5dfe43f6df92fb9f` is clean; its tree ID
+`c668e85c6f790f25c867de95d4ca3a9eab1f5628` exactly equals native refresh baseline
+`821da21710a9085797dc8a9d98955c1f3af1c389`. `git diff 821da217 HEAD` is empty.
+The uncommitted creation-admission patch and its new test are removed after
+matching the task-owned manifest. No custom authorization change remains in the
+Lore tree, and no such change reached the running installation. Upstream, storage
+and the explicitly requested native refresh fix remain intact.
