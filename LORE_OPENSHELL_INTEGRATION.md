@@ -17,8 +17,8 @@ Other models, general composition and GPU/CUDA remain separate. See
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
 platform with Lore, OpenShell, Hub, Time, private Artifact and Media. Its other
-views explain the credential path and Media's qualified private workflow with
-those existing services. Update it alongside this document after every major architecture change;
+views explain native credential custody and the hosted Computer publication workflow.
+Update it alongside this document after every major architecture change;
 keep planned paths visibly distinct from qualified ones.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
@@ -34,17 +34,44 @@ security boundaries, source formats and ordinary operations.
 
 ## Product Workflow
 
-A user starts an authorized factory workspace on a Lore branch. OpenShell creates
-the sandbox from an approved native template; the agent edits, builds, tests and
-uses ordinary Lore commands. Pushing the branch starts checks of that exact
-revision in a fresh OpenShell sandbox. Successful checks produce immutable
-artifacts eligible for a private preview or promotion. Environment branches compose
-those artifacts and define resource ownership; deletion removes the preview's owned
-resources according to retention and active-Task policy.
+Users enter through the installation's Hub and open `/computer`. The initial
+supported workflow is a private hosted Computer for each user, provisioned on
+first use through native OpenShell. Each Computer runs the OpenCode web app,
+native Lore CLI and a configured per-user Hub connection. Installation configuration
+selects `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` by default. This workflow is being
+implemented in isolated worktrees; its Linux acceptance remains open.
 
-The normal user interface is Lore, OpenShell's existing connection and inspection
-tools, and Veoveo's Hub. Use existing logs and diagnostics. A custom factory
-console, logging service, runtime API or infrastructure language is not a prerequisite.
+OpenCode uses Hub for platform actions. Lore CLI connects directly to private Lore
+through the OpenShell-controlled network and uses the user's native Lore login
+and permissions. Everyone receives the CLI; repository and branch access remain
+Lore decisions. No shared administrator identity or additional source-access gate
+is introduced. The hosted path does not require public Lore gRPC ingress.
+
+Working files, drafts and session state are private scratch. A Lore push publishes
+an immutable revision; an explicit Artifact upload publishes managed content.
+Factories run deterministic build/check commands against published revisions in
+separate OpenShell sandboxes. They contain no OpenCode, model credentials or agent
+instructions. The agent remains on the Computer and can fix source and push again.
+Successful independent checks produce artifacts eligible for preview or promotion;
+general revision-triggered build and composition automation remain later work.
+
+Computer working storage, including its home and native client state, survives
+routine runtime recreation. Computer, factory and deployed service lifetimes are
+independent. Hub admits browser access using the current user's application session,
+then forwards to that user's Computer through authenticated native `ForwardTcp`.
+OpenShell owns runtime lifecycle, isolation, credential custody and diagnostics.
+Computer-enabled installations give trusted Hub one dedicated native control
+identity for both service forwarding and provisioning. Native workspace creation
+and global-profile reads require the configured platform-admin role, with explicit
+workspace, sandbox and provider read/write scopes and an exact RPC allowlist.
+This is a new installation authority, not an implicit enlargement of the existing
+forwarder. The same native credential reference serves both Hub connections;
+endpoint binding cannot dispatch two providers on the same ForwardTcp endpoint.
+Computers never receive this control identity. Their Hub and Lore actions retain
+the acting user's application authority. Native issuance, mediation and renewal
+of the new control identity still require deployed qualification.
+See [implementation and Linux acceptance](OPENSHELL_HARDCUT_PLAN.md#hosted-computers--implementation-and-linux-acceptance)
+for source-tested, deployed and still-pending boundaries.
 
 ## Native Responsibilities
 
@@ -56,13 +83,14 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Need | Reuse | Remaining integration |
 |---|---|---|
 | Source and immutable revisions | Lore repositories, grants, hooks and notifications | Approved source-to-workload bindings |
-| Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
+| User Computers | Private OpenShell workspaces, persistent sandboxes, native forwarding and templates | Hub browser admission, first-use provisioning and OpenCode/Lore configuration |
+| Builds, checks and deployed services | Separate OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
 | Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
 | Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials, management renewal and factory access qualified locally; wider issuer adoption remains separate |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
-| Factory user access | Native OIDC and workspace membership | Mapping approved source authority to runtime access |
+| Computer access | Hub application sessions and native workspace isolation | One owner per Computer; current permissions and session revocation |
 | Human identity | Configured OAuth/OIDC provider | Application subject/permission mapping |
 | MCP application behavior | Existing Veoveo Hub and service contracts | Composition, discovery, narrowed delegation and Task authority |
 
@@ -90,7 +118,7 @@ or require access to its database. Agents continue to use the ordinary Lore CLI.
 | Veoveo to OpenShell | Official async `openshell-sdk`, with explicit workspace and HTTPS/OIDC configuration; generated Tonic clients through `raw_grpc_fresh()` for RPCs such as `ForwardTcp` |
 | Veoveo to Lore | Version-pinned Rust client surfaces: `lore` for high-level repository operations and `lore-proto` generated clients with native transport/authentication for remote RPCs |
 | Lore to revision integration | Native branch notifications as wakeups, followed by authoritative reads; periodic reconciliation repairs missed events |
-| Agent to Lore | Maintained Lore CLI with narrow opaque-token/local-identity authentication patches over the qualified supervisor-mediated path |
+| Agent to Lore | Native Lore CLI with user login and refresh, over the private OpenShell-controlled network; separate factory credentials retain their native custody path |
 | Veoveo Hub to deployed MCP service | Native authenticated OpenShell forwarding, carrying MCP requests with Veoveo's narrowed application token |
 
 OpenShell documents consuming its [Rust SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust)
@@ -112,13 +140,15 @@ semantics from raw storage RPCs or parse CLI output in the control plane.
 
 The end-to-end flow is:
 
-1. A user signs in through the installation's identity provider. OpenShell authorizes
-   factory access through native workspace membership; Veoveo authorizes application
-   context and service access. Tokens have separate intended audiences.
-2. OpenShell starts an author sandbox. The agent edits source/configuration and pushes
-   with Lore. Its supervisor mediates permitted egress and holds provider credentials
-   outside the workload. The local Lore gRPC path is qualified as recorded in the
-   execution checklist; other deployments require their own qualification.
+1. A user signs in through the installation's identity provider and opens `/computer`.
+   Hub authorizes the application session and its owner-specific browser route;
+   trusted provisioning uses native OpenShell management authority. The user's
+   Hub application grant remains distinct from that management authority.
+2. OpenShell starts or resumes the user's persistent Computer. The agent edits
+   private working files and uses native Lore CLI to publish under the user's
+   repository permissions. OpenShell controls network access. Native Lore owns
+   the user's login/refresh state; native OpenShell owns the separately configured
+   Hub provider refresh and model credentials. These are distinct credential paths.
 3. A Lore notification wakes the small revision integration. It reads the exact revision
    and approved environment definition, then asks OpenShell to run fresh checks/builds.
    Trusted publication records the resulting immutable image digest and check evidence.
@@ -176,10 +206,11 @@ remains independent of disposable environment branches.
 
 ## Workspaces And Runtime Placement
 
-A factory sandbox is one active authoring workspace or independently isolated job.
-It normally has one primary repository and can include additional explicitly
-authorized repositories. Build/check workers are separate from author sandboxes;
-verification starts from the recorded revision, not the author's mutable directory.
+A Computer is the user's persistent authoring and service-operation environment.
+It can contain several repositories permitted by native Lore. Each Computer has
+its own OpenShell workspace and stable sandbox identity. A factory is an independent
+build/check job; verification starts from the published revision rather than the
+Computer's mutable directory. Factories have no agent runtime or inference provider.
 
 An OpenShell workspace is an access grouping containing sandboxes, providers and
 templates. A Veoveo execution context selects service versions. Map them explicitly:
@@ -249,8 +280,8 @@ This describes the application integration sequence. Hub/Time, the prepared Time
 factory pass, private Artifact and private fake-provider Media now have local
 acceptance recorded in the execution checklist.
 The [visual guide's Platform now view](diagrams/veoveo-platform.html#platform)
-shows the qualified Mac deployment; its [Linux reference view](diagrams/veoveo-platform.html#next)
-shows the deployed Bioma reference and its remaining qualification gates. Hub plus Time were
+shows Mac and Linux evidence separately; its [next integration view](diagrams/veoveo-platform.html#next)
+shows hosted Computers, publication and independent factories. Hub plus Time were
 qualified first, followed by a build-only factory task from a known-good Time Lore
 revision and then private Artifact. This is an unused local Mac installation: replace and restart local
 services directly. Production continuity, parallel deployments and rollout
