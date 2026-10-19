@@ -1965,6 +1965,34 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   was captured. The private projection is
   `evidence/artifact-large-native-log-window-20261019.json`, SHA-256
   `3851d427a6805fa450b5f40efa538b38713eb60269dcc7093b64e629230fc5de`.
+- SDK client correction `483914615a2e5846e58aac97daabb30b77835c6d` is published
+  from an isolated worktree based on `026902a`; unrelated local paging work is
+  unchanged. Resource and Task observations now reopen typed listener ends with
+  cancellable exponential backoff from 100 milliseconds to five seconds. Five
+  seconds actually awaiting notifications resets the delay; a slow snapshot or
+  acknowledgment alone does not. The existing caller timeout/drop bounds the
+  observation. Genuine errors remain terminal and mutations are never replayed.
+  Baseline Linux regressions reproduce both failures: Task observation fails in
+  0.18 seconds and resource observation in 15.35 seconds at the old opening cap.
+  Corrected Linux tests pass two deterministic policy cases and four public HTTP
+  cases in 20.87 seconds. The resource case crosses four healthy listener endings,
+  re-reads changed state and receives a later push; the Task case crosses four
+  rapid endings with exactly one creation and separately proves timeout does not
+  cancel the Task. Other cases cover terminal errors and deadline/drop recovery.
+  These HTTP tests inject normal listener endings; the earlier Hub regression
+  covers actual upstream HTTP EOF. Neither substitutes for native deployed proof.
+  Full Docker gates on both hosts pass 302 tests with three skipped, including
+  strict lint, dependency and feature checks. Mac check image
+  `sha256:61d30c8b95fe0ff48f27d4cced7f499455aaa4d609a0d88ef2eef2e20a9f2270`
+  is Linux/arm64; remote Linux check image
+  `sha256:b11211686aecbec303ebeedfc52006d7fc8f18189aa6f1e658d42546411059a2`
+  is Linux/amd64. Private full-gate logs are
+  `/tmp/veoveo-hub-sdk-check-71857-mac.log`, SHA-256
+  `d4d9128f41ecc0f3384eec10e500efaf10b763f3c61efaef96c51eadbe5d1aac`,
+  and `evidence/sdk-resource-observation-check-71857-linux.log`, SHA-256
+  `58f7bac01d31e301d8e749cd00320f0fbe2ff170c7c2386f2354e8be14c9231c`.
+  Artifact and Media dependency updates, deployed recovery and the remaining
+  qualification gates are still pending.
 - A related narrow protocol audit found that pinned RMCP already rejects
   non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's

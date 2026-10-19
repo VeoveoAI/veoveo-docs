@@ -644,7 +644,9 @@ acknowledges the new listener before reading current state; Task recovery observ
 the existing Task ID. It never repeats the operation that created the Task.
 Untimed observations remain caller-owned until dropped. The Linux execution
 checklist tracks the Hub and SDK corrections' component and deployed proofs
-separately; the SDK correction is not yet qualified.
+separately. SDK correction `483914615a2e5846e58aac97daabb30b77835c6d` passes
+both platform component gates; consumer deployment and large-object acceptance
+remain pending.
 
 **Keep changes in their owners.** Installation owns images, native definitions,
 providers, endpoints and the local IdP/catalog choices. Hub owns endpoint
