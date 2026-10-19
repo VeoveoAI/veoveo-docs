@@ -634,8 +634,17 @@ pushed updates. The [subscription contract](https://modelcontextprotocol.io/spec
 defines normal completion and reconnection; the [HTTP binding](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
 does not provide `Last-Event-ID` replay. Ending observation does not cancel or
 resubmit a Task. Task cancellation uses `tasks/cancel`. Reconnect budgets are a
-client policy, not a protocol-mandated count. The Linux execution checklist tracks
-the Hub correction's component and deployed proofs separately.
+client policy, not a protocol-mandated count. The Linux deployment exposed a
+separate SDK defect: its three-opening limit accumulated over the observation's
+entire lifetime, so ordinary listener endings could exhaust it before the caller's
+deadline. The reviewed client correction replaces that count with cancellable
+backoff after typed ends, preserving the caller's timeout/drop and immediately
+surfacing actual protocol, admission or read errors. Resource recovery still
+acknowledges the new listener before reading current state; Task recovery observes
+the existing Task ID. It never repeats the operation that created the Task.
+Untimed observations remain caller-owned until dropped. The Linux execution
+checklist tracks the Hub and SDK corrections' component and deployed proofs
+separately; the SDK correction is not yet qualified.
 
 **Keep changes in their owners.** Installation owns images, native definitions,
 providers, endpoints and the local IdP/catalog choices. Hub owns endpoint

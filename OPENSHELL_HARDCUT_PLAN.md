@@ -1931,18 +1931,57 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `2026-10-17T12:00:00Z` to Unix `1792238400` and DTG `171200ZOCT26`, with matching
   effective authority IDs. This is rollout/readiness evidence, not the pending
   full large-object recovery or same-revision restart qualification.
+- The next large-object run, using the corrected Hub and unchanged Artifact
+  acceptance binary, started at 01:45:20 UTC on October 19. It failed with
+  `the subscription ... kept ending`; libtest reported 333.89 seconds, zero
+  passed and one failed. No exact test-end timestamp was recorded; the process
+  was observed absent by 01:51:32. The retained Artifact and verification Task
+  share ID `01a151d6-1247-7810-ac9b-cc2b9ab6c017`. Independent read-only evidence
+  shows the Artifact Available at 01:52:46.493424 and its Task Succeeded at
+  01:52:46.499104, with 1,076,887,552 bytes and matching SHA-256
+  `c8f34e712074151a1643b88f5b92e6d3200074916b8ce3ecdb15f0307e8adbb1`.
+  Backend completion after the observer failed is not an acceptance pass.
+  Before this run, the prior retained object `01a151a2-2788-7362-ae05-3db1d7d8cf45`
+  was deleted through the normal Artifact API and stored/reserved usage returned
+  to zero. The temporary maintenance runner was removed.
+  Source review of pinned SDK `026902ae73eaa56533dbc49bd66c39481c8b9494`
+  establishes the new error's exact condition: three total acknowledged listener
+  openings have ended. Healthy reads, updates and listening time never reset that
+  lifetime budget, even when the caller's 600-second timeout remains. Task result
+  observation has the same cap. This proves the client recovery defect but does
+  not by itself establish why each stream ended. A client-only correction is in
+  development: bounded cancellable backoff, existing caller deadlines, immediate
+  real errors, resubscribe/current-state reconciliation and no mutation replay.
+  Work is isolated from unrelated local SDK commit `7f01193`.
+  The private allowlisted receipt is
+  `evidence/artifact-large-subscription-failure-20261019.json`, SHA-256
+  `f17ea0517ca0ee49f8699dad5178df1b31d2a315ca35b29b08836f47150ae7df`;
+  its raw test log is `evidence/artifact-large-hub-ec9f7f59-20261019.log`, SHA-256
+  `dabe69e99d6ca49c0cbfb7ea744867832e17be08fd01607d44e11e83c453cb8c`.
+  A supplementary native-log projection records five QA runner provider updates
+  and nineteen relay fences in the window. No captured request identity ties
+  those fences to a particular listener. Hub's observed provider update at
+  01:52:52.368 occurred after the client failed; no typed Hub listener-end message
+  was captured. The private projection is
+  `evidence/artifact-large-native-log-window-20261019.json`, SHA-256
+  `3851d427a6805fa450b5f40efa538b38713eb60269dcc7093b64e629230fc5de`.
 - A related narrow protocol audit found that pinned RMCP already rejects
   non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
   ordinary `tools/call` refusal for its Task-only generation tool instead uses
   `-32600`. The [Tasks capability-negotiation rule](https://tasks.extensions.modelcontextprotocol.io/specification/2026-07-28/tasks#capability-negotiation)
   also requires `-32021` when execution requires a Task. Time's `expand_schedule`
-  and `validate_timeline` stubs have the same gap. Frozen candidates use the
+  and `validate_timeline` stubs have the same gap. Corrections use the
   pinned RMCP's typed error helper, preserve mandatory Tasks and check permissions
   first. New regressions assert the capability payload and no Task creation;
-  Media also asserts zero quotes or provider dispatch. Component validation is
-  pending. Artifact has no analogous Task-only tool stub. No dependency changes
-  or taskless execution path are included.
+  Media also asserts zero quotes or provider dispatch. Media correction
+  `b53c010a848b13eac47fe1ec172821652a3d7d4d` is published after Mac and remote
+  Linux Docker checks each passed 72 tests with eleven skipped. Time correction
+  `9874293db5ffdc6be260dd60094e7b1f97fe5e3c` is published after both Docker checks
+  each passed 153 tests with ten skipped. These include strict lint and feature
+  gates. Neither runtime has been rolled out at these revisions yet. Artifact has
+  no analogous Task-only tool stub. No dependency changes or taskless execution
+  path are included in these corrections.
 - Native workspace isolation now passes on Linux with the existing Entra forwarder.
   An independent operator inventory confirmed `vv-services/time`
   (`29bb3e6d-d8fc-4062-a587-b7e173ec2a50`) and `vv-control/hub`
