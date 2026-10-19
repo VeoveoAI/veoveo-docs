@@ -3656,6 +3656,11 @@ reference must have that purpose. External issuer metadata retains its existing
 contract. Mixed methods and missing private-key JWKS remain rejected. Formatting
 and diff checks pass; focused tests and both full gates are assigned to the builder
 on this new frozen revision. There are no SQL, query-cache or dependency changes.
+The builder subsequently reports 40/40 control-plane tests passing in 9.26 seconds
+and strict workspace/all-targets/all-features Clippy passing in 4.26 seconds.
+Both full Docker `check` gates are running against this exact revision. Linux uses
+an isolated source archive with SHA-256
+`a0331eb67ccd45484e342f03d4c74660c2ab791fe8c31a4258387b524eeea0e1`.
 The native issuer fixture approves a synthetic identity
 through trusted fixture storage and uses no real Lore server or Entra session.
 It proves live withdrawal of user/factory assignments, concurrent publication order
@@ -3681,8 +3686,53 @@ native issuer/audience/client/template settings, exact disjoint OAuth REST paths
 Hub-owned factory grants and retirement of the old IdP provisioning helper. The
 native factory hook already accepts the canonical Hub identity string; its old
 UUID-only restriction belonged to the retired helper. No Lore source, image pin or
-copied Computer image input changed. Syntax/consistency checks pass; native Hub,
-OpenShell and Lore configuration admission is assigned to the builder and pending.
+copied Computer image input changed. Syntax/consistency checks pass. Native
+OpenShell policy parsing and endpoint-ambiguity admission now pass, with zero
+ambiguities; native profile-set validation accepts the Computer Hub/model profiles.
+Native Lore `Settings::load` accepts the server template with its OIDC fragment,
+and `select_repository_authorizer` selects `ResourceGrants` with no `auth_url`.
+The final temporary harness run took 128.74 seconds including compilation. Two
+earlier harness setup attempts failed because the standalone manifest lacked
+Lore's native vendor patches and compiler cfgs; the harness now uses the source's
+existing settings. No installation or Lore source changed to accommodate it.
+Receipt: `/tmp/computers-installation-hli6-validation/receipt.json`. This is native
+configuration admission only: no server, identity exchange or backend was contacted.
+The matching Hub CLI also admits the complete synthetic example (`ok: 4
+profile(s)`). The unchanged 17-path installation source is committed at
+`cccccc40983255cf9217ef38836401ea34e82c8c`, with the same recorded fingerprint and
+a clean worktree. The actual private Linux catalog also passes the matching CLI
+(`ok: 2 profile(s)`), after an SSH copy to mode-0600 local input verified against
+SHA-256 `0a05bd216d1cd0d813158257b41e4c12c3e0a30a5fd14c123134a06bb4935bcf`.
+The corrected actual Computer policy passes native parsing/ambiguity admission as
+well. Both Hub platform gates remain in progress. This validates configuration;
+it does not import a catalog or select a live runtime.
+
+At 2026-10-19 17:25:15 UTC, a read-only public curl baseline with normal TLS
+verification reports `/readyz` 200, OAuth discovery 200 and `/computer` 404.
+The Linux inventory still selects the previous Hub image `6fd5cdb9761b`; no shared
+cutover occurred. Receipt: `/tmp/computers-public-baseline-20261019.json`.
+An earlier Linux Python urllib probe returned 403, while default curl from both
+hosts returned discovery 200; the client-dependent rejection's cause is not
+established. It does not substitute for the pending native Lore client check.
+
+Actual issuer configuration is privately staged under
+`/tmp/computers-hli6-cutover-20261019` on Linux, with directory mode 0700 and files
+0600. Repository and assignment arrays remain empty until native repository
+availability is proved. The unchanged native Create path connects with no selected
+repository, creates it, saves local metadata and emits the canonical repository ID
+(`lore-revision/src/repository/create.rs`). After native login and server readiness,
+use that emitted ID for explicit live Hub registration/assignments before testing
+repository reads/writes. No automatic creator grant or additional Lore rule is
+required. Dedicated backend credentials, deployment and native factory custody
+remain integration work. Private inspection of the current live Artifact
+configuration confirms both storage and signing endpoints use HTTPS authority
+`veoveo-objects.bioma.ai:443`. The staged Computer policy was corrected from port
+9000 to 443; its SHA-256 is
+`26afb3c9a5d06e63e5318521b784e7242e888f4ae8d7fa3b1d47349ed60f7f1d`.
+Lore's separate private S3 TLS mapping remains on port 9000. Host DNS resolves
+the public Artifact authority globally; no actual Computer exists yet, so its
+native DNS and byte-transfer behavior remain unmeasured. No signed URL was
+printed and no object download occurred during this configuration review.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
