@@ -295,28 +295,20 @@ Architecture and component ownership are recorded in
   These receipts close the embedding deployment gate, including both component
   restarts. Nineteen-tool discovery plus readiness/OAuth metadata were observed;
   these runs do not claim new adjacent-tool execution, generic GPU scheduling or
-  Computer-flow acceptance. No new grants were added. Final MiMo acceptance is
-  separately blocked before model execution, as recorded below. Earlier
+  Computer-flow acceptance. No new grants were added. OpenCode qualification is
+  excluded from this embedding closeout, as recorded below. Earlier
   failed discovery, binary-replacement integrity and evidence-path/principal
   fixture attempts remain recorded separately; none was automatically replayed.
   Exact receipts and proof limits are in the
   [local operator qualification report](../veoveo-template-installation/state/embedding-generation-evidence-20261019/REPORT.md).
-- [ ] **Final agent acceptance.** Only after deterministic and deployed probes pass,
-  use OpenCode with `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Independently verify its
-  recorded tool results, vector dimensions and model identity. Report source,
-  inputs, sequence, timings, output evidence and the limits of what was proved.
-  The final attempt stopped before any model call. The existing native OpenCode
-  refresh failed with `invalid_grant`; normal reauthorization then requested
-  `mcp offline_access` and the current hosted Hub returned `invalid_scope`.
-  Installed OpenCode source `7b12c6051d23d1afa7ef6659b835fe2345f2ccd5` uses
-  TypeScript MCP client 2.3.1, which adds `offline_access` when authorization-server
-  metadata advertises it and client metadata declares refresh-token support.
-  OpenCode declares that support and exposes no native configuration switch to
-  suppress this augmentation; setting `scope=mcp` does not do so. Read-only source
-  diagnosis stopped here. No grant, Hub policy or authentication implementation
-  was changed to complete this qualification. The selected MiMo model was not
-  substituted or invoked; embedding's deterministic/deployed passes remain
-  separate from this uncompleted agent acceptance.
+- [x] **Embedding scope complete.** Standalone embedding implementation and native
+  Mac/Linux deployment are delivered, including real model output, Core usage,
+  maximum-capacity batches, access rejection, parity and both component restarts.
+  Per the user's scope correction, OpenCode qualification is excluded from this
+  embedding closeout and is not a remaining embedding gate. Its attempted client
+  readiness check failed at OAuth before any model call. No OpenCode or Hub
+  authentication code, grants or policy were changed to resolve it, and no agent
+  model acceptance is claimed.
 - [ ] **Documentation.** Update this checklist, the architecture and all affected
   views/details of `diagrams/veoveo-platform.html`; inspect all three views,
   navigation, component details and exports in a browser.

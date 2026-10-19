@@ -51,9 +51,10 @@ The Mac runtime is a native macOS launchd service using MPS; the Linux runtime i
 an OpenShell Docker workload using CUDA through native CDI. The Mac host process
 is not an OpenShell sandbox. Mac MPS and Linux CUDA deployed qualification now
 pass separately, including maximum-capacity batches and component/runtime restart
-recovery. Final OpenCode acceptance stopped before model execution: native OAuth
-requested `mcp offline_access` and the current hosted Hub rejected `invalid_scope`.
-This is a separate client-authentication blocker, not an embedding inference failure.
+recovery. Standalone embedding implementation and deployment are complete.
+Per the user's scope correction, OpenCode qualification is excluded from this
+embedding closeout. Its attempted readiness check stopped before any model call;
+no OpenCode or Hub authentication code was changed.
 
 The first contract accepts bounded text and code batches with explicit search-query,
 code-query and document purposes. It returns ordered, finite, normalized
@@ -72,8 +73,8 @@ legacy model path or automatic retry of an ambiguous computation. A lost HTTP
 request does not imply cancellation of an already submitted GPU kernel.
 
 The Mac-qualified components were merged and pushed before Linux deployment.
-Component checks, real GPU probes, deployed Hub acceptance and final OpenCode acceptance are
-distinct gates in the [execution checklist](OPENSHELL_HARDCUT_PLAN.md#embedding-generation--2026-10-19).
+Component checks, real GPU probes and deployed Hub acceptance are recorded
+separately in the [execution checklist](OPENSHELL_HARDCUT_PLAN.md#embedding-generation--2026-10-19).
 
 The Linux serving MCP retains production source `5d8da46`; qualification-only
 source `f6100da` preflights evidence files before any live request. Runtime
