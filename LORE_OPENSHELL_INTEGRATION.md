@@ -645,8 +645,9 @@ the existing Task ID. It never repeats the operation that created the Task.
 Untimed observations remain caller-owned until dropped. The Linux execution
 checklist tracks the Hub and SDK corrections' component and deployed proofs
 separately. SDK correction `483914615a2e5846e58aac97daabb30b77835c6d` passes
-both platform component gates; consumer deployment and large-object acceptance
-remain pending.
+both platform component gates. Artifact `ce0a766` and Media `774be1e` adopt it
+after their own Mac and Linux component gates. Their Linux sandboxes are Ready
+at these revisions; large-object and service-recovery acceptance remain pending.
 
 **Keep changes in their owners.** Installation owns images, native definitions,
 providers, endpoints and the local IdP/catalog choices. Hub owns endpoint

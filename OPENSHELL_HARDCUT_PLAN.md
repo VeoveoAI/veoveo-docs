@@ -1991,8 +1991,45 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `d4d9128f41ecc0f3384eec10e500efaf10b763f3c61efaef96c51eadbe5d1aac`,
   and `evidence/sdk-resource-observation-check-71857-linux.log`, SHA-256
   `58f7bac01d31e301d8e749cd00320f0fbe2ff170c7c2386f2354e8be14c9231c`.
-  Artifact and Media dependency updates, deployed recovery and the remaining
-  qualification gates are still pending.
+  Artifact adopts this SDK in `ce0a766e3556ce02f899b9dc37466f5d1be013c0`;
+  Media adopts the same SDK and Artifact client in
+  `774be1eddfe387a95a461a88c7a0b2b2d48d84c7`. These updates change only the
+  manifest/lockfile source identities, with no unrelated dependency versions or
+  edges changed. Both repositories are published after full Docker gates on both
+  hosts: Artifact passes 116 tests with nine skipped; Media passes 72 with eleven
+  skipped. Artifact check images are
+  `sha256:02d212ea9837221986719a95e3846763cf1412144ffa98240f1dd05656fa83aa`
+  on Mac (Linux/arm64) and
+  `sha256:a2d157841cf3c367a7b8c99af929ebb9dafd19809745af0404e9c7fe8cecee31`
+  on Linux (Linux/amd64). Media check images are
+  `sha256:7a05c720c1ceed55f660ec293e4664ec7bc813d6d4f85fd81cd64cbad497a248`
+  and `sha256:704dc6ad30717731c224b0a7bc4d0f2d97bcaed0e0263048e5dcf279b9636495`,
+  respectively. The private `evidence/component-checks-20261019.json` receipt
+  records the commands, source revisions, images and log hashes separately from
+  deployment. Updated Linux runtime images and release qualification executables
+  are built. Time `9874293`, Artifact `ce0a766` and Media `774be1e` are now Ready
+  after native image replacement with the same logical names, providers,
+  configuration and persistent mounts. Deployed recovery and the remaining
+  acceptance gates are pending.
+- The updated Linux qualification image is
+  `sha256:75dd6ef03e6bcb813f0f4c9301fecc3f4bfa172a232767ce2431a0946bec8d9f`,
+  containing the release SDK CLI and Time, Artifact and Media acceptance binaries.
+  Their binary hashes and test listings were checked before execution. Replacement
+  sandbox IDs are Time `f7c64397-3dac-405b-95e2-8b93c97efcd7`, Artifact
+  `a4831b8a-2f6f-46f1-966b-b8c3c4f4569c` and Media
+  `c93481d0-6872-4a48-ad6e-cbc96abe5684`. Media's existing native HTTP exposure
+  retains its target `127.0.0.1:8802` and bearer passthrough. Its `/readyz` path
+  returns 404 because no such route exists; application acceptance uses the
+  supported Hub discovery/schema/call surface.
+  The fresh Time baseline starts at 02:53:31 UTC on October 19 and passes all
+  seven cases in 14.60 seconds, with eight filtered and no restart cases run.
+  The log ends with the successful harness summary; wrapper end/exit fields were
+  not captured. Its last-write time, 02:53:46.199, is not an exact process-end
+  timestamp. Private log `evidence/time-acceptance-v2.log` has SHA-256
+  `8390ff3a5a3c4a42a92aa817a272b64e8350301c925381497e9b77f0b0df8751`.
+  A malformed principal in the initial empty qualification runner was corrected
+  before any tests ran; production services were unaffected. The long Artifact
+  case must capture explicit start/end and exit status before claiming its timing.
 - A related narrow protocol audit found that pinned RMCP already rejects
   non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
@@ -2007,7 +2044,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Linux Docker checks each passed 72 tests with eleven skipped. Time correction
   `9874293db5ffdc6be260dd60094e7b1f97fe5e3c` is published after both Docker checks
   each passed 153 tests with ten skipped. These include strict lint and feature
-  gates. Neither runtime has been rolled out at these revisions yet. Artifact has
+  gates. Both corrections are included in the replacement runtimes above. Artifact has
   no analogous Task-only tool stub. No dependency changes or taskless execution
   path are included in these corrections.
 - Native workspace isolation now passes on Linux with the existing Entra forwarder.
@@ -2048,9 +2085,9 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
 | Built Linux runtime | Immutable image ID |
 | --- | --- |
 | Hub `ec9f7f5` | `sha256:91988a8f06cc6ae13fc2e2d768a7f03de6b0a601aee79436eaf0fc8958343ef6` |
-| Time `90eabf9` | `sha256:f5608dbb15bdf54447b0e979d203f0ccc0d1e358d2cc8cbecf743bf5c1732495` |
-| Artifact `83d6910` | `sha256:60c3100d8d12b5acebb8080eae56d3a2fe560c02764507de50a2d715f3ecf238` |
-| Media `20e2c6e` | `sha256:4074d31aabd225dcd5518aab234beadffa2149543aa1bc28502a43b194a5b87a` |
+| Time `9874293` | `sha256:112ed48fe10ce6abd8f6858c9af8d353fa4a0d59830d66a63cdd3c75c7fadb96` |
+| Artifact `ce0a766` | `sha256:385347e610bd400debff111d4d5f4a8415ec0d2a6eb545cbbee9b290f46f45c9` |
+| Media `774be1e` | `sha256:bb3473b1908686a94f5324f1ae7b19f9ae645aa313c3804220bc3db24261921a` |
 | Media test provider `20e2c6e` | `sha256:83b0d544639ccfe51202852b5cbf28d55560618fad566f69cc41a3aa3dc9bb8b` |
 
 - [x] **0 — Inventory, retired-stack cleanup and reviewed native placement.** Reconcile
