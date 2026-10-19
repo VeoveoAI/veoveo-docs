@@ -3439,3 +3439,11 @@ The uncommitted creation-admission patch and its new test are removed after
 matching the task-owned manifest. No custom authorization change remains in the
 Lore tree, and no such change reached the running installation. Upstream, storage
 and the explicitly requested native refresh fix remain intact.
+
+Installation withdrawal is committed as
+`caf5d046f86c12c9f411684c5c257a786f485272`, with a clean worktree. The custom
+Entra role guide and TOML are removed; the Computer README again selects the full
+native refresh baseline. Public-CA contexts, the SDK pin and deterministic factory
+changes remain. Task-owned unexecuted custom auth payloads and recipes are
+withdrawn; read-only discovery/evidence is retained. No replacement security model
+is introduced.
