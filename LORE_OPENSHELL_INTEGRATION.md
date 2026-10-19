@@ -49,7 +49,11 @@ checkpoint using upstream Sentence Transformers and PyTorch. The private runtime
 authenticates the service through native OpenShell provider credential mediation.
 The Mac runtime is a native macOS launchd service using MPS; the Linux runtime is
 an OpenShell Docker workload using CUDA through native CDI. The Mac host process
-is not an OpenShell sandbox. These placements require separate deployed probes.
+is not an OpenShell sandbox. Mac MPS and Linux CUDA deployed qualification now
+pass separately, including maximum-capacity batches and component/runtime restart
+recovery. Final OpenCode acceptance stopped before model execution: native OAuth
+requested `mcp offline_access` and the current hosted Hub rejected `invalid_scope`.
+This is a separate client-authentication blocker, not an embedding inference failure.
 
 The first contract accepts bounded text and code batches with explicit search-query,
 code-query and document purposes. It returns ordered, finite, normalized
@@ -67,10 +71,28 @@ usage records. There is no separate identity system, invented provider price,
 legacy model path or automatic retry of an ambiguous computation. A lost HTTP
 request does not imply cancellation of an already submitted GPU kernel.
 
-Work is isolated in component worktrees. Qualify the Mac path, merge and push the
-reviewed changes to main, then deploy that published source on Linux. Component
-checks, real GPU probes, deployed Hub acceptance and final OpenCode acceptance are
+The Mac-qualified components were merged and pushed before Linux deployment.
+Component checks, real GPU probes, deployed Hub acceptance and final OpenCode acceptance are
 distinct gates in the [execution checklist](OPENSHELL_HARDCUT_PLAN.md#embedding-generation--2026-10-19).
+
+The Linux serving MCP retains production source `5d8da46`; qualification-only
+source `f6100da` preflights evidence files before any live request. Runtime
+`f55b855` changes Docker packaging to provide a UID-10001-owned `/sandbox`
+working directory; its Python inference code is unchanged from Mac `2668a96`.
+The reviewed Linux Hub call returned six ordered 768-dimensional FP32/CUDA
+vectors and 132 actual tokens in 281.496 ms. Maximum component difference from
+the same Mac corpus was `2.104789e-7`, within the declared parity thresholds.
+Native Hub capacity calls also returned the exact `[8192,8192]` and
+`[8192,15,15,15,15,15,15,15]` token counts, with matching actual usage records.
+See the [local operator qualification report](../veoveo-template-installation/state/embedding-generation-evidence-20261019/REPORT.md)
+for identities, complete sequence, byte evidence and remaining limits.
+
+For this deployment, the Hub's published database control plane owns the full
+native binding configuration; the mounted JSON is only the initial seed. Adding
+the embedding binding required a fresh authoritative document and the existing
+stopped-process `import-control-plane` command, followed by a same-image native
+restart. Preserve concurrent Computer configuration and all other fields; a
+mounted-file edit and restart alone do not publish a binding change.
 
 ## Product Workflow
 

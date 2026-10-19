@@ -220,28 +220,103 @@ Architecture and component ownership are recorded in
   The installation fast-forward preserved all seven concurrent uncommitted files
   byte-for-byte; none was included in these commits. Linux deployment was released
   only after these remote refs were verified.
-- [ ] **Linux deployment.** Deploy the published source through native OpenShell
+- [x] **Linux deployment.** Deploy the published source through native OpenShell
   Docker/CDI on the RTX 4090. Verify CUDA execution, the private provider path,
   Hub calls, usage, access denial and restart behavior. Compare the same model,
   processing identity, input corpus and numerical/ranking results with Mac;
   bitwise-identical vectors are not required.
-  Read-only admission preflight found the running native Docker driver, enabled
-  validated driver configuration, disabled bind mounts and workspace-labelled
-  named-volume admission. Docker exposes `nvidia.com/gpu=0` through CDI. The
-  current gateway CLI omits GPU capability fields returned by its native RPC;
-  the running binary's GPU validation paths and daemon inventory establish
-  available configuration, not admitted-workload execution. No gateway change
-  was needed. Actual GPU admission, UID 10001 cache/token access, CUDA forward
-  placement and inference remain deployment gates. The active Linux Hub already
-  uses the matching SDK/Core protocol, so no application-state reset is required.
-  Its authoritative named-volume catalog contains both local and Computer
-  profiles; the host-side preparation is stale. Deployment must retain the active
-  four trusted config files and append only the embedding binding, validating the
-  native catalog and preserving every existing authority and Computer/Lore field.
+  Native GPU/CDI admission, UID 10001 cache/token access and actual CUDA forward
+  placement now pass on the RTX 4090. The separate real-model probe observed all
+  271,002,624 parameters and inputs on `cuda:0`, with FP32 hidden states; its
+  six-item forward took 0.604 seconds. This is separate from Hub acceptance.
+  Runtime source `f55b855b46e60f88212e8ab88a4400ad27d48f90` fixes the Docker
+  working directory: UID 10001 owns `/sandbox`, while `PYTHONPATH=/opt/embedding`
+  preserves access to the root-owned package. Python inference code remains
+  unchanged from qualified Mac runtime `2668a96`. No OpenShell patch was needed.
+  The serving MCP retains production source `5d8da46`; test-only main
+  `f6100da5249975fecdc81885f61dc747e6bf0bf6` preflights the baseline and reserves
+  a new report before any network request. Five deterministic acceptance tests,
+  formatting and focused strict Clippy pass on native Mac and Linux; both real
+  scenarios are ignored in those component checks.
+
+  Native binding activation now passes. The authoritative configuration is the
+  full published database control-plane root, including `nativeUpstreams`,
+  `computers` and flattened `lore`; mounted `hub.json` seeds only an empty
+  installation. A file edit and restart did not change that active revision.
+  Under the coordinated publication pause, the existing native offline
+  `import-control-plane` command published the embedding binding together with
+  the Computers task's separately reviewed Lore endpoint correction; all other
+  fields were semantically preserved. The same current Hub image restarted and
+  the stored payload matched the candidate. Readiness and OAuth metadata returned
+  200. Native policy/provider custody, keys, mounts and exposure were retained;
+  the trusted mounted/durable files were then synchronized. No database reset,
+  new permission, hand-written SQL publication or configuration service was added.
+
+  The corrected native SDK six-item scenario passes through Linux Hub using
+  the existing Entra member. Its exact eight operations are tools/list,
+  capabilities read, own usage before, six-item embed, usage after success,
+  token-overflow embed, usage after rejection and unauthenticated tools/list.
+  Total elapsed time was 1,429.224 ms; the successful embed took 281.496 ms.
+  Six ordered finite normalized 768-dimensional FP32/CUDA vectors used
+  `[18,26,27,17,22,22]` tokens (132 total). The compact structured output was
+  58,455 bytes, SHA-256
+  `61c6de10b61086c4bfee386fd1950338007be16cb0dc0a1f8d838d709617cbcb`;
+  this is reserialization evidence, not captured HTTP wire bytes. Maximum norm
+  error was `7.899422e-8`. Against the exact Mac corpus, minimum paired cosine
+  was `0.9999999999987987` and maximum component difference `2.104789e-7`, with
+  unchanged text/code retrieval winners. Native usage recorded 16,384 estimated
+  and 132 actual tokens; token overflow recorded an 8,192-token estimate and
+  zero actual usage, and unauthenticated discovery returned 401/Bearer. The
+  complete report SHA-256 is
+  `5f60bda094103dd7e34a6ab85c3c7bfe16c3d1c3035b5ad82afac0e2f413d07e`.
+  Both native Hub capacity cases now pass with complete ordered finite/unit
+  768-dimensional outputs. Two 8,192-token documents took 1,180.338 ms and
+  returned 19,935 compact bytes (SHA-256
+  `210edc0f1a89cebddf383604dc7319ea360eb720c61eb16ccdc0d047a27d10bc`).
+  One 8,192-token document plus seven 15-token documents took 1,258.893 ms and
+  returned 77,918 compact bytes (SHA-256
+  `d8dfaa60133d64f0e4b54cf8c2dece801390156e05eaea9c0caeabfc5c21d681`).
+  Each case recorded one 16,384-token estimate and one actual record for the
+  exact 16,384/8,297 total. The complete capacity scenario took 3.429 seconds;
+  its 227,450-byte report SHA-256 is
+  `7625959844e7f5c3f1d437c099467f6440771bfaa6a422b4721c90e71cce96dc`.
+  The controlled native MCP restart also passes. A fresh call seven seconds
+  afterward took 278.948 ms; the full eight-operation scenario took 1,494.419 ms.
+  All six vectors matched the pre-restart Linux output exactly (maximum component
+  difference `0.0`) and retained Mac parity. Its 118,723-byte report SHA-256 is
+  `0756b22b77ffb3a2d8b52c5c7eb7f82634542839812d3189c0cd8f1c0b11a018`.
+  The native runtime restart also passes: the following embed took 673.413 ms
+  and its full eight-operation scenario took 1,797.417 ms. Vectors again matched
+  pre-restart Linux exactly (maximum difference `0.0`) and retained Mac parity.
+  The same runtime sandbox/image, cache and token hashes were preserved; native
+  restart advanced its authorization epoch from 1 to 2. Its 118,716-byte report
+  SHA-256 is
+  `9651abdd745999c9c4786a459b9d204af7a41055a21a6c6e80897ea02162b7aa`.
+  These receipts close the embedding deployment gate, including both component
+  restarts. Nineteen-tool discovery plus readiness/OAuth metadata were observed;
+  these runs do not claim new adjacent-tool execution, generic GPU scheduling or
+  Computer-flow acceptance. No new grants were added. Final MiMo acceptance is
+  separately blocked before model execution, as recorded below. Earlier
+  failed discovery, binary-replacement integrity and evidence-path/principal
+  fixture attempts remain recorded separately; none was automatically replayed.
+  Exact receipts and proof limits are in the
+  [local operator qualification report](../veoveo-template-installation/state/embedding-generation-evidence-20261019/REPORT.md).
 - [ ] **Final agent acceptance.** Only after deterministic and deployed probes pass,
   use OpenCode with `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Independently verify its
   recorded tool results, vector dimensions and model identity. Report source,
   inputs, sequence, timings, output evidence and the limits of what was proved.
+  The final attempt stopped before any model call. The existing native OpenCode
+  refresh failed with `invalid_grant`; normal reauthorization then requested
+  `mcp offline_access` and the current hosted Hub returned `invalid_scope`.
+  Installed OpenCode source `7b12c6051d23d1afa7ef6659b835fe2345f2ccd5` uses
+  TypeScript MCP client 2.3.1, which adds `offline_access` when authorization-server
+  metadata advertises it and client metadata declares refresh-token support.
+  OpenCode declares that support and exposes no native configuration switch to
+  suppress this augmentation; setting `scope=mcp` does not do so. Read-only source
+  diagnosis stopped here. No grant, Hub policy or authentication implementation
+  was changed to complete this qualification. The selected MiMo model was not
+  substituted or invoked; embedding's deterministic/deployed passes remain
+  separate from this uncompleted agent acceptance.
 - [ ] **Documentation.** Update this checklist, the architecture and all affected
   views/details of `diagrams/veoveo-platform.html`; inspect all three views,
   navigation, component details and exports in a browser.
