@@ -3675,8 +3675,11 @@ check images are
 and `sha256:fd7e352697db4ae72d1339bdc17b395b696aeb5c673a5658102b6519f7f01324`.
 Logs are retained under `/tmp/computers-hub-native-issuer-validation-20261019/`
 as `mac-adb4-full-check.log` and `linux-adb4-full-check.log`. The matching Linux
-runtime is building from that same isolated source export; no new image, catalog
-or gateway has been selected by the live installation.
+runtime subsequently builds from that same isolated source export as
+`sha256:9e1255939bec4473a38a3a4daa98d0e2cb7b7e710d253bd42d4933bf70426e1b`
+(`linux/amd64`, `component` user). Release compilation takes 2m04s; a networkless,
+read-only `--help` smoke exits zero. No new image, catalog or gateway has been
+selected by the live installation.
 The native issuer fixture approves a synthetic identity
 through trusted fixture storage and uses no real Lore server or Entra session.
 It proves live withdrawal of user/factory assignments, concurrent publication order
@@ -3749,6 +3752,52 @@ Lore's separate private S3 TLS mapping remains on port 9000. Host DNS resolves
 the public Artifact authority globally; no actual Computer exists yet, so its
 native DNS and byte-transfer behavior remain unmeasured. No signed URL was
 printed and no object download occurred during this configuration review.
+
+**Pre-cutover trust correction:** inspecting the exact retained Lore input
+`sha256:902afddd87de1dad21228bb02af2c11af15a208b57348621dadc3ae5a3bcf305`
+finds the native CLI/server but only the generic local-installation CA, fingerprint
+`37:07:83:D2:4D:E0:F6:F8:CA:D3:05:1E:86:89:23:9B:99:98:D4:19:A8:D1:C5:04:30:BB:B4:A4:35:D8:0A:7E`.
+The final `caf5` receipt really names this image; this is not merely a stale tag.
+Its prior version/startup receipt did not inspect the required Linux trust roots.
+CLI SHA-256 is `19afa922a9bcdbf5cbb27ade9e0dfc3a0dfe2ccc1c43223d4fa0e9739397a49a`;
+server SHA-256 is `07227e386ca6ab0949c9bbea3f28975329a73a14bf45825f2726b154c3dca4a2`.
+The verified staged public context contains the actual Lore and storage roots
+recorded above. Rebuild the unchanged native Lore source with the existing
+Dockerfile and that context; inspect the retained Factory and Computer images
+separately before deciding whether they need rebuilding. No Lore authorization
+change, TLS bypass or runtime certificate fallback is authorized by this finding.
+Sanitized evidence:
+`/tmp/computers-hub-native-issuer-validation-20261019/lore-image-inspection.json`,
+SHA-256 `dcbcdedd51d99e9ea385bbfd67311d90bd09779d5a201d1df0188bad3d03ef04`.
+Cutover remains held while the correct immutable artifacts are established.
+
+The corrected Lore runtime now builds as
+`sha256:d8ca55bb7653469fd8cbf754d2509e03c272240956677284bf3878dfa64f5366`
+on Linux x86_64 from installation `cccccc40`, native source tree
+`c668e85c6f790f25c867de95d4ca3a9eab1f5628` (identical to reviewed `821da217`),
+and the verified public CA context. Docker reuses the source-build layers and
+adds the two intended CA files through the normal trust-store update. CLI/server
+hashes and versions remain unchanged. Networkless inspection finds both exact
+Linux roots, each verified against the installed system trust bundle. Build log:
+`/tmp/computers-lore-final-821-linux-20261019/lore-build.log`.
+
+Separate networkless inspection confirms the retained Factory `aae9b06e…dd6193e`
+and Computer `c668229a…d3d1d96` already contain both verified roots; neither needs
+a trust rebuild. The Computer contains OpenCode SHA-256
+`79f58e2eaefa35cd30dd3cb73c7eca83ff2f45a67b0b41684cde1e4cbe74ddc3`, selects
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` and points MCP at
+`https://veoveo.bioma.ai/mcp/computer`. The existing native Lore CLI hash matches
+the inspected server image. These are immutable-image/configuration observations,
+not authenticated network or model receipts.
+
+The coordinator releases trusted preparation of only the dedicated Lore database
+login/schema, bucket/IAM identity, private native configuration/credentials and
+new absent Lore volume, following the existing installation recipe. The staged
+Lore-only Compose override is being updated to the corrected image and explicit
+`HOME=/data`, with UID/GID 1000 matching the existing TLS key ownership. Ordinary
+volume preparation provides the same identity a private writable home; no TLS key
+permission is relaxed. Lore start remains held until its selected inputs are
+verified; the shared gateway/Hub switch and paid qualification have not occurred.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
