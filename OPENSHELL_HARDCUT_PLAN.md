@@ -2211,10 +2211,89 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `82ede48948d2c912f20e9ee599f5a41369a2a7ed66efa08392958ebd474ed396`.
   Media's six-case fake baseline also passes, 51.28 seconds libtest and
   51.336316 seconds outer Exec, 06:10:19.893940–06:11:11.230256 UTC, exit zero;
-  receipt `real-wavespeed-20261019/media-fake-six-final.json`. Current renewal
-  and restart gates remain separate; their final receipts follow. At this rollout checkpoint no paid
-  generation or OpenCode model call had run; the later single real Events result
-  is recorded below.
+  receipt `real-wavespeed-20261019/media-fake-six-final.json`. Recovery and
+  renewal results and their remaining limits are recorded below. At the initial
+  rollout checkpoint no paid generation or OpenCode model call had run; the later
+  single real Events result is recorded below.
+- **Fresh typed-stack recovery and renewal — 2026-10-19 UTC.** The three
+  terminal prepare/restart/verify pairs pass against the same prepared records.
+  Each service's native stop/start retains its sandbox and changes its process;
+  these terminal pairs restart the component alone, not Hub. Time retains event
+  `event-01a152c9-a591-7720-acb8-76e6425ebc18`, version 2 and its cancelled Task;
+  verify passes at 06:12:22.938281–06:12:23.804474 (0.82 seconds libtest).
+  Artifact retains `01a152ca-58e8-7af2-a1c5-8d5054165d8b` and its available-at
+  timestamp; same-ID verify passes at 06:17:27.957162–06:17:29.188808
+  (1.11 seconds), including exact downloaded bytes and cleanup. Media retains
+  internal Task `01a152cb-fe21-7e60-bc57-751c85df9981`, prediction
+  `01a152cbfe397480a14032033076822b` and the completed result; verify passes at
+  06:17:48.118172–06:17:49.437975 (1.19 seconds), including its 65,536-byte
+  synthetic Artifact and digest. Initial Artifact/Media verifies immediately after
+  native Ready failed (unacknowledged resource subscription / transport send);
+  these failures remain in the receipts. Native Ready alone did not establish
+  application registration readiness. A routed application read preceded each
+  successful same-record verify; no re-prepare or mutation replay was used.
+  Private receipts are `real-wavespeed-20261019/{time,artifact,media}-terminal-*`.
+
+  Media's coordinated in-flight Media+Hub restart also passes: 62.00 seconds
+  libtest, 06:21:15.337475–06:22:17.592172 UTC, native Exec exit zero. Hub Task
+  `gtr_xyEfLk3aJ4o6WNuicdmG720ZznGrzAEf2eO3eTA5u_Y`, internal Media Task
+  `01a152d2-4ae4-7d23-94d7-521a711e0a63` and prediction
+  `01a152d24b107b83b6e0903089b152c2` remain the same. The test observes Working
+  after verified restart, then pushed Completed, one independently observed fake
+  submission, one output and a retained result. Saved bytes total 65,536, SHA-256
+  `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`.
+  Receipt `media-inflight-recovery.stdout.log` has SHA-256
+  `9dcec5192f12d2a97410c476930752da5d7328bef6cc85e16578e13909a50a00`;
+  the matching stderr and native stop/start timestamps are retained alongside it.
+
+  Both administrator and ordinary-member fresh calls succeed at 06:14:07 in the
+  same SDK runner process `405171f2-f1f9-4323-a8c0-9e8f68571a5a`, without manual
+  credential rotation. Before/after opaque-reference hashes match for both roles.
+  The conservative original-JWT expiry bound is 06:09:57.302: the first successful
+  current-process admin call ended at 05:54:53.302, plus the configured 900-second
+  JWT lifetime and four-second verifier margin. This is a source/config-derived
+  bound, not privately decoded per-token expiry; OpenShell's 300-second lease cap
+  is not the JWT lifetime. This proves fresh-call recovery beyond that bound with
+  unchanged handles, not uninterrupted transport or a separately measured refresh
+  issuance timeline.
+
+  Time in-flight recovery remains inconclusive and deferred. Its valid attempt
+  at 06:19:50.887–06:20:40.321 reached Completed before the required post-restart
+  Working assertion; the approximately 49-second orchestration exceeded that
+  fixture's working interval. A later automated harness read empty stdout after
+  redirecting readiness JSON to a file and stopped before Task read/continuation;
+  it is invalid evidence. Neither establishes a product recovery failure. No
+  production behavior was changed. Gate 3 remains open for this limitation;
+  final bounded MiMo qualification remains incomplete after the timed-out attempt
+  recorded below; that scenario reuses the real Artifact.
+
+- **Final Linux OpenCode attempt — incomplete, 2026-10-19 UTC.** One authorized
+  exclusive attempt used the reviewed private driver SHA-256
+  `7bda21caed68d4794d37e5302f766381d1e5911fb29f870291977e983cf57daf`,
+  OpenCode source `7b12c605`, the selected installed executable and explicit Build
+  model `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`, with eight-step/240-second bounds.
+  It used its own OAuth grant, correct project/PWD and owned persistent server;
+  Media generation was denied and the prompt required reuse of the real Artifact.
+  Native MCP connected after 2.133963 seconds. The run started at
+  06:31:23.043945 UTC and ended at 06:35:25.213759; the model phase reached
+  240.023554 seconds and the owned processes were stopped (child exit -9).
+  Session `ses_ead246882ffeKWdlYuYkWvaKj4` emitted one CLI step-start, no completed
+  step or tool results, and saved no output. Its persisted assistant has one empty
+  reasoning part created at 06:31:27.450; no text or tool input is persisted.
+  This establishes engine reasoning-start activity, not an instrumented provider
+  response or the subsequent cause of delay. No Time Task handle is visible. Stored zero usage/cost counters are
+  incomplete accounting, not proof of zero provider response or billing.
+  CLI stderr is empty; server stderr contains only the SDK SEP-2352 notice that
+  the stored OAuth credential lacks an issuer stamp. No logged permission,
+  provider error or retry identifies the timeout cause. Real Media restoration
+  had native Ready evidence, but no retained catalog response; an attempted SDK
+  catalog probe was policy-denied before Hub. Do not attribute this attempt to
+  discovery failure or claim its real-catalog assertion passed.
+  Private evidence is `opencode-reference-final-20261019/`, receipt SHA-256
+  `58461d97c39a58d4e9e55eabbf3fdbafa4e6db9e4aac817e938fbdd4a4f130c9`.
+  Gate 5 remains unchecked. No replacement run was made; diagnose the timeout
+  before another bounded attempt. No new paid generation is needed or permitted
+  by this attempted retrieval scenario.
 - **Native provider-request instrumentation.** OpenShell `6589a91` writes opt-in
   supervisor OCSF JSON to `/var/log/openshell-ocsf.YYYY-MM-DD.log`; the supervisor
   log directory is ephemeral. Enable `ocsf_json_enabled`, verify application and

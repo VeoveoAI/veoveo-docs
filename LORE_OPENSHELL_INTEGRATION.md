@@ -307,8 +307,15 @@ successes remain evidence for their recorded frozen revisions. The fresh stack's
 Time baseline passes seven cases in 14.61 seconds libtest; Artifact passes all six
 private cases in 406.48 seconds libtest / 406.534 seconds outer native Exec,
 including its large-object proof. The six Media fake baseline cases also pass in
-51.28 seconds libtest / 51.336316 seconds outer Exec. Current renewal and restart
-recovery remain separate gates. The public Media route previously rejected invalid signatures; a real
+51.28 seconds libtest / 51.336316 seconds outer Exec. All three same-record
+terminal restart verifies and Media's coordinated in-flight Media+Hub restart
+pass. Fresh calls from both roles pass beyond the source-derived original-JWT
+expiry bound in one runner with unchanged opaque handles; this does not prove
+uninterrupted streams or exact token issuance timestamps. Time in-flight recovery
+remains inconclusive because of fixture timing and an invalid later harness,
+not an established product failure. The [reference receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
+retains initial native-Ready-only failures and the application-ready retries.
+The public Media route previously rejected invalid signatures; a real
 signed Events callback now passes on Linux as recorded in the
 [dated receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).
 Mac qualification does not
@@ -678,10 +685,19 @@ administrator/member admission and all seven Time baseline cases pass in 14.61
 seconds libtest (14.662 seconds outer Exec). All six fresh private Artifact cases
 pass in 406.48 seconds libtest (406.534 seconds outer Exec), including the large
 unknown-size multipart proof. The six-case Media fake baseline also passes in 51.28
-seconds libtest (51.336316 seconds outer Exec). Current renewal and restart recovery
-remain separate gates; these baseline passes do not establish those results. The real signed
-Events gate now passes independently; final bounded MiMo qualification remains
-pending. The user prioritized this single real run before the remaining
+seconds libtest (51.336316 seconds outer Exec). Separate receipts now prove all
+three terminal restart verifies, Media's in-flight restart across Media+Hub
+(62.00 seconds), and both roles' fresh calls after the conservative original-JWT
+expiry bound with unchanged handles in the same runner. Initial Artifact/Media
+terminal failures occurred before routed application readiness; same-record
+verifies then passed. Time in-flight remains inconclusive/deferred due to timing
+and harness limitations. The real signed Events gate passes independently;
+final bounded MiMo qualification remains incomplete after its one authorized
+attempt reached the 240-second deadline without completed tool results or a saved
+file. Its persisted empty part establishes engine reasoning-start activity;
+provider response, subsequent latency and billing are unmeasured. The [attempt receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
+records the exact model, session, bounds and diagnostic limits. No replacement
+run was made; diagnose the timeout before another bounded attempt. The user prioritized this single real run before the remaining
 deterministic/restart gates. `wavespeed-ai/flux-schnell` used one 1024 × 1024 PNG
 input (seed 42, async URL output) with the orange-robot/green-seedling prompt
 recorded exactly in the [receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).
