@@ -3641,8 +3641,15 @@ all 188 regenerated SQLx entries are committed. GPT-6 Luna's focused gate is gre
 These selections span the recorded non-SQL source fixes; unaffected passing tests
 were not rerun for unrelated fixture/lint edits. Final strict clippy compiles all
 targets/features, and both consumers of the changed device result were rerun.
-Full Mac-host Linux ARM64 and actual Ubuntu x86_64 `check` targets are now running
-from the committed source. The native issuer fixture approves a synthetic identity
+The Mac-host Linux ARM64 full `check` target subsequently failed in two existing
+control-plane tests: 223 passed, two failed and one skipped. Both failing assertions
+require private-key JWT for all hosted client-credentials registrations, while HLI5
+adds explicit `client_secret_post` registrations. Source review must distinguish
+stale expectations from any unintended broadening of admission before updating
+these tests. The actual Ubuntu x86_64 gate was interrupted before nextest after
+the same-source failure; its task-owned build processes were verified stopped.
+There is no Linux gate result or completed check-target image for this revision.
+The native issuer fixture approves a synthetic identity
 through trusted fixture storage and uses no real Lore server or Entra session.
 It proves live withdrawal of user/factory assignments, concurrent publication order
 and persistence across restart with a stale seed. The notification fixture uses
