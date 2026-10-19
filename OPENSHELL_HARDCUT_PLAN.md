@@ -2696,6 +2696,66 @@ not merely the process-status check.
   lifecycle behavior; this final receipt does not capture capability-body wire
   data or distinguish pushed status from status polling.
 
+### PostgreSQL vector and spatial extensions — 2026-10-19
+
+**Qualified in the existing `veoveo` database on both deployments.** PostgreSQL
+remains 18.6; pgvector 0.8.7 and PostGIS 3.6.4 are enabled in `_extensions`.
+Template commit `844e89386f2831ed7d5d45556fdc6cf13f4b9047` and Bioma commit
+`be40fb21e43a80bd4cfe4e739f6663aca9626f2e` contain the same pinned Dockerfile,
+bootstrap SQL and verification SQL. Existing volumes, service schemas, ownership,
+registration roles and search paths remain in place. Keycloak's database is unchanged.
+
+- **Execution:** GPT-6 Astra coordinated/reviewed, GPT-6.1 Sol implemented the
+  installation changes, and GPT-6 Luna built and deployed them. No OpenCode or
+  inference-provider calls were made. These are deterministic database checks,
+  not model-driven acceptance or a new MCP tool qualification.
+- **Images:** the Mac's Docker `linux/arm64` build took 10.53 seconds and produced
+  `sha256:e9a851dad724ff7ff7e46e87a59b4037683e998683d8fa4bb1cd342b6c9339fc`
+  (703,536,221 bytes). The actual Linux reference's `linux/amd64` build took
+  12.30 seconds and produced
+  `sha256:ec28a91344e51dd0e22a6c16ac773b07dcb57f69a863d1a3c55858e2cacdaa33`
+  (688,778,865 bytes). Both retain the digest-pinned PostgreSQL 18.6 server/client;
+  only the extension packages and their dependencies are added.
+- **Bootstrap and behavior:** empty-database initialization and repeated explicit
+  enablement pass on both architectures. Exact vector L2 distance is 5 for
+  `[1,2,3]` and `[4,6,3]`; HNSW nearest-neighbor and GiST bounding-box queries return
+  the expected fixture row. EPSG:4326 point `(1,1)` transforms to EPSG:3857
+  `(111319.49079327357,111325.1428663851)` within `1e-6`. The small fixture forces
+  index plans with `enable_seqscan=off`; this proves index usability, not speed,
+  scale or approximate-search recall.
+- **Authorization and lifecycle:** deployed checks use trusted administrator
+  `SET ROLE` into existing Time, Artifact, Media and Hub roles on both hosts, plus
+  Lore locally. This proves those roles' database authorization; it is not a new
+  service-login authentication test. Extension-schema CREATE is denied and
+  `spatial_ref_sys` is read-only to those roles. All fixture DDL rolls back.
+  Extension state survives PostgreSQL recreation/restart, pre-existing application
+  ownership is unchanged (87 local schema/relation records, 83 remote), and actual
+  application connections reappear after restart. No application compatibility
+  layer, ownership migration or SDK change was added.
+- **Unplanned execution issues:** remote harness path/SSH quoting mistakes and
+  overly narrow/broad ownership comparisons were corrected; they did not require
+  extension source changes. Broad diagnostics exposed the local PostgreSQL admin
+  password and the remote SeaweedFS admin password in tool output. Both were
+  rotated without retaining the old values in evidence. PostgreSQL's replacement
+  succeeds over its nonloopback network path and an incorrect password is rejected;
+  its stock container-loopback trust path was unsuitable for that negative test.
+  SeaweedFS's replacement login succeeds and its old password is rejected by the
+  native login form. S3 credentials, image, volume, TLS mounts and ports are unchanged.
+
+Private receipts are under the template's ignored
+`state/postgres-extension-evidence-20261019/`. The final local verification and
+credential-remediation receipt is `coordinator-final-verification.json`, SHA-256
+`9fa2267a34d06a6dea47301fcffa2dba9ec2569a6075be7c0ca0cdd8b67593a6`.
+The remote final correction/supplement is
+`remote-live-rollout/remote-live-rollout-correction.json`, SHA-256
+`7f78a3c82baae31c8c9a619e9d9a98dc2314fc54f0e1faf568be061a695b2b36`;
+it records the successful comparison of pre-existing ownership separately from
+the newly created `_extensions` schema. Verification SQL SHA-256 is
+`b314d84cabd101f023c796a92514be38c5512fe83efe4d36f7820cc0f5a4943f`.
+Follow the [installation instructions](https://github.com/VeoveoAI/veoveo-template-installation/blob/844e89386f2831ed7d5d45556fdc6cf13f4b9047/postgres/README.md)
+for build, enablement and service-role checks. A consuming MCP still owns its
+columns, queries, indexes and feature-specific qualification.
+
 ### Remaining Adoption
 
 During this slice, retain PostgreSQL/SeaweedFS in their trusted installation
