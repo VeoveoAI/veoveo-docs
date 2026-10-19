@@ -5,11 +5,11 @@ acceptance. Clone/edit/push, the small branch hook, native credential renewal,
 source withdrawal, applied binding-removal/detach, termination and gateway recovery
 are qualified. The Desktop adapter/signer/ingress are retired and durable data is
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
-The next authorized goal is a native reference Linux deployment at
+The authorized reference Linux goal now passes: native deployment at
 `veoveo.bioma.ai`, real signed WaveSpeed webhook qualification and final bounded
 OpenCode MiMo acceptance. One real signed WaveSpeed Events callback now passes
-on Linux. Remaining deployed lifecycle/recovery and final Linux MiMo gates are
-pending; GPU/CUDA remains separate.
+on Linux. Deterministic deployed-service, recovery and final Linux MiMo client gates now
+pass; earlier bounded failures remain historical. GPU/CUDA remains separate.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
 preflight, one bounded model build and Time deployment from that same Lore revision.
@@ -1498,13 +1498,13 @@ The qualified native sources remain on their reviewed branches:
 
 ### Reference Linux Deployment And Signed WaveSpeed Webhook Goal
 
-This is the new active goal after the completed Mac milestone and sanitation.
+This goal now passes after the completed Mac milestone and sanitation.
 Deploy native OpenShell, Hub, Time, Artifact and Media on the reference Linux host
 `veoveo.bioma.ai`, qualify one real signed WaveSpeed callback, then run final
 bounded OpenCode MiMo acceptance. The goal permits at most one paid WaveSpeed
 generation in total; final MiMo reuses that retained Task/Artifact rather than
-submitting another generation by default. Runtime qualification remains open;
-completed preparation is recorded below. Historical Mac
+submitting another generation by default. Runtime and final-client qualification
+now pass; preparation and exact receipts are recorded below. Historical Mac
 Git/Lore correspondence and factory proofs retain their exact source revisions;
 this goal does not retroactively change or repeat those receipts.
 
@@ -2124,7 +2124,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Checked patch hashes match the subsequent SDK and Time commit diffs exactly.
   The subsequent Linux source checks and publication are recorded below.
   Fresh-state deployment and the real signed callback subsequently completed as
-  recorded below; final bounded MiMo acceptance remains pending. No paid generation
+  recorded below; final bounded MiMo acceptance subsequently passes in the final
+  Time-first receipt. No paid generation
   or OpenCode model call was made by these source-check cycles.
 - **First merged-source Linux gate passes.** Core `433ed5f` passes the canonical
   Docker `check` target on the remote Linux x86_64 host: 349 tests passed, two
@@ -2181,7 +2182,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   The controller minted fresh access tokens, and disposable QA grant files were
   removed after custody confirmation. New authorization epochs require fresh QA
   processes; ordinary automatic renewal must preserve those new references.
-  Application-token expiry qualification remains open: use completion of the
+  At that checkpoint application-token expiry qualification remained open: use
+  completion of the
   initial successful calls plus the configured 900-second JWT lifetime and a
   margin, not merely the 300-second native lease. The controller-held JWTs were
   not extracted; this is a conservative configuration-derived bound.
@@ -2273,15 +2275,15 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   automated harness read empty stdout after redirecting readiness JSON to a file
   and stopped before Task read/continuation; it is invalid evidence. Neither
   establishes a product recovery failure. No production behavior was changed.
-  Gate 3 now closes on the reviewed passing receipts; final bounded MiMo
-  qualification remains incomplete after the timed-out attempt below.
+  Gate 3 closes on the reviewed passing receipts; final bounded MiMo qualification
+  subsequently passes in the final Time-first receipt after the historical attempts below.
 
   After real Media restoration, the existing admitted Media acceptance binary
   also passes its free catalog/member-refusal case in 0.38 seconds libtest,
   06:54:39.852017718–06:54:40.343164991 UTC. This proves a nonempty restored catalog
   and ordinary-member generation refusal without creating a generation; it does
   not assert that `wavespeed-ai/flux-schnell` was listed. That exact assertion
-  remains part of the final client scenario.
+  subsequently passes as part of the final client scenario.
 
 - **Final Linux OpenCode attempt — incomplete, 2026-10-19 UTC.** One authorized
   exclusive attempt used the reviewed private driver SHA-256
@@ -2307,7 +2309,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   discovery failure or claim its real-catalog assertion passed.
   Private evidence is `opencode-reference-final-20261019/`, receipt SHA-256
   `58461d97c39a58d4e9e55eabbf3fdbafa4e6db9e4aac817e938fbdd4a4f130c9`.
-  Gate 5 remains unchecked. At this first-attempt checkpoint no replacement run
+  Gate 5 remained unchecked at this first-attempt checkpoint. No replacement run
   had been made; the later corrected attempt is recorded below. No new paid
   generation is needed or permitted by this retrieval scenario.
 
@@ -2369,11 +2371,93 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `071ef21d6526e240028a6914928c5c4bfc7f2a2941b60e072dc0f0eea60b30fb`;
   this is a localhost fixture with no inference or Hub call.
   The reviewed candidate `6043b29604c2518f25c96ea20ae046848b6e9df3f41408c7752f990c7319dcd8`
-  is now running with the explicit 600-second bound and the same eight-step
-  scenario. Its checkpoint starts at 07:08:38.339632 UTC, native event observation
-  connects at 07:08:39.718387, session `ses_ead025069ffeXuzFg4ZxxjEmf0`.
-  Outcome and gate 5 remain pending; neither the local observer proof nor prior
-  deterministic service qualification is a final model-driven client pass.
+  ran with the explicit 600-second bound and the same eight-step scenario,
+  07:08:38.339632–07:18:39.833546 UTC, session `ses_ead025069ffeXuzFg4ZxxjEmf0`.
+  This third attempt also reached its bound: 600.001049 seconds model phase,
+  601.463073 seconds total. Native observation counted 1,624 reasoning deltas and
+  61,086 characters, but no tool call, finalized accounting or saved output.
+  Native interruption took 37.617 ms; its claim is released with zero resumes.
+  Receipt `opencode-reference-final-instrumented-20261019/attempt/receipt.json`
+  has SHA-256 `d53cdf4460fc92f5827deffc64e6819ff9702a650c05806dca21a7d82492e271`.
+  These counts prove continuing engine reasoning activity, not a silent stream;
+  they do not measure provider HTTP chunks, token usage or cost. Gate 5 remained open.
+
+  Source/config review finds no explicit reasoning control in the selected
+  default variant. Cached MiMo metadata permits 131,072 output tokens and exposes
+  reasoning toggle support; Core's primary output allowance uses that limit when
+  context room permits. Eight steps bounds model calls, not first-step reasoning,
+  and CLI `--thinking` only controls rendering. No contradictory tool instruction
+  or transport defect is established. A new private candidate selects the native
+  `#none` variant of the same exact provider/model, mapping to DeepInfra body
+  `reasoning.enabled=false`; scenario, permissions and MCP Tasks are unchanged.
+  The localhost fixed-refusal comparison passes: default reasoning is omitted,
+  `#none` sends exactly `reasoning.enabled=false`, and both retain identical 12-tool
+  local Build inventories and schema hashes. Two intentional HTTP 400 responses
+  create no inference and leave released claims. The first `#none` attempt ended
+  unsuccessfully after 65.823 seconds at eight steps: two local tool-name/search-shape
+  errors, then read-only resource discovery; no intended MCP operation or saved file.
+  The prompt confused direct MCP tools with Code Mode resource helpers. An actual-project
+  localhost refusal probe then measured normal asynchronous tool inventory growth
+  from 12 to 50 in 101 ms, with required direct tools present and generation absent.
+  The corrected prompt distinguishes these surfaces. Its same-model `#none` run,
+  bounded by 16 steps / 600 seconds, was partial: 2026-10-19
+  07:40:44.824397–07:43:29.677098 UTC, 164.850767 seconds total /
+  163.212114 seconds model phase, session `ses_eace4ea38ffeCdYeXWcDCUKj8w`.
+  The retained Artifact download independently verifies as PNG 1024 × 1024 RGB,
+  883,996 bytes, SHA-256
+  `007af757d14221e544098adc5a1e37488f7e57818c85c9e3d91e97587d646b96`.
+  The single `expand_schedule` call was rejected because its calendar ID lacked
+  `calendar-`; its time-only local fields were also outside the decoder contract.
+  The advertised schema lacked the prefix/full-date metadata. No Time Task was
+  created. Code Mode `.arrayBuffer()` / `crypto.subtle.digest` assumptions caused
+  local errors before the successful download. CLI exit 0 is not a semantic pass.
+  Durable session cost is USD 0.0850859424: 178,365 input, 6,943 output,
+  652,384 cache-read and zero reasoning tokens. The 15 CLI step records total only
+  USD 0.0664002324 and are incomplete. Authoritative receipt:
+  `state/reference/evidence/opencode-reference-final-direct-20261019/durable-session-usage.json`,
+  SHA-256 `2db296e9a900f514ca1130b00b98622f9b564c8b240f7a259cd7d045e2bfcf80`.
+  Time's schema-only correction is published at
+  `d70ac8e2f9bdfb1c012ee744e5cd119ce4bca1dd`, tree
+  `b4ac7086357e4f788899eb8fd9dcc1cf5c1c7a02`. Both canonical Docker checks pass
+  141 tests / 10 skipped: Mac-hosted Linux ARM64 and actual reference Linux AMD64.
+  Matching runtime rollout and the new Time baseline now pass: seven cases in
+  14.84 seconds, Hub catalog 39 tools / 21 Time tools, with live `CalendarId`
+  prefix/minimum 10/maximum 128 and full local-date/time metadata. The new runtime
+  image is `sha256:e57e00213da9acef3d25ef4fae19c690a0b2843eeae4374c54cc33f2172c90b8`;
+  matching QA image `sha256:3df4c810854dc9c65045c0864992301e72c480df70a131cc7597fbc11c01a83f`.
+  Time sandbox `4cf23b46-1c5b-46d9-987c-dc7f2cb969bb`, process
+  `d72771e0-43c6-40f6-8ed7-c032b3dc6dfe`, records this rollout; earlier `e607b2e`
+  images and baseline/recovery receipts remain historical evidence.
+  QA recreation uses the authored base policy with the same provider: effective
+  policy export contains a synthetic provider key and is not the authored input
+  for recomposition. Effective policy equivalence is confirmed by canonical SHA-256
+  `171d1e63fe62d86c30140f3c4c2504c656c5b558841235d0aa7b6e8f7f56b845`;
+  provider/credential selectors, Time public-key fingerprint and RW state mount are
+  unchanged. Member read of retained Task
+  `gtr_ylGIxVgW7EAS__wvpg2NwIlwvlPkRdO85Za4y-QqMC4` still returns Completed,
+  64 occurrences, not truncated, no error and the same timestamps. The private
+  `time-calendar-schema-20261019/native-rollout-d70ac8e` receipts retain this proof.
+  A separate no-model native status observation on the unchanged OpenCode project
+  measured absent → pending → connected in 1.033 seconds, then clean shutdown;
+  this is normal asynchronous discovery, not a configuration defect.
+  The next same-model 16-step run ended with CLI exit 0 but semantic failure:
+  2026-10-19 08:14:01.257596–08:21:07.218450 UTC, session
+  `ses_eacc6751cffe60j73RL4fVYA1X`, 424.697897 seconds model phase / 425.959552 total.
+  It made one filtered catalog call and one download request, but zero Time resolve
+  or schedule calls. Initial default Python GETs received HTTP 403 / body code 1010
+  before URL expiry. A later browser-like User-Agent case network-downloaded the
+  exact 883,996-byte PNG to a fresh 0600 file; it did not copy the prior image.
+  This is not the required unchanged-header/default-client proof, and no Time Task
+  was created. The sanitized semantic receipt is retained with the attempt.
+  The native Cloudflare object-host-only `bic=false` rule was applied/read back at
+  08:36:22.683664 UTC; global Browser Integrity Check remains on. Post-edge checks
+  pass: default Python signed GET 200/682.388 ms, default curl 200/424.357 ms, both
+  exact 883,996 bytes/SHA/PNG; unsigned 403 AccessDenied/205.016 ms and tampered
+  403 SignatureDoesNotMatch/194.681 ms. No UA override, TLS bypass or proxy was used.
+  Receipt `opencode-reference-post-edge-20261019/transfer-receipt.json`, SHA-256
+  `c6c11ba38519dd12cad206a27682f3cffb0c4d47de718d5b9b5935833e0b3c99`.
+  The later full-scope Time-first run passes the final semantic gate, as recorded
+  below. No new generation ran; the real signed callback remains independently qualified.
   Reasoning deltas are live-only; the full reasoning value is persisted on end.
   Therefore the empty retained start cannot establish that no reasoning deltas
   arrived before SIGKILL. Provider response timing and billing remain unmeasured.
@@ -2445,8 +2529,9 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
 ### Linux Real WaveSpeed Signed Events Receipt — 2026-10-19
 
 The user prioritized the one real signed-callback run before completing the
-remaining deterministic/restart gates. This gate passes independently; gates 3
-and 5 remain open. Exactly one paid generation ran through the Rust acceptance
+then-remaining deterministic/restart gates. Those service/recovery gates now pass;
+this Events gate remains independent; final client gate 5 subsequently passes by
+reusing its retained image. Exactly one paid generation ran through the Rust acceptance
 client, public Hub, native Media and private Artifact. No OpenCode/model-driver
 call or second generation was used.
 
@@ -2501,7 +2586,7 @@ bearer URL, signed download URL, request header or provider secret is published.
 | Current Linux runtime | Immutable image ID |
 | --- | --- |
 | Hub `ed6778f` | `sha256:6fd5cdb9761ba5f91bc288110a0a1794a141dd6ac9dfe66e4048385e087d1a70` |
-| Time `e607b2e` | `sha256:3c7e97a1352f4216fa52117decb4e956ae80e7d0142c9c416637f84869d1831b` |
+| Time `d70ac8e` | `sha256:e57e00213da9acef3d25ef4fae19c690a0b2843eeae4374c54cc33f2172c90b8` |
 | Artifact `00c8e93` | `sha256:28413a16b612a35725e91fc5dae2325ffc17613df742489d34a59d6d0f93cf29` |
 | Media `4e8504b` | `sha256:e3353a53f38f6a9f65cf5f93ff8c8fab663a2a8828244e5e674dd98485ce2209` |
 | Media test provider `4e8504b` | `sha256:b97476b8d40c03dff0381c6600517fb27320ee08fcff50fa113cb4af69449b11` |
@@ -2549,9 +2634,9 @@ bearer URL, signed download URL, request header or provider secret is published.
   generation retry. The Mac USD 0.003 polling receipt is separate historical proof,
   not this callback gate or a guaranteed future price. The single Linux run now
   passes with the [dated Events receipt](#linux-real-wavespeed-signed-events-receipt--2026-10-19).
-  Remaining deterministic/restart work stays in gate 3; no additional paid
-  generation is needed for gate 5.
-- [ ] **5 — Final bounded OpenCode MiMo qualification.** Only after deterministic,
+  Deterministic/restart gate 3 now passes separately; no additional paid
+  generation was needed for the subsequently completed client gate 5.
+- [x] **5 — Final bounded OpenCode MiMo qualification.** Only after deterministic,
   component, integration and deployed gates pass and expected behavior works,
   preflight the selected OpenCode MCP client without inference, then run the
   explicitly selected `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` Build agent once within
@@ -2561,7 +2646,55 @@ bearer URL, signed download URL, request header or provider secret is published.
   Task/Artifact identities, saved bytes/hash, errors, timings and model token/cost
   evidence. Preserve normal asynchronous MCP connection/catalog behavior. Stop on
   failure and return to development; no model calls during iteration, silent model
-  substitution, repair loop or automatic mutation replay.
+  substitution, repair loop or automatic mutation replay. The reviewed
+  [Time-first receipt](#linux-final-time-first-opencode-mimo-receipt--2026-10-19)
+  now passes the complete scenario without a new generation.
+
+### Linux Final Time-First OpenCode MiMo Receipt — 2026-10-19
+
+The complete model-driven scenario passes with OpenCode source `7b12c605`, the
+reviewed installed executable and explicit Build model
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro#none`, 16-step / 600-second bounds and its own
+OAuth grant. Driver start/finish: **08:39:08.179348–08:40:43.145956 UTC**;
+**94.966864 seconds total / 92.797675 seconds model phase**. The outer builder
+launch was approximately 95.04 seconds and is a different measurement. Session
+`ses_eacaf7328ffeycifx83RlrRnWC` exits zero and satisfies the semantic assertions,
+not merely the process-status check.
+
+- **Ordered operations:** all eight tool envelopes completed without errors: two
+  `resolve_time` calls, exactly one `expand_schedule`, one filtered catalog call
+  finding `wavespeed-ai/flux-schnell`, resource discovery/read of the retained
+  Artifact, one `create_download` and one native shell. First recorded direct-tool
+  invocation was 6.268652 seconds after driver start; this measures invocation,
+  not catalog readiness or the first HTTP request.
+- **Task reconciliation:** exactly one Time Task
+  `01a15350-c26b-73b2-a922-4562431da071`, actual Hub handle
+  `gtr_4pfg_rQsyNguBbWNq2oBPyfBkDcB6EuGUxkSnOPdizA`, succeeded at
+  **08:39:24.027981 UTC** with one occurrence and `truncated=false`. Two native
+  resolutions supplied the horizon for `calendar-final-mimo-2030-8f2308ad`;
+  no TimeInstant was fabricated. Trusted read-only SQL confirms the single row.
+- **Retained image:** model-observed metadata matches Media Task
+  `01a152b5-6d72-72a3-83d3-0fa9080da3ff`, prediction
+  `c8aa00e31ec14fe79fba39d02938773f` and Artifact
+  `01a152b5-b5d4-7e93-9f2f-5387f2e01345`. The exact signed URL, GET method and
+  empty explicit headers were preserved. Native shell wrote a fresh exclusive
+  mode-0600 file from the network, without UA override, TLS bypass or local copy.
+  Independent full decode confirms PNG 1024 × 1024 RGB, **883,996 bytes**, SHA-256
+  `007af757d14221e544098adc5a1e37488f7e57818c85c9e3d91e97587d646b96`.
+- **Accounting and lifecycle:** durable cost **USD 0.0223635068**, 41,621 input /
+  4,080 output / 254,688 cache-read / zero reasoning tokens. Native claim released,
+  zero resumes. No new generation or Media Task was created; the single paid
+  signed-callback image was reused.
+- **Evidence and limits:** private `opencode-reference-final-timefirst-20261019/`
+  retains the driver, original transcript, operator SQL, image and ledger receipt.
+  `semantic-review.json` SHA-256
+  `4926c4ccded6ce697aee8e811e8d9697d315354b0d3bec2be74c35f241209eb5`;
+  historical manifest SHA-256
+  `3cb0c0800a13cc185b21fc082c16f710707005e71628c6715fec1c529be25512`.
+  The separate independent semantic supplement is retained without rewriting that
+  manifest. Source negotiation and prior component/live probes establish separate
+  lifecycle behavior; this final receipt does not capture capability-body wire
+  data or distinguish pushed status from status polling.
 
 ### Remaining Adoption
 
