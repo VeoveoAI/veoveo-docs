@@ -4313,6 +4313,37 @@ authenticated Computer byte-transfer acceptance remains pending. Diagram detail
 text reflects the transport result; geometry is unchanged and browser review
 remains pending with the existing browser permission gate.
 
+The user's manual Linux-browser sign-in at 2026-10-19 22:01 UTC reached the
+Computer callback. Hub's OAuth token exchange returned HTTP 200, then the callback
+returned 503. The owner row and handoff existed, but no native workspace or browser
+session had been created. Native request logs ended at `GetWorkspace` after two
+profile reads. Source review identified a concrete native contract violation:
+`computer-` plus the 32-character UUID generated a 41-character workspace name,
+while OpenShell validates a maximum of 19 before checking existence. The original
+callback warning discarded the underlying cause, so the gRPC status itself was
+not measured in those logs.
+
+Hub commit `e7af2e6f2066e02d77e6d2da5a6238450faf3641` fixes construction with a
+stable 19-character name derived from the full UUID; Hub identity and browser base
+path retain that full ID. Existing cloned-template comparison remains before
+provider or sandbox adoption. Parent `a7c606c` retains the already-sanitized
+top-level callback error in the existing warning. No database, authorization,
+Lore, schema or compatibility changes are involved. GPT-6 Luna builder ran the
+extended existing owner-mapping regression (1 passed in 1.05 seconds) and Hub
+binary compilation (passed in 13.40 seconds); the initial fixture attempt lacked
+PostgreSQL 18 on PATH and was rerun with the installed tools. The actual Ubuntu
+x86_64 runtime build produced image
+`sha256:67d5e4063ade380aa46fde79b2431bf211176eb1f3f2e80496da6d5e80772911`.
+The corrected image is now deployed as native Hub sandbox
+`759c65ef-df38-42ad-8f08-cd766179d6a4`, with the original configuration volume,
+native-control provider and bearer-passthrough public exposure. An initial create
+attempt selected the user Computer policy instead of Hub's own policy and was
+rejected before creating a workload; the retained authored Hub policy restored
+the intended deployment without changing authority. Native and public readiness
+return HTTP 200 (public request 0.392 seconds), and `/computer` returns 303 to
+normal authorization. A fresh manual browser sign-in is requested; the previously
+consumed callback cannot resume setup. No model call has been made during this fix.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
