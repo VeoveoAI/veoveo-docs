@@ -3244,3 +3244,85 @@ are made by staging. Signed scalar recipient claims already work in Lore; actual
 Entra access-token issuance/renewal and permission behavior remain unproved. The
 change is an authorization representation within native Lore, not permission for
 global grants, a Hub Lore signer or a replacement authorization service.
+
+
+### Computer native Lore and Entra preparation — 2026-10-19
+
+The GPT-6.1 Sol coder implements the reviewed direct-role mode in isolated Lore
+commit `b32265924ccf1d3c09de8f76ea4eecc8c2562b05`. Exact typed repository/action
+mappings feed the existing authorizer, partition grants and native paginated
+repository catalog. Empty actions retain ordinary native writes, not read-only
+access. Review catches and corrects a synchronous-handler fallback: a finite
+admitted grant for another repository must deny access, not reinterpret the raw
+JWT through the older structured-claim path. No new issuer, wire protocol or
+service-account bypass is introduced.
+
+The GPT-6 Luna builder runs the frozen source on macOS: 71 authorization, 57
+settings, nine OIDC, six obliterate and twelve partition-access tests pass, plus
+one transport test proving the native original-access-token path without an
+exchange template: 156 total. Test execution times are respectively 0.26, 0.00,
+0.53, 0.01, 0.36 and 0.02 seconds; first compilation takes 1 minute 59 seconds.
+Locked CLI/server consumer compilation passes in 57 seconds including wrapper.
+Strict server Clippy exits 101 after 66 seconds with ten diagnostics in unchanged
+`hooks/factory_branch.rs` and `plugins/s3_postgres.rs`; it reports none in changed
+files. This is not a green full Clippy gate, new Linux build or Entra receipt.
+Logs are retained at `/tmp/computers-lore-direct-roles-validation/`.
+The reviewed ten-file source manifest aggregate SHA-256 is
+`a6ae929c032d517f9e93b24893ab90d88bca3a496c4bf130c6b8bd03caf88680`.
+
+Native Entra setup now advances using the existing Linux operator account, without
+a new user login. On OpenShell API application
+`8a6d434f-8c4c-4e2c-9756-9b2d94118d17`, the reviewed app-role PATCH preserves
+four existing roles, adds Application membership to `openshell-admin`, and adds
+five exact application scope roles. Existing `sandbox:write` supplies the sixth.
+PATCH succeeds in two seconds, and nine-role readback matches the reviewed body.
+The dedicated single-tenant `vv-hub-native-control` application is created in one
+second, with application ID `61e0ebf1-d8f8-4747-beac-e908da2bb9e1`; its service
+principal is `e5ece6f5-586a-4a13-867d-0cff89aeae0e`. Exactly seven assignments are
+verified: `openshell-admin`, `workspace:read`, `workspace:write`, `sandbox:read`,
+`sandbox:write`, `provider:read`, and `provider:write`. No `openshell:all` or Graph
+runtime permission is assigned. Credential creation and native refresh custody
+follow as a separate step; this readback has zero password/key credentials.
+The running Hub and its existing forwarder identity remain unchanged.
+
+Two preparation errors are corrected explicitly. A shallow copy altered the
+local before-snapshot while constructing a PATCH; drift comparison stops before
+any write, and a fresh independent snapshot restores the review baseline. A
+colon-delimited assignment loop then produces an invalid GUID after the first
+successful role grant; Graph returns HTTP 400. Correct structured-ID handling
+assigns the remaining six roles and verifies the exact set. Neither error is an
+Entra authorization refusal. Nonsecret receipts and payloads remain under
+`/tmp/computers-entra-preparation-20261019/`. The normalized nine-role readback
+SHA-256 is `a029afde6954ea359d669fabf1baad093a0fa6ef663f3f6abd9c40d431da740a`;
+the seven-assignment readback is
+`29d754df964a11f7da5f70a50af5f3fadb188f3feb8b7cff96bdd90ac5159e16`.
+
+Explicit workspace-scoped native inventory confirms the existing Hub exposure:
+`vv-control/hub/http`, port 8080, `bearer_passthrough`. An earlier empty default
+workspace list did not establish a missing exposure. Cloudflare's selected native
+route and Hub's loopback-host allowance remain required.
+
+The actual trusted Linux bootstrap root is
+`/home/rozgo/VeoveoAI-reference/src/veoveo-template-installation`, project
+`vv-local`, using `compose.yaml` and `compose.storage-tls.yaml`. The earlier
+`/home/rozgo/vertex/veoveo` path was not the active installation. Read-only checks
+at the actual root find no Lore service/configuration/CA yet; PostgreSQL and
+SeaweedFS retain their existing volumes and private addresses 10.231.10.2/.3.
+Lore is prepared for the unused private 10.231.10.10:41337 endpoint, with matching
+TLS IP SAN, advertised native URLs and signed recipient claim. The storage TLS
+leaf verifies against the existing public OpenShell root. Lore will connect to
+`https://veoveo-objects.bioma.ai:9000` through a Lore-only private address mapping,
+preserving its actual TLS and signing authority. It needs no public gRPC route or
+replacement storage certificate.
+
+Installation `c70a35b2ff175460e4262e949f1d77585c261764` updates the existing
+Factory/Lore Dockerfiles to install reviewed public CA files, one certificate per
+file, through the normal system trust update. Computer inherits Factory trust;
+private keys never enter those contexts. The four-file manifest aggregate SHA-256
+is `8e4e404e665ac63cb8bbd8df49a711a6be5551754a9dc94d1314bc12aac5e160`.
+Native bootstrap inputs are staged locally at
+`/tmp/computers-lore-bootstrap-20261019/` for review. They are not installed merely
+by staging. New Lore, Factory and Computer images must include the actual Linux
+trust inputs and Bioma origin; the previous Computer image embeds the generic
+example MCP origin and is not the final public installation artifact. No new
+runtime, native Lore user login or Computer browser acceptance is claimed here.

@@ -38,15 +38,16 @@ separate; this change does not remove those responsibilities from the MCP gatewa
 
 ## Hosted Computer Direct Repository Roles
 
-Status: approved bounded native implementation on 2026-10-19; not deployed or
-qualified with Entra. Native device login and the implemented refresh path do not
+Status: implemented in native Lore `b32265924ccf1d3c09de8f76ea4eecc8c2562b05`
+on 2026-10-19; 156 focused tests and CLI/server compilation pass on macOS.
+Not deployed or qualified with Entra. Native device login and the refresh path do not
 by themselves establish repository access. The inspected upstream resource-grant
 mode requires RFC 8693 exchange and object-array claims. Entra's documented OBO
 request differs, and its custom-claims provider does not emit JSON objects. Do not
 weaken this to global repository grants or restore the retired token signer.
 
-Add an explicit `server.auth.direct_repository_roles` configuration to native
-Lore. Each literal role maps to a typed native repository ID and its native action
+Native Lore exposes explicit `server.auth.direct_repository_roles` configuration.
+Each literal role maps to a typed native repository ID and its native action
 set. IdP user/group role assignments remain authoritative; this mapping expresses
 what each signed role means, not an additional user-access database. The compiled
 mapping feeds the existing resource-grant authorizer and admitted partition grants,
