@@ -136,7 +136,11 @@ active revision is authoritative across restarts; the configuration file seeds a
 empty installation only. Deliberately importing a complete installation catalog is
 an explicit trusted operator action. Do not preserve only Lore data through an
 ad hoc merge with a startup file. Existing in-flight requests retain their admitted
-snapshot; cross-replica propagation is not claimed by a local catalog replacement.
+snapshot. Replicas follow active-revision changes through the existing database
+notification and reconciliation mechanism, admitting and adopting the current
+revision under the same publication lock as local administrative updates. Reconnect
+reconciliation recovers missed events. Propagation is asynchronous; local publication
+does not establish simultaneous adoption or instantaneous token revocation.
 
 Initial grant records identify the native repository, Lore deployment, tenant and
 explicit principal assignment with native action permissions. Publish them through

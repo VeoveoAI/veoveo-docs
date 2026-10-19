@@ -3565,8 +3565,14 @@ operator import handles deliberate full installation replacement. Include the
 revision publication audit in the existing transaction, including revisions that
 only change contributed records. Prove a live assignment change affects the next
 exchange and survives an ordinary restart. Already-issued JWT expiry and
-in-flight snapshot semantics remain native; a local catalog replacement does not
-establish cross-replica propagation.
+in-flight snapshot semantics remain native. Review found that existing control-plane
+publication updated only the receiving process; registration notifications alone
+did not refresh other replicas' assignments. Extend the existing native database
+notification/reconciliation path to active control revisions. Each replica admits
+and adopts the current revision under the same lock as its local administrative
+publication, and reconciles after reconnect. Prove this independently of a local
+swap. This is asynchronous convergence, not simultaneous adoption or immediate
+revocation of existing native tokens; implementation and qualification are pending.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
