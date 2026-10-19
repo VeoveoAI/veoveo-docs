@@ -186,8 +186,16 @@ external native auth service to compensate for those semantics.
 
 Computer OAuth traffic can use native OpenShell REST policies for Hub's OAuth
 paths, disjoint from OpenCode's MCP path, with the ordinary proxy and CA mechanism.
-Private Lore gRPC remains direct. This source compatibility needs actual Linux
-qualification. Factories remain deterministic and use their own service identities.
+Private Lore gRPC remains direct. Its installation endpoint must use a DNS name
+covered by the native server certificate and resolvable by OpenShell's trusted
+resolver. Native TCP policies reject literal-IP endpoint hosts; the endpoint's
+exact private address remains in `allowed_ips`. The selected reference endpoint is
+`grpcs://vv-lore.internal:41337`, consistently in the Computer template, factory
+configuration, policies and Hub deployment registry. Hub derives native recipient
+claims from that configured endpoint. Supplying private DNS is trusted installation
+configuration, not a change to Lore authorization. This source compatibility needs
+actual Linux qualification. Factories remain deterministic and use their own
+service identities.
 Their existing native renewal uses `client_secret_post`; add generic, explicitly
 registered support for that method in Hub rather than a token helper. Human native
 refresh state remains in each private Computer; factory secrets remain in native
@@ -330,6 +338,13 @@ OpenShell initializes its OIDC issuer before workload recovery, so hosting the o
 issuer inside that same gateway creates a cold-start loop. External Entra/customer
 issuers need no local Keycloak stack. Root OpenShell/Lore/identity/storage recovery
 remains independent of disposable environment branches.
+
+The Linux reference shares one SeaweedFS service between Artifact and Lore. Each
+component has its own bucket and scoped storage identity. Lore also uses its own
+schema and restricted database login in the existing PostgreSQL instance. Sharing
+these services does not combine application credentials or repository and artifact
+permissions. Backend access checks remain separate from native Lore user and
+repository acceptance.
 
 ## Workspaces And Runtime Placement
 

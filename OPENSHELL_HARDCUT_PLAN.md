@@ -3975,6 +3975,152 @@ immediate refusal on this host. This is a test-fixture failure, not a new findin
 about the deployed connection. The coder is correcting the portable fixture;
 production transport behavior remains unchanged.
 
+The corrected fixture sends a real TLS client hello to an owned loopback peer,
+which responds with an invalid TLS record. The typed original Rustls cause remains
+discoverable through the SDK error chain. That regression passes (one test, 0.33
+seconds test time / five seconds command wall time), as do three existing SDK error
+unit tests. Strict all-target Clippy subsequently passes in six seconds after one
+test-only `manual_let_else` correction. Frozen source fingerprint:
+`31ae458b35a20d1632cdc921274429afa4b1799ece812a076551aa5965351807`.
+Logs are `/tmp/computers-openshell-transport-errors-a7f6892.log`,
+`/tmp/computers-openshell-sdk-error-tests-a7f6892.log` and
+`/tmp/computers-openshell-sdk-clippy-31ae458.log`. These are local SDK checks, not a
+diagnosis of the deployed failure. The next Hub build will pin the reviewed fork
+commit for both SDK and policy; the existing native gateway/runtime remain selected.
+
+The SDK fix is published on the fork's task branch as
+`9724fb1834dec157b4482a1da97338fd8ca1e50c`. Hub commit
+`b24ccad0c524625de513b0b37bec4a5419d85c49` changes only its two OpenShell
+dependency pins and the five corresponding lockfile source identities. No registry
+versions or application source change. Compared with the former pinned OpenShell
+revision, SDK/Core/protocol sources are unchanged except for this diagnostic fix;
+the policy advance incorporates the already-reviewed disjoint REST/MCP route
+semantics used by the selected native gateway. Both Hub platform gates pass from
+this exact clean commit. The Mac-host Linux ARM64 gate exits zero in 211 seconds,
+with 226 tests passed and one skipped (33.059 seconds test time), check image
+`sha256:da44c95fcc83d9a744226d46062431bd75e610296b0512f7222971d09df85eb0`.
+The actual Ubuntu Linux x86_64 gate exits zero in 263 seconds with the same counts
+(34.773 seconds test time), check image
+`sha256:fc31d81976fab665964cee08dd97a824c9d3f5e0c0e38f5c9f31fdaf52180383`.
+Both include SQLx metadata verification, formatting, strict Clippy, dependency
+checks and the feature matrix. Linux source archive SHA-256:
+`e8243d92335f93375c9c7477d54c636c81dac276362d2c230eb8615d70591811`.
+Gate logs: `/tmp/computers-hub-b24ccad-mac-check.log` and
+`/tmp/computers-hub-b24ccad-linux-check.log`. The matching Linux runtime image builds
+in 129 seconds as
+`sha256:934b1c776ff3ba50f22a5af692c1a2e1c91680b69be8b812b7d4c78ed2a8b8ce`.
+Its extracted x86_64 ELF is 63,183,056 bytes, SHA-256
+`decdf123c4823fb3c98283c05976fc016a18a547c9f84a0ee7ac429a61880a67`;
+networkless `--help` succeeds. `--version` is not a supported command and returns
+Clap's usage error. Build log:
+`/tmp/computers-hub-b24ccad-linux-runtime.log`. These component/build checks do not
+diagnose the deployed transport failure. The coordinator releases the already
+reviewed native stop/delete/recreate of only the stateless Hub, retaining its
+logical name, exact policy, read-only configuration volume and dedicated provider.
+No gateway restart or configuration reimport is required. Capture the first typed
+startup cause before exposing the replacement; exposure and application recovery
+require readiness. No main merge has occurred.
+
+Native stop/delete completes and Get returns NotFound before recreation. The new
+`vv-control/hub` is `89770a5f-c12a-48cf-8dbb-8c2182f9668c`, selecting the
+verified `934b1c77` image and retained configuration/provider/policy. Its supervisor
+connects and accepts configuration, but the main process again fails after current
+schema checks. The complete seven-line anyhow block is:
+
+```text
+Error: connect native upstream gateway
+
+Caused by:
+    0: connect error: gateway transport failed
+    1: transport error
+    2: received fatal alert: NoApplicationProtocol
+    3: received fatal alert: NoApplicationProtocol
+```
+
+The builder's first filtered summary omitted the two decisive cause lines. Review
+of the complete contiguous error block establishes TLS ALPN negotiation failure;
+the SDK source-preservation change works. The same block appears in eight captured
+attempts. This failure precedes bearer authorization/RPC and does not justify
+changing grants, trust or Lore behavior. Native protocol selection is under source
+review. The new Hub remains Starting and unexposed; Time/Artifact/Media registration
+recovery and user acceptance remain open. Private logs are retained on Linux as
+`/tmp/computers-hli6-hub-main-private.log` and
+`/tmp/computers-hli6-hub-supervisor-private.log` (mode 0600). No further live changes
+follow this capture.
+
+Source review identifies the native configuration cause. In OpenShell
+`crates/openshell-supervisor-network/src/proxy/relay.rs`, HTTP2 is admitted only when
+`PreparedHttpPolicy::Inspect` contains exactly one endpoint configuration. The
+new native-control policy creates fourteen separate configurations for the same
+gateway host/port, so `l7/tls.rs` advertises only HTTP/1.1. Tonic requests HTTP2,
+which produces the measured `NoApplicationProtocol` alert. The former forwarder
+had one endpoint. This is a policy-structure error, not a certificate or grant
+failure.
+
+The approved correction uses one enforced REST endpoint selecting
+`/openshell.v1.OpenShell/**`, with the same fourteen exact POST allow rules and
+the same provider binding. The service-root selector selects the endpoint; it is
+not an allow rule. Native `l7/http2.rs` evaluates each request against the rules,
+so no additional RPC is admitted. Source and private policy staging must preserve
+every unrelated route, executable and filesystem setting. Existing native policy
+admission, engine construction, a single matching endpoint and exact rule-set
+comparison precede the supported policy-only update:
+`openshell policy set --workspace vv-control --policy <reviewed-file> --wait --timeout 60 hub`.
+No gateway/Hub rebuild, trust change or Lore change is required. Deployment and
+application recovery remain pending.
+
+The direct per-request evaluator is internal to OpenShell and cannot be constructed
+by the existing external checker. The coordinator declines a new in-crate test
+seam merely to repair this configuration. Structural checks and the reviewed
+per-stream evaluator remain distinct from executed RPC acceptance; actual required
+RPC calls and an unlisted-RPC denial remain deployment acceptance work after
+recovery. No new conformance framework is added.
+
+The one-endpoint native-control correction is published as installation
+`3f34d462e9c1ae77a0492363c9d5b28c53f6113f`. The existing parser/ambiguity
+check passes in 4.91 seconds and confirms the same fourteen ordered POST rules,
+provider binding and all unrelated policy fields. The supported policy update
+succeeds on Hub `89770a5f-c12a-48cf-8dbb-8c2182f9668c`, revision 2. A fresh
+attempt advances past the ALPN failure and stops at a different native policy
+validation error at 2026-10-19 19:11:10Z:
+
+```text
+Error: canonicalize trusted Computer native policy
+Caused by:
+    sandbox policy validation failed; network policy 'lore': protocol tcp endpoint '10.231.10.10' must use a DNS hostname, not an IP literal; direct IP connections bypass policy DNS and are blocked
+```
+
+The configured file `/etc/veoveo/hub/computer-policy.yaml` exists on the retained
+read-only configuration volume, mode 0600 and owner 10001:10001. This is semantic
+policy canonicalization, not filesystem access. Earlier staging checks parsed
+policy and checked ambiguity but omitted the complete native semantic validator;
+that earlier result does not establish full admission. Use the existing
+`validate_and_canonicalize_sandbox_policy` in that check, as Hub does, without
+introducing a new validation framework.
+
+Read-only host probes find no `vv-lore.internal` mapping or DNS answer. The existing
+TLS receipt already verifies that hostname and the private IP; no certificate
+change is needed to select the hostname. Source configuration is being corrected
+consistently to `grpcs://vv-lore.internal:41337`, retaining exact private-IP policy
+constraints. The proposed trusted host resolver record remains subject to checking
+the actual supervisor resolver path. No new DNS service, Lore authorization rule,
+TLS bypass or repository assignment is introduced. Hub remains Starting and
+unexposed, with application registration and real-user acceptance still pending.
+Native credential custody reports a successful refresh at 19:05:28Z with expiry
+20:05:27Z; this status alone does not prove a control RPC after the preceding
+credential expired.
+
+The builder measures the actual supervisor on host networking, with no Docker DNS
+override and `/etc/resolv.conf` selecting `127.0.0.53`. The host's existing
+systemd-resolved 255.4 is active and listens on that address, with `ReadEtcHosts`
+enabled by default. A host-owned `10.231.10.10 vv-lore.internal` record therefore
+uses the existing trusted resolver; no workload alias or separate DNS service is
+needed. The SSH account's noninteractive sudo check requires authentication, so
+the coordinator requests that exact host edit from the user. It remains pending;
+no alternate privilege path or unproved resolver fallback is introduced. Source
+configuration now selects the hostname consistently; full native validation and
+the coordinated runtime data updates remain in progress.
+
 The source-reviewed native acceptance checklist now includes an independent
 factory build, beyond repository clone/hash proof. A dependency-free locked Rust
 fixture is published at the real emitted repository/revision, then only the
