@@ -248,8 +248,8 @@ This describes the application integration sequence. Hub/Time, the prepared Time
 factory pass, private Artifact and private fake-provider Media now have local
 acceptance recorded in the execution checklist.
 The [visual guide's Platform now view](diagrams/veoveo-platform.html#platform)
-shows the qualified deployment; its [Next integration view](diagrams/veoveo-platform.html#next)
-shows Media's qualified private use of the existing Hub and Artifact. Hub plus Time were
+shows the qualified Mac deployment; its [Linux reference view](diagrams/veoveo-platform.html#next)
+shows the deployed Bioma reference and its remaining qualification gates. Hub plus Time were
 qualified first, followed by a build-only factory task from a known-good Time Lore
 revision and then private Artifact. This is an unused local Mac installation: replace and restart local
 services directly. Production continuity, parallel deployments and rollout

@@ -1823,7 +1823,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   subscription reopen and resource reconciliation; mutations are not replayed
   and no polling fallback is added. The SDK permits three total openings, which
   covers this measured verification window, not an arbitrary 600-second sequence
-  of repeated closures. The retained object is untouched.
+  of repeated closures. The retained object was untouched at that checkpoint.
   Evidence: `evidence/artifact-large-corrected.stdout.log` and
   `evidence/artifact-large-corrected.stderr.log`.
 - The subscription correction's macOS Docker check passes 116 tests with nine
@@ -1833,8 +1833,62 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   before the share-refusal assertions. This is separate from the deployed large
   upload. Source inspection finds no early fixture drop; fixture process exit or
   an unreserved-port/readiness race remain hypotheses, not established causes.
-  Focused diagnosis is in progress with source frozen; acceptance compilation,
-  the new QA image and the deployed rerun are pending this component gate.
+  The exact case then passed alone (2.80 seconds), and all four parallel share-route
+  cases passed (2.85 seconds). The readable kernel journal contains no OOM/kill
+  evidence for the original window; child stderr was already removed by fixture
+  cleanup. The original cause remains undetermined. Separate diagnostic setup
+  attempts used stale local image tags and failed before test execution; these
+  were replaced with the current pinned dev image, not treated as test outcomes.
+  One subsequent full Linux check of the unchanged candidate passes 116 tests
+  with nine skipped, including strict Clippy, in 201.078 seconds. Its immutable
+  check image is
+  `sha256:5b4c8b3ccb0ea95810342274065b1c0a7d11db1bee1d5bc3bffa65d31f3a2ab4`.
+  Artifact acceptance commit `03c17f15ea099d494de0670ea48b9fcc52d4101a` is
+  published; its production runtime is unchanged at `83d6910`. The remote source
+  checkout is now clean at that acceptance commit after verifying its tracked
+  files already matched it. The remote installation also fast-forwarded to
+  `c2930111a10bf491193c88d7743183dcdfd7ef97` (README only); runtime configuration
+  and private state were not changed.
+- The corrected acceptance executable has SHA-256
+  `6c593f17491f9688487afe55c90d70f407f3379e99c5216760143a5543b19682`.
+  QA image `sha256:ac0b16bd9bb35b8511faa56e9ee80f6420daaac1d8d338beba29a2c842aade95`
+  replaces only this binary; SDK, Time and Media hashes are unchanged. Before the
+  next large case, one authorized normal Artifact delete removed the retained
+  object `01a1517c-06eb-73c3-b60d-5ed081d831f9`; its sweeper removed the metadata
+  and upload records, and usage returned to zero stored/reserved bytes and zero
+  open uploads. The temporary maintenance runner was deleted. The corrected native
+  runner `vv-hub-qa/artifact-multi-v2` is sandbox
+  `f4b79fb8-a9ad-4a6f-9c15-23a4bffb08b0`. Its one exact large-object case failed
+  after 428.11 seconds, from 00:48:38.296 to 00:55:46.406 UTC on October 19,
+  with JSON-RPC `-32603`, `upstream MCP request failed: Transport closed`.
+  The multipart upload completed at 00:52:54.309; independent read-only state shows
+  Artifact `01a151a2-2788-7362-ae05-3db1d7d8cf45` Available at 00:55:49.483,
+  holding 1,076,887,552 bytes with server-computed SHA-256
+  `c8f34e712074151a1643b88f5b92e6d3200074916b8ce3ecdb15f0307e8adbb1`.
+  Its verifier succeeded at 00:55:49.490. These server outcomes do not turn the
+  failed acceptance test into a pass. Native QA supervisor logs record Hub tunnel
+  closures at 00:54:46.973 following a provider environment update; the exact
+  failing request and upstream transport cause remain under diagnosis. The object
+  and runner are retained. No replay, Media suite or paid generation followed.
+  Private evidence: `evidence/artifact-large-corrected-20261019.log`, SHA-256
+  `fb87adc825a68848ddf2f24ec66bad5c190953b2b897aca1d889e8f715df41fb`,
+  and `evidence/artifact-large-corrected-receipt-20261019.json`.
+- Source review identified a Hub subscription-boundary defect: an established
+  upstream subscription returning `Ok(None)` is converted into `TransportClosed`
+  and then JSON-RPC `-32603`. The SDK's existing bounded reopen/re-read behavior
+  handles subscription endings, but correctly does not reinterpret arbitrary
+  application errors as retryable disconnects. A scoped Hub correction is in
+  development: retain that typed end and finish the downstream subscription using
+  RMCP's normal completion result; preserve actual protocol/admission errors.
+  This follows [MCP 2026-07-28 subscription closure](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions).
+  Its [HTTP binding](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
+  has no `Last-Event-ID` replay; recovery re-establishes subscriptions and reconciles
+  current state without replaying mutations. OpenShell's
+  [provider guidance](https://docs.nvidia.com/openshell/dev/how-it-works/providers/profiles)
+  recommends reconnecting after configuration-related grant failures. Native
+  enforcement remains unchanged. The proposed regression must exercise the actual
+  Hub boundary, subsequent resource reconciliation and later pushed updates.
+  Neither that regression nor a deployed fix has passed yet.
 - Public edge probes found Cloudflare Browser Integrity Check rejects the default
   `Python-urllib/3.13` User-Agent with HTTP 403/error 1010. The same discovery
   request succeeds with curl, absent User-Agent and the honest one-shot client
