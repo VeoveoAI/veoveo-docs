@@ -311,9 +311,11 @@ including its large-object proof. The six Media fake baseline cases also pass in
 terminal restart verifies and Media's coordinated in-flight Media+Hub restart
 pass. Fresh calls from both roles pass beyond the source-derived original-JWT
 expiry bound in one runner with unchanged opaque handles; this does not prove
-uninterrupted streams or exact token issuance timestamps. Time in-flight recovery
-remains inconclusive because of fixture timing and an invalid later harness,
-not an established product failure. The [reference receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
+uninterrupted streams or exact token issuance timestamps. Time's reviewed
+in-flight restart also passes in 24.91 seconds: the same Task is Working after
+restart, then a reopened subscription receives pushed completion and the expected
+64-window schedule. Earlier timing/harness attempts remain inconclusive history,
+not established product failures. The [reference receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
 retains initial native-Ready-only failures and the application-ready retries.
 The public Media route previously rejected invalid signatures; a real
 signed Events callback now passes on Linux as recorded in the
@@ -690,14 +692,39 @@ three terminal restart verifies, Media's in-flight restart across Media+Hub
 (62.00 seconds), and both roles' fresh calls after the conservative original-JWT
 expiry bound with unchanged handles in the same runner. Initial Artifact/Media
 terminal failures occurred before routed application readiness; same-record
-verifies then passed. Time in-flight remains inconclusive/deferred due to timing
-and harness limitations. The real signed Events gate passes independently;
-final bounded MiMo qualification remains incomplete after its one authorized
-attempt reached the 240-second deadline without completed tool results or a saved
+verifies then passed. Time's reviewed in-flight restart now passes in 24.91
+seconds with the same Working Task, reopened subscription, pushed completion and
+64-window result; earlier timing/harness failures remain historical. The free
+restored Media catalog/member-refusal case also passes (0.38 seconds), without a
+generation or an exact selected-model assertion. The real signed Events gate
+passes independently;
+final bounded MiMo qualification remains incomplete: its first attempt reached
+the 240-second deadline without completed tool results or a saved
 file. Its persisted empty part establishes engine reasoning-start activity;
 provider response, subsequent latency and billing are unmeasured. The [attempt receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
-records the exact model, session, bounds and diagnostic limits. No replacement
-run was made; diagnose the timeout before another bounded attempt. The user prioritized this single real run before the remaining
+records the exact model, session, bounds and diagnostic limits. At that first
+checkpoint no replacement had run; the corrected later attempt also timed out. The killed
+session retained a recoverable execution claim; after sanitized metadata retention,
+native standalone session deletion removed that disposable session and its claim,
+without a model call. A new private launcher prepares supported live-owner user
+interruption, bounded terminal confirmation and explicit remaining-claim reporting
+before process cleanup. Its local synthetic SSE check now passes: one request/frame,
+acknowledged interruption, terminal Interrupted, released claim and closed provider
+connection (10.465 ms cleanup; no inference). The corrected attempt started at
+06:57:25.554651 UTC and also timed out after 240.003101 seconds of model phase
+(242.127631 seconds total), with no completed tool results/accounting or output.
+Native interruption took 39.06 ms and released its claim with zero resume attempts.
+Final client qualification remains open. The revised private candidate uses native
+live event-type/count/timing/length observation, without retained reasoning or
+tool-input text, plus an explicit 240/600-second bound and the same eight steps.
+Its local observer check passes: one synthetic request/frame, a positive-length
+reasoning delta in the private metadata-only live log, no retained raw text,
+terminal Interrupted and released claim (8.599 ms cleanup). The observed
+600-second attempt is underway, session `ses_ead025069ffeXuzFg4ZxxjEmf0`; its
+outcome remains pending. These engine events do not measure provider HTTP chunks
+or billing. Reasoning
+deltas are live-only until their final full-value event, so an empty persisted
+start cannot establish an absence of streamed reasoning before SIGKILL. The user prioritized this single real run before the remaining
 deterministic/restart gates. `wavespeed-ai/flux-schnell` used one 1024 × 1024 PNG
 input (seed 42, async URL output) with the orange-robot/green-seedling prompt
 recorded exactly in the [receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).

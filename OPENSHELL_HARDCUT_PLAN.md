@@ -2257,15 +2257,31 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   unchanged handles, not uninterrupted transport or a separately measured refresh
   issuance timeline.
 
-  Time in-flight recovery remains inconclusive and deferred. Its valid attempt
-  at 06:19:50.887–06:20:40.321 reached Completed before the required post-restart
-  Working assertion; the approximately 49-second orchestration exceeded that
-  fixture's working interval. A later automated harness read empty stdout after
-  redirecting readiness JSON to a file and stopped before Task read/continuation;
-  it is invalid evidence. Neither establishes a product recovery failure. No
-  production behavior was changed. Gate 3 remains open for this limitation;
-  final bounded MiMo qualification remains incomplete after the timed-out attempt
-  recorded below; that scenario reuses the real Artifact.
+  Time in-flight recovery subsequently passes the reviewed operator sequence:
+  24.91 seconds libtest, 06:51:48.763363855–06:52:13.922969328 UTC, exit zero.
+  The same Hub Task `gtr_ylGIxVgW7EAS__wvpg2NwIlwvlPkRdO85Za4y-QqMC4` is Working
+  before and after the confirmed Time restart; a reopened subscription delivers
+  Working then pushed Completed with the expected 64-window schedule and retained
+  completion. Time's process changes from `e5aaa…` to
+  `86fd2f6d-538b-456f-a17e-12a4c7987a7d`. Receipt stdout SHA-256 is
+  `f696fd960eefa3bd41c705d4cb45181b62e8511408c3d232bcedd489b55869ca`,
+  stderr `342973bcaf40e73698d9d65a9fcf82e6d417a13c493d343e3e591fc1b321e739`;
+  the native boundary receipt is `time-inflight-reviewed-20261019-native.json`.
+  Earlier attempts remain historical: the 06:19:50.887–06:20:40.321 attempt reached
+  Completed before the required post-restart Working assertion; the approximately
+  49-second orchestration exceeded that fixture's working interval. A later
+  automated harness read empty stdout after redirecting readiness JSON to a file
+  and stopped before Task read/continuation; it is invalid evidence. Neither
+  establishes a product recovery failure. No production behavior was changed.
+  Gate 3 now closes on the reviewed passing receipts; final bounded MiMo
+  qualification remains incomplete after the timed-out attempt below.
+
+  After real Media restoration, the existing admitted Media acceptance binary
+  also passes its free catalog/member-refusal case in 0.38 seconds libtest,
+  06:54:39.852017718–06:54:40.343164991 UTC. This proves a nonempty restored catalog
+  and ordinary-member generation refusal without creating a generation; it does
+  not assert that `wavespeed-ai/flux-schnell` was listed. That exact assertion
+  remains part of the final client scenario.
 
 - **Final Linux OpenCode attempt — incomplete, 2026-10-19 UTC.** One authorized
   exclusive attempt used the reviewed private driver SHA-256
@@ -2291,9 +2307,76 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   discovery failure or claim its real-catalog assertion passed.
   Private evidence is `opencode-reference-final-20261019/`, receipt SHA-256
   `58461d97c39a58d4e9e55eabbf3fdbafa4e6db9e4aac817e938fbdd4a4f130c9`.
-  Gate 5 remains unchecked. No replacement run was made; diagnose the timeout
-  before another bounded attempt. No new paid generation is needed or permitted
-  by this attempted retrieval scenario.
+  Gate 5 remains unchecked. At this first-attempt checkpoint no replacement run
+  had been made; the later corrected attempt is recorded below. No new paid
+  generation is needed or permitted by this retrieval scenario.
+
+  The killed attempt left a durable execution claim with no terminal outcome;
+  a later managed-server startup could automatically resume it outside the
+  harness's bound. After retaining exact-session sanitized claim/parts metadata,
+  the native `session delete --standalone` command with warming disabled retired
+  only this disposable session. Read-only verification confirms no session,
+  message, inbox or pending rows remain. Receipts
+  `session-claim-before-deletion.json` and `session-deletion-verification.json`
+  are retained beside the immutable attempt; the latter has SHA-256
+  `7b363eeebb960106402018a34e3cd39472499ab33e55a3404538b8624424da01`.
+  No model call was made by that cleanup.
+
+  A separate private launcher candidate now pre-creates an empty native session
+  to know its identity before CLI execution. On deadline or abnormal exit while
+  the server still owns it, it requests standard session interruption with
+  `resume=false`, waits a bounded ten seconds for terminal state, then stops its
+  owned processes; SIGKILL is last-resort cleanup. A read-only claim observation
+  explicitly reports released, remaining or unknown state. Process death alone
+  is not durable cancellation, and failure to confirm terminal state is not
+  success. This correction preserves production session recovery. Its local
+  dummy-provider check passes at 06:56:28.379541–06:56:29.324569 UTC: one synthetic
+  SSE request/frame, acknowledged interruption, terminal Interrupted, released
+  claim and observed provider-connection closure. Cleanup takes 10.465 ms; no
+  external inference or Hub call occurs. Private receipt
+  `real-wavespeed-20261019/mimo-cancellation-check-receipt.json` has SHA-256
+  `76c06e81503ef111effac9c0d9c4ef39f6afb12e7b84547568136d58f7f74165`.
+  After that proof, the reviewed candidate SHA-256
+  `dcc3a36a2967ae66a683f4759ffebcd346720eadc12d7f041f14d5500cf48b3d`
+  ran the corrected bounded attempt at 06:57:25.554651 UTC, session
+  `ses_ead0c91eaffeYVBWZ4ITmzP9Jd`, with native MCP connected at 06:57:27.590188.
+  It retained explicit MiMo/Build, eight steps, 240 seconds, its own OAuth grant,
+  retained-Artifact retrieval and the generation denial. This second attempt also
+  timed out: 240.003101 seconds model phase, 242.127631 seconds total, finished
+  07:01:27.682756 UTC. No completed tools, finalized accounting or saved output
+  were recorded. Native interruption completed in 39.06 ms; the claim was released
+  with resume-attempt count zero. Receipt
+  `real-wavespeed-20261019/final-mimo-candidate-attempt.json` has SHA-256
+  `013d3e9a56b58f02b1dc491b97945dd5c791e10eae3a448286cf78742f840f71`;
+  the exact archived attempt is `opencode-reference-final-attempt-20261019/attempt/`.
+  The local cancellation proof and released claim do not establish final client
+  acceptance or explain the latency. No provider-cost conclusion follows from
+  absent finalized accounting.
+
+  A separate reviewed candidate adds the existing authenticated native
+  `/api/event` stream before prompting, with a `server.connected` barrier and
+  exact-session filtering. It retains event types/counts, source/receive timestamps
+  and delta lengths only, discarding raw reasoning/tool inputs. Engine delta
+  events are batched and live-only, not provider HTTP chunks; disconnect/overflow
+  limits are recorded. Its explicit model deadline accepts only 240 or 600 seconds,
+  retaining the same eight-step model/scenario/generation denial and known-session
+  interruption cleanup. Its local fixture now passes with one synthetic request
+  and frame, a nonempty reasoning delta counted in a mode-0600 live JSONL file,
+  no retained raw synthetic text, acknowledged interruption, terminal Interrupted,
+  released claim and closed provider connection. The observer retains 14 metadata
+  records, no local record-limit hit or reported overflow, and records EOF;
+  cleanup takes 8.599 ms. Receipt SHA-256 is
+  `071ef21d6526e240028a6914928c5c4bfc7f2a2941b60e072dc0f0eea60b30fb`;
+  this is a localhost fixture with no inference or Hub call.
+  The reviewed candidate `6043b29604c2518f25c96ea20ae046848b6e9df3f41408c7752f990c7319dcd8`
+  is now running with the explicit 600-second bound and the same eight-step
+  scenario. Its checkpoint starts at 07:08:38.339632 UTC, native event observation
+  connects at 07:08:39.718387, session `ses_ead025069ffeXuzFg4ZxxjEmf0`.
+  Outcome and gate 5 remain pending; neither the local observer proof nor prior
+  deterministic service qualification is a final model-driven client pass.
+  Reasoning deltas are live-only; the full reasoning value is persisted on end.
+  Therefore the empty retained start cannot establish that no reasoning deltas
+  arrived before SIGKILL. Provider response timing and billing remain unmeasured.
 - **Native provider-request instrumentation.** OpenShell `6589a91` writes opt-in
   supervisor OCSF JSON to `/var/log/openshell-ocsf.YYYY-MM-DD.log`; the supervisor
   log directory is ephemeral. Enable `ocsf_json_enabled`, verify application and
@@ -2446,7 +2529,7 @@ bearer URL, signed download URL, request header or provider secret is published.
   the actual public HTTPS callback route using the existing Media callback
   contract; preserve signed URL authority and direct S3 bytes. Review any routing
   gap before implementation rather than inventing a relay or bypass.
-- [ ] **3 — Deterministic deployed services.** Prove Hub registration and discovery,
+- [x] **3 — Deterministic deployed services.** Prove Hub registration and discovery,
   Tasks, permissions, subscriptions, reconnect, renewal and restart/persistence
   with Time, Artifact and Media on the actual Linux sandboxes. Preserve the
   independent Artifact metadata/digest/byte and usage/provenance assertions.
