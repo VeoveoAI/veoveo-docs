@@ -3554,11 +3554,17 @@ installation work. No OpenCode/model calls during iteration.
 
 Use a hard cut for stored authorization bindings. Do not infer historical token
 authority from the latest catalog or add a compatibility decoder/backfill to retain
-disposable sessions. Append the strict schema change as the repository requires;
-perform an explicit scoped OAuth-session reset before applying it to a populated
-deployment, with fresh authorization/credential custody afterward. Do not silently
-delete live rows during startup or reset unrelated Task/Artifact/reference data.
-Routine persistence remains required after the final schema is deployed.
+disposable sessions. The user explicitly confirmed hyper-development mode on
+2026-10-19: only their use matters and sessions may be killed. This supersedes the
+earlier manual session-reset prerequisite. Migration `0003_oauth_resource.sql`
+directly discards disposable OAuth authorization requests/codes, refresh tokens/
+families, Computer browser sessions and pending Computer login state before
+changing the bindings. Require fresh sign-in and normal credential handoff;
+do not build session preservation, compatibility or reset-specific machinery.
+Preserve native working storage and unrelated Task/Artifact/reference data.
+The separate `vv-hub-native-control` service credential is unaffected. Routine
+persistence remains required after the final schema is deployed. No live reset
+has been performed yet.
 
 The source investigation ran no tests/builds or runtime mutations. The final
 pre-issuer Computer artifacts remain retained: installation `caf5d046`, Linux

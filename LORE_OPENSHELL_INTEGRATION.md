@@ -125,6 +125,10 @@ Initial grant records identify the native repository, Lore deployment, tenant an
 explicit principal assignment with native action permissions. Publish them through
 the existing control-plane revision mechanism and administrative authority. Neither
 Hub administration nor Work Context membership silently grants repository access.
+Work Context membership is an MCP admission condition, not an additional prerequisite
+for native Lore grants. Native issuance checks the registered resource/client and
+the explicit tenant/principal repository assignment; retained platform attribution
+does not confer or withhold repository authority.
 No new read-only role is inferred from native `permission: []`: that grant allows
 ordinary repository operations, including unprotected writes.
 
