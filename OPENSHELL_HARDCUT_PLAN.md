@@ -1663,7 +1663,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Hub and Artifact qualification. The member and administrator+billed grants each
   have one refresh owner; a rotating refresh token is not duplicated into two
   independent providers. The inherited separate Media profile remains an unused
-  example. Actual application custody and acceptance await both human sessions.
+  example. Both human sessions and native application custody are now established;
+  deployed two-principal permission acceptance remains a separate gate.
 - Media and its synthetic provider fixture are Ready in `vv-services`, sandboxes
   `aaf95cb3-dfd3-4ec1-9056-8028bb3ee20d` and
   `d3deaf79-fd53-4d9a-87f6-2c06513e97e6`. The clean installation checkout is
@@ -1706,19 +1707,134 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   114,421 bytes (parsed SVG root) and PNG 399,643 bytes (2960 x 2310). The browser
   automation download event timed out despite Chrome saving the SVG successfully;
   filesystem inspection confirmed both new downloads. This is browser QA only.
+- The guide was reviewed again in Chrome at 2026-10-19 00:31 UTC after separating
+  historical Mac qualification from the current Linux reference. All three views,
+  a component detail in each, tab navigation, zoom and fit work; no console
+  warnings/errors were captured. The Linux SVG export parses with viewBox
+  `0 0 1480 1155` (114,319 bytes, SHA-256
+  `bde1db47205357ba727c139143533f8ab59819450e3fc30ed06b8b7d7b92be78`).
+  The PNG export decodes at 2960 x 2310 (386,719 bytes, SHA-256
+  `dc6f1794dd0b0e73258e149c255468f8a3b457a6f15ec2c0629206cfb29478f4`)
+  and was visually inspected. The Mac platform and credential views also export
+  parsed SVGs and decoded, visually inspected PNGs: respectively 121,339/531,267
+  bytes at 2960 x 2480, and 115,219/159,999 bytes at 2830 x 1018. Both Linux
+  download-event waits timed out; new files in
+  Chrome's Downloads directory independently confirm successful exports. This
+  reviews the pending-state snapshot, not the remaining Linux runtime gates.
 - Published installation `4b35192` corrects native application refresh profiles:
   initial PKCE requests `scope=mcp`, while refresh omits the optional scope field
   and retains the original grant. Hub currently rejects any explicit refresh
   scope. Four profile lints and thirteen helper tests pass. Bioma merged the
   template normally at `389a234`; the Linux checkout is clean at that revision.
-- The administrator completed public Entra-to-Hub S256 PKCE as client `opencode`,
-  resource `https://veoveo.bioma.ai/mcp/local`, context `reference-work`. The
-  independent live-JWKS EdDSA signature check passes. The issued grant represents
-  the configured administrator plus billed authority, not a billed-only caller.
-  No bearer or refresh token is published. The ordinary member's saved password
-  was rejected once by Entra; user sign-in is pending. The bounded callback
-  listener ended after 600 seconds with zero token exchanges; start a fresh PKCE
-  attempt when the user is ready. Two-principal permission acceptance remains open.
+- The administrator and ordinary member completed separate public Entra-to-Hub
+  S256 PKCE flows as client `opencode`, resource
+  `https://veoveo.bioma.ai/mcp/local`, context `reference-work`. Independent
+  live-JWKS EdDSA verification passes for both expected principal identities,
+  issuer, audience and context. The administrator also holds billed authority.
+  An earlier member attempt selected the administrator's SSO session; the helper
+  rejected the identity mismatch and its unused token file was removed. No Hub
+  identity mapping change was needed. The final member attempt exchanged once
+  and matched the intended ordinary-member principal. Native provider
+  `vv-hub-qualification` now owns both distinct refresh grants in operator-only
+  workspace `vv-hub-qa`. Member provisioning used one explicit rotation; later
+  scheduled renewals for both identities were observed without manual rotation.
+  Consumed private staging files were removed after custody confirmation. No
+  bearer or refresh token is published. Two-principal permission tests remain open.
+- SDK `026902a` was built for Linux/amd64 and run inside native sandbox
+  `vv-hub-qa/sdk-preflight` with the opaque administrator reference. Public Hub
+  discovery lists 40 tools: 22 Time, 15 Artifact and three Media. A typed
+  `time__resolve_time` call for `2026-10-17T12:00:00Z` returned that UTC instant
+  and Unix seconds `1792238400`; its authority release IDs matched the response's
+  effective authority. Initial and post-refresh calls took 294.268 and 302.328 ms.
+  These prove a mediated application call, not clock accuracy or Task acceptance.
+  Evidence: `evidence/sdk-admin-preflight-baseline.json`, SHA-256
+  `9ce7ce264244ed7e03141a1a40c54c6420fcf0c3e172d0944c76b4495ee57f95`.
+  The receipt paths in this section are relative to the remote reference root.
+- Application renewal qualification distinguishes OpenShell's 300-second credential
+  lease from Hub's 900-second access JWT lifetime. The native API redacts the JWT;
+  the expiry bound is source-derived from successful refresh completion, not a
+  decoded claim measurement. Post-member-configuration baselines are 23:24:44 UTC
+  for administrator refresh and 23:25:44 for member refresh; the conservative
+  same-reference recheck was no earlier than 23:41:44. At 23:42:03, fresh typed
+  Time calls passed for both identities (administrator 353.884 ms, member
+  337.244 ms). Both reference hashes and the SDK sandbox main process/container
+  remained unchanged; no manual rotation occurred. These are fresh client calls
+  after renewal, not uninterrupted transport across a generation fence.
+  Evidence: `evidence/sdk-hub-qualification-member-custody.json`, SHA-256
+  `c3aef1ca20e867482793914e4bceafce6bd9b34809de01ff6d28a23b07d4e15c`.
+  The post-expiry receipt is `evidence/sdk-post-expiry-renewal.json`, SHA-256
+  `c7fc883d93d9025d74555a09c023feff21039255d82914a394870c849751dbb2`.
+- The first deterministic deployed Time suite passes all seven cases in 14.98
+  seconds. It proves ordinary-member discovery/calls, administrator admission and
+  member refusal, unauthenticated/undeclared refusal, pushed Task completion with
+  three occurrences, cancellation retained across reconnect, event notification
+  and reconnected resource reconciliation. It does not yet prove actual restart
+  recovery. Builder GPT-6 Luna ran the unchanged Time acceptance executable from
+  `90eabf9` through the committed Bioma native policy; no model calls were used.
+  Full private output: `evidence/time-acceptance-suite.log`.
+- The first private Artifact suite passes five cases and fails its large multipart
+  transfer (76.62 seconds total). The failing case sends 64 parts of 16 MiB and
+  one final 3 MiB part, four concurrently, for 1,076,887,552 bytes. It is not a
+  single oversized HTTP request. At 23:33:45.737 UTC, the runner applied an
+  automatic provider environment update; native logs then record four storage
+  host connection closures at 23:33:45.741–.743. Cloudflared reports matching
+  cancelled requests, and SeaweedFS records truncated parts 12–15. The client
+  reports a TLS close without `close_notify`, with no HTTP response status.
+  Eleven complete parts (184,549,376 bytes) remain in the open upload; Artifact
+  completion and its verification Task were never requested. The source explains
+  this: OpenShell's shared runtime generation fences even credential-free raw TCP
+  when another endpoint's OAuth credential changes. Artifact's production upload
+  client already implements bounded retries of the same idempotent multipart PUT;
+  the acceptance fixture bypassed it with a raw sender. The corrected fixture uses
+  that existing public client, preserving the independent byte, digest, range and
+  deletion checks. It still streams an unknown-size multipart upload with four
+  concurrent parts; bounded retries resend the same part identity and bytes.
+  The correction changes only acceptance source and its required client feature.
+  Full Docker component checks pass on macOS and Linux/amd64 (116 tests, nine
+  skipped each), as do strict Clippy and the two existing public-client integration
+  cases. Deployed qualification of the corrected fixture remains open. Native
+  enforcement and the deployed Artifact runtime are unchanged. One successful
+  Artifact abort closed the failed upload, marked its Artifact failed and released
+  its reservation: tenant reserved bytes and open-upload count are both zero.
+  A scoped S3 ListParts read returns `NoSuchUpload`; the temporary native maintenance
+  sandbox was then deleted.
+  Full private output:
+  `evidence/artifact-acceptance-suite.log`.
+- The first corrected-client run still fails acceptance, after 232.21 seconds,
+  with `the subscription ended`. Its multipart upload completed and created the
+  verification Task at 2026-10-19 00:10:44.861926 UTC. The test exited during its
+  initial verification subscription around 00:10:49. Independent read-only state
+  later shows Artifact `01a1517c-06eb-73c3-b60d-5ed081d831f9` Available at
+  00:13:40.662257 and its verification Task succeeded at 00:13:40.671100, holding
+  1,076,887,552 bytes with server-computed SHA-256
+  `c8f34e712074151a1643b88f5b92e6d3200074916b8ce3ecdb15f0307e8adbb1`.
+  Reserved bytes and open uploads are zero. This proves multipart completion and
+  subsequent server verification, not the test's independent digest comparison,
+  range/deletion assertions. Supervisor logs show four storage-host tunnels closed
+  on generation changes at 00:07:49 and 00:09:49 during the successful upload;
+  individual PUTPart retry attempts are not instrumented. At 00:10:49.483164075,
+  another automatic provider change advanced generation 4 to 5. Two Hub-host
+  tunnels closed because their generation was stale at .488352561 and .490228499;
+  stderr was written at .491411345. Native source guards the entire inspected
+  relay, including active SSE, despite the outer log saying "before inspection".
+  This connects the observation failure to native generation fencing. Subsequent
+  changes were 00:12:49 and 00:13:49, the latter after verification completed.
+  The next acceptance-only correction reuses the SDK's existing bounded
+  subscription reopen and resource reconciliation; mutations are not replayed
+  and no polling fallback is added. The SDK permits three total openings, which
+  covers this measured verification window, not an arbitrary 600-second sequence
+  of repeated closures. The retained object is untouched.
+  Evidence: `evidence/artifact-large-corrected.stdout.log` and
+  `evidence/artifact-large-corrected.stderr.log`.
+- The subscription correction's macOS Docker check passes 116 tests with nine
+  skipped. Its Linux Docker check passes 115 and fails one, with nine skipped:
+  `share_route::every_refused_link_answers_the_same_not_found` receives TCP
+  connection refused at its local SeaweedFS fixture during a tiny setup PUT,
+  before the share-refusal assertions. This is separate from the deployed large
+  upload. Source inspection finds no early fixture drop; fixture process exit or
+  an unreserved-port/readiness race remain hypotheses, not established causes.
+  Focused diagnosis is in progress with source frozen; acceptance compilation,
+  the new QA image and the deployed rerun are pending this component gate.
 - Public edge probes found Cloudflare Browser Integrity Check rejects the default
   `Python-urllib/3.13` User-Agent with HTTP 403/error 1010. The same discovery
   request succeeds with curl, absent User-Agent and the honest one-shot client
@@ -1748,7 +1864,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   keys. Bring unsupported native capabilities or
   responsibility changes to coordinator review; add no proxy, second launcher or
   infrastructure fallback to hide an unresolved failure.
-- [ ] **1 — Pinned native Linux builds and installation.** Select reviewed source
+- [x] **1 — Pinned native Linux builds and installation.** Select reviewed source
   revisions, build/check Linux x86_64 artifacts and record actual immutable images
   and executable revisions. Install the native OpenShell gateway/supervisor and
   approved service definitions, providers, private placements and persistent

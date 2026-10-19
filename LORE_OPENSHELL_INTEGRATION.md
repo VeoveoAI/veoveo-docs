@@ -296,11 +296,15 @@ tokens and enforces explicit principal membership and permissions. This retains
 Hub's application OAuth responsibility and does not restore its retired Lore
 issuer. Two clients for the same human do not create different risk grants;
 concurrent ordinary-member and billed/admin acceptance needs distinct principals.
-The existing dedicated public tunnel will route Hub and only Media's signed
+The existing dedicated public tunnel routes Hub and only Media's signed
 callback path to verified native service exposures. Artifact's signed byte
 requests use a separate public S3 authority and SeaweedFS's native HTTPS listener.
-These reference paths are planned and under implementation; Mac qualification
-does not establish Linux, Entra or public-webhook acceptance. See the
+These paths are deployed. Separate administrator/member Entra-to-Hub admission,
+native credential renewal and Time's seven baseline cases pass. The public Media
+route rejects invalid signatures; a real signed provider callback is still
+unqualified. Artifact's large multipart upload and server verification complete,
+while its end-to-end observation correction, Media lifecycle and restart gates
+remain open. Mac qualification does not establish these Linux gates. See the
 [reference gates](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal).
 
 ### Hub And SDK Naming And Ownership
@@ -772,14 +776,16 @@ the repair does not weaken mirrored request-header validation or assert a univer
 `Mcp-Method` requirement for notifications.
 
 The [reference Linux and signed-webhook execution gates](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
-now govern the next slice. Preserve remote data/identity first, then qualify pinned
-native builds, verified identity/TLS/public routing, all four deployed application
-services and one cost-bounded signed WaveSpeed callback. Callback receipt and
-event-mode completion must be independently observed; the Mac status-polling
+now govern the active slice. The operator selected a fresh reference, explicitly
+discarding the retired Linux application data and backups. That cleanup is complete;
+the current installation has fresh service state and keys. Preserve this new state
+through the remaining qualification of identity/TLS/public routing, all four
+deployed application services and one cost-bounded signed WaveSpeed callback.
+Callback receipt and event-mode completion must be independently observed; the Mac status-polling
 receipt is not webhook evidence. Final OpenCode MiMo acceptance follows successful
 deterministic gates. The existing native responsibilities and placement contracts
-remain authoritative; no new proxy or launcher is assumed. The read-only remote
-inventory is not Linux deployment or GPU/CUDA acceptance.
+remain authoritative; no new proxy or launcher is assumed. Native Linux builds and
+deployment are recorded separately from acceptance; GPU/CUDA remains unqualified.
 
 Time's corresponding cases and Artifact's private follow-up now pass on this path.
 Artifact runs in `vv-services/artifact`, with private port 8801, the recovered
