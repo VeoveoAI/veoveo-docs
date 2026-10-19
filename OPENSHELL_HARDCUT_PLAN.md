@@ -3233,3 +3233,14 @@ need for a new user credential. Private rollout preparation resumes using that
 existing native session. Entra/Lore per-repository grant compatibility remains a
 separate source/design investigation; it must not be replaced by global grants
 or an additional token issuer to make login pass.
+
+The coordinator approves the bounded native direct-role implementation described
+in `LORE_DIRECT_OIDC_PLAN.md`: signed IdP role assignments map to typed exact
+repository grants inside Lore, using its existing authorizer, partition grants
+and native listing. The GPT-6.1 Sol coder owns the isolated `computers-lore` source
+change over `821da217`; the GPT-6 Luna builder independently stages Linux inputs
+using the recovered native operator session. No live identity or service changes
+are made by staging. Signed scalar recipient claims already work in Lore; actual
+Entra access-token issuance/renewal and permission behavior remain unproved. The
+change is an authorization representation within native Lore, not permission for
+global grants, a Hub Lore signer or a replacement authorization service.
