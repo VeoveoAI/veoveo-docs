@@ -3578,6 +3578,17 @@ and retained logs under `/tmp/computers-hub-hli1-validation-20261019/`; its seve
 partial new SQLx cache files are not a completed metadata generation. Source work
 resumed to fix those errors and implement the native flow. No live reset occurred.
 
+Independent read-only Linux custody observation at 2026-10-19 16:31:11Z:
+GPT-6 Luna builder queried native refresh status for
+`vv-control/vv-hub-native-control`, credential reference
+`HUB_NATIVE_CONTROL_REFERENCE`. The command exited 0 in 1.96 seconds. Native
+status reports `oauth2_client_credentials`, `refreshed`, last refresh 16:13:58Z,
+expiry 17:13:57Z and next refresh 17:10:57Z, with no failure. This records a
+replacement credential beyond the original 16:16:18Z expiry. A filtered gateway
+journal query returned no matching event, so this does not identify automatic
+scheduler versus explicit refresh origin. No authenticated control RPC after
+renewal was invoked or proved; no credential was exported or runtime changed.
+
 Use a hard cut for stored authorization bindings. Do not infer historical token
 authority from the latest catalog or add a compatibility decoder/backfill to retain
 disposable sessions. The user explicitly confirmed hyper-development mode on
