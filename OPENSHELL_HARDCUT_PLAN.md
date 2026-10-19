@@ -93,7 +93,14 @@ Architecture and component ownership are recorded in
   host acceptance attempt failed discovery because normal system roots did not
   trust that local CA. The added roots preserve ordinary TLS/hostname verification;
   production MCP/runtime code is unchanged.
-- [ ] **Mac deployment.** Qualify native launchd/MPS inference through the private
+  Final MCP source `5d8da46a1deb0921b5de8822ab3b256e1e0c9941` passes 19
+  native component tests and the exact-source ARM64 Docker check, with the real
+  acceptance scenario intentionally ignored in those runs. Formatting and strict
+  clippy pass. The four provider tests include a synthetic stale-intermediary
+  connection case: after six idle seconds, one embedding POST must use a fresh
+  connection. These synthetic vectors establish transport behavior, not model
+  inference. Final-source Linux component checks remain open.
+- [x] **Mac deployment.** Qualify native launchd/MPS inference through the private
   OpenShell provider path and the normal Hub service route. Verify readiness,
   unauthorized access, real vectors and usage, plus restart recovery. Preserve
   unrelated services, identities and concurrent work.
@@ -143,8 +150,37 @@ Architecture and component ownership are recorded in
   A second controlled restart established identical signing-key hashes and
   retained volume/file metadata, but its first delayed inference failed the same
   way in a quiet provider window. That repeat rules out treating the earlier
-  refresh event as a sufficient explanation. Mac restart acceptance remains open
-  while the private HTTP path is diagnosed; successful calls do not close it.
+  refresh event as a sufficient explanation. That failure kept restart acceptance
+  open until the private HTTP correction below was deployed and measured.
+  Diagnostic-only source `6ea6d92b5b56bcea5f93719a2306081e6fa58703` passed 18
+  component tests and reproduced the delayed first-call failure in its deployed
+  ARM64 image. Closed diagnostics reported `Embed / Send`, no HTTP status and
+  `is_request=true`; other transport flags were false. No private input, response
+  body, credential or arbitrary error text is logged. Source inspection found
+  a 90-second default client idle pool against the runtime's fixed five-second
+  keepalive, with the native intermediary waiting for another client request
+  before observing upstream closure. This is a source-supported explanation,
+  not a captured packet trace. The four-second native client idle timeout in
+  `5d8da46a1deb0921b5de8822ab3b256e1e0c9941` now passes deployed qualification;
+  no replay, OpenShell patch or alternate transport was added.
+  Final ARM64 image
+  `sha256:437b92499c4bf687af000d4f71f3415377c3c8cdfd151f3b7ab10dae572a99df`
+  passed the first Hub call after 32.821 idle seconds, controlled MCP stop/start,
+  and native launchd runtime restart. Embedding calls took 254.217, 218.100 and
+  376.836 ms; complete eight-operation scenarios took 506.069, 478.615 and
+  570.757 ms. Each returned six vectors and 132 actual tokens, with 58,439 bytes
+  of compact structured-output evidence. All vectors matched the Mac baseline
+  exactly (paired cosine 1.0, maximum component difference 0.0).
+  The MCP retained its named volume and identical 83-byte mode-0600 signing key.
+  The launchd process now uses a persistent mode-0600 log under
+  `~/Library/Logs/Veoveo/`; its PID changed and readiness/capabilities returned 200.
+  Final post-runtime-restart receipt SHA-256:
+  `01b65c4452ce0bcd252497b81ff392cc1a52d64693fc6bd665773138286e7c3b`.
+  Consolidated Mac receipt:
+  `/tmp/veoveo-embedding-qualification/diagnostic-5d8da46/final-receipt.json`,
+  SHA-256 `fccf87c9801e2444ea7d90776cd6ea2d17b5761ec495a75f62f56b3edd5d1a1c`.
+  The optional synthetic control with the timeout removed was not run; the
+  deployed failing predecessor and successful corrected candidate are recorded.
   The native Hub usage API exposes principal/kind/phase/token/count aggregates.
   Live acceptance can verify bounded usage deltas; per-request context, source
   and delegation metadata remain component-test evidence because that public API
@@ -170,9 +206,16 @@ Architecture and component ownership are recorded in
   Lore query is permission evidence, not a successful data comparison.
   This deployment prerequisite is separate from successful direct MPS runtime
   probes and the remaining authenticated embedding acceptance.
-- [ ] **Main integration.** Review, merge and push the Mac-qualified component and
+- [x] **Main integration.** Review, merge and push the Mac-qualified component and
   installation changes to main before Linux workload deployment. Preserve other
   agents' uncommitted changes and record exact source/image identities.
+  Published and independently verified remote main refs on 2026-10-19:
+  [MCP `5d8da46`](https://github.com/VeoveoAI/veoveo-mcp-embedding/commit/5d8da46a1deb0921b5de8822ab3b256e1e0c9941),
+  [runtime `2668a96`](https://github.com/VeoveoAI/veoveo-runtime-embedding/commit/2668a96d5f3bd55ba97db5f1cbb71d084ac1e000),
+  [installation `7ad90a6`](https://github.com/VeoveoAI/veoveo-template-installation/commit/7ad90a699799a2c38da24370608a4f10a664410d).
+  The installation fast-forward preserved all seven concurrent uncommitted files
+  byte-for-byte; none was included in these commits. Linux deployment was released
+  only after these remote refs were verified.
 - [ ] **Linux deployment.** Deploy the published source through native OpenShell
   Docker/CDI on the RTX 4090. Verify CUDA execution, the private provider path,
   Hub calls, usage, access denial and restart behavior. Compare the same model,
@@ -185,7 +228,12 @@ Architecture and component ownership are recorded in
   the running binary's GPU validation paths and daemon inventory establish
   available configuration, not admitted-workload execution. No gateway change
   was needed. Actual GPU admission, UID 10001 cache/token access, CUDA forward
-  placement and inference remain deployment gates.
+  placement and inference remain deployment gates. The active Linux Hub already
+  uses the matching SDK/Core protocol, so no application-state reset is required.
+  Its authoritative named-volume catalog contains both local and Computer
+  profiles; the host-side preparation is stale. Deployment must retain the active
+  four trusted config files and append only the embedding binding, validating the
+  native catalog and preserving every existing authority and Computer/Lore field.
 - [ ] **Final agent acceptance.** Only after deterministic and deployed probes pass,
   use OpenCode with `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Independently verify its
   recorded tool results, vector dimensions and model identity. Report source,
