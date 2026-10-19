@@ -4121,6 +4121,109 @@ no alternate privilege path or unproved resolver fallback is introduced. Source
 configuration now selects the hostname consistently; full native validation and
 the coordinated runtime data updates remain in progress.
 
+Installation correction `5d31d76b8782fdca7f7acffe663cc3591f367dcc` is now
+published on `hosted-computer`, tree
+`4e791eceaf4593609d3469829329c7ab0ccb54f4`, with ten frozen source files
+matching fingerprint
+`ef8f1b52ba4ccfef3f2b3bca36b4dc3a34459f93c6b08b56ba1ee2406b8ec267`.
+The existing complete native policy validator passes for all four affected source
+policies and the private Computer policy, with zero endpoint ambiguities. The
+private candidate differs only at the Lore endpoint host; port 41337 and
+`allowed_ips: [10.231.10.10]` are preserved. Its installed SHA-256 is
+`025e7c5805b9dcd8aea03b78eea84ca66c93841b0810274fa41036360eeb322a`.
+The trusted networkless volume update preserves mode 0600 and owner 10001:10001;
+no other volume file changes. No image rebuild is needed for this data correction.
+
+Hub's normal retry starts its main process at 2026-10-19 19:29:15.926Z and reaches
+native Ready at the same sandbox identity, restart count 18. The structured
+application log reports `listening` on `127.0.0.1:8080` at 19:29:16.032658Z.
+Inventory finds nine sandboxes, zero user Computer template references or owner
+labels, and exactly one `installation/computer` source template. Native template
+creation is not an upsert, so the supported row-only delete/recreate changes only
+`environment.VEOVEO_LORE_REMOTE`; fresh readback matches every other spec field,
+including image, resources, driver configuration, environment, labels and
+annotations. No user sandbox, workspace or working volume is deleted.
+
+The existing `http` exposure is restored on Hub port 8080 with the same bearer
+passthrough mode and named Cloudflare target. TLS-verified public probes return
+`/readyz` 200 in 0.427 seconds, `/computer` 303 in 0.427 seconds, OAuth discovery
+200 in 0.272 seconds and the Computer protected-resource metadata 200 in 0.192
+seconds. These establish public HTTP availability and entry-point redirection,
+not browser sign-in or a provisioned Computer. Five non-Hub sandboxes are Ready;
+Time, Artifact and Media are initially still retrying registration and their normal
+recovery remains under observation. No model call occurs.
+
+The Hub catalog and retained rebuild input still need their endpoint-only update.
+An unauthenticated `GET /admin/local/control-plane` returns 401 in 0.354 seconds,
+as expected; this does not test the existing administrator custody. Native refresh
+status and the normal real-Entra application-grant flow are being checked after
+the authorized session hard cut. The Computer browser cookie does not authenticate
+administrative Bearer routes. No credential is extracted from native custody, no
+synthetic approval is used, and existing qualification policies are not broadened
+to manufacture an administrative client. The host DNS entry remains pending the
+user's privileged edit. Native Lore login and repository acceptance have not run.
+
+Subsequent native inventory confirms all nine existing sandboxes Ready, including
+Time, Artifact and Media, with unchanged application identities and no Computer
+sandbox. `qa-sdk-initial` attaches the retained `vv-hub-qualification` provider.
+The provider-wide refresh status reports both human grants
+`reauthorization_required`, recovery `reauthorize`, failure `oauth_invalid_grant`.
+The CLI displays last refreshes 18:11:57 and 18:11:58, with expiries 18:16:57 and
+18:16:58 on 2026-10-19; it omits the timezone, so these are retained as displayed.
+A preceding query using the historical `admin_access_token` selector
+returned no configuration; that narrow result was not evidence that the provider
+or all custody had disappeared. No credential material is read or exported.
+
+The coordinator attempts the actual public Computer browser flow through Cua.
+The browser origin approval gate rejects navigation to
+`https://veoveo.bioma.ai`, reporting permission declined. No sign-in, handoff or
+Computer provisioning occurs. Browser permission is requested; neither another
+browser nor an indirect login path is used to bypass that rejection.
+
+The supported fresh administrator path is the existing OpenCode MCP auth client,
+with public client `opencode`, scope `mcp`, resource
+`https://veoveo.bioma.ai/mcp/local` and registered loopback redirect
+`http://127.0.0.1:3210/callback`. Actual client data confirms
+`defaultWorkContext: reference-work`, which Hub selects when that optional request
+parameter is absent. The known 376 build supports the exact native callback and
+state checks: local Darwin ARM64 executable SHA-256
+`2da0a16007cee6c74bd9e8df448c3ee5ef7ee4cda2007cb6619b532773e60365`.
+Isolated task-owned configuration, all XDG roots, temporary directory and credential
+database are prepared without running authentication or a model. Once browser
+permission is granted, native authentication can create a fresh grant in that
+isolated store. Independently verify live JWKS, identity, audience, client and
+context before private administrative use and native refresh-custody handoff.
+This does not extract existing OpenShell custody or add an OAuth implementation.
+
+The final metadata-only receipt is
+`/tmp/computers-hli6-policy-validation/metadata-only-final-receipt.json`, mode 0600,
+SHA-256 `d3b29e06e7cd372350806509dfa1b52e018bec763659ed81c4c040bb79b76fab`,
+recorded at 2026-10-19 19:43:42Z by the GPT-6 Luna builder. It records the existing
+native validator's exit zero in 5.5 seconds, log
+`/tmp/computers-hli6-policy-validation/native-check-final.log` (SHA-256
+`11f17e33df93d7ae9ab9bb5c287db56b4a476a8686e1d1990c4d92c6f07c4af1`),
+the template row replacement and all nine native Ready states. Template row
+`e2083817-ae5c-497d-86e5-d40bbafb687b` becomes
+`7b7b4038-f46c-4905-bf64-0c175d8f8011`; only the Lore environment value changes
+in the canonical spec. A final TLS-verified status-only observation, without
+following redirects, retains readiness 200 (0.391123 seconds), Computer entry 303
+(0.391039), OAuth discovery 200 (0.379308) and Computer protected-resource metadata
+200 (0.391463). These are deployed HTTP probes, not browser or model acceptance.
+
+Actual retained QA credential keys are `HUB_ADMIN_REFERENCE` and
+`HUB_MEMBER_REFERENCE`. Future native refresh reauthorization must target those
+existing keys, not create a key from an obsolete example. Nonsecret native-auth
+inputs now exist at `/tmp/computers-hub-admin-auth-20261019` (directory 0700):
+`opencode.json` 0600, `launch.sh` 0700 and `README.md` 0600. Configuration SHA-256
+is `5f63ff8b649155c1dbf0b52b8a7d29e8cd7a61cd046e1233c35ec8c1ed959fac`;
+launcher SHA-256 is
+`c2cdddbd02fd4fd2e90467d4e12e78d613f993fec2e30402457aafd623e6c6e2`.
+The launcher checks the reviewed native client hash, isolates state and disables
+model-list fetching. Static JSON, shell syntax and permission checks pass. It has
+not run; browser permission and the host DNS edit are still pending. Updated guide
+JSON, JavaScript syntax, three SVGs and unique SVG IDs pass static checks; browser
+review and export checks remain unperformed for these guide bytes.
+
 The source-reviewed native acceptance checklist now includes an independent
 factory build, beyond repository clone/hash proof. A dependency-free locked Rust
 fixture is published at the real emitted repository/revision, then only the
