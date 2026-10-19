@@ -1,17 +1,18 @@
 # Lore And OpenShell Integration
 
 Status: accepted infrastructure direction for design and qualification, revised on
-2026-10-18. Lore is the source and revision authority. OpenShell owns execution
+2026-10-19. Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
 native Lore/private MCP path, Hub → Time integration, prepared Time factory
 build/deployment, private Artifact integration and the private fake-provider Media
 slice pass local acceptance, including the final bounded OpenCode MiMo client
 scenario. A separately authorized real WaveSpeed polling one-shot also passes,
-producing a decoded image through the same native path. The next authorized goal
-is the reference Linux deployment and a real signed WaveSpeed webhook, followed
-by bounded OpenCode MiMo acceptance; none of those new gates has passed yet. Other
-models, general composition and GPU/CUDA remain separate. See
+producing a decoded image through the same native path. One real Linux WaveSpeed
+signed Events callback now passes, with zero generation status checks, independently
+decoded bytes and matching per-Task USD 0.003 usage. Remaining deployed
+recovery/lifecycle checks and final Linux OpenCode MiMo acceptance are pending.
+Other models, general composition and GPU/CUDA remain separate. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
@@ -261,7 +262,7 @@ Lore-to-image deployment remains later work.
 | `veoveo-hub` | MCP entry point, dynamic server registration/catalog, caller permissions, narrowed forwarded identity and server-to-server delegation | Qualified locally: trusted OpenShell service sandbox in an operator-owned control workspace; its OpenShell client can forward only into the approved service workspaces |
 | `veoveo-mcp-time` | Resolve/convert time, expand a schedule as a durable Task, create an event and receive its resource updates | Qualified locally: first private MCP service sandbox, port 8800 and `/time/mcp`; persistent `/var/lib/veoveo/time` for registration identity and authority files |
 | `veoveo-mcp-artifact` | Upload, verify, list and download tenant-owned files; enforce artifact access | Qualified locally: second private MCP service sandbox, port 8801 and `/artifact/mcp`; persistent registration key, PostgreSQL metadata and SeaweedFS/S3 bytes |
-| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Qualified locally: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and a separate native fake-provider fixture; one real WaveSpeed polling run also qualifies, while public webhooks and other models remain later work |
+| `veoveo-mcp-media` | Discover models and run generation as a durable Task; store outputs through Artifact and record usage | Qualified locally: third private MCP service sandbox, port 8802 and `/media/mcp`; persistent registration key, PostgreSQL run state and a separate native fake-provider fixture; one real WaveSpeed polling run qualifies on Mac and one signed Events callback qualifies on Linux, while other models remain later work |
 | `veoveo-core` | Database kernel, identity, durable Tasks, audit and usage | Libraries inside the Hub/services; their durable state remains in the installation PostgreSQL database |
 | `veoveo-hub-sdk` | MCP hosting/client, registration, forwarded-token checks, Task adapter, subscriptions and delegated calls | Libraries inside the Hub/services; its existing CLI is an initial application client |
 | `veoveo-template-installation` | Assemble images, native workload/policy/provider definitions, approved endpoints and volumes | Existing installation repository; no second deployment manifest or component lock |
@@ -299,12 +300,19 @@ concurrent ordinary-member and billed/admin acceptance needs distinct principals
 The existing dedicated public tunnel routes Hub and only Media's signed
 callback path to verified native service exposures. Artifact's signed byte
 requests use a separate public S3 authority and SeaweedFS's native HTTPS listener.
-These paths are deployed. Separate administrator/member Entra-to-Hub admission,
-native credential renewal and Time's seven baseline cases pass. The public Media
-route rejects invalid signatures; a real signed provider callback is still
-unqualified. Artifact's large multipart upload and server verification complete,
-while its end-to-end observation correction, Media lifecycle and restart gates
-remain open. Mac qualification does not establish these Linux gates. See the
+These paths are deployed. After the merged typed-contract cutover and authorized
+application reset, fresh administrator/member Entra-to-Hub admission and Time's
+seven baseline cases pass. Earlier native renewal and large Artifact multipart
+successes remain evidence for their recorded frozen revisions. The fresh stack's
+Time baseline passes seven cases in 14.61 seconds libtest; Artifact passes all six
+private cases in 406.48 seconds libtest / 406.534 seconds outer native Exec,
+including its large-object proof. The six Media fake baseline cases also pass in
+51.28 seconds libtest / 51.336316 seconds outer Exec. Current renewal and restart
+recovery remain separate gates. The public Media route previously rejected invalid signatures; a real
+signed Events callback now passes on Linux as recorded in the
+[dated receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).
+Mac qualification does not
+establish these Linux gates. See the
 [reference gates](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal).
 
 ### Hub And SDK Naming And Ownership
@@ -647,7 +655,51 @@ checklist tracks the Hub and SDK corrections' component and deployed proofs
 separately. SDK correction `483914615a2e5846e58aac97daabb30b77835c6d` passes
 both platform component gates. Artifact `ce0a766` and Media `774be1e` adopt it
 after their own Mac and Linux component gates. Their Linux sandboxes are Ready
-at these revisions; large-object and service-recovery acceptance remain pending.
+at these revisions. The Linux large-object test now passes multipart completion,
+whole-content checksum comparison, a boundary range and deletion/usage release
+in 419.65 seconds of test time. It does not establish uninterrupted transport or
+that reconnection occurred in that successful run. At that frozen-source checkpoint, service restart recovery and the real signed
+callback remained pending; the later Events pass is recorded below.
+
+The merged typed-contract candidates require a coordinated development cutover.
+Registration access declarations, Product envelopes and collection Pages change
+together across Hub and services. The operator explicitly selected fresh
+application state: old registration and completed Task formats are disposable.
+Do not add migration adapters or compatibility paths for this development reset.
+Qualify the coherent merged stack after reset; retain earlier receipts only as
+evidence for their recorded revisions. The coherent local candidates now pass
+Docker component gates on the Mac, including Time's numeric-decoding correction
+and restored SDK security regressions. The same selected stack now passes
+canonical Docker source gates on the actual Linux x86_64 host, and all seven
+selected revisions are published. Matching runtime and acceptance binaries are
+built; Hub `ed6778f`, Time `e607b2e`, Artifact `00c8e93`, Media `4e8504b` and the
+synthetic fixture are deployed Ready against reset application state. Fresh
+administrator/member admission and all seven Time baseline cases pass in 14.61
+seconds libtest (14.662 seconds outer Exec). All six fresh private Artifact cases
+pass in 406.48 seconds libtest (406.534 seconds outer Exec), including the large
+unknown-size multipart proof. The six-case Media fake baseline also passes in 51.28
+seconds libtest (51.336316 seconds outer Exec). Current renewal and restart recovery
+remain separate gates; these baseline passes do not establish those results. The real signed
+Events gate now passes independently; final bounded MiMo qualification remains
+pending. The user prioritized this single real run before the remaining
+deterministic/restart gates. `wavespeed-ai/flux-schnell` used one 1024 × 1024 PNG
+input (seed 42, async URL output) with the orange-robot/green-seedling prompt
+recorded exactly in the [receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).
+The 26.034106-second acceptance interval includes provider work, callback, storage
+and billing, not measured pure inference. A final signature-verified applied
+callback settled generation in Events mode with zero generation status checks;
+one billing check produced estimate/actual USD 0.003 for one request. Independent
+verified-TLS download and PNG decode agree with the available private Artifact:
+883,996 bytes, 1024 × 1024, SHA-256
+`007af757d14221e544098adc5a1e37488f7e57818c85c9e3d91e97587d646b96`.
+A prior catalog-admission failure created zero Tasks/operations; its underlying
+HTTP 401 was resolved by correcting the existing native provider credential and
+restarting Media, without a direct-key fallback. Independent download required one
+exact tool-policy addition to the existing SDK runner. The native traffic receipt
+is a bounded supervisor log response with one observed admitted generation POST,
+not a lossless provider ledger or verified complete filesystem capture. The runner
+process changed, so it proves no same-process post-expiry renewal. No OpenCode
+model call accompanied this real generation.
 
 **Keep changes in their owners.** Installation owns images, native definitions,
 providers, endpoints and the local IdP/catalog choices. Hub owns endpoint
@@ -702,8 +754,9 @@ general composition and automatic deployment out of these edits.
    Artifact through the Hub, then streams provider output to signed storage
    URLs. Use the existing fake provider on a policy-approved private endpoint and
    status-check completion (`VEOVEO_PUBLIC_ORIGIN` unset). A separate one-shot now
-   qualifies real WaveSpeed polling for one model; public signed webhook ingress
-   and other models still require their own acceptance. Keep provider credentials
+   qualified real WaveSpeed polling for one model on Mac. The Linux reference now
+   separately qualifies one real signed Events completion; other models still
+   require their own acceptance. Keep provider credentials
    with the trusted service/provider path, outside author/build jobs.
 
 Time's first acceptance covers discovery, resolve/convert, schedule Task completion
@@ -805,10 +858,10 @@ The [reference Linux and signed-webhook execution gates](OPENSHELL_HARDCUT_PLAN.
 now govern the active slice. The operator selected a fresh reference, explicitly
 discarding the retired Linux application data and backups. That cleanup is complete;
 the current installation has fresh service state and keys. Preserve this new state
-through the remaining qualification of identity/TLS/public routing, all four
-deployed application services and one cost-bounded signed WaveSpeed callback.
-Callback receipt and event-mode completion must be independently observed; the Mac status-polling
-receipt is not webhook evidence. Final OpenCode MiMo acceptance follows successful
+through routine sandbox lifecycle and the remaining deployed service gates.
+The cost-bounded signed WaveSpeed Events callback now passes with independent
+operation/event, usage and decoded Artifact evidence; the Mac status-polling
+receipt remains separate historical proof. Final OpenCode MiMo acceptance follows successful
 deterministic gates. The existing native responsibilities and placement contracts
 remain authoritative; no new proxy or launcher is assumed. Native Linux builds and
 deployment are recorded separately from acceptance; GPU/CUDA remains unqualified.

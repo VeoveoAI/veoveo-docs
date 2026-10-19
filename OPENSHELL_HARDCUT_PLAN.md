@@ -7,8 +7,9 @@ are qualified. The Desktop adapter/signer/ingress are retired and durable data i
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
 The next authorized goal is a native reference Linux deployment at
 `veoveo.bioma.ai`, real signed WaveSpeed webhook qualification and final bounded
-OpenCode MiMo acceptance. These gates are not yet qualified; GPU/CUDA remains
-separate. The existing remote installation has only been inspected read-only so far.
+OpenCode MiMo acceptance. One real signed WaveSpeed Events callback now passes
+on Linux. Remaining deployed lifecycle/recovery and final Linux MiMo gates are
+pending; GPU/CUDA remains separate.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
 preflight, one bounded model build and Time deployment from that same Lore revision.
@@ -16,7 +17,8 @@ Private Artifact and the private fake-provider Media slice also pass, including
 Media lifecycle qualification, direct Mac byte transfer and the final bounded
 OpenCode MiMo client scenario. A separately authorized one-shot real WaveSpeed
 polling run also passes: one decoded PNG through Hub/Media/Artifact, with exact
-bytes and USD 0.003 actual usage. Public webhooks remain unqualified.
+bytes and USD 0.003 actual usage. That Mac polling proof is separate from the
+subsequent Linux signed Events qualification recorded below.
 
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
@@ -1910,7 +1912,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   The remote Linux x86_64 Docker check also passed 204 tests with one skipped;
   image `sha256:b0ab42373bc77f190fa1b5cc35032267995da85456a6036902c4ad27a01629f6`.
   Deployment subsequently passed readiness and a routed Time call as recorded
-  below; the corrected large-object case remains under validation.
+  below; the updated large-object case subsequently passes as recorded below.
   Both regression runs used the same Linux ARM64
   dev image on the Mac; this is not Linux x86_64 deployment evidence.
   An initial compile attempt failed in `hkdf` with E0463 for
@@ -2009,8 +2011,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   deployment. Updated Linux runtime images and release qualification executables
   are built. Time `9874293`, Artifact `ce0a766` and Media `774be1e` are now Ready
   after native image replacement with the same logical names, providers,
-  configuration and persistent mounts. Deployed recovery and the remaining
-  acceptance gates are pending.
+  configuration and persistent mounts. The large-object case subsequently passes;
+  service restart recovery and the remaining acceptance gates are pending.
 - The updated Linux qualification image is
   `sha256:75dd6ef03e6bcb813f0f4c9301fecc3f4bfa172a232767ce2431a0946bec8d9f`,
   containing the release SDK CLI and Time, Artifact and Media acceptance binaries.
@@ -2028,8 +2030,203 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   timestamp. Private log `evidence/time-acceptance-v2.log` has SHA-256
   `8390ff3a5a3c4a42a92aa817a272b64e8350301c925381497e9b77f0b0df8751`.
   A malformed principal in the initial empty qualification runner was corrected
-  before any tests ran; production services were unaffected. The long Artifact
-  case must capture explicit start/end and exit status before claiming its timing.
+  before any tests ran; production services were unaffected. The subsequent long
+  Artifact case captures explicit start/end and exit status as recorded below.
+- The updated large-object acceptance passes on October 19 using the frozen
+  Artifact `ce0a766` release acceptance binary, SHA-256
+  `eeb2f2f1e42644513404770d3c9c1a013f84cf21456fcb0bfae5287ecfa1a5c0`,
+  and qualification image `75dd6ef03e6b`. The exact test is
+  `a_gibibyte_of_unknown_size_verifies_serves_a_range_and_releases_its_bytes`
+  in sandbox `50cef612-a920-44f5-a7b9-6fa1f7217967` (`artifact-qa-v2`).
+  Parent timestamps are 03:03:58.197–03:11:00.413 UTC: 422.216 seconds between
+  recorded millisecond timestamps (the receipt's separately rounded duration is
+  422.217 seconds). Native Exec exits zero; libtest reports one passed, zero
+  failed in 419.65 seconds, with empty stderr.
+  The case uploads 1,076,887,552 deterministic bytes in 65 parts, waits for
+  Available, compares the server's size and whole-content SHA-256 with the locally
+  computed input, checks a 206/200-byte range crossing a part boundary, deletes
+  once and observes an unreadable resource and stored-byte reduction of at least
+  the object's size. It does not full-download the object, prove direct S3
+  deletion, assert a particular read-error code or demonstrate that a retry or
+  reconnect occurred during this successful run. Neither the object ID nor the
+  successful content digest is printed by this test. Those values must not be
+  borrowed from the earlier failed runs.
+  Private receipt files are retained under installation state
+  `state/reference/evidence/artifact-large-pass-20261019`: `meta.json` SHA-256
+  `4a24ad0889648269a36b0984b2f1e64051bc614e37b2222af2cf18152a6533b7`
+  and `stdout.log` SHA-256
+  `b2126d60bbcd47d47e6143f9ddde961d380a5cbb1f7497595eefa6a44a3623e7`.
+  The retained object from the prior failed run was deleted through the normal
+  Artifact API before this test; resource absence and zero stored/reserved usage
+  were observed, and its temporary maintenance runner was removed.
+  The SSH forwarding session subsequently stopped completing banner exchange.
+  Public Hub discovery still returned verified-TLS HTTP 200 in 0.397 seconds, and
+  unauthenticated MCP returned 401 in 0.326 seconds. After restoring the same
+  RustDesk 2222-to-22 mapping, Linux SSH and native service readiness returned.
+  Supplemental Docker logs for the successful test window returned zero bytes
+  from the QA, Hub and Artifact supervisors; this supplies no additional transport
+  evidence. The private `native-logs/receipt.json` beneath the successful test
+  evidence records that retrieval. No successful workload was repeated to recover
+  missing diagnostics. Updated fake Media, restart recovery, real signed callback
+  and final MiMo acceptance remain open.
+- **Next development cutover: merged typed contracts, fresh state.** The operator
+  selected a reset on October 18: application data is disposable during active
+  development. Do not implement old-registration migrations, retained Task result
+  adapters, compatibility decoders or backups for this cutover. Source and trusted
+  installation/identity configuration remain the inputs to the fresh deployment.
+  The seven clean local `main` candidates are Core `433ed5f`, SDK `b3da412`,
+  Artifact `00c8e93`, MCP template `b39a604`, Time `151d271`, Hub `ed6778f` and
+  Media `4e8504b`. These are candidates, not the deployed revisions in the table
+  below. Their Mac and Linux Docker checks subsequently pass with the two follow-up
+  commits recorded below, and all seven selected revisions are published.
+  Fresh deployment subsequently completed as recorded below. Do not infer
+  deployed acceptance from source-check receipts.
+  Read-only review finds a coherent Core/SDK/Artifact pin graph and no confirmed
+  defect in a fresh matched stack. SDK observation recovery and durable Task
+  adapters are unchanged from `4839146`; Hub listener forwarding is unchanged
+  from `ec9f7f5`. Required Tasks and permission-before-creation behavior remain.
+  The intentional contract cutover changes registration permission strings to
+  tagged `RouteAccess`, Product results to `{resultUri, metadata}` and collections
+  to `{items, limit, nextCursor}` with typed filters. Signed-download output stays
+  unchanged. Old registration rows cannot be decoded by the new Hub, and old
+  completed Media Task payloads are not new typed Products; the authorized reset
+  removes both historical formats instead of supporting them.
+  After source gates pass, deploy the coherent set against fresh application
+  state and qualify new registrations, two-identity admission, Page/Product calls,
+  Media-to-Artifact delegation, subscription recovery and terminal/in-flight
+  restarts. Then run the one real signed callback and final bounded MiMo check.
+  Earlier deployed successes, including the large Artifact run above, remain
+  evidence for their exact frozen revisions; they are not passes for these merges.
+- **Merged-source local gates pass (October 19 UTC).** These are Docker
+  `check` targets on macOS, producing Linux ARM64 check images, not Linux-host
+  deployment acceptance. Core `433ed5f` passes 349 tests/two skipped; Artifact
+  `00c8e93` 112/nine; Hub `ed6778f` 206/one; Media `4e8504b` 69/11; and the MCP
+  template `b39a604` 14/zero. SDK follow-up `b0b8d86` passes 227/three and Time
+  follow-up `e607b2e` passes 140/ten. All seven selected working trees are clean.
+  The initial SDK fetch failed because Core's exact pin was not yet published.
+  Temporary bare Git mirrors supplied the same committed dependency objects;
+  manifest/lock pins and original check instructions remained unchanged. This
+  proves local source gates, not canonical remote fetch or Linux-host gates.
+  Time's initial gate exposed primitive floating-point decoding failures after
+  Core enabled arbitrary-precision JSON: tagged expressions and flattened
+  projections buffer numeric values. The fix uses supported JSON Number decoding
+  and finite f64 admission, preserving numeric wire shapes and GPS bounds. The
+  next run exposed a stale hosted-error assertion; its replacement verifies direct
+  typed/schema refusal and the current masked error contract. Both original
+  failures and the failed intermediate run are retained. SDK's test-only follow-up
+  restores three removed trace/serialization redaction regressions through current
+  typed routes; no runtime SDK change or dependency repin is required.
+  The successful Time run is 04:11:09.907–04:16:04.348 UTC; SDK is
+  04:06:06.281–04:12:06.401 UTC. Private installation evidence is
+  `state/reference/evidence/component-checks-20261019.json`, SHA-256
+  `bcf945cbb565bf4cf76e9b3baf1032f696483329d874fd0f6296ca71740dc5e4`;
+  `typed-contract-checks-20261019/` retains all ten check receipts and hashed logs.
+  Checked patch hashes match the subsequent SDK and Time commit diffs exactly.
+  The subsequent Linux source checks and publication are recorded below.
+  Fresh-state deployment and the real signed callback subsequently completed as
+  recorded below; final bounded MiMo acceptance remains pending. No paid generation
+  or OpenCode model call was made by these source-check cycles.
+- **First merged-source Linux gate passes.** Core `433ed5f` passes the canonical
+  Docker `check` target on the remote Linux x86_64 host: 349 tests passed, two
+  skipped, exit zero, 04:27:22.575–04:31:00.872 UTC. Check image
+  `sha256:c7c32be656bbbed25533699e48ddf36b33117297f64ce1f1848f7b241fc4f8e9`;
+  log SHA-256 `4473fa6aa37bd9365747daa3839767a1a98f52dd82076aa0ac71f1e5be678b9d`.
+  The remote receipt is `evidence/source-bundles-20261019T0418Z/linux-core-433ed5f-check.json`.
+  Both host gates now pass, and the exact Core revision is published to origin.
+  Dependent Linux checks can fetch that pinned revision normally. This is source
+  qualification; it does not establish deployment or callback acceptance.
+- **All merged-source Linux gates pass and are published (October 19 UTC).**
+  The actual Linux x86_64 host passes the canonical Docker `check` targets for
+  Core `433ed5f` (349 passed/two skipped), SDK `b0b8d86` (227/three), Hub
+  `ed6778f` (206/one), Time `e607b2e` (140/ten), Artifact `00c8e93` (112/nine),
+  Media `4e8504b` (69/11) and MCP template `b39a604` (14/zero). All seven local
+  trees are clean and the selected heads match origin `main`. Their exact source
+  trees, commands, times, image IDs and log hashes are retained in the private
+  `component-checks-20261019.json` aggregate and `typed-contract-checks-20261019/`.
+  Builder is GPT-6 Luna; source follow-up author is GPT-6.1 Sol; review and
+  publication are coordinated by GPT-6 Astra.
+  The first Artifact gate failed two SeaweedFS fixture startups before test
+  assertions (110 passed/two failed/nine skipped). Both exact isolated cases then
+  passed using `cargo test --all-features --test ... -- --exact --nocapture` in
+  the pinned dev image, followed by one unchanged full canonical nextest gate
+  with no overlapping build. The full success took 178.624 seconds,
+  04:55:35.475–04:58:34.099 UTC; image
+  `sha256:f5aac09407368b27193fbaca7674f5dd811ee5492963d401392ceb8a90f45ee4`.
+  Original failure, focused runs and full success remain separate receipts.
+  Initial Hub/Artifact build contention is plausible, not an established cause;
+  no source change, timeout extension or weakened assertion was used.
+  A raw process diagnostic inadvertently included the SeaweedFS admin password
+  in tool output, not saved evidence. No other credential field was present.
+  Raw argv/environment inspection stopped. That password was privately rotated
+  during the authorized fresh SeaweedFS recreation; other private configuration
+  fields were verified unchanged. This is not evidence of external use. Source
+  gates alone do not claim application acceptance. The subsequent rollout and
+  first fresh-stack acceptance are recorded below.
+- **Fresh typed-contract deployment (October 19 UTC).** Matching Linux/amd64
+  runtime images for Hub `ed6778f`, Time `e607b2e`, Artifact `00c8e93` and Media
+  `4e8504b` were built, revision-label checked and deployed through native
+  OpenShell. All four services and the matching synthetic provider fixture are
+  Ready. The authorized reset recreated only the application PostgreSQL and
+  SeaweedFS volumes; the fresh database had zero user schemas/public relations
+  before Hub startup. No backups or compatibility migration were added. Gateway,
+  tunnel, trusted configuration, native provider definitions and the current
+  fresh-reference signing keys were retained. Verified Hub readiness and public
+  discovery pass. The immutable runtime table below is current; earlier receipts
+  describe their exact historical sources. Runtime logs and hash-verified receipts
+  are under private installation evidence `typed-contract-runtime-20261019/`.
+  Fresh administrator/member Entra PKCE grants pass independent Ed25519 signature,
+  issuer, audience and identity checks. Direct access-token updates were rejected
+  by OpenShell's refresh-ownership guard; reconfiguring each existing native
+  refresh entry restored custody without a new provider or credential path.
+  The controller minted fresh access tokens, and disposable QA grant files were
+  removed after custody confirmation. New authorization epochs require fresh QA
+  processes; ordinary automatic renewal must preserve those new references.
+  Application-token expiry qualification remains open: use completion of the
+  initial successful calls plus the configured 900-second JWT lifetime and a
+  margin, not merely the 300-second native lease. The controller-held JWTs were
+  not extracted; this is a conservative configuration-derived bound.
+  Artifact's dedicated storage key is denied List/Get on an existing unrelated
+  probe bucket/object that bootstrap credentials successfully list/read; its
+  ListBuckets response excludes that bucket. XML AccessDenied was captured for
+  List/Get, without an HTTP-status capture. IAM ListUsers separately returns
+  HTTP 403/AccessDenied. The probe object and bucket were removed. This is scoped
+  authorization evidence, not fresh multipart acceptance.
+  Four matching release QA executables pass hash and executable checks as the
+  actual sandbox user in image
+  `sha256:0738c6b1ea075759cd865b64a4d0897b2a688d0437832e72d2d0847b18428904`.
+  Initial extraction/ownership/mode mistakes were corrected before executing
+  tests; no application source changes were needed. A standalone SDK probe in
+  Time's runner was denied by its binary allowlist before dispatch. The dedicated
+  SDK runner uses the existing client policy and succeeds for both principals:
+  the fixed `2026-10-17T12:00:00Z` resolve call takes 0.392/0.321 seconds,
+  respectively. Time's seven baseline cases pass, zero failures, 14.61 seconds
+  libtest time and 14.662 seconds outer native Exec, at
+  05:37:19.389–05:37:34.051 UTC. The private receipts are under
+  `typed-contract-deployed-20261019/`. Artifact's fresh `00c8e93` six-case private
+  baseline also passes: zero failures, 406.48 seconds libtest and 406.534 seconds
+  outer native Exec, 05:37:47.744360–05:44:34.278715 UTC, exit zero and empty
+  stderr. This includes the large unknown-size multipart case's independent
+  digest, boundary range, deletion and stored-byte release assertions. The exact
+  receipt is `artifact-acceptance-typed-20261019.json`; stdout SHA-256
+  `82ede48948d2c912f20e9ee599f5a41369a2a7ed66efa08392958ebd474ed396`.
+  Media's six-case fake baseline also passes, 51.28 seconds libtest and
+  51.336316 seconds outer Exec, 06:10:19.893940–06:11:11.230256 UTC, exit zero;
+  receipt `real-wavespeed-20261019/media-fake-six-final.json`. Current renewal
+  and restart gates remain separate; their final receipts follow. At this rollout checkpoint no paid
+  generation or OpenCode model call had run; the later single real Events result
+  is recorded below.
+- **Native provider-request instrumentation.** OpenShell `6589a91` writes opt-in
+  supervisor OCSF JSON to `/var/log/openshell-ocsf.YYYY-MM-DD.log`; the supervisor
+  log directory is ephemeral. Enable `ocsf_json_enabled`, verify application and
+  JSON emission, then retain private before/after log-directory copies for the
+  single real run before restart. Gateway sandbox logs carry shorthand and retain
+  only the latest 2,000 entries. Both paths use bounded, potentially lossy queues.
+  The actual real-run receipt below used a bounded native supervisor log response,
+  not a verified complete filesystem capture.
+  Count distinct observed native-admitted generation POSTs separately from status
+  GETs, using the recorded window and OCSF event IDs. This is not a lossless count
+  of provider-accepted requests. Pair it with the Task operation, provider
+  prediction, applied signed callback, cost and Artifact receipts.
 - A related narrow protocol audit found that pinned RMCP already rejects
   non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
@@ -2080,15 +2277,72 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   rotated. The token-free receipt is
   `/home/rozgo/VeoveoAI-reference/evidence/wavespeed-secret-preflight.json`.
   This proves neither sandbox credential mediation nor callback delivery.
-  No paid generation or OpenCode model call has occurred in this goal.
+  At that preflight checkpoint no paid generation or OpenCode model call had
+  occurred; the subsequent single real Events run is recorded below.
 
-| Built Linux runtime | Immutable image ID |
+### Linux Real WaveSpeed Signed Events Receipt — 2026-10-19
+
+The user prioritized the one real signed-callback run before completing the
+remaining deterministic/restart gates. This gate passes independently; gates 3
+and 5 remain open. Exactly one paid generation ran through the Rust acceptance
+client, public Hub, native Media and private Artifact. No OpenCode/model-driver
+call or second generation was used.
+
+- **Input and timing:** `wavespeed-ai/flux-schnell`, prompt "A small orange robot
+  holding a green seedling on a clean white laboratory bench, soft studio light,
+  simple centered composition, no text." Input: `size=1024*1024`, `num_images=1`,
+  `seed=42`, `output_format=png`, `enable_base64_output=false`,
+  `enable_sync_mode=false`. The acceptance interval is
+  05:49:43.827679–05:50:09.861785 UTC, **26.034106 seconds**, including dispatch,
+  callback completion, output storage and billing; pure inference time was not
+  measured.
+- **Durable linkage:** internal Media Task
+  `01a152b5-6d72-72a3-83d3-0fa9080da3ff`; generation operation
+  `01a152b5-6e45-7ec1-87b9-ca013bfc4cc5`; provider prediction/event
+  `c8aa00e31ec14fe79fba39d02938773f`; available private Artifact
+  `01a152b5-b5d4-7e93-9f2f-5387f2e01345`. The signature-verified final callback
+  was persisted/applied at 05:50:01.632404 UTC, **16.878267 seconds** after the
+  recorded generation acknowledgment. Its generation operation settled in
+  `events` mode with **zero generation status checks**. One separate billing
+  check reconciled the actual charge. Task, prediction and Artifact provenance
+  agree; per-Task estimate and actual are each **USD 0.003**, quantity one
+  `Requests`.
+- **Independent bytes:** verified TLS, unchanged signed GET, no redirects;
+  **883,996 bytes**, decoded **PNG 1024 × 1024**, SHA-256
+  `007af757d14221e544098adc5a1e37488f7e57818c85c9e3d91e97587d646b96`.
+  Size, MIME and canonical digest match the stored Artifact. The image is saved
+  privately as `tmp-client-reference/wavespeed-events-20261019.png` on the Mac.
+- **Failures before success:** catalog-not-loaded admission refused the initial
+  attempt; independent SQL showed zero Media Tasks/operations, so it did not spend
+  a generation. Catalog refresh had actually received HTTP 401. The authoritative
+  installation key worked directly; the existing native provider credential was
+  corrected and Media restarted, after which catalog admission succeeded. No
+  direct provider-key environment fallback was added. Independent retrieval first
+  hit the Time-focused SDK runner's tool policy; adding only
+  `artifact__create_download` to its existing public Hub endpoint/binary rule
+  allowed the download. The runner process changed, so this is not a same-process
+  post-expiry renewal proof.
+- **Native traffic and limits:** the retained bounded supervisor log response has
+  128 lines/103 OCSF records and one observed native-admitted generation POST.
+  This is not verified full filesystem capture or a lossless provider-server
+  request ledger; native queues can drop records. Pair that observation with the
+  single durable dispatch/prediction and accepted callback, rather than inferring
+  an independent provider-accepted HTTP count. One model/input/image is qualified;
+  other models/providers, GPU/CUDA and final MiMo remain outside this pass.
+
+Private installation evidence is `state/reference/evidence/real-wavespeed-20261019/`:
+`result.json`, `operator-proof.csv` (SHA-256
+`0113008a178d680a0cda5d517a49e28a6ddc7347adcbdd020e6b29f28550622f`),
+`operator-proof-receipt.json` and `independent-image-verification.json`. No callback
+bearer URL, signed download URL, request header or provider secret is published.
+
+| Current Linux runtime | Immutable image ID |
 | --- | --- |
-| Hub `ec9f7f5` | `sha256:91988a8f06cc6ae13fc2e2d768a7f03de6b0a601aee79436eaf0fc8958343ef6` |
-| Time `9874293` | `sha256:112ed48fe10ce6abd8f6858c9af8d353fa4a0d59830d66a63cdd3c75c7fadb96` |
-| Artifact `ce0a766` | `sha256:385347e610bd400debff111d4d5f4a8415ec0d2a6eb545cbbee9b290f46f45c9` |
-| Media `774be1e` | `sha256:bb3473b1908686a94f5324f1ae7b19f9ae645aa313c3804220bc3db24261921a` |
-| Media test provider `20e2c6e` | `sha256:83b0d544639ccfe51202852b5cbf28d55560618fad566f69cc41a3aa3dc9bb8b` |
+| Hub `ed6778f` | `sha256:6fd5cdb9761ba5f91bc288110a0a1794a141dd6ac9dfe66e4048385e087d1a70` |
+| Time `e607b2e` | `sha256:3c7e97a1352f4216fa52117decb4e956ae80e7d0142c9c416637f84869d1831b` |
+| Artifact `00c8e93` | `sha256:28413a16b612a35725e91fc5dae2325ffc17613df742489d34a59d6d0f93cf29` |
+| Media `4e8504b` | `sha256:e3353a53f38f6a9f65cf5f93ff8c8fab663a2a8828244e5e674dd98485ce2209` |
+| Media test provider `4e8504b` | `sha256:b97476b8d40c03dff0381c6600517fb27320ee08fcff50fa113cb4af69449b11` |
 
 - [x] **0 — Inventory, retired-stack cleanup and reviewed native placement.** Reconcile
   the current remote processes, images, policies, identity, public routing and
@@ -2120,7 +2374,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Use deterministic fixtures before real-provider work, and distinguish component
   results from deployed evidence. Hub requires Tasks; no taskless compatibility
   work is part of this goal.
-- [ ] **4 — One cheap real signed WaveSpeed callback.** Review the actual model,
+- [x] **4 — One cheap real signed WaveSpeed callback.** Review the actual model,
   schema, exact input and current quote/bound with the coordinator before the one
   user-authorized cheap submission. This is review within the approved goal, not
   a new approval flow; at most one paid WaveSpeed generation is planned in total.
@@ -2131,7 +2385,10 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Artifact provenance, independent decode/exact download hash and per-Task
   estimate/actual usage. Stop on ambiguous submission or failure; no automatic
   generation retry. The Mac USD 0.003 polling receipt is separate historical proof,
-  not this callback gate or a guaranteed future price.
+  not this callback gate or a guaranteed future price. The single Linux run now
+  passes with the [dated Events receipt](#linux-real-wavespeed-signed-events-receipt--2026-10-19).
+  Remaining deterministic/restart work stays in gate 3; no additional paid
+  generation is needed for gate 5.
 - [ ] **5 — Final bounded OpenCode MiMo qualification.** Only after deterministic,
   component, integration and deployed gates pass and expected behavior works,
   preflight the selected OpenCode MCP client without inference, then run the
