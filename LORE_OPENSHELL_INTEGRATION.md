@@ -10,8 +10,9 @@ slice pass local acceptance, including the final bounded OpenCode MiMo client
 scenario. A separately authorized real WaveSpeed polling one-shot also passes,
 producing a decoded image through the same native path. One real Linux WaveSpeed
 signed Events callback now passes, with zero generation status checks, independently
-decoded bytes and matching per-Task USD 0.003 usage. Remaining deployed
-recovery/lifecycle checks and final Linux OpenCode MiMo acceptance are pending.
+decoded bytes and matching per-Task USD 0.003 usage. Deterministic deployed-service and recovery gates now pass in the dated checklist.
+Final Linux OpenCode MiMo client acceptance now passes the full retained-Artifact
+and one-Time-Task scenario; earlier bounded failures remain historical.
 Other models, general composition and GPU/CUDA remain separate. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
@@ -342,9 +343,11 @@ including its large-object proof. The six Media fake baseline cases also pass in
 terminal restart verifies and Media's coordinated in-flight Media+Hub restart
 pass. Fresh calls from both roles pass beyond the source-derived original-JWT
 expiry bound in one runner with unchanged opaque handles; this does not prove
-uninterrupted streams or exact token issuance timestamps. Time in-flight recovery
-remains inconclusive because of fixture timing and an invalid later harness,
-not an established product failure. The [reference receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
+uninterrupted streams or exact token issuance timestamps. Time's reviewed
+in-flight restart also passes in 24.91 seconds: the same Task is Working after
+restart, then a reopened subscription receives pushed completion and the expected
+64-window schedule. Earlier timing/harness attempts remain inconclusive history,
+not established product failures. The [reference receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
 retains initial native-Ready-only failures and the application-ready retries.
 The public Media route previously rejected invalid signatures; a real
 signed Events callback now passes on Linux as recorded in the
@@ -709,9 +712,9 @@ evidence for their recorded revisions. The coherent local candidates now pass
 Docker component gates on the Mac, including Time's numeric-decoding correction
 and restored SDK security regressions. The same selected stack now passes
 canonical Docker source gates on the actual Linux x86_64 host, and all seven
-selected revisions are published. Matching runtime and acceptance binaries are
-built; Hub `ed6778f`, Time `e607b2e`, Artifact `00c8e93`, Media `4e8504b` and the
-synthetic fixture are deployed Ready against reset application state. Fresh
+selected revisions are published. Initial matching runtime and acceptance binaries
+were built; Hub `ed6778f`, Time `e607b2e`, Artifact `00c8e93`, Media `4e8504b` and the
+synthetic fixture were deployed Ready against reset application state. Fresh
 administrator/member admission and all seven Time baseline cases pass in 14.61
 seconds libtest (14.662 seconds outer Exec). All six fresh private Artifact cases
 pass in 406.48 seconds libtest (406.534 seconds outer Exec), including the large
@@ -721,14 +724,98 @@ three terminal restart verifies, Media's in-flight restart across Media+Hub
 (62.00 seconds), and both roles' fresh calls after the conservative original-JWT
 expiry bound with unchanged handles in the same runner. Initial Artifact/Media
 terminal failures occurred before routed application readiness; same-record
-verifies then passed. Time in-flight remains inconclusive/deferred due to timing
-and harness limitations. The real signed Events gate passes independently;
-final bounded MiMo qualification remains incomplete after its one authorized
-attempt reached the 240-second deadline without completed tool results or a saved
+verifies then passed. Time's reviewed in-flight restart now passes in 24.91
+seconds with the same Working Task, reopened subscription, pushed completion and
+64-window result; earlier timing/harness failures remain historical. The free
+restored Media catalog/member-refusal case also passes (0.38 seconds), without a
+generation or an exact selected-model assertion. The real signed Events gate
+passes independently;
+final bounded MiMo qualification initially remained incomplete: its first attempt reached
+the 240-second deadline without completed tool results or a saved
 file. Its persisted empty part establishes engine reasoning-start activity;
 provider response, subsequent latency and billing are unmeasured. The [attempt receipt](OPENSHELL_HARDCUT_PLAN.md#reference-linux-deployment-and-signed-wavespeed-webhook-goal)
-records the exact model, session, bounds and diagnostic limits. No replacement
-run was made; diagnose the timeout before another bounded attempt. The user prioritized this single real run before the remaining
+records the exact model, session, bounds and diagnostic limits. At that first
+checkpoint no replacement had run; the corrected later attempt also timed out. The killed
+session retained a recoverable execution claim; after sanitized metadata retention,
+native standalone session deletion removed that disposable session and its claim,
+without a model call. A new private launcher prepares supported live-owner user
+interruption, bounded terminal confirmation and explicit remaining-claim reporting
+before process cleanup. Its local synthetic SSE check now passes: one request/frame,
+acknowledged interruption, terminal Interrupted, released claim and closed provider
+connection (10.465 ms cleanup; no inference). The corrected attempt started at
+06:57:25.554651 UTC and also timed out after 240.003101 seconds of model phase
+(242.127631 seconds total), with no completed tool results/accounting or output.
+Native interruption took 39.06 ms and released its claim with zero resume attempts.
+At that checkpoint final client qualification remained open. The revised private candidate uses native
+live event-type/count/timing/length observation, without retained reasoning or
+tool-input text, plus an explicit 240/600-second bound and the same eight steps.
+Its local observer check passes: one synthetic request/frame, a positive-length
+reasoning delta in the private metadata-only live log, no retained raw text,
+terminal Interrupted and released claim (8.599 ms cleanup). The observed
+600-second attempt, session `ses_ead025069ffeXuzFg4ZxxjEmf0`, also timed out:
+07:08:38.339632–07:18:39.833546 UTC, 600.001049 seconds model phase and 601.463073
+seconds total. It produced 1,624 engine reasoning deltas / 61,086 characters but
+no tools, finalized accounting or output. Interruption took 37.617 ms and released
+the claim with zero resumes. This was progressing reasoning, not a silent stream;
+provider HTTP chunks, token usage and cost remain unmeasured. Source/config review
+finds reasoning omitted for the default variant and an output allowance up to the
+cached model limit of 131,072 tokens. Eight steps does not bound first-step
+reasoning; CLI thinking controls display only. A new same-model private `#none`
+candidate maps the native supported toggle to `reasoning.enabled=false`, preserving
+scenario, permissions and Tasks. The local fixed-refusal capture passes: exact
+`reasoning.enabled=false`, identical 12 local tool schemas, two refusals with released
+claims and no inference. The first `#none` attempt ended unsuccessfully after
+65.823 seconds at eight steps: two local tool-name/search-shape errors followed by
+read-only resource discovery, without an intended MCP operation or saved file.
+Its prompt confused direct MCP tools with Code Mode helpers. A separate actual-project
+localhost refusal probe measured normal asynchronous inventory growth from 12 to
+50 tools in 101 ms; required direct tools were present and generation was absent.
+The corrected prompt uses advertised top-level MCP names and execute-only resource
+helpers. The 16-step / 600-second `#none` run was partial, not a semantic pass:
+2026-10-19 07:40:44.824397–07:43:29.677098 UTC, 164.850767 seconds total /
+163.212114 seconds model phase, session `ses_eace4ea38ffeCdYeXWcDCUKj8w`.
+Its retained Artifact download independently verifies as an 883,996-byte PNG,
+1024 × 1024 RGB, SHA-256
+`007af757d14221e544098adc5a1e37488f7e57818c85c9e3d91e97587d646b96`.
+The single Time `expand_schedule` call was rejected: its calendar ID lacked
+`calendar-`, and the advertised schema omitted that prefix and full local-date/time
+metadata. No Time Task was created. Code Mode `.arrayBuffer()` / `crypto.subtle.digest`
+assumptions also caused local errors before the successful download. CLI exit 0
+does not satisfy the semantic gate. Durable session accounting totals USD 0.0850859424;
+the CLI's 15-step subtotal is incomplete. Time's schema-metadata correction is published
+at `d70ac8e` (tree `b4ac708`). Both canonical Docker checks pass 141 tests / 10 skipped:
+Mac-hosted Linux ARM64 and actual reference Linux AMD64. The matching `d70ac8e`
+runtime and QA are now deployed; the new seven-case Time baseline passes in 14.84
+seconds. The live Hub catalog has 39 tools / 21 Time tools and advertises the
+calendar prefix, minimum 10 / maximum 128 characters and full local-date/time
+metadata. Effective policy/provider selectors, Time key and RW state are preserved;
+the retained member-read Task still completes with the same 64 occurrences/timestamps.
+The later same-model 16-step run also failed semantic acceptance: 2026-10-19
+08:14:01.257596–08:21:07.218450 UTC, 424.697897 seconds model phase / 425.959552
+total, session `ses_eacc6751cffe60j73RL4fVYA1X`. Default Python GETs received
+HTTP 403 / body code 1010; a browser-like User-Agent case network-downloaded the
+exact bytes, but no Time resolution or Task call occurred. CLI exit 0 was not a pass.
+The native object-host-only Cloudflare `bic=false` rule is now applied/read back;
+default Python/curl signed GETs pass without UA override, while unsigned/tampered
+requests retain origin 403 refusals.
+
+The final Time-first run now passes semantic acceptance: 2026-10-19
+08:39:08.179348–08:40:43.145956 UTC, 94.966864 seconds total / 92.797675 seconds
+model phase, using the same exact MiMo `#none` variant, 16-step / 600-second bounds
+and its own OAuth grant. All eight tool envelopes completed without errors: two
+native time resolutions, exactly one completed Time Task with one occurrence,
+one filtered Flux catalog match, retained Artifact discovery/provenance, one signed
+download request and one native shell network download. The fresh exclusive 0600
+file is the exact 883,996-byte PNG, with unchanged signed URL/method/headers and
+no UA override, TLS bypass or local copy. Durable session cost is USD 0.0223635068
+(41,621 input / 4,080 output / 254,688 cache-read / zero reasoning tokens); its
+claim is released with zero resumes. No generation or new Media Task ran. The
+[dated final receipt](OPENSHELL_HARDCUT_PLAN.md#linux-final-time-first-opencode-mimo-receipt--2026-10-19)
+records authoritative Task reconciliation and proof limits. This closes the final
+client gate; the earlier failed attempts remain historical. No live push-versus-poll
+or capability-body wire claim is made. The independent real signed callback gate remains qualified. Reasoning
+deltas are live-only until their final full-value event, so an empty persisted
+start cannot establish an absence of streamed reasoning before SIGKILL. The user prioritized this single real run before the remaining
 deterministic/restart gates. `wavespeed-ai/flux-schnell` used one 1024 × 1024 PNG
 input (seed 42, async URL output) with the orange-robot/green-seedling prompt
 recorded exactly in the [receipt](OPENSHELL_HARDCUT_PLAN.md#linux-real-wavespeed-signed-events-receipt--2026-10-19).
