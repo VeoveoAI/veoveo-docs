@@ -1571,7 +1571,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   is configured and an explicit provisioning rotation succeeded at 20:09:43 UTC;
   a scheduled renewal was subsequently observed at 21:06:55 UTC, with expiry
   22:06:54 and next refresh 22:03:54. No manual rotation triggered it. Hub-routed
-  user MCP forwarding remains open. Standard
+  user MCP forwarding subsequently passes through the deployed Time suite below. Standard
   Graph receipts and the token-free claim check
   are retained privately under
   `/home/rozgo/VeoveoAI-reference/evidence/entra-native-applications/`.
@@ -1867,12 +1867,22 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `c8f34e712074151a1643b88f5b92e6d3200074916b8ce3ecdb15f0307e8adbb1`.
   Its verifier succeeded at 00:55:49.490. These server outcomes do not turn the
   failed acceptance test into a pass. Native QA supervisor logs record Hub tunnel
-  closures at 00:54:46.973 following a provider environment update; the exact
-  failing request and upstream transport cause remain under diagnosis. The object
-  and runner are retained. No replay, Media suite or paid generation followed.
+  closures at 00:54:46.973 following a provider environment update. Independently,
+  Hub's own native supervisor recorded `policy_changed:false` and
+  `provider_env_changed:true` at 00:55:46.347, followed by six connection fences
+  from generation 2 to 3 at 00:55:46.352. Hub recorded upstream EOF at
+  00:55:46.353613 and .353804. This tightly correlates the failure with Hub's own
+  credential update rather than establishing a fixed one-minute stream timeout.
+  The source audit found no such stream lifetime. Individual RPC-to-fence IDs
+  were not captured. The object and runner are retained. No replay, Media suite
+  or paid generation followed.
   Private evidence: `evidence/artifact-large-corrected-20261019.log`, SHA-256
   `fb87adc825a68848ddf2f24ec66bad5c190953b2b897aca1d889e8f715df41fb`,
-  and `evidence/artifact-large-corrected-receipt-20261019.json`.
+  and `evidence/artifact-large-corrected-receipt-20261019.json`. Native log evidence
+  is `evidence/native-hub-window-20261019.log`, SHA-256
+  `68c173d307160b3d20c64e99da8acd0923b9026398570d69914cd7754f7c28c7`;
+  `evidence/native-hub-refresh-fence-20261019.json` retains the safe timestamp
+  projection. Native timestamps have millisecond precision.
 - Source review identified a Hub subscription-boundary defect: an established
   upstream subscription returning `Ok(None)` is converted into `TransportClosed`
   and then JSON-RPC `-32603`. The SDK's existing bounded reopen/re-read behavior
@@ -1888,7 +1898,49 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   recommends reconnecting after configuration-related grant failures. Native
   enforcement remains unchanged. The proposed regression must exercise the actual
   Hub boundary, subsequent resource reconciliation and later pushed updates.
-  Neither that regression nor a deployed fix has passed yet.
+  The regression reproduces the original defect with baseline production code:
+  one test failed in 1.49 seconds at the ended-listener assertion with the same
+  JSON-RPC `-32603`. The corrected implementation passes the same regression in
+  1.66 seconds: HTTP EOF produces normal downstream completion, a new listener
+  recovers state changed during the gap, later updates are pushed, and a genuine
+  upstream refusal keeps its error code/message. Full component checks and
+  deployed behavior remain under validation. Both runs used the same Linux ARM64
+  dev image on the Mac; this is not Linux x86_64 deployment evidence.
+  An initial compile attempt failed in `hkdf` with E0463 for
+  `hmac`; the same image/source compiled past that stage using a Linux-local
+  Cargo target and two build jobs, without establishing the original cause.
+  A subsequent test-only missing `Debug` derive was corrected before the actual
+  baseline regression ran. Neither setup failure is a regression verdict.
+- A related narrow protocol audit found that pinned RMCP already rejects
+  non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
+  subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
+  ordinary `tools/call` refusal for its Task-only generation tool instead uses
+  `-32600`. The [Tasks capability-negotiation rule](https://tasks.extensions.modelcontextprotocol.io/specification/2026-07-28/tasks#capability-negotiation)
+  also requires `-32021` when execution requires a Task. A scoped correction is
+  underway; it preserves mandatory Tasks, permission checks and zero provider
+  dispatch for unsupported clients. No taskless execution path is being added.
+- Native workspace isolation now passes on Linux with the existing Entra forwarder.
+  An independent operator inventory confirmed `vv-services/time`
+  (`29bb3e6d-d8fc-4062-a587-b7e173ec2a50`) and `vv-control/hub`
+  (`235f1e07-d4a9-4b51-a87d-37563798b1c8`) both Ready immediately before the probe.
+  Direct native `ForwardTcp` to Time returned HTTP 200 for `/readyz` with logical
+  Host `time.internal:8800`; an Init-only attempt to the existing Hub returned
+  exact gRPC `NotFound`, the native unauthorized-existence concealment. The probe
+  exited zero; exact start/end timestamps and duration were not instrumented.
+  It did not require `GetSandbox`,
+  `sandbox:read`, a new identity or an expanded grant. Temporary mode-0600
+  Controller inputs, including the existing forwarder secret, were removed.
+  Qualifier `5fcb89c6be8c7a3b2294f0261456cf68516dd326` is published; the repository's
+  original archived status was restored. Its Linux x86_64 executable SHA-256 is
+  `d6747f30d5eb38d576b87d1caa40939aeccfb9440fa0ecf30e7619eebc9f0209`.
+  Mac and Linux checks each pass nine first-path tests with two ignored and strict
+  Clippy. The first mock-only check deadlocked because it awaited request Data
+  before returning stream headers; the fixture now returns headers after Init,
+  and its async tests have bounded deadlines. That diagnostic was not a deployed
+  native failure. The safe receipt is `evidence/forward-isolation-probe.json`;
+  both local and remote qualifier checkouts are clean at the published revision.
+  This closes the identity/TLS/routing gate, independently of the
+  remaining service recovery and real signed callback gates.
 - Public edge probes found Cloudflare Browser Integrity Check rejects the default
   `Python-urllib/3.13` User-Agent with HTTP 403/error 1010. The same discovery
   request succeeds with curl, absent User-Agent and the honest one-shot client
@@ -1927,7 +1979,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   and register them into the fresh database; never reuse the retired key material.
   Mac ARM64 evidence is historical, not Linux
   x86_64 acceptance.
-- [ ] **2 — Identity, TLS and public routing.** Qualify verified TLS, canonical
+- [x] **2 — Identity, TLS and public routing.** Qualify verified TLS, canonical
   issuer/audience/JWKS admission, native credential custody/renewal, workspace
   isolation and Hub's approved private forwarding bindings. Establish and verify
   the actual public HTTPS callback route using the existing Media callback
