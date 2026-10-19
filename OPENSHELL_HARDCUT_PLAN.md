@@ -88,6 +88,11 @@ Architecture and component ownership are recorded in
   live test is intentionally excluded from those runs. Its initial digest-format
   compile error was corrected with Core's existing digest type. It uses the
   existing qualification client identifier accepted by the Linux Cloudflare edge.
+  Test-only revision `fd03aa434c425fca244011ec16a0c01466c08f9b` adds an optional
+  explicit PEM CA bundle for the local OpenShell certificate. The first native
+  host acceptance attempt failed discovery because normal system roots did not
+  trust that local CA. The added roots preserve ordinary TLS/hostname verification;
+  production MCP/runtime code is unchanged.
 - [ ] **Mac deployment.** Qualify native launchd/MPS inference through the private
   OpenShell provider path and the normal Hub service route. Verify readiness,
   unauthorized access, real vectors and usage, plus restart recovery. Preserve
@@ -106,8 +111,40 @@ Architecture and component ownership are recorded in
   executable cannot connect. Its initial 401 was a probe error: the caller must
   supply the native opaque reference for substitution, not omit Authorization.
   A launchd restart recovered readiness in 5.344 seconds and reproduced the six
-  vectors exactly (paired cosine 1.0, maximum component difference 0.0). Hub calls
-  and observable usage remain deployment gates.
+  vectors exactly (paired cosine 1.0, maximum component difference 0.0).
+  Authenticated native Hub acceptance now passes using test source `fd03aa4`,
+  deployed MCP image `51a3ce9e` (source label `943181e`) and runtime `2668a96`.
+  Its eight operations were tools/list, capability read, own usage before,
+  six-item embed, usage after success, token-overflow embed, usage after rejection
+  and unauthenticated tools/list. The complete scenario took 437.427 ms; the
+  successful embedding call took 221.521 ms. The compact reserialized tool output
+  was 58,439 bytes, SHA-256
+  `2fce91338b3978b1f4abd143de85d00e3037361ca4286255502e97819a6b4acb`.
+  All six 768-dimensional vectors were finite and normalized (maximum norm error
+  `7.51e-8`), with expected Mars/Venus and addition/multiplication rankings.
+  Native usage recorded one 16,384-token estimate and 132 actual input tokens;
+  overflow added an 8,192-token estimate and a zero-quantity actual record.
+  Unauthenticated MCP access returned 401/Bearer. This final corpus uses actual
+  code newlines and supplies the Linux baseline; earlier direct-runtime corpus
+  receipts are separate. The full 116,775-byte native receipt has SHA-256
+  `a0f8b788328ea92c4784d5443ef710b58bdf3663e3627ed2db12dbd5ba44bde7`.
+  A deployed lower-permission identity was unavailable: the existing member has
+  write access and no grant was added for this test. Permission filtering remains
+  separately covered by component tests.
+  The first post-restart embedding call failed with a closed ambiguous-runtime
+  error (`-32603`): its 16,384-token estimate remained and no actual record was
+  added. It was not automatically replayed. Hub credential refresh had fenced
+  older database tunnels 13.55 seconds earlier; no trace ties that event to the
+  runtime POST, so refresh is a confounder, not an established cause. A later
+  explicit request passed in 230.908 ms (460.778 ms for the full scenario), with
+  paired cosine 1.0 and maximum component difference 0.0 against the first Hub
+  corpus. Its receipt SHA-256 is
+  `af11a3afdd30f11c930abf80812deec85558ad12141db5623c8fbe3aa1431114`.
+  A second controlled restart established identical signing-key hashes and
+  retained volume/file metadata, but its first delayed inference failed the same
+  way in a quiet provider window. That repeat rules out treating the earlier
+  refresh event as a sufficient explanation. Mac restart acceptance remains open
+  while the private HTTP path is diagnosed; successful calls do not close it.
   The native Hub usage API exposes principal/kind/phase/token/count aggregates.
   Live acceptance can verify bounded usage deltas; per-request context, source
   and delegation metadata remain component-test evidence because that public API
@@ -122,8 +159,17 @@ Architecture and component ownership are recorded in
   deployment cutover uses those published revisions and fresh disposable Veoveo
   application state, after reviewing schema dependencies. Preserve the shared
   PostgreSQL database, Lore schemas/roles, trusted identity/signing configuration
-  and native provider custody. The new embedding sandbox is stopped until this
-  prerequisite passes. This is separate from successful direct MPS runtime probes.
+  and native provider custody. That cutover now has all four services registered
+  and Ready; native Time discovery, resolution and conversion pass. The database,
+  S3 containers/volumes, Lore schemas/roles and external identity remain in place.
+  A post-cutover read-only query using the existing `server_lore` credentials
+  returned 402 objects, 401 payloads, 402 associations, 22 mutable references and
+  zero retired children, matching the historical storage qualification baseline.
+  There is no immediate pre-cutover count receipt; an earlier assertion of that
+  measured before/after comparison was withdrawn. The application owner's denied
+  Lore query is permission evidence, not a successful data comparison.
+  This deployment prerequisite is separate from successful direct MPS runtime
+  probes and the remaining authenticated embedding acceptance.
 - [ ] **Main integration.** Review, merge and push the Mac-qualified component and
   installation changes to main before Linux workload deployment. Preserve other
   agents' uncommitted changes and record exact source/image identities.
@@ -132,6 +178,14 @@ Architecture and component ownership are recorded in
   Hub calls, usage, access denial and restart behavior. Compare the same model,
   processing identity, input corpus and numerical/ranking results with Mac;
   bitwise-identical vectors are not required.
+  Read-only admission preflight found the running native Docker driver, enabled
+  validated driver configuration, disabled bind mounts and workspace-labelled
+  named-volume admission. Docker exposes `nvidia.com/gpu=0` through CDI. The
+  current gateway CLI omits GPU capability fields returned by its native RPC;
+  the running binary's GPU validation paths and daemon inventory establish
+  available configuration, not admitted-workload execution. No gateway change
+  was needed. Actual GPU admission, UID 10001 cache/token access, CUDA forward
+  placement and inference remain deployment gates.
 - [ ] **Final agent acceptance.** Only after deterministic and deployed probes pass,
   use OpenCode with `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Independently verify its
   recorded tool results, vector dimensions and model identity. Report source,
