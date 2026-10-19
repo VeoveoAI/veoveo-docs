@@ -58,7 +58,7 @@ Architecture and component ownership are recorded in
   observed MPS driver allocation reached 17.730 GB. These are prerequisite
   measurements, not deployed Hub results or Linux qualification. Raw evidence is
   currently in `/tmp/veoveo-embedding-qualification/qualification-report.md`.
-- [ ] **Component implementation and checks.** Build the isolated typed MCP contract
+- [x] **Component implementation and checks.** Build the isolated typed MCP contract
   and private runtime; verify bounds, exact prompt/tokenization semantics, caller
   permissions, authenticated runtime access, usage attribution and safe errors.
   Qualify busy, timeout and malformed-provider behavior. Label synthetic fixtures
@@ -99,7 +99,11 @@ Architecture and component ownership are recorded in
   clippy pass. The four provider tests include a synthetic stale-intermediary
   connection case: after six idle seconds, one embedding POST must use a fresh
   connection. These synthetic vectors establish transport behavior, not model
-  inference. Final-source Linux component checks remain open.
+  inference. The final-source native Linux AMD64 Docker gate also passes all 19
+  tests, with one intentional live-test skip, in 140.33 seconds. Its SQLx
+  metadata/migrations/prepare, formatting, strict clippy, dependency audit and
+  feature combinations pass; check image:
+  `sha256:8eaf6e3eecf2622bcd9d22878147211424d687bc0e882b05b5fac564a0d9f26f`.
 - [x] **Mac deployment.** Qualify native launchd/MPS inference through the private
   OpenShell provider path and the normal Hub service route. Verify readiness,
   unauthorized access, real vectors and usage, plus restart recovery. Preserve
