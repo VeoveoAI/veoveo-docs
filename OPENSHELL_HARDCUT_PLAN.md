@@ -3326,3 +3326,79 @@ by staging. New Lore, Factory and Computer images must include the actual Linux
 trust inputs and Bioma origin; the previous Computer image embeds the generic
 example MCP origin and is not the final public installation artifact. No new
 runtime, native Lore user login or Computer browser acceptance is claimed here.
+
+
+Native credential custody then succeeds. The actual API identifier URI is
+`api://8a6d434f-8c4c-4e2c-9756-9b2d94118d17`. The dedicated endpointless provider
+profile passes native lint/import, and `vv-control/vv-hub-native-control` is
+created without replacing an existing provider. One 90-day client credential has
+nonsecret key ID `0adea6a5-ebb9-493b-b17f-7afaf4a374d1` and expires
+2027-01-17 15:15:25 UTC. Its response is held only in a mode-0600 Linux temporary
+file, supplied through native `--secret-material-env`, and removed after native
+ConfigureProviderRefresh succeeds. Initial RotateProviderCredential succeeds in
+one second. Status is `refreshed`, with next refresh at 2026-10-19 16:13:18 UTC
+and initial access expiry at 16:16:18 UTC. No bearer export or manual JWT copy is
+used. This proves initial acquisition/custody, not renewal beyond that expiry.
+The live Hub still uses its prior forwarder attachment.
+
+The new Linux-only P-256 Lore CA and server leaf are generated through the reviewed
+native OpenSSL recipe. Chain verification and IP 10.231.10.10 / DNS
+vv-lore.internal SAN checks pass. The public CA SHA-256 fingerprint is
+`18:0B:52:F2:83:DB:0A:A5:ED:64:D2:68:B7:76:67:47:AF:0C:88:6E:0D:3A:66:ED:12:58:03:F2:53:EE:74:56`;
+the server leaf fingerprint is
+`6E:98:C5:77:49:D8:43:DD:B2:42:81:D9:1B:36:33:58:19:23:C7:31:64:4A:C1:63:FE:CF:A3:A4:F0:5B:E0:29`.
+The public-only image context contains one certificate per file: the new Lore root
+and existing storage root. Private keys stay mode 0600 on Linux and never enter an
+image or Mac copy. An initial relative storage-leaf path was wrong; corrected
+verification uses the actual `state/storage-tls/tls.crt`, then both chains pass.
+No storage data, service runtime or existing certificate is replaced.
+
+Installation `b6a6b6e9d4dc6dff83769355b10a24b89265f247` also aligns the Factory's
+SDK CLI input to the published typed-contract revision
+`b0b8d868cf91c50706b8bfe7edc8c1eec937d7ea`, replacing its stale `a1d9d65` pin.
+The Factory remains deterministic with no OpenCode or model credentials. The
+Dockerfile SHA-256 is
+`3b1a6e0e18c7c149824bf423f50b241423a6bc135ce12f1d4ea0388f8c91c127`.
+
+The privately staged actual Bioma Hub configuration preserves existing service
+bindings, `reference-work` memberships and the upstream `/oauth/callback` URI.
+It adds the `computer` profile, public `computer-browser` client with
+`/computer/callback`, the `/mcp/computer` resource and native Computer controls.
+The matching built `9da92b3` runtime validates both the base and merged config;
+the merged result reports two profiles. Its SHA-256 is
+`347280f0ee2bbaabbf6d267ed2c094cc25e6f58192a89d729a4bc57ccbe8de67`, retained at
+Linux `/tmp/computers-entra-preparation-20261019/hub-computer-merged.json`.
+An initial validation with the older live image rejects the new catalog section;
+that image does not implement Computers. Nothing has selected the staged config
+or new runtime yet.
+
+Review of first native publication finds a separate authorization omission:
+RepositoryCreate carries its target ID in the body and bypasses partition-metadata
+admission. A valid issuer login alone can reach creation in the current native
+path. The coordinator approves a narrow creation-admission method on the existing
+RepositoryAuthorizer, using the requested body ID before hooks, stores, existing
+metadata lookup or forwarding. Token-grant modes reuse their current exact grants;
+native external ReBAC creation must retain its existing new-resource authorization
+flow. Matching new image builds wait for this correction and focused regression
+results. The earlier 156-test receipt does not qualify this newly discovered path.
+
+Native Entra Lore registration payloads are prepared separately for review. The
+public CLI may request the one Lore API delegated scope as the signed-in user;
+API app-role assignment is not a separate login gate. Only exact repository role
+assignments grant source access. The bounded two-user scenario gives both existing
+qualified users `Lore.Time.Member` for canonical repository
+`280a718d5d3574271274bba5c8db344b`. Only the ordinary member receives
+`Lore.Acceptance.Member` for synthetic repository
+`019a0119a7007d5aa201754caee43a11`; Hub administrator status must not admit that
+repository. Neither role grants privileged actions or service-account bypass.
+These payloads, native create semantics and real token issuance still require
+execution evidence; staging is not a login, publication or permission proof.
+
+
+Native branch semantics are also inspected before acceptance: repository members
+may change protection through BranchProtect/BranchUnprotect or modern branch
+metadata. A protected push is refused while that state is set; this is not a
+per-human branch ACL that prevents the same member from unprotecting it. Preserve
+these native semantics. Cross-repository/no-role denial is the isolation gate;
+conditional protected-push refusal is reported separately, without a human
+service-account bypass or broader branch authorization change.
