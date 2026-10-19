@@ -625,6 +625,18 @@ The same-reference, same-Exec-shell application renewal proof passed beyond the
 original token expiry, followed by a complete ordinary suite. See the execution
 checklist for the measured interruptions and recovery results.
 
+For MCP 2026-07-28, distinguish the subscription's lifetime from the durable
+Task it observes. When an established upstream listener ends, Hub must preserve
+that distinction and complete its downstream listener normally; genuine upstream
+protocol errors retain their error responses. The client can open a new listener
+and read current state to reconcile changes during the gap, then continue receiving
+pushed updates. The [subscription contract](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions)
+defines normal completion and reconnection; the [HTTP binding](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
+does not provide `Last-Event-ID` replay. Ending observation does not cancel or
+resubmit a Task. Task cancellation uses `tasks/cancel`. Reconnect budgets are a
+client policy, not a protocol-mandated count. The Linux execution checklist tracks
+the Hub correction's component and deployed proofs separately.
+
 **Keep changes in their owners.** Installation owns images, native definitions,
 providers, endpoints and the local IdP/catalog choices. Hub owns endpoint
 bindings and its native upstream transport; it remains server-agnostic. SDK CLI
@@ -766,10 +778,12 @@ source-client proof. No new LLM or paid generation followed the repair.
 **Hub requires Tasks; clients must implement the supported MCP specification.**
 Use the [official Tasks extension](https://github.com/modelcontextprotocol/ext-tasks/blob/main/specification/2026-07-28/tasks.md#capability-negotiation)
 and its per-request capability declaration/server-directed execution. Its optional
-status in MCP as a whole does not add taskless support to this Hub contract. The
-uncommitted Time/Media detour was removed at the user's direction; no server
-candidate, fallback, compatibility adapter or reduced Hub capability is carried
-forward. Ordinary tools remain unchanged. Modern HTTP defines no core
+status in MCP as a whole does not add taskless support to this Hub contract. A
+Task-only tool rejects a caller lacking that capability with standard
+`MissingRequiredClientCapability` (`-32021`) and the Tasks extension in
+`requiredCapabilities`, after the tool's permission check. It creates no Task or
+provider work for that request. Ordinary tools retain their normal result shape.
+Modern HTTP defines no core
 client-sent cancellation notification, and
 [notification-POST header requirements are undefined](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http#sending-messages);
 the repair does not weaken mirrored request-header validation or assert a universal

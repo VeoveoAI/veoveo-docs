@@ -1887,8 +1887,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   upstream subscription returning `Ok(None)` is converted into `TransportClosed`
   and then JSON-RPC `-32603`. The SDK's existing bounded reopen/re-read behavior
   handles subscription endings, but correctly does not reinterpret arbitrary
-  application errors as retryable disconnects. A scoped Hub correction is in
-  development: retain that typed end and finish the downstream subscription using
+  application errors as retryable disconnects. Hub correction
+  `ec9f7f59be0e74135e5ed8179e65e360c701cf6c` is published: retain that typed end and finish the downstream subscription using
   RMCP's normal completion result; preserve actual protocol/admission errors.
   This follows [MCP 2026-07-28 subscription closure](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/subscriptions).
   Its [HTTP binding](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
@@ -1896,15 +1896,21 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   current state without replaying mutations. OpenShell's
   [provider guidance](https://docs.nvidia.com/openshell/dev/how-it-works/providers/profiles)
   recommends reconnecting after configuration-related grant failures. Native
-  enforcement remains unchanged. The proposed regression must exercise the actual
-  Hub boundary, subsequent resource reconciliation and later pushed updates.
+  enforcement remains unchanged. The regression exercises the actual Hub boundary,
+  subsequent resource reconciliation and later pushed updates.
   The regression reproduces the original defect with baseline production code:
   one test failed in 1.49 seconds at the ended-listener assertion with the same
   JSON-RPC `-32603`. The corrected implementation passes the same regression in
   1.66 seconds: HTTP EOF produces normal downstream completion, a new listener
   recovers state changed during the gap, later updates are pushed, and a genuine
-  upstream refusal keeps its error code/message. Full component checks and
-  deployed behavior remain under validation. Both runs used the same Linux ARM64
+  upstream refusal keeps its error code/message. The focused subscription unit
+  case passes 1/1 and the full lifecycle target passes 2/2. The Mac Docker check
+  then passed 204 tests with one skipped; image
+  `sha256:8d490d99bdf061e76d4a7648f01368bd4c82b34d5efca585aeb0b594eedf61c1`.
+  The remote Linux x86_64 Docker check also passed 204 tests with one skipped;
+  image `sha256:b0ab42373bc77f190fa1b5cc35032267995da85456a6036902c4ad27a01629f6`.
+  Deployment and the corrected large-object case remain under validation.
+  Both regression runs used the same Linux ARM64
   dev image on the Mac; this is not Linux x86_64 deployment evidence.
   An initial compile attempt failed in `hkdf` with E0463 for
   `hmac`; the same image/source compiled past that stage using a Linux-local
@@ -1916,9 +1922,13 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
   ordinary `tools/call` refusal for its Task-only generation tool instead uses
   `-32600`. The [Tasks capability-negotiation rule](https://tasks.extensions.modelcontextprotocol.io/specification/2026-07-28/tasks#capability-negotiation)
-  also requires `-32021` when execution requires a Task. A scoped correction is
-  underway; it preserves mandatory Tasks, permission checks and zero provider
-  dispatch for unsupported clients. No taskless execution path is being added.
+  also requires `-32021` when execution requires a Task. Time's `expand_schedule`
+  and `validate_timeline` stubs have the same gap. Frozen candidates use the
+  pinned RMCP's typed error helper, preserve mandatory Tasks and check permissions
+  first. New regressions assert the capability payload and no Task creation;
+  Media also asserts zero quotes or provider dispatch. Component validation is
+  pending. Artifact has no analogous Task-only tool stub. No dependency changes
+  or taskless execution path are included.
 - Native workspace isolation now passes on Linux with the existing Entra forwarder.
   An independent operator inventory confirmed `vv-services/time`
   (`29bb3e6d-d8fc-4062-a587-b7e173ec2a50`) and `vv-control/hub`
