@@ -214,6 +214,22 @@ issuer inside that same gateway creates a cold-start loop. External Entra/custom
 issuers need no local Keycloak stack. Root OpenShell/Lore/identity/storage recovery
 remains independent of disposable environment branches.
 
+## PostgreSQL Extensions
+
+The installation supplies pgvector and PostGIS in the existing `veoveo` database.
+The PostgreSQL image adds pinned extension packages to the existing pinned server;
+trusted bootstrap enables them in `_extensions`. That schema permits shared use
+of the extension types, functions and reference data, without application CREATE
+permission. Existing service schemas, table owners, registration roles and search
+paths remain unchanged. Services qualify extension names when adding their own
+columns, queries and indexes. Availability does not imply that an MCP already
+exposes vector search or spatial operations.
+
+The template and Bioma reference use the same
+[extension build, enablement and verification instructions](https://github.com/VeoveoAI/veoveo-template-installation/blob/844e89386f2831ed7d5d45556fdc6cf13f4b9047/postgres/README.md).
+The execution checklist records deployed qualification; Keycloak's separate
+PostgreSQL service is unchanged.
+
 ## Workspaces And Runtime Placement
 
 A factory sandbox is one active authoring workspace or independently isolated job.
