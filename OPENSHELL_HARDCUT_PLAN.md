@@ -3799,6 +3799,46 @@ volume preparation provides the same identity a private writable home; no TLS ke
 permission is relaxed. Lore start remains held until its selected inputs are
 verified; the shared gateway/Hub switch and paid qualification have not occurred.
 
+The corrected private Lore-only Compose overlay is frozen at SHA-256
+`1b358152a8fbcf0dac2d667b62d618f9f81221bc8dc004470029d5b867338e97`.
+Its only changes from the reviewed overlay are the corrected immutable Lore image
+and `HOME=/data`; UID/GID 1000, private network placement, TLS binds and storage
+inputs are retained. Trusted preparation creates database login `server_lore` and
+its own `lore` schema in the existing database. Readback confirms no superuser,
+CREATEDB, CREATEROLE or BYPASSRLS authority, no role memberships, no database CREATE
+and no CREATE on `public`; the role owns and can use its own schema. SeaweedFS's
+`lore` bucket and dedicated `lore-vv-lore` policy are also created. The IAM user,
+credential file and new Lore volume remain incomplete at this checkpoint.
+
+During preparation, a builder diagnostic printed the existing SeaweedFS admin
+password from container arguments. This violated the secret-handling instructions.
+The coordinator stopped preparation and released a native rotation of only
+`VEOVEO_SEAWEEDFS_ADMIN_PASSWORD`; private comparison confirmed it was distinct
+from both S3 bootstrap credential values. An initial preservation-check harness
+failed with `IsADirectoryError` after updating the mode-0600 environment file and
+before restart. The corrected continuation reused that newly generated value.
+Only `vv-seaweedfs` was then recreated, retaining image
+`sha256:7b5ca1f11aa4c91593612d2d4a9e253ec9152a4bd13a19e551290a042a4c52f5`,
+its existing data volume and read-only TLS bind; all other installation container
+IDs were unchanged. Native admin login with the new value returns 303 to `/admin`
+and sets a session cookie. The old value was not retained or independently tested,
+so this is not an independent old-password rejection receipt. The S3 TLS listener
+responds with 403. Authenticated controls then pass: bootstrap ListBuckets returns
+200 with `artifacts,lore`; Artifact's own bucket listing returns 200 and listing
+Lore's bucket returns 403. A unique 45-byte probe is uploaded/downloaded/deleted
+with 200/200/204, exact size/hash agreement and a subsequent 404. The first probe
+attempt wrote literal `false` because of a local curl-config serialization error;
+it was deleted and the corrected attempt read a binary fixture file directly.
+No existing application object was touched. Existing IAM users/policies are
+unchanged. No S3 key was rotated, no data volume was removed and no unrelated
+application was restarted.
+
+After those storage controls and dedicated Lore input/ownership checks pass, the
+coordinator releases only private Lore start using the frozen overlay and
+`--no-deps --no-build --pull never`. Native server/backend/TLS evidence must precede
+the separately reviewed gateway/Hub switch. Source gates remain green; no new
+native user login, Computer provisioning or paid qualification is claimed here.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
