@@ -4344,6 +4344,59 @@ return HTTP 200 (public request 0.392 seconds), and `/computer` returns 303 to
 normal authorization. A fresh manual browser sign-in is requested; the previously
 consumed callback cannot resume setup. No model call has been made during this fix.
 
+The required macOS Docker component gate for that same clean Hub revision also
+passes: `docker build --target check .` exits zero in about 3 minutes 30 seconds,
+including image export. GPT-6 Luna builder records 226 tests passed, one skipped
+and zero failed; the check image is
+`sha256:6d4607849923bfcc65e04e70795715da0a30c71d8ec5d1459f672eff332ebabe`.
+The matching full Linux gate also passes on the exact source archive
+`fee0b2eff070e5e9c1f4ddc0498a8191bc231b70522a0cab810f082387fa1acc`:
+compile, Clippy, dependency and feature checks pass, with 226 tests passed, one
+skipped and zero failed. Test compilation takes 1 minute 36 seconds and execution
+34.418 seconds; total wall time is about 3 minutes. Its check image is
+`sha256:de09c8075d3233c55fe3d85bb18ce5f836b9d2261484d9273641a2c97f487e10`.
+These are component results on actual Ubuntu x86_64, separate from user acceptance.
+A corrected read-only check at
+22:28:47 UTC derives the exact native workspace from the Computer UUID and finds
+it absent. The original 22:01 owner/handoff row remains not ready, no browser
+session exists, and the pending login expired at 22:27:47. Repeating token-endpoint
+successes do not establish a new browser callback or successful provisioning.
+
+At 22:30 UTC, the coordinated embedding deployment owner publishes the remaining
+Lore endpoint correction together with its required native upstream binding.
+Existing trusted-operator access reads the complete authoritative document using
+Hub's own `active_revision.sql`; no custody credential or browser session is
+extracted. Exact semantic comparison permits only the new
+`vv-services/embedding:8803` binding and the `primary` Lore endpoint replacement
+with `grpcs://host.openshell.internal:41337`. Both baseline and candidate pass
+native validation in the same deployed Hub image (158 and 132 ms). The binding
+is startup-fixed, so the owner stops the sole serving Hub, rechecks the unchanged
+revision, and uses the existing native `import-control-plane` command. The Lore
+endpoint alone supports ordinary live publication; this combined update does not
+change the no-restart contract for repository or assignment management.
+
+Import exits zero in 264 ms. New revision
+`gcp-01a15649-3db0-70f1-914b-304edf87f66e` has native digest
+`sha256:f998a87a24240fd5ef1aa7aed13e4387312b98f6a9fac831d9a44c435087d4f3`;
+its complete payload equals the reviewed two-change candidate before and after
+restart. The same sandbox, image, effective policy, provider, mount and exposure
+are retained. The measured stop-request-to-Ready interval is about 42 seconds
+(22:29:45–22:30:27 UTC), not a continuously sampled public-outage duration.
+Public readiness returns 200 in 230 ms and native OAuth metadata returns 200 in
+193 ms. This is deployment/configuration evidence, not native user authentication
+or Computer provisioning. No authorization, session or Lore behavior changes.
+The other owner's receipt is
+`/tmp/veoveo-embedding-qualification/linux-control-plane-snapshot-20261019/receipt.md`
+on Linux, SHA-256
+`4ad622d8d04afc1fc4073a067597575afc6f2cb522d9373fdba9c85a6aa83845`.
+The prepared native Lore checklist now uses the same hostname and still records
+that its user/factory scenarios have not run. Computer browser acceptance resumes
+with a fresh manual sign-in; both full Hub component gates now pass as recorded above.
+The existing diagram's Hub detail text records the same status, and its embedded
+JSON, executable JavaScript and three inline SVG documents pass static checks.
+The browser origin approval gate also refuses the local diagram preview; visual
+review remains pending, with no alternate browser route used.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
