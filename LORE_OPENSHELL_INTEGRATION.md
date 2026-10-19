@@ -188,14 +188,26 @@ Computer OAuth traffic can use native OpenShell REST policies for Hub's OAuth
 paths, disjoint from OpenCode's MCP path, with the ordinary proxy and CA mechanism.
 Private Lore gRPC remains direct. Its installation endpoint must use a DNS name
 covered by the native server certificate and resolvable by OpenShell's trusted
-resolver. Native TCP policies reject literal-IP endpoint hosts; the endpoint's
-exact private address remains in `allowed_ips`. The selected reference endpoint is
-`grpcs://vv-lore.internal:41337`, consistently in the Computer template, factory
-configuration, policies and Hub deployment registry. Hub derives native recipient
-claims from that configured endpoint. Supplying private DNS is trusted installation
-configuration, not a change to Lore authorization. This source compatibility needs
-actual Linux qualification. Factories remain deterministic and use their own
-service identities.
+resolver. Native TCP policies reject literal-IP endpoint hosts. The selected
+reference endpoint is `grpcs://host.openshell.internal:41337`: the existing Lore
+container publishes that port on host loopback only, and OpenShell resolves its
+native alias to the compute backend's exact host-gateway address. The Computer
+admits the exact hostname, port and Lore executable with `protocol: tcp` and
+`tls: skip`. The latter disables proxy TLS interception, not Lore's certificate
+verification; immediate gRPC TLS requires this native passthrough setting. The
+Computer also sets `SSL_CERT_DIR=/etc/ssl/certs` so its installed private-service
+CA remains available alongside OpenShell's injected `SSL_CERT_FILE`. Factories
+retain their existing inspected gRPC rules and provider credential binding. The
+native backend pin replaces the earlier bridge-IP `allowed_ips` constraint; no host DNS edit or
+loopback CIDR allowlist is needed. The server leaf certificate must include
+`host.openshell.internal` under the existing trusted CA. The Computer template,
+factory configuration and Hub deployment registry use the same endpoint; Hub
+derives native recipient claims from that live deployment data. This is transport
+configuration, not a change to Lore authorization. An actual Computer-image
+native sandbox on Linux completes TLS/gRPC environment discovery with this route
+and reaches Lore's expected unauthenticated response. User login, repository
+operations and renewal remain to be qualified. Factories remain
+deterministic and use their own service identities.
 Their existing native renewal uses `client_secret_post`; add generic, explicitly
 registered support for that method in Hub rather than a token helper. Human native
 refresh state remains in each private Computer; factory secrets remain in native

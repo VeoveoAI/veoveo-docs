@@ -212,6 +212,13 @@ a native bootstrap/recovery solution, not weaker authentication.
 Bootstrap resources and durable state are independent of disposable Lore branches.
 Their lifecycle owner may be OpenShell without making them preview-owned data.
 
+The 2026-10-19 placement review retains consolidation under native OpenShell as
+the target, including Lore and storage, while keeping the existing MCP workloads
+there. The accepted immediate sequence is to establish Computer-to-Lore native
+connectivity and authentication with the currently running services first. Then
+move durable services with qualified protocol routing, readiness dependencies and
+restart recovery. The current host-loopback connection fix is not that migration.
+
 ## Subsequent Adoption
 
 The first workable local path does not qualify the whole platform.
@@ -4235,6 +4242,76 @@ are checked separately. Checklist SHA-256
 `2586f3d769c87240d9f4ffe0d956d8249fb27361246a392267e3d11619bfc9fa`
 at `/tmp/computers-hli6-cutover-20261019/NATIVE_LORE_CHECKLIST.md`; none of these
 native user or factory operations has yet run.
+
+At 2026-10-19 21:03 UTC, implementation resumes after the user approves the native
+host-service connection fix. The earlier `/etc/hosts` proposal is superseded.
+Source review confirms that `host.openshell.internal` uses OpenShell's exact
+backend-provided host address without upstream DNS; its authorized raw TCP relay
+preserves Lore TLS/gRPC. The selected change publishes the existing Lore container
+only on `127.0.0.1:41337`, issues a leaf certificate containing that native hostname
+under the existing CA, and aligns Computer/factory policies, template environment
+and the Hub deployment endpoint. Remove the stale bridge-IP `allowed_ips` entry;
+do not replace it with a loopback range. Issuer, audience, repository grants and
+native Lore behavior stay unchanged. The coder owns installation source, the
+builder owns Linux rollout/probes, and the coordinator owns review and this record.
+Source preparation and read-only live inventory are underway; this entry does not
+claim the cutover or successful client connection. Existing browser-origin denial
+and fresh human authentication remain separate from this network fix. No model
+call or durable-service migration is authorized by this connection step.
+
+The revised installation source is frozen at
+`c2030495fe592f8f800e768f96184154315de5b8`, tree
+`c69080ff6e901c3af6b123551f742236cfae803d`. The existing native checker passes
+in 5.85 seconds with exit zero for four source policies and the new private
+Computer candidate; all have zero ambiguities. The private candidate SHA-256 is
+`87822ba03aa8b12614013a413eda0dcaa95a46506f8a1cc6a85a2cd5edb60b31`.
+Its only semantic changes from the installed policy are the Lore hostname and
+removal of its obsolete bridge-IP allowlist. Hub caches that policy at startup,
+so the approved rollout includes a native restart of the existing Hub sandbox.
+
+A builder diagnostic exposed Lore's dedicated S3 and PostgreSQL credentials in
+tool output. Their replacement and revocation are complete; no other service
+credentials or authorization rules changed. Private metadata receipts remain in
+`/tmp/computers-lore-credential-remediation-20261019-continuation` on Linux. The
+continuation exited zero in 2.05 seconds and confirmed replacement access and
+old-credential rejection. This incident is closed; the disposable development
+installation does not require further credential work for this assignment.
+
+Computer connection qualification then found two distinct setup errors. The first
+two Lore probes omitted `--policy`, so their exit-28 transport errors did not test
+the Computer's intended network rule. An explicit task policy retaining the exact
+Lore route produced TLS ALPN alert 120: `protocol: tcp` alone still permits native
+OpenShell TLS interception, which offered HTTP/1.1. The direct host endpoint passed
+TLS 1.3, hostname verification and HTTP/2 with the existing Lore CA. Native
+`tls: skip` on the exact Lore rule preserves the intended end-to-end gRPC TLS.
+Installation commits `be959d9` and `63bf967` add the standard certificate-directory
+environment and this passthrough setting; Lore and OpenShell code are unchanged.
+
+GPT-6 Luna builder ran the unchanged native Lore CLI in Computer image
+`sha256:c668229af4a278c6b40b4c0160a4fe8e16636881a9da2f4b21a8808d9d3d1d96`
+under that explicit, task-only rule with isolated HOME/XDG and no providers:
+`lore -P --json repository list grpcs://host.openshell.internal:41337` completed
+native `EnvironmentGet` and returned expected `Not authenticated` (exit 16) in
+about 2.0 seconds. The disposable sandbox was deleted. This proves the private
+DNS/TCP/TLS/gRPC transport, not a repository listing, user authentication or the
+full Computer policy. The corrected private Computer policy and template are now
+installed; the same Hub sandbox was restarted to load its cached policy and
+returned public readiness HTTP 200 in 0.207 seconds. The source Computer image
+also carries the certificate-directory setting for future builds; the current
+reviewed image receives it through its template. The sanitized local receipt is
+`/tmp/computers-hli6-policy-validation/lore-tls-rollout-receipt.txt`. The live Lore
+registry endpoint still needs the normal authenticated administrative update.
+Browser-origin permission remains pending after the tool's explicit rejection;
+no browser workaround or model call was made.
+
+The same source review found that the existing Artifact byte-transfer rule's
+explicit no-interception intent also required `tls: skip`. Commit `837d8a2` adds
+that one field to the exact signed-object endpoint. The matching installed policy
+is now selected after a final Hub reload; readiness returns HTTP 200 in 0.189
+seconds. No Artifact operation or model call was used for this configuration fix;
+authenticated Computer byte-transfer acceptance remains pending. Diagram detail
+text reflects the transport result; geometry is unchanged and browser review
+remains pending with the existing browser permission gate.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
