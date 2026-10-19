@@ -3499,7 +3499,8 @@ installation work. No OpenCode/model calls during iteration.
   Scope standard token claims to the common signer and accept only authorized
   typed issuance results. Existing server delegation keeps its own authenticated
   contract. First source slice is implemented and reviewed; focused compilation
-  found three repairable Rust error groups before tests. Fixes are in progress.
+  found three repairable Rust error groups before tests. Those source fixes are in
+  the integrated freeze below; compilation and behavioral verification are pending.
 - [ ] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
   contribution at the executable composition boundary, outside the generic Hub
   OAuth library. A binary-only `contributions/lore` module is the minimal accepted
@@ -3572,7 +3573,29 @@ notification/reconciliation path to active control revisions. Each replica admit
 and adopts the current revision under the same lock as its local administrative
 publication, and reconciles after reconnect. Prove this independently of a local
 swap. This is asynchronous convergence, not simultaneous adoption or immediate
-revocation of existing native tokens; implementation and qualification are pending.
+revocation of existing native tokens. The source is included in the integrated freeze
+below; qualification remains pending.
+
+**Integrated source freeze, 2026-10-19:** GPT-6.1 Sol froze the Hub worktree on base
+`9da92b3`, with 89 changed/new/deleted source paths and no dependency or lockfile
+changes. Manifest `/tmp/computers-hub-native-issuer-source.json` has source
+fingerprint `a8ad43230d46aaa7eac45a649994a404cb089db366eeb75e2721d0d1fc05ee58`;
+SQLx metadata is excluded and owned by GPT-6 Luna's validation pass. The source
+includes the resource issuer, typed native contribution, device flow, public
+repository exchange, factory secret-post authentication, DB-authoritative startup,
+atomic publication audit, ordered local adoption and native notification/reconcile
+watcher. Owner request denial is distinct from signer/infrastructure failure, so
+withdrawn factory assignments are not reported as broken signing keys. Formatting
+and diff checks passed; this is not a compilation or deployed acceptance result.
+
+Written regressions exercise the hosted HTTP issuer with synthetic fixture identity
+approval, independently verified JWTs, login/resource separation, refresh, current
+user/factory grants, concurrent publication and restart with an old seed file.
+A separate two-handle fixture observes native control-revision notifications and
+reconciliation. These fixtures have not yet passed and do not establish real Entra,
+native Lore CLI/server, two-process propagation or Linux Computer acceptance.
+Builder validation owns the frozen Hub tree; installation configuration changes
+proceed separately in `computers-installation`. The live deployment is unchanged.
 
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
