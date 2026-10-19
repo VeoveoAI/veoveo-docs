@@ -309,9 +309,10 @@ Architecture and component ownership are recorded in
   readiness check failed at OAuth before any model call. No OpenCode or Hub
   authentication code, grants or policy were changed to resolve it, and no agent
   model acceptance is claimed.
-- [ ] **Documentation.** Update this checklist, the architecture and all affected
-  views/details of `diagrams/veoveo-platform.html`; inspect all three views,
-  navigation, component details and exports in a browser.
+- [x] **Documentation.** Updated this checklist, the architecture and all affected
+  views/details of `diagrams/veoveo-platform.html`. All three views, navigation,
+  embedding/runtime details, Fit and SVG/PNG exports were inspected in Chrome
+  on 2026-10-19; the exported 2960×2480 PNG was also visually reviewed.
 
 ## Current Native Path
 
