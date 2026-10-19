@@ -28,6 +28,13 @@ The Desktop authentication adapter, signer dependencies and Desktop ingress are
 retired; durable data and private recovery state are preserved. External issuers
 and interactive human Lore login require separate qualification.
 
+On 2026-10-19 the user adds Hub-issued native Lore credentials to the active
+hosted Computer goal. Entra authenticates people into Hub; Hub owns repository
+assignments and issues the tokens Lore already understands. This supersedes the
+direct-IdP issuance direction for the new Computer workflow, not its historical
+qualification receipts. The [accepted issuer design](#hub-issued-native-lore-credentials)
+is being implemented; it is not deployed acceptance.
+
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted
 where a verified gap requires them. Preserve each project's extension contracts,
@@ -55,6 +62,13 @@ install and connect the native CLI without adding source-access rules or changin
 repository and branch permission semantics. See the
 [native Lore boundary](LORE_DIRECT_OIDC_PLAN.md#hosted-computer-native-lore-boundary).
 
+Hub's new responsibility is the issuer side of that native contract. Repository
+assignments live in Hub, not Entra. The native CLI obtains a dedicated Lore login
+token, exchanges it for a repository token, and refreshes through Hub's advertised
+OAuth endpoints. Lore still receives native gRPC directly and enforces its existing
+token grants. Its server configuration trusts Hub's issuer; its authorization and
+client protocol code do not change for this design.
+
 Working files, drafts and session state are private scratch. A Lore push publishes
 an immutable revision; an explicit Artifact upload publishes managed content.
 Factories run deterministic build/check commands against published revisions in
@@ -81,6 +95,85 @@ of the new control identity still require deployed qualification.
 See [implementation and Linux acceptance](OPENSHELL_HARDCUT_PLAN.md#hosted-computers--implementation-and-linux-acceptance)
 for source-tested, deployed and still-pending boundaries.
 
+## Hub-Issued Native Lore Credentials
+
+Accepted on 2026-10-19 as required work within the existing hosted Computer goal.
+The user explicitly approves Hub owning repository assignments and issuing Lore
+tokens after Entra authenticates the person. This is an extension of Hub's existing
+authorization-server responsibility. It does not restore the retired Desktop
+adapter or standalone signer, and does not change Lore's native security model.
+
+| Responsibility | Owner |
+|---|---|
+| Human sign-in and upstream identity proof | Existing Entra integration |
+| Repository registrations, explicit access assignments and grant changes | Hub's revisioned control plane and existing PostgreSQL publication/audit |
+| Device authorization, refresh families, repository token exchange, signing and JWKS | Hub's existing authorization server, generalized to protected resources |
+| Native repository IDs, actions and Lore claim encoding | Typed in-process integration outside the generic Hub OAuth library |
+| Signature/audience/expiry checks, repository operations and branch semantics | Unchanged native Lore server/client |
+| Runtime networking and factory credential renewal/injection | Native OpenShell |
+
+The generic issuer must operate on registered protected resources rather than
+require an MCP profile for interactive grants and persisted refresh families.
+Reuse `CatalogSection`, `ProtectedResourceDescriptor`, catalog admission, the
+existing signer, session storage and transactional audit. Keep the composition
+boundary explicit: one Hub executable links the native integration; there is no
+new daemon or permission database. The common signer owns standard claims and
+accepts an authorized typed issuance result. The integration supplies typed native
+grants, not arbitrary claim templates or request-provided JSON.
+
+Initial grant records identify the native repository, Lore deployment, tenant and
+explicit principal assignment with native action permissions. Publish them through
+the existing control-plane revision mechanism and administrative authority. Neither
+Hub administration nor Work Context membership silently grants repository access.
+No new read-only role is inferred from native `permission: []`: that grant allows
+ordinary repository operations, including unprotected writes.
+
+The unchanged native client requires RFC 8628 device authorization and RFC 8693
+public-client token exchange, plus refresh. Its initial device request names only
+the public client and scopes, so that registration must select the dedicated Lore
+resource. Browser verification reuses Hub's Entra authentication broker. Discovery
+advertises the actual device/token/JWKS endpoints. Public-client repository exchange
+is a typed grant path separate from existing authenticated server delegation.
+
+Login and repository access tokens have distinct issuance authority. Both must be
+accepted by Lore's configured verifier and native recipient check. A login token
+permits the native login-level operations and repository-token requests; repository
+claims come from current Hub assignments at exchange. A repository token cannot
+become unrestricted issuance authority. Use one stable native user identity through
+login, refresh and exchange, a dedicated Lore audience, and the existing signed
+`root_domains` claim when the private recipient is not represented by the audience
+hostname. Hub's Ed25519 signing profile is source-compatible with Lore. Lore only
+needs issuer/audience/claim/client/template configuration changes for this design.
+
+Grant removal stops subsequent issuance. Already-issued native repository tokens
+may remain accepted until expiry; cached tokens and in-flight operations retain
+their native semantics. Token lifetime is an installation policy, not a new Lore
+authorization rule. The retained `refresh_authentication` bug fix is independent
+of this issuer change and remains the only requested client fix.
+
+Native repository creation records creator metadata but does not add a Hub grant.
+Initially, trusted Hub registration and explicit assignments provide known IDs/URLs.
+Automatic creator assignments and self-service onboarding require an explicit
+product workflow; they are not claimed native behavior. Native catalog listing
+remains independently configured and does not acquire per-user filtering from this
+issuer work. Do not add creation admission, branch ACLs, catalog filters or an
+external native auth service to compensate for those semantics.
+
+Computer OAuth traffic can use native OpenShell REST policies for Hub's OAuth
+paths, disjoint from OpenCode's MCP path, with the ordinary proxy and CA mechanism.
+Private Lore gRPC remains direct. This source compatibility needs actual Linux
+qualification. Factories remain deterministic and use their own service identities.
+Their existing native renewal uses `client_secret_post`; add generic, explicitly
+registered support for that method in Hub rather than a token helper. Human native
+refresh state remains in each private Computer; factory secrets remain in native
+OpenShell custody.
+
+The implementation and acceptance sequence is
+[HLI1–HLI7](OPENSHELL_HARDCUT_PLAN.md#hub-issued-native-lore--accepted-goal-extension).
+Historical statements retiring Hub's former Lore issuer or requiring direct IdP
+issuance describe the earlier factory slice; this accepted design supersedes them
+for the active goal without reinstating their old implementation.
+
 ## Native Responsibilities
 
 OpenShell owns every capability it already implements. Veoveo must not duplicate
@@ -100,6 +193,7 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
 | Computer access | Hub application sessions and native workspace isolation | One owner per Computer; current permissions and session revocation |
 | Human identity | Configured OAuth/OIDC provider | Application subject/permission mapping |
+| Native source credentials | Hub signing, sessions, catalog publication and audit | Typed repository assignments and native Lore device/exchange/refresh issuance; accepted, not yet qualified |
 | MCP application behavior | Existing Veoveo Hub and service contracts | Composition, discovery, narrowed delegation and Task authority |
 
 Native [templates](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/templates)

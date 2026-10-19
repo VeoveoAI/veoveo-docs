@@ -23,6 +23,13 @@ subsequent Linux signed Events qualification recorded below.
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
 
+The active hosted Computer goal includes the user-approved
+[Hub-issued native Lore extension](#hub-issued-native-lore--accepted-goal-extension),
+accepted and resumed on 2026-10-19. Entra authenticates users; Hub owns repository
+assignments and issues native Lore tokens. This supersedes earlier direct-IdP
+issuance instructions for the new goal. Existing Linux application acceptance
+does not establish acceptance of this new issuer or the hosted Computer workflow.
+
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 The [platform visual guide](diagrams/veoveo-platform.html) must be updated with every
 major architecture change and whenever an illustrated pending path is qualified.
@@ -3447,3 +3454,125 @@ native refresh baseline. Public-CA contexts, the SDK pin and deterministic facto
 changes remain. Task-owned unexecuted custom auth payloads and recipes are
 withdrawn; read-only discovery/evidence is retained. No replacement security model
 is introduced.
+
+### Hub-issued native Lore — accepted goal extension
+
+Accepted and implementation resumed by the user on 2026-10-19. This is required
+scope within the current hosted Computer goal, not a separate optional project.
+The goal remains a private persistent Computer at `https://veoveo.bioma.ai/computer`
+for each user, serving OpenCode web with native Lore CLI, per-user Hub access and
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Extend it with Hub-owned repository assignments
+and Hub-issued native Lore credentials. Entra only authenticates the person into
+Hub. Keep private scratch, native OpenShell lifecycle, deterministic factories
+without OpenCode/model credentials, existing reference services and the final
+bounded acceptance requirements. Do not change native Lore authorization/client
+protocol behavior; retain the independently requested refresh fix.
+
+The user explicitly accepts the new Hub responsibility after the source review.
+Earlier instructions retiring Hub's old Lore issuer or requiring direct-IdP
+issuance are superseded for this goal. Do not restore that implementation or the
+withdrawn direct-role/creation-admission patches. The architecture is
+[Hub-issued native Lore credentials](LORE_OPENSHELL_INTEGRATION.md#hub-issued-native-lore-credentials).
+
+**Measured starting state:** Hub `9da92b3` already signs Ed25519 application tokens,
+publishes JWKS, brokers Entra login and maintains refresh families. Interactive
+grants and persisted bindings currently require an MCP profile. Its RFC 8693 path
+is authenticated registered-server delegation, not native Lore public exchange.
+It has no device-code grant. Native Lore `7ce28b6` remains clean and tree-identical
+to refresh baseline `821da217`; its device/exchange/refresh requests, EdDSA keys,
+native identity strings and ordinary HTTP proxy/CA support fit the proposed issuer.
+These are source findings, not new deployed acceptance.
+
+**Ownership and execution:** GPT-6 Astra coordinator owns architecture, canonical
+plans/diagram, review and evidence; the existing GPT-6.1 Sol coder owns source;
+the existing GPT-6 Luna builder owns compiling, checks and coordinated deployment.
+Reuse `.worktrees/computers-hub`, `computers-installation` and `computers-docs`.
+No implementation occurs in the main checkouts. Keep Lore unchanged. Serialize
+coding and validation of the same tree; preserve other agents' documentation and
+installation work. No OpenCode/model calls during iteration.
+
+- [ ] **HLI1 — Resource-based issuer foundation.** Generalize hosted OAuth resource
+  resolution, authorization requests/codes, refresh families, revocation and audit
+  targets from mandatory MCP profile to a registered protected resource. Reuse
+  typed catalog admission and existing signer/session/publication mechanisms.
+  MCP remains a consumer; do not introduce a fake MCP profile for native Lore.
+  Scope standard token claims to the common signer and accept only authorized
+  typed issuance results. Existing server delegation keeps its own authenticated
+  contract. Implementation started; no new gate result yet.
+- [ ] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
+  contribution at the executable composition boundary, outside the generic Hub
+  OAuth library. A binary-only `contributions/lore` module is the minimal accepted
+  boundary: it avoids a dependency cycle and unnecessary relocation of binary
+  fixtures while shipping one process. Generic handlers dispatch registered typed
+  behavior; they do not branch on a Lore name. Native integration fixtures may
+  name Lore; generic Hub fixtures remain generic. Define deployment/audience/
+  recipient, native repository ID, tenant and explicit principal/action grants.
+  Publish typed assignments in the existing revisioned control plane with atomic
+  audit; use existing administrative authority. No implicit administrator or
+  Work Context grants, free-form JWT templates or duplicate permissions store.
+- [ ] **HLI3 — Native user login.** Add RFC 8628 device authorization, browser
+  verification through the existing Entra broker, durable expiring device state,
+  standard polling/error semantics, one-time redemption and refresh-family
+  issuance. Advertise actual device/token/JWKS endpoints through discovery. The
+  public client's registration selects the Lore resource because native device
+  requests contain only client ID and scopes. Use access JWTs, not ID tokens as
+  credentials. Keep the native CLI and its persistent token store unchanged.
+- [ ] **HLI4 — Repository exchange and renewal.** Add the native public-client
+  RFC 8693 exchange, separate from server delegation. Resolve the exact requested
+  repository and current assignments. Issue native `resources` entries with a
+  dedicated audience, stable identity and signed recipient binding. Login and
+  repository tokens have distinct issuance authority; a repository token cannot
+  mint unrelated grants. Reuse rotating refresh families and current admission.
+  Grant removal blocks new issuance; report the native expiry/caching boundary
+  for tokens already issued. Empty native permissions are not read-only.
+- [ ] **HLI5 — Factory service credentials.** Add generic hosted support for
+  explicitly registered `client_secret_post` clients to match native OpenShell's
+  existing client-credentials renewal. Reuse typed resource issuance and exact
+  repository assignments with distinct factory service identities. Preserve
+  native secret custody/injection. Factories contain no OpenCode, human refresh
+  token, model provider or custom token helper.
+- [ ] **HLI6 — Installation and actual Linux integration.** Configure Lore's
+  existing issuer/audience/native-claim/public-client/exchange-template settings
+  to trust Hub. Configure the Computer's native REST OAuth paths under the Hub
+  origin, disjoint from managed MCP paths, with existing proxy and CA support;
+  private Lore gRPC remains direct. Register known repository IDs and explicit
+  user/factory grants through Hub. Native creation does not automatically persist
+  creator grants, and native listing does not become grant-filtered. Coordinate
+  the final gateway/Hub cutover and required fresh native credentials; staged
+  files/images are not selected runtime. No parallel shared deployment.
+- [ ] **HLI7 — Qualification and completion.** Compile and run focused contract,
+  database, protocol and consumer regressions, then both required component gates.
+  Use the real unchanged Lore CLI against the integrated issuer, followed by
+  actual Linux two-user browser/session and repository access, token exchange,
+  refresh beyond expiry, grant withdrawal at the native expiry boundary and
+  persistence. Prove deterministic factory credentials/build independently of
+  Computers. Only after deterministic/deployed gates pass, run final Computer
+  MiMo acceptance at eight steps/240 seconds with the retained real Artifact and
+  a Time Task, no new generation. Record exact inputs, identities, hashes, timings,
+  errors and source/deployed/model boundaries. Update this checklist and all
+  three existing diagram views; merge/cleanup remain subsequent reviewed work.
+
+Use a hard cut for stored authorization bindings. Do not infer historical token
+authority from the latest catalog or add a compatibility decoder/backfill to retain
+disposable sessions. Append the strict schema change as the repository requires;
+perform an explicit scoped OAuth-session reset before applying it to a populated
+deployment, with fresh authorization/credential custody afterward. Do not silently
+delete live rows during startup or reset unrelated Task/Artifact/reference data.
+Routine persistence remains required after the final schema is deployed.
+
+The source investigation ran no tests/builds or runtime mutations. The final
+pre-issuer Computer artifacts remain retained: installation `caf5d046`, Linux
+Factory `sha256:aae9b06e3f6890e2b57e8472dc0d0f96c4dc67dc3ef4d3c419bde7c33dd6193e`
+and Computer `sha256:c668229af4a278c6b40b4c0160a4fe8e16636881a9da2f4b21a8808d9d3d1d96`.
+The Computer's isolated no-network `/computer/api/info` returns 200; native
+Lore reports `0.10.2-nightly+local`. This is image startup evidence, not Hub/Lore
+login. The builder's receipt is
+`/tmp/computers-final-caf5-linux-20261019/receipt.txt`, SHA-256
+`73302ad3e713e721233d16b2f96c1db2b2c342dd233351ab61f41fb87951632f`.
+No shared gateway/Hub switch or new repository issuer has occurred.
+
+The canonical architecture, this goal extension, direct-IdP history notice and
+existing three-view diagram are updated together. Static JSON, JavaScript, SVG
+XML, unique-node and local-source-link checks pass. Browser review of these new
+guide bytes remains pending; the earlier guide's visual receipt does not cover
+this edit. Main-checkout documentation edits by the other team remain untouched.
