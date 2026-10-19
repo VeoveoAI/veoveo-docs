@@ -1909,7 +1909,8 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   `sha256:8d490d99bdf061e76d4a7648f01368bd4c82b34d5efca585aeb0b594eedf61c1`.
   The remote Linux x86_64 Docker check also passed 204 tests with one skipped;
   image `sha256:b0ab42373bc77f190fa1b5cc35032267995da85456a6036902c4ad27a01629f6`.
-  Deployment and the corrected large-object case remain under validation.
+  Deployment subsequently passed readiness and a routed Time call as recorded
+  below; the corrected large-object case remains under validation.
   Both regression runs used the same Linux ARM64
   dev image on the Mac; this is not Linux x86_64 deployment evidence.
   An initial compile attempt failed in `hkdf` with E0463 for
@@ -1917,6 +1918,19 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
   Cargo target and two build jobs, without establishing the original cause.
   A subsequent test-only missing `Debug` derive was corrected before the actual
   baseline regression ran. Neither setup failure is a regression verdict.
+- Hub `ec9f7f59be0e74135e5ed8179e65e360c701cf6c` is now deployed on Linux in
+  runtime image `sha256:91988a8f06cc6ae13fc2e2d768a7f03de6b0a601aee79436eaf0fc8958343ef6`.
+  Native OpenShell has no image-update command, so the supported rollout stopped
+  and replaced the old Hub sandbox while retaining logical `vv-control/hub`,
+  provider/policy selection and the read-only `vv-hub-config` mount. The new
+  sandbox is `4af8097f-8781-4b24-81f1-ba863a0fafda`, main process
+  `4b3c6a53-16da-4a62-85b7-f15c2cf0a228`; the existing logical HTTP exposure is
+  restored with the same target and bearer passthrough. Verified public TLS and
+  resource discovery return HTTP 200, unauthenticated MCP returns 401, and the
+  existing native SDK runner's authenticated routed Time call resolves
+  `2026-10-17T12:00:00Z` to Unix `1792238400` and DTG `171200ZOCT26`, with matching
+  effective authority IDs. This is rollout/readiness evidence, not the pending
+  full large-object recovery or same-revision restart qualification.
 - A related narrow protocol audit found that pinned RMCP already rejects
   non-declaring clients on `tasks/get`, `tasks/update`, `tasks/cancel` and Task-ID
   subscriptions with the standard `-32021` and `requiredCapabilities`. Media's
@@ -1966,7 +1980,7 @@ Preparation checkpoint (2026-10-18; deployment gates still open):
 
 | Built Linux runtime | Immutable image ID |
 | --- | --- |
-| Hub `00a7e7b` | `sha256:d348cee423cc698d7030f9aa40f1e566a42df35d962f92ce7c7b19f8b0fade0e` |
+| Hub `ec9f7f5` | `sha256:91988a8f06cc6ae13fc2e2d768a7f03de6b0a601aee79436eaf0fc8958343ef6` |
 | Time `90eabf9` | `sha256:f5608dbb15bdf54447b0e979d203f0ccc0d1e358d2cc8cbecf743bf5c1732495` |
 | Artifact `83d6910` | `sha256:60c3100d8d12b5acebb8080eae56d3a2fe560c02764507de50a2d715f3ecf238` |
 | Media `20e2c6e` | `sha256:4074d31aabd225dcd5518aab234beadffa2149543aa1bc28502a43b194a5b87a` |
