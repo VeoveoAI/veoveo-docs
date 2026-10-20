@@ -1313,6 +1313,22 @@ three-file patch. Receipt: `/tmp/lore-wire-feature-20261020/receipt.json`, SHA-2
 No Lore service image was built or deployed. Hub onboarding itself still awaits
 its component and deployed checks.
 
+The MCP template adoption is published as
+`f5158da41ec952445364f4316835bcb5e921898d`. Its startup/example now demonstrates
+the same required deployment identity, offline registration description and saved
+registration resume using Core `1dd9994` and SDK `cc23dc9`. Both Mac and Linux
+Docker checks passed all 16 tests. The first checks compiled the source but rejected
+stale SQLx metadata after the Core update; fresh preparation generated the 61
+queries required by the template's actual workspace graph, and both reruns passed
+SQLx verification, Clippy, feature and dependency checks. No unrelated Core test
+metadata was added. Mac Nextest took 1.007 seconds, its final check stage 56.8
+seconds and export 8.2 seconds. Source: `coder` (GPT-6.1 Sol);
+validation/publication: `builder` (GPT-6 Luna); coordinator reviewed all nine frozen
+source paths and 61 metadata hashes. Receipt:
+`/tmp/template-deployment-adoption-20261020/receipt-v2.json`, SHA-256
+`303b29ba560b15c79fc242bcb1f554f20bdfcf7ec04cb013d084f1863f1bdfa5`.
+No runtime deployment changed.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
