@@ -79,6 +79,93 @@ Historical Docker-only direction: the preceding Mac/Linux receipts used the nati
 Docker driver. The accepted Kubernetes target below supersedes that placement
 restriction; those receipts do not establish Kubernetes acceptance.
 
+## Artifact content-hash removal — 2026-10-20
+
+**Implemented, component-checked and published to main; deployment pending.**
+Artifact no longer requires content SHA-256 or performs full-object hash readback.
+Its verifying state and hash worker are removed. Completion retains native multipart
+ETags and create-only storage, validates actual size and reserved limits, then makes
+the artifact available directly. General MCP Tasks, Media Tasks, Task provenance,
+permissions, quotas, retention, terminal-state checks and idempotency remain.
+
+Media's completion wait and Embedding's inherited digest contract were removed
+together. Embedding retains authorized signed transfers, exact byte bounds and
+native decoding. Consumers needing a content digest compute and retain it themselves;
+the source-activation design follows that rule. Existing digest-bearing receipts
+remain historical evidence.
+
+Published revisions, with Media and Embedding pinned to the exact Artifact revision:
+
+| Repository | Main commit | Change |
+| --- | --- | --- |
+| Artifact | `b53d15e93891727169a1fe482b8fb664a9877730` | Contract, completion, storage/client path, schema and coverage |
+| Media | `6a73e52932d166e368ba8673277cadf8be1742b9` | Direct upload completion and dependency SQLx metadata |
+| Embedding MCP | `0ac4701c8cdfecd56857602ee7bf84df86c9858c` | Digest-free source contract and independent acceptance fingerprints |
+| Embedding runtime | `2ad25cf7dcc9a89fc829224e056044ea13d2be55` | Exact-size transfers without an inherited Artifact digest |
+| Hub SDK | `52084ecf5e3332a05fe9ac111067e18a3c54377d` | Replace obsolete Artifact verification examples; documentation only |
+| Installation template | `19f2e25f0e855919400e899068619823660a3cb5` | Artifact, Media and Embedding instructions |
+| Bioma installation | `92073759625d7f6d764845593746cfc15ca4bb81` | Matching Artifact/Media instructions; no deployment changes |
+
+The coordinator (GPT-6 Astra) reviewed and published the source; coder (GPT-6.1 Sol)
+implemented it; builder (GPT-6 Luna) ran deterministic checks. The sequence was
+Artifact review/SQLx regeneration/checks/publication, coordinated consumer pinning,
+consumer and SDK checks, then remaining publication. Canonical
+`docker build --target check .` gates ran on the Mac's Docker Desktop Linux/ARM64
+environment and on the actual remote Linux x86_64 host with Linux/AMD64 images.
+These are component checks, not native MPS/CUDA or deployed sandbox acceptance.
+
+| Final candidate | Mac-hosted ARM64 passed / skipped | Remote AMD64 passed / skipped | Remote test time, excluding compilation |
+| --- | --- | --- | --- |
+| Artifact | 111 / 9 | 111 / 9 | 27.941 s |
+| Media | 73 / 11 | 73 / 11 | 16.146 s |
+| Embedding MCP | 33 / 5 | 33 / 5 | 6.139 s |
+| Embedding runtime | 25 / 0 | 25 / 0 | 1.084 s |
+| Hub SDK | 245 / 3 | 245 / 3 | 20.940 s |
+
+Source snapshots were byte-checked before publication, including newly generated
+SQLx files: Artifact 153, Media 162 and Embedding 57 entries. Artifact's retained
+failed upload remains failed on retry; its client rejects that outcome. Multipart,
+size refusal, permissions and quota paths remain in the component suite. Embedding's
+new test caller downloads 35 synthetic bytes (`independent synthetic fixture bytes`),
+checks its own expected fingerprint, rejects incorrect size/fingerprint and expired
+grants, and checks that errors omit signed URLs. Production Embedding MCP does not
+download bytes. Runtime tests retain transfer/size/decoding admission and explicitly
+reject the removed source field. Media provider fixtures remain synthetic; this run
+made no WaveSpeed, OpenCode or GPU inference calls.
+
+Unplanned fixes: Embedding's existing deployment-registration prerequisite needed
+an exhaustive `DeploymentMismatch` test match and replacement of 31 stale Core Task
+SQLx entries. It passed 31 tests with 5 skipped on both hosts and was published
+separately as `0d42bda0c1b7ddb80003ec3dbe2245e97875fa2a`. The new fingerprint test
+initially lacked its explicit dev-only HTTP fixture dependency, then lacked rustls
+provider initialization (32 passed, 1 failed, 5 skipped). Both test setup defects
+were fixed before the final 33/5 results above. The TLS-provider failure is retained
+in the tool trace, without a standalone log file. Disposable preparation also hit
+shell PATH/quoting and working-directory errors before checks; corrected harnesses
+used script files and fresh database/Cargo state. No live installation was changed.
+
+Final check logs and source manifests remain privately under `/private/tmp`, including
+`artifact-linux-check-final2-20261020.log`, `media-mcp-check-{mac,linux}-20261020.log`,
+`embedding-mcp-check-{mac,linux}-final3-20261020.log`,
+`runtime-embedding-linux-check-20261020.log` and
+`sdk-docs-check-{mac,linux}-20261020.log`. Temporary SQLx containers and the isolated
+Embedding worktree were removed; unrelated work was preserved.
+
+Remaining deployment gate: coherently roll out the new contract on the current
+Kubernetes placement with fresh disposable Artifact application state and its
+migration ledger, plus newly admitted registration metadata. Do not apply the edited
+baseline migration to existing history. Then prove deployed upload, multipart,
+size refusal and consumer calls. No live reset or deployment was performed here;
+the skipped acceptance cases and earlier deployed receipts do not qualify this change.
+
+The guide records this change as pending, separately from historical deployed
+qualification. Chrome review on 2026-10-20 passed all three views, the Artifact
+and Embedding detail panels, navigation and zoom/fit. Its native export controls
+produced a valid 127,053-byte SVG and 626,561-byte PNG (2,960 × 2,480)
+for the final guide. Both exports were verified directly. An earlier browser
+automation download wait had timed out after its SVG had successfully saved. The temporary loopback server and QA tab
+were closed after inspection.
+
 ## Kubernetes Foundation and Dynamic Runtime — 2026-10-19
 
 **Implementation activated 2026-10-19; scoped Linux qualification completed 2026-10-20.**

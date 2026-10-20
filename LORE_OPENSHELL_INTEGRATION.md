@@ -80,6 +80,38 @@ Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitte
 where a verified gap requires them. Preserve each project's extension contracts,
 security boundaries, source formats and ordinary operations.
 
+## Artifact content hashes — accepted removal, 2026-10-20
+
+Artifact identity is its artifact ID and its create-only object. The user has
+approved removing the mandatory content SHA-256 from upload requests, records and
+completion. Artifact completes the native S3 upload and checks actual size against
+the declared size and reserved limits. It then records availability, usage and audit
+atomically in PostgreSQL. It no longer downloads the object to hash it or
+runs a separate hash-verification Task/state. Multipart part numbers and ETags,
+create-only writes, quotas, permissions, retention and upload idempotency remain.
+This does not change the platform's general MCP Tasks capability or Media Tasks.
+
+SeaweedFS retains its native ETags and explicitly requested checksum support.
+Its [single-PUT implementation](https://github.com/seaweedfs/seaweedfs/blob/4.48/weed/s3api/s3api_object_handlers_put.go)
+computes an MD5 ETag; its
+[multipart implementation](https://github.com/seaweedfs/seaweedfs/blob/4.48/weed/s3api/filer_multipart.go)
+combines part digests and includes the part count. A multipart ETag is not a
+portable whole-file hash.
+Artifact adds no replacement digest registry or checksum API. A consumer that
+needs a content digest for its own source identity, provenance or validation owns
+that computation and storage. Share-token hashes, request signing, model/prompt
+processing hashes and immutable runtime-image digests serve separate purposes.
+
+The coordinated source change removes Media's hash-verification wait and
+Embedding's inherited mandatory Artifact digest. Embedding retains caller-bound
+Artifact authorization, signed-transfer origin/expiry checks, exact size limits
+and native media decoding. Its acceptance runner computes independent fixture
+fingerprints in the test caller; production Embedding MCP never fetches bytes.
+Component-check and publication evidence belongs in the execution checklist.
+Deployment qualification of this contract change is still pending. Earlier
+digest-based qualification receipts describe the previous implementation and
+remain historical evidence.
+
 ## Embedding Generation
 
 Implementation authorized on 2026-10-19. This is a standalone generation service;
@@ -1998,7 +2030,9 @@ it does not publish the Computer's home, history or unrelated scratch.
 
 Implementation decision, 2026-10-20: explicit local apply uses the existing private
 Artifact upload/download contract for a selected source archive. Its client already
-supports streaming bytes, declared size/SHA-256, idempotency and verified completion.
+supports streaming bytes, declared size, idempotency and completion. Under the
+accepted Artifact content-hash removal, the source producer owns the selected
+snapshot's digest; Artifact does not compute or certify it.
 The source adapter belongs at executable composition, beside native Lore integration;
 generic environment activation consumes a resolved source identity and does not name
 either server. Do not add an OpenShell upload protocol, an Exec chunking protocol or
@@ -2007,8 +2041,9 @@ mandatory Factory job. Archive/upload latency must be measured separately.
 
 Reserve the desired generation and apply identity when authenticating the request,
 before transferring bytes. Authorize the exact Artifact through the caller's existing
-access, compare its verified digest/size with the selected snapshot, and materialize
-and verify it in the native workspace PVC before marking that source ready. Signed
+access, compare its size with the selected snapshot, and materialize the bytes in
+the native workspace PVC. The source activation consumer independently verifies
+the snapshot digest before marking that source ready. Signed
 download URLs are temporary transfer inputs, not persisted source identity; pass
 them through private native Exec input rather than logged command arguments. A late
 completion cannot replace a newer desired generation. An interrupted incomplete
