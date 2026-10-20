@@ -1175,6 +1175,41 @@ persisted native RFC 7592 credentials. A consumed one-use initial admission does
 not become a reusable namespace credential; an expired registration requires a
 fresh scoped admission from trusted runtime reconciliation.
 
+Hub's first E1 draft now passes Linux SQLx preparation, all-target/all-feature
+compilation in online and offline modes, and focused composition (3/3) and
+registration snapshot (2/2) tests. This is uncommitted source over `9b83c26`,
+identified by manifest SHA-256
+`3659667d24fba47212e4d50d8cf650e5b37ae10f24b6b9309a79aa41381ef2d5`,
+using Core `bba3050`, SDK `7ff9f39`, PostgreSQL 18.6 and SQLx CLI 0.9.0.
+The first compile found two typed key-thumbprint conversions; those were corrected
+before the successful run. Complete query metadata was imported only from that
+successful preparation. Receipt:
+`/tmp/hub-e1-sqlx-generation-receipt-20261020.json` on Mac. Full Hub component
+gates and deployed routing await E2 and the Core/SDK Task and restart adaptations;
+these focused checks do not qualify the full environment workflow.
+
+The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
+`builder` (GPT-6 Luna) built and published the reusable runtime image
+`registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
+Rust/Cargo 1.99.0 built a dependency-free HTTP fixture offline as UID/GID 10001.
+Recorded Cargo release builds took 0.35, 0.20 and 0.20 seconds; these small fixture
+builds do not predict real MCP compilation time.
+Native named HTTPS routes, verified against the gateway CA, returned HTTP 200 and
+distinct worker markers (recorded requests took 5.583 and 4.625 milliseconds).
+During a final individual worker replacement, s6 stayed
+PID 56, the sibling stayed PID 62, and both native Pod UIDs and container IDs were
+unchanged. Native Stop/Start separately replaced the runtime generation and Pods,
+then restored both worker definitions/binaries from the automatic workspace PVC
+and returned HTTP 200 through both routes. The disposable workspace was removed.
+The initial create omitted a command and selected the CLI's default interactive
+shell; supplying `/usr/bin/s6-svscan /sandbox/services` explicitly fixed it without
+an OpenShell change. Sanitized receipt: `/tmp/e3-s6-runtime-probe-20261020.json`
+on Mac. The UUIDv4 build-directory labels in this mechanism probe are not Core's
+UUIDv7 `BuildId` contract. These synthetic HTTP markers prove process ownership,
+independent replacement and PVC recovery, not Hub activation, MCP context, source
+watching, Task retention or model acceptance. End-to-end activation timings remain
+unmeasured; E3 and E4 remain open.
+
 - [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
   authorized repository provisioning or reuse and stable user → actual repository
   ID binding, plus the Computer's workspace checkout. Version instructions and

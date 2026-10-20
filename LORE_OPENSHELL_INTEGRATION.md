@@ -1885,6 +1885,14 @@ persist. Runtime settings, policy/provider schemas and resource admission stay i
 native OpenShell definitions. Any data/identity bindings reference approved records;
 there are no embedded secrets or branch-authored permission grants.
 
+A pinned base is an immutable composition shared by its named environment.
+Resolving it checks current access to that environment and the selected child,
+without recomposing the base from its current ancestors. Revoking direct access
+to the named base denies selection; changing an indirect ancestor's sharing does
+not retroactively change that captured composition. Component and data permissions
+still apply to each operation. Following a base instead resolves its current
+authorized inheritance chain.
+
 For a logical component, absence from `components` means inherit from the selected
 base. An explicit override wins; if selected but unhealthy it is **unavailable**,
 not a fallback to the base. Removing the entry explicitly resumes base selection;
@@ -2018,6 +2026,15 @@ readiness. The selected Debian trixie toolchain base offers `s6` `2.13.1.0-1` on
 architectures. This package/API inspection is not deployed qualification. Native
 Exec cancellation terminates its registered child, so an orphaned Exec process is
 not the service-lifetime mechanism.
+
+The separate Linux mechanism probe on 2026-10-20 now establishes s6-owned worker
+lifetime after Exec disconnect, offline Rust compilation, independent HTTP service
+replacement without Pod replacement, and worker recovery after native Stop/Start
+from the automatic workspace PVC. Native Create must explicitly select
+`/usr/bin/s6-svscan /sandbox/services`; an omitted command selects the CLI's shell
+default. The [execution receipt](OPENSHELL_HARDCUT_PLAN.md#next-slice--environment-overrides-and-fast-source-activation)
+records its image and boundaries. Hub source activation, MCP readiness and retained
+operations remain separate implementation and qualification work.
 
 Rust builds use **unique build-specific actual executable paths**, for example
 `/sandbox/builds/<build-id>/service`, under a narrowly admitted path pattern. Record
