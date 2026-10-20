@@ -2008,6 +2008,17 @@ owner for the canonical main process; do not change its supervisor/security or a
 an external process controller. On recovery, reconcile desired/serving source and
 worker state before routing; do not replay non-idempotent mutations.
 
+Implementation decision, 2026-10-20: use native
+[`s6-svscan`](https://skarnet.org/software/s6/s6-svscan.html) as that fixed main
+process in a separate reusable override runtime. Each build has a separate service
+directory and worker; scoped Exec prepares files and invokes s6's control commands.
+OpenShell still owns sandbox lifecycle and named service exposure. s6 owns only
+child-process supervision inside the sandbox; its readiness does not establish MCP
+readiness. The selected Debian trixie toolchain base offers `s6` `2.13.1.0-1` on both
+architectures. This package/API inspection is not deployed qualification. Native
+Exec cancellation terminates its registered child, so an orphaned Exec process is
+not the service-lifetime mechanism.
+
 Rust builds use **unique build-specific actual executable paths**, for example
 `/sandbox/builds/<build-id>/service`, under a narrowly admitted path pattern. Record
 the exact source, runtime/toolchain and output identity for each build; rebuilding

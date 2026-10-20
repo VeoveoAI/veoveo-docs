@@ -1,9 +1,10 @@
 # OpenShell Hard Cut Plan
 
-**Next planned slice:** [personal Lore workspaces, environment overrides and fast
+**Active implementation:** [personal Lore workspaces, environment overrides and fast
 source activation](#next-slice--environment-overrides-and-fast-source-activation).
-The foundation and Computer receipts below remain qualified; this new workflow is
-planning only, with no implementation goal activated by this document update.
+The foundation and Computer receipts below remain qualified. Implementation of
+this new workflow was authorized and started on 2026-10-20; its deployed
+qualification is pending.
 
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
@@ -1142,6 +1143,19 @@ package Clippy passed. These are component checks only; no environment routing o
 source activation has been deployed. Implementation: `coder` (GPT-6.1 Sol);
 validation: `builder` (GPT-6 Luna); coordinator reviewed and published the commit.
 
+SDK commit `7ff9f394bd9b39bec4a62a6d7dabf8461032a1b6` is now published on
+`main`. It adds canonical immutable composition captures, typed environment
+selection, deployment-bound registration/token trust and retained downstream
+execution context. Mac and Linux `docker build --target check .` each passed
+240 Nextest tests with three skipped; BuildKit reported 177.5 and 217.7 seconds
+respectively. Logs are `/tmp/sdk-7ff9f39-mac-docker-check.log` on Mac and
+`/tmp/sdk-7ff9f39-linux-docker-check.log` on Linux. Focused tests passed composition
+4/4, contract dependency boundaries 3/3, registration 30/30 and internal auth 32/32.
+Earlier full checks found a local-helper Clippy qualification and then newly
+published TLS dependency advisories; the helper call and two patch-version lockfile
+entries were corrected before both checks passed. No deny exception was added.
+These checks establish SDK behavior, not deployed Hub environment selection.
+
 The SDK slice now separates logical service slug, target deployment and retained
 execution composition. Initial selection uses configured MCP connection headers;
 OpenCode currently scopes connections per Location, not per chat. The first
@@ -1149,6 +1163,17 @@ storage binding is explicit use of the existing logical service schema under
 separate binding admission. Environment editing alone cannot grant that access.
 This slice does not implement database cloning or claim `search_path` isolates
 component SQL that explicitly names its schema.
+
+Source review also found that Core Task claims and idempotency currently scope by
+logical server, without deployment identity. Exact Hub routing alone would let two
+workers sharing an admitted schema claim or recover each other's Tasks. E2 must
+add generic deployment affinity to Task creation, claims, recovery and related
+operations, with SDK adapters carrying the admitted deployment. This is execution
+ownership, separate from data cloning or an additional authorization model.
+Deployment registration must also survive ordinary process restarts using
+persisted native RFC 7592 credentials. A consumed one-use initial admission does
+not become a reusable namespace credential; an expired registration requires a
+fresh scoped admission from trusted runtime reconciliation.
 
 - [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
   authorized repository provisioning or reuse and stable user → actual repository
