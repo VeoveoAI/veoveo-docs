@@ -1219,18 +1219,47 @@ Source implementation remains `coder` (GPT-6.1 Sol), validation/publication `bui
 (GPT-6 Luna), with coordinator review. Hub and component adoption and Linux deployed
 environment qualification remain open; no deployment was changed for these gates.
 
-Hub's first E1 draft now passes Linux SQLx preparation, all-target/all-feature
+Hub's earlier E1 draft passed Linux SQLx preparation, all-target/all-feature
 compilation in online and offline modes, and focused composition (3/3) and
-registration snapshot (2/2) tests. This is uncommitted source over `9b83c26`,
+registration snapshot (2/2) tests. That checkpoint was uncommitted source over `9b83c26`,
 identified by manifest SHA-256
 `3659667d24fba47212e4d50d8cf650e5b37ae10f24b6b9309a79aa41381ef2d5`,
 using Core `bba3050`, SDK `7ff9f39`, PostgreSQL 18.6 and SQLx CLI 0.9.0.
 The first compile found two typed key-thumbprint conversions; those were corrected
 before the successful run. Complete query metadata was imported only from that
 successful preparation. Receipt:
-`/tmp/hub-e1-sqlx-generation-receipt-20261020.json` on Mac. Full Hub component
-gates and deployed routing await E2 and the Core/SDK Task and restart adaptations;
-these focused checks do not qualify the full environment workflow.
+`/tmp/hub-e1-sqlx-generation-receipt-20261020.json` on Mac. At that checkpoint, full
+Hub gates and deployed routing awaited E2 and the Core/SDK Task and restart adaptations;
+these focused checks did not qualify the full environment workflow. The published
+E1/E2 result below supersedes that source checkpoint.
+
+Hub E1/E2 is now published on `main` as
+`ea83968e8c352755c9cf42cd7a44535631268369`, with Core `1dd9994` and SDK
+`cc23dc9`. Typed environment selection, multiple deployment registrations,
+composition-scoped discovery/cursors/delegation and retained Task routing are
+implemented. One-use deployment admission binds exact metadata, signing key,
+current environment ownership, storage and native placement. Current authorization
+still applies to retained Tasks; their captured composition is not reinterpreted
+through a newly edited default or base chain.
+
+Both required Mac ARM64 and Linux x86_64 Docker checks passed 243 Nextest tests with
+one skipped, SQLx verification, strict Clippy and dependency checks. Nextest took
+34.509 and 36.235 seconds respectively; final check stages took 156.7 and 161.5
+seconds, with image export separately taking 27.4 and 34.2 seconds. Fresh SQLx
+preparation against PostgreSQL 18.6 completed in 38.75 seconds and produced the 198
+metadata files used by both successful builds. Focused execution tests passed
+4/4, Task routes 6/6, catalog pages 6/6, typed-header admission 1/1, calls integration
+1/1 and scoped registration admission 1/1 (including eight competing consumers).
+Initial failures required a test key-thumbprint lifetime fix, an explicit
+fixture-only kernel administrator permission, and three mechanical Clippy fixes;
+production authorization was not broadened. Source: `coder` (GPT-6.1 Sol);
+validation/publication: `builder` (GPT-6 Luna); coordinator reviewed source and
+verified frozen source/metadata hashes. Receipt:
+`/tmp/hub-e2-first-freeze-20261020/receipt-v3.json`, SHA-256
+`74c2084969ddcd4baf6647bf25cb21de4efe92bcd157630bea696253e99b1449`.
+No deployment changed for these checks. Component adoption, E0 onboarding and E3
+activation remain in progress; Linux environment routing and end-to-end acceptance
+remain unproved.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
@@ -1269,18 +1298,20 @@ unmeasured; E3 and E4 remain open.
   explicit unhealthy override means unavailable; removal resumes the base or becomes
   unavailable if absent there. Labels carry no semantics. Separate authenticated
   environment selection from business WorkContext/data ACL. Current
-  `RegistrationSnapshot` is one-current-server-per-slug; support multiple live
-  instances without a newer registration taking another environment's route.
+  deployed behavior predates this work; the new source keys `RegistrationSnapshot`
+  by deployment. Qualify multiple live instances without a newer registration
+  taking another environment's route.
 - [ ] **E2 — Session-context routing and complete composition capture.** Bind an
   authenticated Hub MCP connection/session to selection using qualified native
-  client/SDK contracts; the current route is `/mcp/{profile}`, not an implemented
-  environment-selection API. Verify OpenCode's actual configuration/context surface;
+  client/SDK contracts; the route remains `/mcp/{profile}`, with the typed selection
+  header implemented in source and awaiting deployed qualification. Verify OpenCode's actual configuration/context surface;
   no assumed picker. Two simultaneous sessions retain different maps while using
   normal logical tool names. Scope discovery/schemas, cache keys, paging, downstream
   delegation and Task lookup to resolved composition plus deployment revision.
   Shared services preserve per-call selection. Capture long Task/in-flight ownership
-  before route replacement and retain old worker/source until completion or explicit
-  cancellation. Use existing typed SDK/Core/domain boundaries and tests.
+  before route replacement and retain old worker/source while canonical Task routes
+  and results remain readable, including terminal results until expiry or explicit
+  retirement. Use existing typed SDK/Core/domain boundaries and tests.
 - [ ] **E3 — Reusable-runtime source activation.** Implement Computer-local apply and
   opt-in watch with identified source snapshots, plus a dynamic native Lore
   subscription set in the existing trusted Hub process. Subscribe before reading;

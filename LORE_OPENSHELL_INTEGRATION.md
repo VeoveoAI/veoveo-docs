@@ -1858,9 +1858,10 @@ Artifact or implement general composition.
 The next planned integration is the [environment override and source activation
 contract](#environment-overrides-and-fast-source-activation), in the existing trusted
 Hub process. It reuses admitted runtimes for source changes; general trusted image
-publishing is separate. Current registration still selects one current server per
-slug: parallel deployment selection, composition-scoped discovery/delegation and
-Task revision retention require implementation, not merely another sandbox.
+publishing is separate. Deployed registration still predates this slice. Hub source
+now implements parallel deployment selection, composition-scoped discovery and
+delegation, and retained Task routing; component gates pass, while deployed
+qualification and source activation remain pending.
 
 Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs),
 [forwarded identity](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs),
@@ -1931,9 +1932,9 @@ data bindings must be explicit. This plan adds no Lore authorization rules.
 
 The first implementation supports an explicitly admitted binding to the logical
 service's existing database schema. Permission to edit an environment does not
-grant permission to use that storage binding. Registration currently grants the
-logical service's database role automatically; deployment admission must remove
-that implication. Independently keyed override workers receive authority for their
+grant permission to use that storage binding. Published deployment admission now
+requires that explicit storage binding instead of inferring it from environment
+edit permission. Independently keyed override workers receive authority for their
 particular deployment, not the namespace owner's signing key or the installation's
 global registration secret. Isolated copies of application data are outside this
 slice: current component SQL explicitly names its schema, so changing `search_path`
@@ -2018,15 +2019,18 @@ context, separate from business `WorkContext` and data authorization. Two sessio
 of one user can select different maps while calling the same logical tools, such
 as `media__run`; composition resolves the logical component to its deployment,
 revision and endpoint. Multiple live registrations must coexist without the newest
-registration stealing another environment's route. The current
+registration stealing another environment's route. The published Hub implementation
+now keys the
 [RegistrationSnapshot](../veoveo-hub/crates/veoveo-hub/src/registration/snapshot.rs#L56)
-contains one server per slug, and
+by deployment, and
 [registration selection](../veoveo-hub/crates/veoveo-hub/src/registration/watch.rs#L96)
-chooses one current instance: this is required implementation work.
+retains the newest process registration of each deployment. Unscoped logical-slug
+lookup refuses ambiguity; an admitted composition selects the exact deployment.
+This source implementation does not establish deployed environment acceptance.
 
-The public MCP route is currently `/mcp/{profile}`. The proposed selected-environment
-connection/session binding is not an existing API or an assumed OpenCode environment
-picker. First qualify a normal client configuration binding its authenticated Hub
+The public MCP route remains `/mcp/{profile}`. Hub's selected-environment HTTP
+binding is implemented in source and passes component checks; no OpenCode
+environment picker is assumed. Qualify a normal client configuration binding its authenticated Hub
 MCP connection/session to an environment; verify the actual OpenCode context surface
 before designing its ergonomics. Discovery/tool schemas, caches, pagination,
 downstream delegation and Task lookup must all use the resolved composition and
@@ -2098,7 +2102,8 @@ is not a single reusable process. Current MCPs do not already provide this workf
 
 **Activation and retention.** In-flight operations and long Tasks capture their exact
 deployment and resolved composition. Keep the old worker/source/runtime bindings
-until completion or explicit cancellation; new work selects the ready replacement.
+while canonical Task routes and results remain readable, including terminal results
+until expiry or explicit retirement; new work selects the ready replacement.
 An old Task must not be sent to the newest registration. A failed build/start before
 activation retains the explicitly recorded last serving revision, with desired and
 serving revision/failure visible. If the selected serving override itself becomes
