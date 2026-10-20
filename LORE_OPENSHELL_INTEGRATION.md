@@ -1,7 +1,44 @@
 # Lore And OpenShell Integration
 
-Status: accepted infrastructure direction for design and qualification, revised on
-2026-10-19. Lore is the source and revision authority. OpenShell owns execution
+## Current direction — Kubernetes, 2026-10-19
+
+The user-approved target is K3s on Ubuntu Linux x86_64 **only for this slice**.
+Mac remains ordinary source development, compilation and component/integration
+tests with local fixtures, including Docker where needed. **Implementation authorized
+and started on 2026-10-19; scoped Linux deployment qualification passed 2026-10-20.**
+Lima 2.2.1 is installed but unused; no Mac VM/K3s cluster is planned. The old Linux
+runtime has been cleared and the replacement K3s node reports Ready. Cilium
+ingress/egress enforcement, private service connectivity, two owner-isolated
+Computers, native Lore publication/renewal, disposable factories and live Hub
+configuration now have deployed evidence. Corrected synthetic Media acceptance
+and scoped Hub/Media in-flight recovery pass. A full Linux host reboot recovered
+all owned Always workloads without manual Starts; retained-state verifiers and
+the final exact MiMo Computer scenario pass. Linux builds the Linux
+runtime images. Exact foundation pins and immutable pullable amd64 images are
+recorded with the execution evidence; installation alone does not qualify them.
+
+Kubernetes directly owns the foundation: CloudNativePG PostgreSQL, the official
+SeaweedFS chart with explicit PVCs, single-replica Lore, OpenShell gateway and the
+tunnel. OpenShell's existing Kubernetes driver owns Hub, MCP, Computer and factory
+sandbox resources. K3s uses its independent embedded datastore. Gateway PostgreSQL
+is external to the OpenShell Helm release, inside the same cluster; gateway and
+application databases/roles are distinct and may initially share a PostgreSQL
+cluster. Cilium must enforce ingress and egress policies, and the Agent Sandbox
+controller/CRDs are prerequisites. This is single-host recovery, **not HA**;
+multi-host HA is future scope.
+
+The running Linux placement is now Kubernetes. The old Linux runtime has been
+cleared to reclaim space; the replacement passed the scoped execution checklist.
+Earlier Docker/Compose receipts below are historical
+component/deployment evidence, not Kubernetes acceptance. This direction supersedes
+current instructions to use only native Docker or move infrastructure into Docker
+sandboxes. The undeployed native-Docker infrastructure candidate `fea2793` is
+superseded and must not be executed. See the
+[Kubernetes management plan](#full-native-openshell-management-plan) for ownership,
+live-change requirements and qualification gaps. Mac ARM testing and architecture portability remain relevant; multiarch image
+publication and Mac VM provisioning are not requirements of this slice. Implementation is now authorized; the execution checklist tracks measured progress.
+
+Historical and current application evidence, reviewed 2026-10-19: Lore is the source and revision authority. OpenShell owns execution
 and runtime access for factory work and deployed services. Veoveo connects source
 revisions to checks, service composition and promotion. The local hard cut and first
 native Lore/private MCP path, Hub → Time integration, prepared Time factory
@@ -21,8 +58,9 @@ GPU/CUDA remain separate. See
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
 platform with Lore, OpenShell, Hub, Time, private Artifact and Media. Its other
 views explain native credential custody and the hosted Computer publication workflow.
-Update it alongside this document after every major architecture change;
-keep planned paths visibly distinct from qualified ones.
+The existing diagram was updated only after the infrastructure was proven, as
+requested, and all three views were manually reviewed in Mac Chrome. Qualified
+Kubernetes workflows and planned general publication remain explicitly separate.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
 [direct IdP-issued Lore credentials with native OpenShell renewal](LORE_DIRECT_OIDC_PLAN.md).
@@ -104,6 +142,205 @@ stopped-process `import-control-plane` command, followed by a same-image native
 restart. Preserve concurrent Computer configuration and all other fields; a
 mounted-file edit and restart alone do not publish a binding change.
 
+
+### Multimodal embedding replacement — implementation authorized 2026-10-19
+
+The user authorized a new implementation goal after the pinned-model investigation.
+The text-only deployment evidence above remains historical evidence for that contract;
+it does not qualify the replacement described here. The new `embed` request retains
+ordered `items`, each containing ordered text/image/audio/video content. Each item
+produces one normalized vector, including a joint vector when its content combines
+modalities. A batch of N items returns N ordered vectors at one requested dimension
+(768 by default, with 512/256/128 supported). Task prefixes are optional and do not
+select a different model or embedding space.
+
+The **Embedding MCP**, using the native SDK caller context, calls Artifact's typed
+`create_download` through the Hub. Artifact owns access decisions and supplies the
+available artifact's metadata and signed transfer. The private embedding runtime
+does not call MCP tools or hold a Hub identity. It receives the resolved transfer
+privately, reads bounded bytes directly from admitted object storage, verifies
+size/digest, and uses upstream media decoding, preprocessing and full-model GPU
+inference. Request-scoped temporary files are removed when the real worker finishes.
+Bulk media, signed transfers and credentials are not exposed in public embedding
+results or application logs. No second artifact store is introduced.
+
+Direct caller → Embedding → Artifact delegation uses the native SDK path.
+Composed service → Embedding → Artifact calls use the reviewed native SDK/Hub
+extension to preserve original caller authority, prior actor history, inherited
+expiration and originating Task/session constraints across request-bound exchanges.
+Every hop retains native audience, registration, declared-use and caller-policy
+checks. This is not implemented by stripping the existing redelegation guard or by
+giving the runtime another service's credentials. Artifact's application API is
+unchanged; affected consumers adopt one reviewed SDK revision.
+Existing session semantics remain: request-origin chains inherit signed request
+expiry; Task-origin chains retain native Task-delegation lifetime, Task liveness
+and refresh-replay compromise checks. Ordinary logout does not terminate Tasks.
+This change adds no new request-session revocation policy or Task lifecycle.
+
+The SDK's internal `delegation_context` carries prior registered actors, an optional
+originating Task with its owning server, and the inherited expiry ceiling. The
+immediate calling server remains in `acting_server`; original user/client/authority
+remain in their existing identity fields. The Hub signs and validates these claims;
+they are not an embedding or Artifact request option. Direct identities have no
+prior delegation context. The bounded chain permits at most eight registered
+server actors, excluding the Hub, and later hops cannot extend its expiry.
+
+The deployed Mac composed call passes with text plus two distinct sources of each
+media modality, returning one 768-dimensional MPS/FP32 vector and 1,667 actual
+tokens through the registered caller → Embedding → Artifact path. Native component
+tests cover signed actor/Task constraints; the deployed receipt separately proves
+the successful application path and original member's usage totals. It does not
+capture every signed actor claim. Independent Mac MCP and runtime restarts each
+pass one fresh joint-media call, with vectors identical to the retained baseline.
+The same MCP volume is retained; its signing-key bytes were measured only after
+restart, and the model cache check compares metadata rather than rehashing tensors.
+Real Artifact ACL denial also passes against an owner-verified Available PNG in
+an isolated Work Context with no grants: the original member cannot read it, and
+Embedding rejects before reserving inference usage. Exact before/after usage is
+unchanged. The absence of runtime dispatch follows from that closed rejection and
+the deployed source order; no independent dispatch counter was captured.
+The fixture's bytes, isolated identity/provider/runner and four temporary catalog
+records are removed. Native storage returns `NoSuchKey`; full catalog readback
+matches the reviewed cleanup. Hub discovery, four contracts and Time reads pass.
+The fake Media catalog also passes after restoring its documented native provider
+credential and restarting the same Media sandbox. Its earlier stored credential
+was not readable, so the precise authentication defect is not independently proved.
+One final joint-media call after Hub cleanup/restart resolves actual Artifact
+sources and returns a vector identical to the retained baseline, with 835 tokens.
+This closes Mac deployed qualification. Runtime `2a3c1d6` and MCP `7cc6333` are
+published on their respective `origin/main` branches; Linux CUDA deployment and
+final client acceptance remain open in the
+[execution checklist](OPENSHELL_HARDCUT_PLAN.md#multimodal-embedding-replacement--2026-10-19).
+
+The current Kubernetes direction above supersedes the historical Linux Docker
+placement. A fresh 2026-10-20 inventory confirms the old application containers
+are absent from the Linux Docker daemon; the shared foundation plan records their
+authorized removal. Do not recreate that retired deployment. The multimodal Linux
+gate must use the replacement native OpenShell Kubernetes placement and CUDA,
+with ordinary caller/Artifact authority. Isolated Docker GPU probes may establish
+component inference evidence, but cannot qualify the Kubernetes deployment.
+
+The first such component probe now exercises the full model on the RTX 4090
+inside the runtime Docker image. One ordered text/image/audio/video item returns
+a normalized 768-dimensional vector with 835 tokens; observed backbone, vision
+and audio forwards use CUDA FP32 tensors. Its fixed cross-device parity gate
+fails: maximum component difference from the retained MPS vector is
+0.002152925357 against a 0.0001 limit, while cosine 0.999912292982 passes its
+0.9999 minimum. The output is preserved, thresholds are unchanged and the cause
+remains under investigation. Runtime and MCP Linux images are built but not
+deployed; this probe is not Kubernetes or caller-authorization acceptance.
+The Kubernetes GPU prerequisite now passes separately: official NVIDIA chart
+0.20.1 is installed, its pinned device-plugin Pod is Ready and the node reports
+one allocatable GPU. No embedding workload has yet allocated that resource.
+Separate no-forward captures now show eight of nine native preprocessing arrays
+are byte-identical across platforms; only video pixel features differ. Tokens,
+image pixels, audio features, masks, positions and media coverage agree. This
+narrows the investigation to the video path before attributing the vector
+discrepancy to GPU arithmetic. An instrumented native resize call now shows RGB
+input already differs before resizing, by at most two uint8 levels in this case.
+Both devices reproduce their earlier final video features exactly. The specific
+decoder cause remains unidentified. A controlled CUDA call now replaces only
+that final video tensor with the retained Mac features, checking every feature
+before and after both normal preprocessing calls. It meets the unchanged
+numerical comparison: maximum component difference 0.000000684987754, cosine
+0.9999999999837053. This isolates a sufficient preprocessing contribution for
+that one input; the original native end-to-end comparison remains failed.
+No serving transform or numerical setting has been replaced.
+Qualification now separates identical-feature numerical comparison from native
+pipeline agreement: the former retains both original numerical thresholds; the
+latter retains source/coverage/token/shape checks and the existing 0.9999 cosine
+minimum, while recording the original maximum-component verdict. Deployed CUDA
+calls must also meet both numerical thresholds against native Linux baselines.
+This explicit correction to the initial test design preserves the original
+failed observation; remaining batch, capacity and deployment checks are open.
+The next native video-with-soundtrack case fails even the retained cosine
+minimum: 0.999847141497 versus 0.9999, with 887 tokens and valid CUDA output.
+The remaining four component cases were initially stopped; they are now
+authorized as distinct, unrepeated runs to collect batch/capacity evidence while
+preserving every original numerical verdict. Native preprocessing on each
+platform is the coordinator's working deployment assumption, pending the user's
+optional cross-platform-equivalence preference. Strict cross-platform numerical
+equivalence remains unqualified; no failed comparison is claimed passed.
+Deployed Linux checks must still match native Linux component baselines at both
+original numerical thresholds.
+The soundtrack case's complete CPU captures now show seven of nine arrays
+byte-identical, with audio and video features differing before model inference.
+Source identities, native options, tokens and media coverage still match.
+This establishes differing model inputs, without identifying the underlying
+decoder/kernel cause or each difference's contribution to the output.
+The four remaining CUDA cases now also produce valid ordered full-model outputs,
+including two 8,192-token items in one request. Each repeated batch item matches
+its corresponding single-item Linux vector byte-for-byte. All original
+cross-platform comparisons remain failed; component execution and capacity
+evidence do not establish Kubernetes deployment or strict portability.
+
+Media processing controls are closed and explicit. Runtime preflight checks actual
+processed lengths and media resource bounds before inference; unknown fields reject.
+Aggregate audio admission checks both source-duration metadata and actual decoded
+sample counts; underreported metadata cannot bypass the decoded-audio budget.
+Audio is not silently cut at the upstream default 30 seconds. Video sampling and
+audio inclusion are observable. Output records effective settings, actual token
+counts, model/processing identity and media coverage. Full-model capacity must be
+measured independently of the historical text-only capacity limits.
+
+The implementation contract uses `items[].content[]`, with text parts carrying
+`text` and media parts carrying the existing Artifact `artifactId`. Optional
+request-level `promptName` or literal `prompt` applies once to each complete item;
+the two fields are mutually exclusive and omission means no prefix. The closed
+`preprocessing` groups expose audited upstream image, audio and video controls.
+Their camelCase transport names are Veoveo's adapter, not Google's model format.
+`dimensions` maps to upstream Matryoshka truncation followed by normalization.
+For example, three independent items produce three rows, each with 768 floats:
+
+```json
+{
+  "items": [
+    {"content": [{"type": "text", "text": "hello again"}]},
+    {"content": [{"type": "image", "artifactId": "<image-artifact-id>"}]},
+    {"content": [
+      {"type": "text", "text": "A product demonstration."},
+      {"type": "video", "artifactId": "<video-artifact-id>"}
+    ]}
+  ],
+  "dimensions": 768
+}
+```
+
+The native adapter always constructs an outer batch of conversations, including
+for one item. Native `batch_size=1` bounds simultaneous model work; it does not
+change public batch cardinality. MPS probes have encoded two joint multimodal
+items of exactly 8,192 tokens each into a `[2,768]` matrix in 13.940 seconds with
+instrumentation. This is a local inference measurement, not deployed acceptance
+or a general throughput guarantee. The separate sampled process RSS and MPS
+driver allocation counters may overlap on unified memory; their arithmetic sum
+is not a measurement of unique total memory consumption.
+
+Initial service admission bounds are 8 items, 16 parts per item, 32 parts per
+batch, 64 KiB total text/prompt, 64 MiB per source and 128 MiB aggregate transfer.
+Decoded images/frames are bounded to 16 megapixels each and 64 megapixels in
+aggregate. Source audio/video duration is at most 300 seconds, with at most 600
+seconds of decoded audio per batch. Video controls admit at most 120 requested
+frames per second and 256 selected frames. These are **Veoveo service bounds**,
+subject to deployed validation, not claims about Google model limits or quality.
+The actual shared token limits remain 8,192 per item and 16,384 per batch;
+source admission alone does not guarantee that a request fits those token limits.
+
+Audio truncation defaults to false; explicit truncation uses the native sample
+limit. Video defaults remain 1 fps, 32 frames, uniform overflow, 140 soft tokens
+per frame, no timestamps and no soundtrack inclusion. The initial contract
+rejects native `loadAudioFromVideo=true` together with separate audio parts:
+the pinned upstream processor otherwise ignores explicit audio on that branch.
+This is a measured upstream interaction, distinct from Hub delegation policy.
+Native sampling determines frame selection. Verified local paths remain inputs
+to the upstream processor so its video/audio loader retains its own behavior.
+Metadata inspection and repeated native decoding are bounded preprocessing costs.
+
+Clipping, long-media chunking and vector aggregation are optional future application
+pre/postprocessing proposals, excluded from this goal. Knowledge, vector persistence
+and search remain separate. Implementation, component checks, real model probes,
+deployed Mac MPS, deployed Linux CUDA and final model-driven acceptance are distinct
+gates in the execution plan. The native investigation evidence is retained under
+`veoveo-template-installation/state/embedding-api-investigation-20261019/`.
 
 ## Product Workflow And Full Platform Plan
 
@@ -275,8 +512,10 @@ ingress. No remote configuration changed. Sanitized inspection receipt:
 ### Configuration Ownership And Infrastructure As Code
 
 Lore stores versioned desired configuration referencing native OpenShell templates
-and workload definitions plus one narrow composition schema. No new infrastructure
-language or Kubernetes/Flux layer is needed; native Docker is selected on Mac/Linux.
+and workload definitions plus one narrow composition schema. The current measured
+backend is Docker. The accepted Kubernetes target uses Helm/operators for the
+foundation and OpenShell for sandbox resources; it adds no custom infrastructure
+language or competing runtime inventory.
 
 | Owner | Versioned or trusted configuration |
 |---|---|
@@ -534,7 +773,8 @@ for the active goal without reinstating their old implementation.
 OpenShell owns every capability it already implements. Veoveo must not duplicate
 it or require another service for the same job. Use native schemas/SDKs first,
 extensions second, and narrow upstreamable changes for verified platform gaps.
-The accepted factory-only Helm/Flux split is superseded by this execution model.
+The earlier factory-only Helm/Flux split is superseded. In the accepted Kubernetes
+target, Helm/operators own the foundation and OpenShell owns sandbox execution.
 
 | Need | Reuse | Remaining integration |
 |---|---|---|
@@ -542,7 +782,7 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | User Computers | Private OpenShell workspaces, persistent sandboxes, native forwarding and templates | Hub browser admission, first-use provisioning and OpenCode/Lore configuration |
 | Builds, checks and deployed services | Separate OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
-| Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
+| Runtime/GPU/storage attachment | Native driver resource fields and external-resource admission | Current Docker/CDI evidence; Kubernetes PVC/GPU and CNI boundaries still require qualification |
 | Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials, management renewal and factory access qualified locally; wider issuer adoption remains separate |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
@@ -556,11 +796,11 @@ carry workload settings. The [SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/
 provides management and connections. Keep source links as coordination state;
 OpenShell remains authoritative for runtime inventory, status and access.
 
-Remove Kubernetes, k3d, K3s, Helm and Flux entirely from this candidate, including
-optional installation paths. Select OpenShell's native Docker driver on Mac and
-Linux. No standalone factory service, broker, console or general CI platform is
-required for the first integration. Place the small source/revision adapter in an
-existing trusted process unless a concrete deployment need justifies separation.
+The earlier instruction to remove Kubernetes/K3s/Helm was the historical Docker
+candidate, not the current target. The accepted Kubernetes management plan below
+supersedes it. No standalone factory service, broker, console or general CI
+platform is required; keep source/revision integration in an existing trusted
+process unless a concrete need justifies separation.
 
 ## Rust Interfaces And Component Flow
 
@@ -765,9 +1005,11 @@ they are not interchangeable identifiers. Native OpenShell workspace users can
 operate resources within their membership boundary, so private work must not rely
 on sandbox names to hide it from unrelated members of the same OpenShell workspace.
 
-Use OpenShell's native Docker driver on Mac and Linux, including the initial probes.
-Request Linux GPU access through native NVIDIA CDI support. This is the single
-runtime path in the plan; no cluster backend or alternate launcher is in scope.
+Current Mac/Linux qualification used OpenShell's native Docker driver and Linux
+NVIDIA CDI. The accepted Linux replacement is OpenShell's Kubernetes driver on K3s; its PVC,
+network enforcement and GPU resource path require separate qualification. Mac
+remains native source development and component/integration testing with local
+fixtures. Native Mac MPS remains an explicit external development service.
 
 The Docker driver uses a separate trusted supervisor and a fenced workload. It is
 not equivalent to the current bare Compose agent containers. Qualify the driver's
@@ -1914,14 +2156,15 @@ existing clients and configurations working within their documented contracts.
 
 ## Qualification Sequence
 
-The [hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) sets the implementation order: preserve
-work/data, remove the old execution path, then implement and qualify the new path.
-The gates below describe required behavior, not a demand to run a broad suite before
-cutting the old stack. Use focused checks as each changed boundary becomes runnable.
-This list covers architecture-wide acceptance; the execution checklist puts
-the completed Mac Hub/Time/prepared-factory milestone first. The active next goal
-is reference Linux deployment and signed webhook qualification; GPU/CUDA remains
-separate.
+The historical [hard-cut plan](OPENSHELL_HARDCUT_PLAN.md) used an earlier removal-first
+sequence; it is not the current Kubernetes cutover order. The current plan requires
+qualification of replacements before removal of the Linux platform Compose path.
+The sequence below retains the historical Docker acceptance boundaries; it is not
+the current infrastructure cutover order. The Kubernetes checklist below and in the
+execution plan governs new work: qualify a Kubernetes Computer and replacement
+foundation before removing Compose. Implementation remains paused. Use focused
+checks when resumed; previous Linux signed-webhook and Mac/Linux client receipts
+remain separate from Kubernetes and GPU qualification.
 
 1. **Native execution and service hosting.** On OpenShell's native Docker driver,
    run a tiny prebuilt MCP service as the canonical process, with a native template,
@@ -1977,89 +2220,150 @@ gap, not whether to keep a duplicate Veoveo implementation by default.
 
 ## Full Native OpenShell Management Plan
 
-Revised 2026-10-19: move PostgreSQL, shared SeaweedFS and Lore from Compose to
-existing native OpenShell workloads. Docker remains OpenShell's compute backend.
-Use the current lifecycle, named-volume mounts, providers, policies, exposures and
-restart policies. This placement change requires no new OpenShell dependency
-engine, health framework, SDK contracts or authentication startup behavior.
+### Accepted Kubernetes target — qualified 2026-10-20
 
-Keycloak is the local development identity provider on any host operating system;
-it is not a Mac-specific component. It stays outside OpenShell, together with the
-existing dependencies required to start it. Local development bootstrap starts it
-before an OIDC-configured gateway. Entra remains the external identity provider for
-the current Linux reference. The gateway's own state and trusted installation
-configuration also stay outside its managed application PostgreSQL. Moving the
-local identity provider into OpenShell is not part of this migration.
+Revised 2026-10-19. This section supersedes the earlier native-Docker infrastructure
+placement plan, while retaining OpenShell ownership of sandbox execution. The
+user activated the implementation goal on 2026-10-19. Source fixes, Linux builds,
+cluster installation and qualified cutover are authorized. Mac VM/K3s remains out
+of scope. The foundation and application stack are deployed. Live Hub configuration,
+isolated Computers, native Lore, factory execution and scoped service recovery
+have passed deployed probes, followed by full-host recovery and the bounded exact
+MiMo scenario (seven model turns, 81.283 seconds). The execution record retains
+the failed reboot attempts, model wrong-tool lookup, operator Lore-store setup
+error and the subsequent measured corrections.
+The native-Docker candidate `fea2793` is saved, undeployed and superseded; its
+Compose-removal/bootstrap commands are not the execution plan.
 
-1. **Pin the working baseline and reuse native workload definitions.** The Computer
-   sources are merged and published. Keep trusted installation and identity inputs;
-   use existing images and native APIs for PostgreSQL, SeaweedFS and Lore. Keep
-   their existing database/schema and bucket identities, including separate Lore
-   and Artifact storage identities on the shared SeaweedFS service. Lore's native
-   permissions and the Hub-issued token flow do not change.
+Deploy K3s on Ubuntu Linux x86_64 only. Mac is the normal source-development,
+compilation and component/integration-test host; local fixtures may use Docker.
+Lima 2.2.1 is installed but unused: do not create a Mac VM or Kubernetes cluster.
+Linux builds immutable pullable amd64 runtime images. Preserve portability and
+Mac ARM tests, without requiring multiarch publishing or common VM provisioning
+in this slice. K3s's embedded datastore is independent of application and gateway
+PostgreSQL.
 
-2. **Mount service data through existing volume support.** Give PostgreSQL and
-   SeaweedFS named data volumes with the required writable paths and UID ownership.
-   Keep canonical service data independent of disposable Computer working volumes.
-   Configure existing CPU/memory limits as appropriate. Do not introduce a new
-   storage manager or scheduling layer.
+| Owner | Resources and boundary |
+| --- | --- |
+| Foundation Helm/operator releases | Cilium ingress/egress enforcement, Agent Sandbox controller/CRDs, CloudNativePG PostgreSQL, official SeaweedFS chart/PVCs, single-replica Lore, OpenShell gateway and tunnel. |
+| OpenShell Kubernetes driver | Native workspace/sandbox/template lifecycle for Hub, MCPs, persistent user Computers and independently disposable factories. Select matching maintained-fork gateway/runtime/supervisor images. |
+| Hub live APIs and revisioned control plane | MCP registration, admitted catalog/provider/grant changes, MCP request destinations and Computer selection settings. Installation files seed initial data only. |
+| External development dependencies | Local Keycloak and its bootstrap may remain external; native Mac MPS remains an explicit development service. Mac test fixtures/tooling remain. Entra stays external. |
 
-3. **Let services recover through their existing clients and restart policies.**
-   Installation bootstrap provisions native workloads, volumes, credentials and
-   required initial storage configuration. It does not encode service launch order,
-   run a dependency scheduler or continuously manage application readiness.
-   Configure the existing Always restart policy for long-running service workloads;
-   omission selects Never. Prefer each service's existing connection retry and
-   reconnection behavior. If dependency unavailability makes its process exit,
-   OpenShell restarts that process with native backoff. Keep finite factory jobs
-   on their separate completion semantics.
+PostgreSQL is outside the OpenShell Helm release, within the same Kubernetes
+cluster. Use separate databases/roles for gateway state and applications, even if
+one PostgreSQL cluster initially serves both. Keep gateway credential custody and
+its encryption-key requirements explicit. Lore retains its existing S3/PostgreSQL
+plugin and native Hub-issued-token authorization; this is no Lore security-model
+change. Use Kubernetes Services/DNS for dynamic private destinations, including
+Lore gRPC and storage. Preserve TLS recipient/host verification and S3 signed
+method/host/path/query/headers; HTTP rewriting is not a storage transport substitute.
+Public Hub/object origins stay unchanged.
 
-   On host boot, the OS starts the host-managed components and OpenShell gateway.
-   Keycloak remains an external local-development dependency. The gateway reads
-   persisted sandbox specifications and phases from its own store and calls the
-   compute driver's StartSandbox for eligible records. Explicitly stopped/terminal
-   workloads stay stopped except for specific recoverable runtime-loss states.
-   Missing backend resources remain errors. This restore loop provides neither
-   service dependency ordering nor application-health waits.
+Native controllers, readiness and restarters own recovery. Services retain their
+own retry/reconnect behavior; a process exit can trigger native restart. Do not add
+a startup dependency DAG, custom orchestrator, proxy or health framework. A live
+process need not recover every dependency failure: qualify late/interrupted
+PostgreSQL, S3, registration and issuer dependencies without claiming universal
+self-healing. Local Keycloak must satisfy the configured gateway's existing OIDC
+bootstrap boundary; this plan does not add offline authentication. A single Linux host can recover processes/data but is not a highly available
+deployment.
 
-   Verify that each service becomes usable when a dependency starts late or returns
-   after an interruption. A service that stays alive but cannot recover needs a
-   focused fix in its own startup/reconnection path, supported by the observed
-   failure. Do not add an external orchestration or watchdog layer. Restart policy
-   alone is not evidence that every live dependency failure already self-heals.
-   Manual start/stop commands remain maintenance operations.
+The maintained OpenShell fork's recovery correction keeps generation-owned
+workload/supervisor Pods on `restartPolicy: Never`. It extends the existing
+gateway replacement path to a positively observed terminal supervisor whose
+admitted identities and enforcement fences remain intact. Native `Always` or
+`OnFailure` policy can then replace the generation with fresh credentials.
+Explicit stops, recorded canonical terminal results, `Never`, generic missing
+compute and broken identity/fence checks do not acquire automatic revival.
+This is a deliberate, bounded lifecycle extension, not a Veoveo-specific
+controller or a claim that any unavailable workload should restart. Source
+checks, a scoped unexpected-supervisor termination, explicit-Stop control and
+the Linux full-host reboot now pass. The latter recovered all owned Always
+workloads automatically, kept the Never QA runner stopped and retained all
+25 PVC identities/bindings. Fresh browser session/terminal and retained
+Time/Artifact/Media verification pass; the execution plan records exact
+identities, byte evidence and the two earlier failed reboots. This is single-host
+recovery, not multi-host availability.
 
-4. **Switch recipients and verify the actual protocols.** Update existing native
-   exposures, policies and registered endpoints for PostgreSQL, S3 and Lore gRPC.
-   Verify private connectivity and TLS using the intended clients. Preserve the
-   public Hub and object origins and signed S3 host/path/query semantics. Computers
-   remain private user environments; factories build published revisions
-   independently. Neither workflow needs to manage the infrastructure.
+### Implemented Hub runtime reconfiguration
 
-5. **Cut over Linux, then simplify local development.** Build Linux images on the
-   Linux host from published source pins and launch the native replacements there.
-   Development application data may be reset and reseeded; retain source and trusted
-   installation/identity configuration. Apply the same simple placement to local
-   development on any supported host. Keycloak remains an external prerequisite.
-   Remove obsolete Compose services and commands; retain a minimal direct startup
-   command for external local identity where needed, without creating a new
-   infrastructure manager. Keep the existing edge tunnel placement unless moving
-   it is directly needed to retire a Compose service.
+Normal MCP, factory and Computer lifecycles are live operations. Do not edit Helm
+values, maintain static server inventories or restart Hub to add/remove/register
+sandboxes, run factories, or manage grants/catalog/providers where existing APIs
+already support them. Helm must not also own OpenShell-created sandbox objects.
+Do not couple a runtime inventory checksum to a Hub rollout. Bootstrap files must
+never overwrite authoritative database catalog state on restart.
 
-6. **Verify the cutover and remove platform Compose.** Exercise real PostgreSQL,
-   signed S3 upload/download, native Lore repository operations and Computer Hub
-   access. Verify service restart, gateway restart, full host startup and retained
-   service data. Reuse existing component checks and deployed probes. Run any final
-   bounded MiMo acceptance only after deterministic and deployed checks pass.
-   Completion means PostgreSQL, SeaweedFS and Lore are OpenShell-managed, their
-   Compose definitions/launch paths are removed, and the existing bootstrap brings
-   up both the Linux reference and local development without service launch ordering.
-   Delayed and interrupted dependencies recover through service behavior and native
-   restart policies.
+Hub's DB-authoritative revisions, registration and grant publication
+([DESIGN](../veoveo-hub/crates/veoveo-hub/DESIGN.md), especially the control-plane
+and startup sections) now include dynamic destination and Computer configuration
+adoption in `9b83c26`. Both full platform gates pass; Linux deployed probes verify
+the affected paths while the same Hub process remains running:
 
-This is a service-placement and installation cleanup plan. It supersedes the
-initial proposal to add native dependency/readiness contracts, deferred OIDC startup
-and OpenShell-managed Keycloak. No Lore authorization change is part of this work.
+- The [catalog](../veoveo-hub/crates/veoveo-hub/src/catalog.rs) admits revisions
+  changing `native_upstreams` and `computers`. Stable gateway authentication
+  bootstrap remains distinct from live **MCP destinations (OpenShell workspace,
+  sandbox, port)** and Computer template/default selection.
+- Prepared transport/provisioner state is adopted with the authoritative revision.
+  Invalid changes retain the active working state. A destination change replaces
+  only affected pools; in-flight requests retain their selected state. The Linux
+  probe changed Time's destination during a held event stream, then independently
+  proved the replacement, binding removal and restoration.
+- Reconnect reconciliation passed with deliberately interrupted PostgreSQL
+  notification delivery to a second Hub process. Both processes retained their
+  identities while the missed revision became visible. This does not promise
+  hot reload of arbitrary launch-only configuration or qualify public HA.
+
+Creating or opening a Computer already uses native APIs and does **not** require a
+Hub restart. Changing its configured template/default selection now also adopts
+live revisions. Linux probes changed the future Computer CPU/template and policy
+defaults without restarting Hub or existing Computers. A template revision applies
+to future or explicitly replaced workloads, never an implicit restart of existing
+Computers or the MCP fleet. A new MCP image replaces that MCP workload only.
+Factories finish or fail independently and are disposable. Active work must have
+explicit drain/reconnect/Task ownership semantics; do not replay non-idempotent
+mutations or promise zero downtime.
+
+Implementation decision: each Computer records its admitted native template,
+policy and provisioning defaults with its durable owner mapping. Pending browser
+logins also retain their initiating client/configuration through the callback.
+These records contain secret locators, never credential values; current catalog
+and session authority still govern access. Select a new immutable native template
+or policy reference to change future defaults. Editing a template under an
+unchanged reference is not a live-update contract.
+
+### Existing backend and qualification gaps
+
+OpenShell already has a Kubernetes driver, namespace/PVC lifecycle, GPU resource
+requests and native ForwardTcp. These are source capabilities, not qualification
+of this installation. The CNI must actually enforce NetworkPolicy, the Agent
+Sandbox controller/CRDs must be installed, and the maintained fork images must be
+immutable and pullable by cluster nodes. Qualify PVC ownership/retention, RBAC,
+secrets, TLS/DNS, streaming/cancellation and provider renewal with those exact images.
+GPU resource requests do not prove parity with Docker CDI selection or Mac MPS.
+
+The former Docker-only guard in
+[Computer provisioning](../veoveo-hub/crates/veoveo-hub/src/computers/provisioning.rs)
+now recognizes the native backend's persistent workspace contract. Kubernetes
+PVC-backed Computers preserve durable private ownership. For
+reusable Computer defaults, use OpenShell's automatic per-sandbox workspace PVC.
+A fixed explicit mount replacing `/sandbox` or its children would share a claim
+across cloned Computers and is not admitted; unrelated configuration mounts outside
+the workspace remain supported. No fake Docker setting is supplied and the
+persistence requirement remains enforced. Two owner-isolated Kubernetes Computers
+have passed creation, native Lore access, credential renewal, scoped Stop/Start,
+workspace retention and public Chrome session/terminal access. Full-host recovery
+and final model acceptance are recorded separately in the execution checklist.
+
+The [execution checklist](OPENSHELL_HARDCUT_PLAN.md#kubernetes-foundation-and-dynamic-runtime--2026-10-19)
+records the pending gates. Development data may be reset/reseeded; no migration or
+backup project is required. The user authorized clearing the old Linux runtime
+before replacement to reclaim space. Retire platform Compose definitions/launch
+commands from the Linux deployment path and qualify the fresh Kubernetes stack. Do not purge Mac Docker test tooling or external local
+identity bootstrap. Keep deterministic/component, deployed and final model-driven
+acceptance distinct. Final OpenCode acceptance uses only
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`, after the preceding gates pass.
 
 ## Reviewed Source Baselines
 

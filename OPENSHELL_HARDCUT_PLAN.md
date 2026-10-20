@@ -1,20 +1,34 @@
 # OpenShell Hard Cut Plan
 
-The next infrastructure slice is the
-[full native OpenShell management plan](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan).
-Move PostgreSQL, shared SeaweedFS and Lore from Compose to existing OpenShell
-workloads, using native volumes, policies, providers, exposures and restart policies.
-Installation bootstrap provisions resources and configuration without service
-launch ordering. Long-running services use their existing connection retry and
-reconnection behavior, with native Always restart/backoff when a process exits.
-OpenShell restores eligible persisted workloads; it does not order them by service
-dependency or wait for application health. Verify recovery with late and interrupted
-dependencies; fix any observed failure at the service boundary. Keycloak is the
-external local-development identity provider on any host OS. No new orchestration,
-watchdog, health framework or gateway authentication startup change is planned.
-Docker remains the compute backend. This is planned, not deployed.
+The user-approved infrastructure target is
+[K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
+revised 2026-10-19. **Implementation authorized and started on 2026-10-19.** K3s deployment/acceptance is Linux x86_64 only. Mac remains ordinary source
+development, compilation and component/integration testing with local fixtures
+(including Docker when needed). Lima 2.2.1 is installed but unused: no Mac VM or
+K3s is planned on Mac. The Linux K3s deployment passed the scoped infrastructure, dynamic-workload,
+recovery and final Computer qualification on 2026-10-20.
+Kubernetes owns the foundation; OpenShell's Kubernetes driver owns Hub/MCP,
+Computer and factory sandboxes. Current Docker/Compose receipts remain evidence
+of that placement only. The undeployed native-Docker infrastructure candidate
+`fea2793` is superseded: do not execute its cutover or Compose-removal instructions.
+The pending gates below replace the earlier current “native Docker only / no
+Kubernetes” direction. The old Linux application runtime has been cleared at the
+user's direction. K3s and the replacement applications are running. Corrected
+Media deployment and scoped in-flight recovery pass. The first full-host reboot
+failed native workload recovery: the Kubernetes driver persisted Stopped intent
+while supervisor Pods were recovering. A second host reboot still suspended
+application workloads. The reviewed terminal-generation recovery correction now
+passes Linux source checks, scoped supervisor-loss/explicit-Stop controls and a
+third full-host reboot: all owned Always workloads recovered without manual
+Starts. Saved Time, Artifact, synthetic Media and native Lore state checks pass.
+Final bounded MiMo acceptance now passes: seven model turns in 81.283 seconds,
+with authenticated native Lore metadata, matching local revision/source bytes and
+a routed Time Task result. The independent OpenCode titlebar navigation defect
+is corrected and published; both replacement Computers and actual mounted
+Settings/Back/New session/browser Back/Forward interactions pass.
 
-Status: the local macOS hard cut and direct-IdP Lore authoring path pass focused
+Historical Docker deployment status (not evidence for the new K3s deployment):
+the local macOS hard cut and direct-IdP Lore authoring path pass focused
 acceptance. Clone/edit/push, the small branch hook, native credential renewal,
 source withdrawal, applied binding-removal/detach, termination and gateway recovery
 are qualified. The Desktop adapter/signer/ingress are retired and durable data is
@@ -45,16 +59,1035 @@ issuance instructions for the new goal. Existing Linux application acceptance
 does not establish acceptance of this new issuer or the hosted Computer workflow.
 
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
-The [platform visual guide](diagrams/veoveo-platform.html) must be updated with every
-major architecture change and whenever an illustrated pending path is qualified.
-Static guide checks pass (three views, unique IDs, JavaScript/JSON and local links).
+The [platform visual guide](diagrams/veoveo-platform.html) now reflects the
+qualified Kubernetes deployment, after the infrastructure evidence was complete,
+as requested. All three views were manually reviewed in Mac Chrome, including
+component details, navigation, zoom/fit and SVG/PNG exports. Structural,
+JavaScript/JSON and local-link checks pass. Planned publication work remains
+visibly separate from the qualified workflows.
 Chrome browser QA passed on 2026-10-17 using a temporary, loopback-only HTTP server
 for the standalone guide: all three views, component details, navigation, zoom/fit
 and SVG/PNG exports. The earlier local-file URL restriction no longer blocks this
 check; no browser security settings were changed.
-Use one native OpenShell Docker-driver path for factories, checks and managed
-services. No Kubernetes, Helm, Flux, OpenBao, alternate workload host or compatibility
-launcher. Preserve source and durable data independently of workload lifecycle.
+Historical Docker-only direction: the preceding Mac/Linux receipts used the native
+Docker driver. The accepted Kubernetes target below supersedes that placement
+restriction; those receipts do not establish Kubernetes acceptance.
+
+## Kubernetes Foundation and Dynamic Runtime — 2026-10-19
+
+**Implementation activated 2026-10-19; scoped Linux qualification completed 2026-10-20.**
+The user authorized implementation, Linux deployment and qualification. Start with
+Hub live configuration and Computer storage contracts while preparing Linux
+foundation pins. No Mac VM/cluster is in scope.
+Single-host recovery is the target; multi-host HA is future scope. Preserve the
+historical receipts and parallel embedding work below.
+
+Execution direction confirmed 2026-10-19: application databases, object storage,
+Computers and sessions are disposable. Clear the old Linux Veoveo deployment and
+obsolete containers, volumes, images and caches to make room; downtime is accepted.
+Retain source and trusted installation/identity inputs, not application-data backups.
+Linux is the final target; continue there if Mac checks stall and record the exact
+validation boundary. Validate the public application using Chrome on the Mac.
+SSH/RustDesk access, the NVIDIA driver and source build tooling remain available.
+
+Current execution, 2026-10-19: the old native gateway and reference tunnel units
+are stopped and disabled. Old Veoveo workload containers and disposable data
+volumes are removed; trusted configuration volumes and source inputs remain.
+Linux free space increased from approximately 211 GiB to 943 GiB. The replacement
+`rozgo-sim-pc` node reports Ready on K3s `v1.36.5+k3s1`; Cilium `1.20.3`
+and core system Pods are Ready. Disposable probes observed ingress denial, egress
+denial and success on an explicitly allowed TCP/8080 connection. Agent Sandbox
+`v1.0.6` is Ready after correcting an initially misidentified ARM64 digest to the
+verified AMD64 manifest
+`sha256:876f9621e0f0e168bcff13aa377880b75fd37e1c8712f2f249e8878c22d06ffd`.
+The first controller failed with `exec format error`; this was an image-platform
+selection error, not an application or Cilium failure. Installation inputs are
+staged on Linux in `/tmp/k3s-foundation-20261019`; the detailed probe receipt is
+being consolidated. Service recovery and application behavior remain unqualified.
+Hub changes are committed locally as `a29c317d3ccb8e1cd71b50b4431964ffc2bd75b9`
+in `.worktrees/k3s-live-hub`. SQLx preparation against fresh PostgreSQL, focused
+live-publication/transport/Computer tests, native notification/issuer regressions,
+strict workspace Clippy and a package-clean offline compile passed on Mac.
+The first compile found three mechanical test/import references, now corrected.
+The first full Mac Docker check then exposed missing dependency query metadata:
+incremental native SQLx preparation omitted 85 entries from pinned Core, and
+cleaning only the Hub package did not expose that omission. Commit
+`9b83c26e9bdc926b054d089fd87ca26e3cba6f31` restores those exact Core entries while
+retaining the six revised Computer/login query forms. The corrected full Mac
+Docker gate passed with exit 0; its first failure remains recorded separately.
+Command/timing receipts are in
+`/tmp/k3s-live-hub-freeze-20261020/final-gate-summary.json`, with the correction
+manifest in `/tmp/k3s-live-hub-sqlx-fix-20261020/metadata-manifest.json`.
+The corrected Mac and Linux full Docker component gates each passed 231 tests
+(one skipped) from the same `9b83c26` revision. Linux tests took 28.761 seconds;
+the check stage took 149.2 seconds and image export 34.6 seconds. Linux also built
+the runtime image, published at
+`registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-hub@sha256:be9176ea306016a507fd358034d4630caac8c6a91a2f4a25807b251422b91638`.
+Two initial pushes used a mistyped account path; refreshing the otherwise valid
+credential did not fix that error. Correcting the path did. Logs remain on Linux
+at `/tmp/k3s-live-hub-9b83-{check,runtime,push,push-retry}.log`.
+Deployed Hub behavior remains pending.
+Generic foundation/application inputs are committed locally as `82dc4ca` and
+`dd824156c1bcb9eb7c34e22b70781cec8587ebc2` in `.worktrees/k3s-installation`.
+The selected Seaweed chart passed Helm lint and API-server dry-run admission;
+the final OpenShell chart passed lint and admission of all 19 rendered resources.
+CloudNativePG 1.30.1 is Ready, with its supported chart tag value pinned to the
+verified amd64 digest. The extension-bearing `veoveo-postgres-1` Pod now reports
+Running and Ready (1/1, zero restarts); actual application roles, TLS clients,
+storage and gateway acceptance are still being qualified. The Linux default
+kubeconfig now selects this K3s cluster instead of the retired local gateway port.
+The four SeaweedFS components are now Ready with zero restarts on their current
+Pods. Startup exposed two bootstrap certificate mismatches: leaf SANs initially
+omitted the chart's short Pod DNS names, then the CA Secret used `ca.crt` although
+the chart reads `ca/tls.crt`. Correcting the exact Secret key and restarting only
+Seaweed resolved its native gRPC connections and downstream filer DNS failures.
+The actual readiness identities and correction are recorded in
+`/tmp/k3s-foundation-20261019/seaweed-ca-filename-fix/` on Linux. Native operator
+bucket creation assigned the two buckets to the existing `veoveo-lore` and
+`veoveo-artifact` IAM identities; application grants were not broadened.
+Private-Service and public-origin SigV4 probes each observed PUT 200, GET 200
+with matching bytes, DELETE 204 and cross-bucket PUT 403 for both identities.
+Private payload SHA-256 was
+`41c3b854ac9f1f85ff9faf98807cf6c7cff4d8a9337da02888346e076c32eecd`;
+public payload SHA-256 was
+`4f488df606ad840ff382f94f4c8e2bababe6a90489be894b4ea4c2c0ca6bb0ce`.
+These are deterministic storage probe bytes, not generated media. Probe objects
+and temporary credential/config resources were removed. Detailed timings and
+byte lengths remain to be consolidated from the worker receipts.
+The OpenShell gateway is Ready against its distinct CNPG database, with TLS/mTLS,
+Entra discovery and JWKS loading observed. Its first start used the wrong CA
+filename in the private PostgreSQL URI; the corrected URI matches the mounted
+`ca.crt`. Native `GetGatewayInfo` now passes over verified TLS/mTLS and an Entra
+bearer token (36 ms); it reports a healthy Kubernetes compute driver,
+database credential driver and regex middleware. Receipt:
+`/tmp/k3s-native-control-scope-20261020/gateway-info-receipt.json`.
+The retained Cloudflare tunnel is now a Ready Kubernetes Deployment with four
+QUIC connections. Remote ingress version 7 preserves the public Hub, signed Media
+callback and object authorities while using private Service origins and verified
+public CA mounts. Existing warp routing was retained. API apply/readback took
+0.792 seconds; receipt is `/tmp/k3s-cloudflare-routing-20261020/receipt.json` on
+Mac. Public application acceptance remains pending.
+Actual Bioma source is isolated in Linux `worktrees/k3s-installation`, committed
+as `833d367` plus the CA-filename documentation correction `ce582078`.
+Its existing 16 historical Bioma files and the original dirty checkout are
+unchanged. The selected tunnel uses its existing remotely managed token-file
+mode and native `/ready` probe. Generic follow-ups `5f6c410` and `983ed65`
+record the native tunnel probe and precise Seaweed CA key.
+The private registry path is proved separately: a Linux amd64 BusyBox fixture was
+pushed, then a Kubernetes Pod pulled its immutable digest with pull-only
+credentials and `imagePullPolicy: Always` (748 ms reported pull time). That fixture
+does not qualify application image builds. The bootstrap credential receipt is
+`/tmp/k3s-foundation-20261019/registry-bootstrap-receipt.json` on Linux.
+Native Computer backend discovery calls OpenShell `GetGatewayInfo`, whose existing
+authorization contract requires `config:read` in addition to the trusted Hub
+provisioner's administrator role. The existing Entra API application's nine roles
+were preserved and that one Application role was added; the Hub native-control
+principal now has exactly its previous seven assignments plus `config:read`.
+Graph mutation/readback commands each completed in approximately one second.
+This is installation identity configuration, not a new Lore permission rule.
+Exact readback is in `/tmp/k3s-native-control-scope-20261020/receipt.json` on Linux;
+Fresh token issuance, independent Entra signature/issuer/audience verification
+and the deployed gateway call now pass.
+One credential was appended to the retained `vv-hub-native-control` Entra
+application as a private Kubernetes rebuild input after its previous secret
+could not be located in the retained inputs. The previous credential and all
+identity/permission assignments remain unchanged. Its nonsecret receipt is
+`/tmp/k3s-native-control-scope-20261020/credential-bootstrap-receipt.json`.
+Native workspace creation, provider-profile lint/import and initial credential
+custody now pass. The actual gateway ID is `openshell`, so managed namespaces are
+`openshell-openshell-vv-control` and `openshell-openshell-vv-services`; render
+workspace-local bootstrap claims/Jobs against those native names, not the
+generic example's `veoveo-k3s` assumption. Hub's native-control provider was
+refreshed at 06:52:13 UTC, with expiry 07:52:12 and next scheduled refresh
+07:49:12; this initial rotation does not yet prove automatic renewal.
+The two global Computer profiles and the three distinct MCP registration
+providers are installed. Native-command receipts are in
+`/tmp/k3s-native-control-scope-20261020/provision/`.
+Private complete Hub, Lore and service bootstrap candidates are prepared and
+reviewed; runtime validation remains pending. The retained Lore certificate
+does not cover the new Service DNS name and its signing key was unavailable.
+The Linux builder is creating a fresh development Lore CA/leaf and using its
+public root consistently in the new Lore/Computer/Factory images. This changes
+TLS installation inputs, not Lore's native authorization semantics.
+
+Linux application bootstrap, 2026-10-20: Hub `9b83c26` is now published on
+`origin/main`. The native complete-config validator passed before runtime creation.
+Five one-time workspace seed Jobs completed, then their temporary Jobs,
+Secrets and ConfigMaps were deleted; only the approved claims remain.
+Lore's first start exposed two installation-input errors. CNPG 1.30.1 trims
+managed-role passwords, whereas the generated files retained a terminal LF.
+Live verified-TLS probes for both `server_lore` and `veoveo_owner` failed with
+the exact LF-bearing bytes and authenticated with the LF removed. Normalizing
+the source files, Secrets and client settings fixed authentication. Hub's unused
+config claim was reseeded before creating its sandbox. Receipt:
+`/tmp/k3s-foundation-20261019/credential-input-fix/receipt.json`.
+Next, Lore's native S3 `HeadBucket` received 403 because `Read:lore/*` does
+not authorize the bucket-root request. Adding exactly `Read:lore` and
+`Read:artifacts` to their respective existing storage identities fixed that
+contract; no global or administrative action was added. Lore now passes both
+store initializations and awaits its unchanged public Hub OIDC issuer, currently
+404 until Hub exposure exists. The timed readiness wait failed at that later
+dependency; native Kubernetes restart recovery remains active.
+
+The Linux-built Factory image is published at digest
+`sha256:fee175e7695100a583d6160cbb54799dd5e966d98806a0532d470988d42ee555`,
+and Computer at
+`sha256:beeba0f18df749863a6394dbf35c5065fa03010118f1c69e7eea2d1e52ac122f`.
+Computer includes OpenCode source `4bd4891e9e3d67460eb43dcfcdefb5172c1279ff`,
+Linux executable SHA-256
+`1d31e0b48e65147522aeb521b19c78fbf8e91f5a0793e8b2641e3e6b7288fab6`;
+its in-image version and bytes match the new Linux build. A previous build's
+different executable hash is not reproducible-build evidence. No model calls
+have been made. The first Hub sandbox request was rejected because the deployed
+gateway values omitted native `allow_driver_config`, already required by the
+reviewed PVC installation configuration. Helm revision 2 enables that setting;
+the gateway is Ready again. Hub had not started, so this foundation correction
+is not evidence for or against the pending live-Hub configuration gate.
+Native Hub creation then exposed a seed-owner mismatch: the runtime process is
+UID/GID 10001, while its private `0600` configuration files were seeded as 1000.
+The stopped Hub and unstarted Artifact/Media config claims were reseeded by
+three scoped one-time Jobs as 10001:10001, retaining `0600`; all temporary
+resources were removed. Generic `c8b06b2` and Bioma `192354a` correct those
+existing Jobs. No extra state-volume initializer was introduced.
+Hub database migrations now pass, but its `GetGatewayInfo` startup request fails
+before reaching the native handler. Supervisor policy admits the exact method,
+then reports `NET:FAIL` without a detailed TLS error. Source inspection found
+that Kubernetes lacks plumbing for the supervisor's existing
+`--additional-ca-bundle` destination-trust option; the reserved native alias trust
+does not cover arbitrary Kubernetes Service DNS. The approved correction stages
+the operator's public PEM bundle through the existing immutable supervisor
+bootstrap Secret and existing supervisor flag. No proxy, TLS-verification bypass
+or new service is proposed. The public three-root ConfigMap is prepared, not yet
+mounted. OpenShell `f39b1fee8` implements the native driver plumbing; its focused
+CA staging, override-rejection and supervisor-runtime tests pass on Mac.
+Strict Clippy found an excessive-boolean argument list; `f6f1f60aa` replaces the
+two CA-presence arguments with a typed selector. All-target compilation then
+identified the standalone driver's complete config initializer; `0299a1ec1`
+wires the same operator CA input there. Final Mac checks pass (3 CA tests,
+17 supervisor-runtime tests and strict all-target Clippy). Linux built the
+gateway in 5m53s and published digest
+`sha256:add687d9afe99a841db1511ff4c906a297c623b98f1228b8e85ef4429061123a`;
+deployment is in progress. Generic `bb638364` and Bioma `85214667`
+document the exact public ConfigMap/mount and preserve the database CA mount.
+A successful post-change RPC remains pending.
+Hub is stopped during that correction. Own-bucket public HEAD probes now return
+200 for Lore and Artifact and 403 cross-bucket (0.161–0.213 seconds each), recorded
+in `/tmp/k3s-foundation-20261019/lore/public-head-scope-receipt.json`.
+
+Subsequent Linux recovery, 2026-10-20: the `0299a1ec` gateway upgrade passed
+Helm lint and rollout (12.466 seconds). The supervisor's staged public PEM
+matches the selected ConfigMap. Hub now completes `GetGatewayInfo`, starts
+serving, and exposes public OAuth discovery (HTTP 200, 0.162 seconds).
+Lore recovered through its existing restart behavior at 07:59:38 UTC without
+another operator restart; its original Pod is Ready after 14 startup retries.
+The native Hub-control provider independently renewed at 07:49:40 UTC, moving
+expiry from 07:52:12 to 08:49:39. This is native refresh-status evidence;
+post-expiry application requests remain a separate acceptance check.
+The deployment receipt is
+`/tmp/k3s-foundation-20261019/destination-ca/upgrade-receipt.json` on Linux.
+
+The reserved native-service alias path exposed a second Kubernetes integration
+gap: the supervisor accepted numeric gateway endpoints but not the configured
+Service DNS endpoint. OpenShell `b849a25c` resolves only that trusted gateway
+hostname into a bounded, immutable destination set at supervisor startup while
+retaining alias, port, policy and TLS checks. Focused native-service, policy-DNS,
+destination and TLS tests and strict Clippy pass on Linux. The Linux-built
+supervisor is published at digest
+`sha256:07e639e0d292f0a6d77417a711465b1d06ef595f9fc34e3f067b8aabacf28581`.
+Helm adopted it for future generations in 7.876 seconds; existing Hub workload
+identity remained unchanged. Deployed alias traffic is still pending.
+Receipts are under `/tmp/k3s-foundation-20261019/native-dns-supervisor/`.
+
+The first browser-created Computer failed native `workspace-init`: its private
+image directories belonged to UID 1000, while the selected native Kubernetes
+runtime and seed process use UID/GID 10001. Generic `983a9f9` and Bioma
+`d9f6bf59` align Factory/Computer images and example values to 10001, retaining
+private `0700` permissions and native PVC seeding. Replacement images are being
+built on Linux; the old image digests above are not accepted Computer images.
+Fresh administrator and member browser PKCE flows passed independent Hub token
+signature and identity verification on Mac Chrome. The administrator's first
+control-plane GET returned 403: the selected installation policy has no rules
+for Hub-owned administrative actions. Its separate role grant only covers
+registered-server targets. Correcting this missing installation policy data is
+pending; no authorization implementation change is proposed.
+
+Deployed continuation through 08:45 UTC, 2026-10-20 (coordinator GPT-6 Astra;
+implementation GPT-6.1 Sol; builds/probes GPT-6 Luna; no model calls):
+
+- The missing Hub administrator rule is corrected as installation data for the
+  exact administrator principal and `admin_read`/`admin_write` actions. Subsequent
+  supported live control-plane PUTs succeed without restarting Hub. An invalid
+  Computer port is refused with HTTP 400 and the active revision remains usable.
+  Hub retains Pod UID `c44994ff-f222-4d0c-ab0f-11ff4158eb61`, main process
+  `a18cac27-a624-44a2-8cac-9ff0039ff799`, start `1792482813581` ms and restart
+  count zero through these changes.
+- Linux built corrected Factory and Computer images with UID/GID 10001:
+  Factory digest `89e70eac86d2ea3a3dc1a245942b5535cda768cd2bb4f0d36f8add85378a98e5`,
+  Computer digest `5263868037398bfcfb8401cbf898d2a556f7c90d88c0b8f57588cd5131b82b1f`.
+  The failed UID-1000 dev Computer was removed through native lifecycle APIs and
+  a narrowly guarded cleanup of its failed Hub record. Two real owners then
+  created private Kubernetes Computers. The administrator received `computer-v2`
+  (2 CPUs); after a live default change the member received `computer-v3`
+  (3 CPUs). Their PVCs are distinct; existing allocations stayed unchanged.
+  The normal default is restored to v2. Mac Chrome rendered home, settings and a
+  project/new-session route; OpenCode reported Hub connected and MiMo selected.
+  The member's browser received 401 for the administrator Computer route.
+  Native member filesystem checks found neither the administrator's scratch file
+  nor repository. Native Stop/Start retained the administrator scratch SHA-256
+  `05b118b41ed900183904fa9573c7dec5936d5d7e5a26ca7dcdc12a7445b4c136`,
+  selected project and native Lore authentication. An unsent draft is not a
+  persisted chat-session proof; final model/session acceptance is still pending.
+- Native Lore device login completed independently for both real users. The
+  administrator created repository `01a1586c89057ea3adcfc848da54077b`; Hub supplied
+  explicit native repository assignments, with no inferred administrator or
+  creator access. Published revision
+  `0edcdb53fe9a8fe9dec6b7869b6e3d3ed3e1e2d689868ed03573f13e90c34ca3`
+  contains a dependency-free Rust fixture. Published source SHA-256
+  `6a542b5339909414f1dbdc904b14b6e60e29cadfdf8d61e097fa35d52fd0b110`
+  remained identical in fresh clones after the Computer scratch source changed
+  to `9f4e840457982843954dd496dd3b9ea57a192377a62580a5c2bb4a705903ab4a`.
+  The member's fresh clone failed before assignment (exit 29, native
+  `authorization header required`, no recovered sentinel), then succeeded after
+  a live assignment PUT. The member also published revision
+  `6f6e421befee367e83606f2e0f35b2fdd09b1daab2861fce1263cab31ae11c9f`.
+  Withdrawing that assignment prevented a fresh clone after its cached JWT
+  expired; restoring it allowed a fresh read. Native login and repository
+  expiries advanced without another browser login or custom refresh worker.
+  Lore's existing headless secure-store warning was observed, not changed.
+  Exact command outputs/hashes are under
+  `/tmp/k3s-foundation-20261019/lore-computer/` on Linux.
+- An isolated Factory with only its dedicated `vv-lore-time` provider cloned the
+  original published revision and built it offline/frozen using Rust/Cargo 1.99.
+  The deterministic fixture printed `published-native-fixture-v1`; its binary
+  SHA-256 is `7c215988c81b403f1b45d4de67b03aa0b7279885a9ea00a1d796dc3662a0f9eb`.
+  No OpenCode binary/config or model provider was present. This is synthetic
+  test source, not model output. Initial clone/build native execution took
+  387 ms; the source hashes were unchanged. The native provider renewed automatically at 08:43:40 UTC; a fresh remote
+  clone at 08:46:00 UTC passed in 107 ms, beyond the original expiry and Lore
+  JWT leeway, with all four source hashes identical. No manual rotation was
+  performed after setup. Evidence:
+  `/tmp/k3s-native-factory-qualification-20261020/`.
+- A temporary second native Hub proved missed-notification reconciliation.
+  An exact Cilium rule interrupted only its supervisor's PostgreSQL traffic;
+  its two observed `LISTEN "hub"` backends were terminated. No listener remained
+  while the main Hub published revision
+  `gcp-01a1587b-9a33-7392-b5cc-eaa01b1a9984` at 08:44:18 UTC. After removing the
+  fault, the same process adopted that revision at 08:44:32.921 UTC and returned
+  the matching digest through its authenticated admin interface. Both Hub
+  processes and Pod UIDs remained unchanged, restart counts zero. This was an
+  operator port-forward observation of the second replica; it does not claim
+  public load-balancer or multi-host HA acceptance. The temporary fault was
+  removed, v2 defaults restored and both replicas agreed. Evidence:
+  Linux `/tmp/k3s-foundation-20261019/hub-reconcile/` and Mac
+  `/tmp/k3s-live-admin-20261020/notification-*.json`.
+- Correcting service `VEOVEO_HUB_ISSUER` to the public origin (distinct from
+  the human `/oauth` issuer) restored native registration without broadening
+  policy. Time's seven non-restart routed cases passed in 10.21 seconds.
+  Artifact's six routed cases passed in 223.15 seconds, including the 1-GiB
+  multipart/range/release case. Artifact startup requires Seaweed's exact
+  native `Admin:artifacts` action for its unconditional CreateBucket and bucket
+  configuration. The reviewed one-action change excludes global Admin and all
+  other buckets/identities. After a scoped S3 rollout loaded it, Artifact
+  self-retried and registered at 08:37:33 UTC without an Artifact restart.
+  Both QA identities renewed automatically beyond their original grant
+  lifetime; the passing Time calls used native references after that expiry.
+  Media, remaining restart scenarios and final model acceptance remain pending.
+
+Continuation through 09:14 UTC, 2026-10-20:
+
+- A Time subscription survived a live destination change. The observed
+  `subscriptions/listen` request began at 08:59:25.831 UTC, its initial read at
+  08:59:26.044, the destination PUT completed at 08:59:26.662, and the same
+  subscription delivered the due event followed by a read at 08:59:35.044.
+  The case passed in 9.75 seconds, with exactly one observed subscription request.
+  A subsequent fresh request passed with the original Time stopped and the
+  replacement as the sole active destination. Removing the binding made a direct
+  read fail with `no native upstream binding`; restoring it recovered routing.
+  Mac evidence: `/tmp/k3s-live-admin-20261020/time-held-stream-receipt.json`.
+- A running Task survived an actual native Time Stop/Start, remained Working
+  after restart, then delivered pushed Completed on a reopened subscription and
+  retained its expected 64-window schedule. Task:
+  `gtr_5PmEDGSMQESwLLam4BlvNvE6xhxJSQApXPvcOZ-2w88`; total 28.959 seconds.
+  Main process changed from `28f3178a-b452-4eb1-ab11-5e04eccaa824` to
+  `6fdf1efb-c3cf-4eb8-ada5-985309a010bb`, retaining the native sandbox ID.
+  Two earlier attempts do not count as passes: one resumed after the Task had
+  already completed; another resumed at 09:03:38.496 before Time registration
+  and its listener were ready. Hub refused that early read because the canonical
+  server was temporarily unexposed, before any upstream Task lookup. No Task
+  storage loss was established. The passing probe waited for fresh application
+  registration and listener readiness; native process Ready alone is insufficient.
+  Linux evidence:
+  `/tmp/k3s-time-live-destination-20261020/inflight-restart-application-ready.json`,
+  with the unsuccessful attempts and exact diagnosis retained beside it.
+- The member Computer's native Hub provider renewed automatically. Its actual
+  hosted OpenCode API disconnected/reconnected Hub successfully at 08:51:44 UTC,
+  beyond the original token lifetime; `/api/mcp` reported connected. This is a
+  fresh routed connection, not only refresh-status evidence. Two CLI attempts
+  accidentally queried OpenCode's separate managed background service and are
+  excluded; that temporary service was stopped.
+- Media registered at 09:02:46.796 UTC and completed startup provider checks.
+  Its synthetic acceptance remains pending. The selected runner fixture policy
+  now uses the actual native gateway Service port 8080; the operator CLI's local
+  port-forward display is not the sandbox destination port. The existing QA
+  administrator also has an explicit billed role and will exercise billed calls;
+  this does not establish a separate billed-only user's narrower authority.
+- Browser creation of empty session `ses_ea76a6e8bffeeUs6bMeuEBL0zR` succeeded
+  without a model call. Creating its terminal returned HTTP 503:
+  `failed to openpty: Permission denied`. Native device/filesystem configuration
+  is under investigation. Browser WebSocket, persisted session after host restart,
+  full host recovery and the final bounded MiMo scenario remain pending.
+
+Continuation through 09:39 UTC, 2026-10-20:
+
+- The terminal failure was the existing Landlock filesystem policy excluding
+  `/dev/pts`. The selected policy now adds that one path to `read_write`; it does
+  not expose all of `/dev` or change network/credential policy. Native policy
+  revision 2 and a scoped Stop/Start of each Computer made `openpty()` succeed.
+  The member and administrator retained their respective 199-file and 166-file
+  workspace manifests. Hub retained its Pod UID, container ID and zero restarts.
+  Chrome reopened the same saved session, created a terminal with HTTP 200,
+  connected through the public WebSocket, sent a shell command and received its
+  expected output in 765 ms (five frames, 52 output bytes). No model call was made.
+  Mac receipt:
+  `/tmp/k3s-live-admin-20261020/computer-session-terminal-preflight.json`.
+- The same corrected policy is staged at the versioned trusted path
+  `/etc/veoveo/hub/computer-policy-v2.yaml`, SHA-256
+  `1d0e405c2f12499727d551191a30a164f1ad0ae8369e321bd9b9ee096712ac85`.
+  The live control-plane PUT at 09:38:44 UTC completed in 177.537 ms and exact
+  readback passed. Revision `gcp-01a158ad-7202-75e1-b34b-def5302a3d86`
+  makes that policy the default for future Computers without restarting Hub.
+  Mac receipt: `/tmp/k3s-live-admin-20261020/computer-policy-default-v2.json`.
+- OpenShell changes through `b849a25c79177e9306c52a93de82d9dfc879cb92`
+  are merged and pushed to `origin/main`. Focused native Service/DNS, destination
+  and TLS tests, strict all-target Clippy and documentation checks passed.
+  The passing deployed gateway/supervisor images are recorded separately; the
+  Git merge itself did not trigger another rollout.
+- Media's six serial synthetic cases produced four passes and two failures.
+  The large-output case hit the `prediction_task` uniqueness constraint while
+  recording a run. The small-output case incorrectly completed with a Failed
+  Artifact and no byte size. Artifact's client accepted a repeated idempotent
+  creation result without rejecting its failed state. Commit
+  `58f9fbd2ceab7f267144676284b62bf756945427` fixes that client outcome handling;
+  Media also has a focused concurrent run-recording fix awaiting its component
+  gates. The original small-output transfer failure was not retained in the
+  measured logs or durable records. These fixes do not yet establish successful
+  transfer; fresh deployed acceptance is required. The fixture output remains
+  synthetic bytes, not model inference or valid encoded media.
+- Time's terminal restart preparation passed in 1.552 seconds, retaining an
+  event at version 2 and a cancelled Task for verification after the actual host
+  reboot. Preparation is not a recovery pass. Media recovery, host reboot,
+  final bounded MiMo and diagram/source closeout remain pending.
+
+Further component/source closeout, 2026-10-20:
+
+- The failed-upload regression was reproduced against the old Artifact client:
+  retry incorrectly returned `Ok` with `state: Failed` and `size: None`. The same
+  test passes with `58f9fbd` (2.90 seconds). Media's focused concurrent-recording
+  and cross-tenant tests pass in 0.68 and 0.43 seconds. Fresh-target SQLx
+  preparation changed exactly one query metadata entry.
+- Media `f01cdb0b772a87e20835f5b88be18910a7785e54` passes the full Docker component
+  gate on Mac ARM64 and Linux x86_64: each reports 71 passed and 11 skipped.
+  Mac took 2 minutes 16 seconds; Linux took 171.48 seconds. It is merged and
+  pushed to `origin/main`. Its Artifact client dependency remains exact `58f9fbd`,
+  keeping the deployed stack's SDK revision; this does not alter the running
+  Artifact server. Runtime/acceptance image rebuilding and deployed retesting
+  remain separate gates.
+- Artifact's main branch already contained the other agent's native-delegation
+  dependency update `aa1ca94`. Integration merge
+  `9a535440d989e24021ae172f71f3f5c08aa2703b` preserves that change and the client
+  fix. Its Mac full gate passes 112 tests with nine skipped (105.0-second check
+  stage, 20.4-second export). Linux also passes 112 tests with nine skipped in
+  198 seconds. The merge is now pushed to `origin/main`.
+- Generic installation `d4fc0d8b3dd864288ba9b604d8241b28ae0a98fa` is merged and
+  pushed to main. The four concurrent embedding files in its primary checkout
+  retained identical hashes. Selected Bioma pins and final canonical-document
+  closeout remain pending the replacement Media and recovery gates.
+
+Deployed correction and scoped recovery through 10:15 UTC, 2026-10-20:
+
+- Inspection found Media's policy allowed the private S3 endpoint but omitted
+  the public endpoint used by Artifact's signed upload URLs. Generic installation
+  `f5be0aeb7f5ef868dbba4fede80e19d9daa3e23c` and selected Bioma `e171270d`
+  add TCP/443 to that configured public authority only for the Media executable.
+  Native `tls: skip` preserves the signed request; the client still verifies TLS.
+  No credentials are injected and no other binary receives this access. This
+  explains a concrete configuration defect; the original failed transfer lacked
+  instrumentation to establish its precise historical error.
+- Linux built and published Media `f01cdb0` runtime
+  `sha256:2da66a129757e3d54e379bb8a34c2b15da8b768681cd00702229ec44d838a920`
+  and matching acceptance runner
+  `sha256:a6ba2faddd3b3c6320538bbc64d0a37e0e01b001bd7f4e2201685b32428b0c0f`.
+  Native Stop/Delete/Create replaced only Media and its runner, retaining the
+  named state/config/CA PVCs. Media's new native identity is
+  `db3d100e-b0cb-4d5f-90f4-b647a0e55a9a`. Hub's Pod/container identity and process
+  start remained unchanged through this replacement; no control-plane binding
+  change was required. Artifact's server and the existing synthetic provider
+  fixture were unchanged.
+- All six serial synthetic cases pass: exact-byte large output 28.14 seconds;
+  member browse/refusal 0.36; normal Hub run with Artifact output/cost 14.80;
+  cancellation after dispatch 4.55; cancellation of a held quote 0.66; and
+  catalog/Task-only schema 0.55. Runner log
+  `/sandbox/.media-acceptance-f01cdb0-20261020.log` is 2,522 bytes, SHA-256
+  `4a8d3c5b9ddbdfd35f652ca8c81394521aafe6b91b00623357e9dc6dd3ec0e47`.
+  A trailing summary command lacked `rg` and exited 127 after all tests passed;
+  a subsequent `grep` summary verified the results. Synthetic deterministic
+  payloads do not establish image encoding or real provider inference.
+- A separate in-flight test deliberately stopped Media and Hub, started Hub
+  first, then Media, and waited for actual public Hub readiness/discovery/JWKS
+  and Media registration/listener before continuing the test. Task
+  `gtr_Bz2Fxto2vKUNu5zlnEcA9IDtHVc5egJxIJKzTZZba_8` retained prediction
+  `01a158cb17c37c71a192c2a62c4f4b52`, resumed Working and pushed Completed.
+  It observed one submission/output: 65,536 bytes, SHA-256
+  `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`.
+  Elapsed time was 112.42 seconds. The fixture and unrelated workloads stayed
+  running. An earlier attempt ended on closed stdin before any restart and is
+  excluded from acceptance.
+- After that deliberate restart, Hub Pod UID is
+  `07aec1fd-d58c-4438-80cc-2f8513da703a`, with zero container restarts.
+  Independent admin readback retains control revision
+  `gcp-01a158ad-7202-75e1-b34b-def5302a3d86` and digest
+  `56cc38f30fd0f8c4c18c2eba50f1629727432edda7fa5dac0b2c1757814a12ef`.
+  Mac Chrome reads saved session `ses_ea76a6e8bffeeUs6bMeuEBL0zR` with HTTP 200
+  in 144.7 ms; token counts and cost remain zero. Receipt:
+  `/tmp/k3s-live-admin-20261020/hub-scoped-restart-readback.json`.
+  Host reboot and final model qualification remain separate pending gates.
+
+First full-host reboot attempt, 2026-10-20:
+
+- Time and Media prepared terminal records. Artifact's matching `9a53544` runner
+  prepared Artifact `01a158d8-abce-72e1-a159-ba9e11932b42`, available at
+  `2026-10-20T10:25:57.631321Z`, in 0.85 seconds. Two earlier preparation
+  attempts used incorrect principal strings (a bare subject, then a mistyped
+  issuer); both failed the identity assertion before any restart. Reading the
+  verified token's exact named claims corrected the test input. Wire tenant
+  remains `reference`; storage UUIDs are not substitute wire identifiers.
+- Linux rebooted from boot ID `e3e6de7b-372e-4fca-844e-2e914d88f323` to
+  `0af88114-6106-4edb-8cbc-46ea6bc7f2eb`. K3s, Cilium, PostgreSQL, SeaweedFS,
+  OpenShell gateway and the public tunnel returned; `nvidia-smi` still sees
+  the RTX 4090 and driver 615.71.09. This does not qualify CUDA inference.
+- SSH access initially failed for a separate reason: the external
+  `bioma-proxy-nyc3-01` RustDesk server reported `hbbs` and `hbbr` containers
+  running, but their reported PIDs did not exist and ports 21115–21119 were
+  absent. Restarting only those two existing containers restored listeners and
+  the same RustDesk SSH tunnel, without changing their configuration. At the
+  first restored SSH observation, 10:34:01 UTC, Linux already reported five
+  minutes uptime. Sparse Chrome observations saw HTTP 530 during the outage;
+  they do not establish the exact recovery duration.
+- **Application recovery has not passed.** Native records remain, but Hub,
+  Time, Artifact, Media, the synthetic provider and Computers are Stopped, with
+  their workload Pods absent. Exact v1beta1 readback shows the retained Sandbox
+  resources have `spec.operatingMode=Suspended`; the initially queried
+  `spec.suspend` field does not exist in this version.
+  Completed Time QA is a separate expected test-runner lifecycle. Lore retries
+  startup because Hub's OIDC discovery returns HTTP 412 `Sandbox is not ready`;
+  this is not evidence of a Lore authorization defect. No manual application
+  Start was used to hide the failure. Gateway logs at 10:29:57.789–58.024 UTC
+  report `sandbox-runtime supervisor is unavailable; suspending workload`.
+  Source inspection maps a rebooting Pending/not-Ready supervisor to Unavailable,
+  then permanently suspends the workload and records Stopped. Native Always
+  restart handles main-process exits but does not recover this driver-written
+  Stopped state. The native recovery fix is under review; final MiMo and diagram
+  closeout remain deferred.
+  Mac receipt: `/tmp/k3s-live-admin-20261020/reboot-access-diagnosis.json`.
+
+Native recovery correction, 2026-10-20:
+
+- OpenShell `2c9fe478f49773998d8602f8da68fce0864343fd` classifies an
+  admitted supervisor Pod in Pending or Running-but-not-Ready as Degraded.
+  Readiness remains unavailable, but recovery no longer rewrites desired Running
+  intent to Stopped. Existing UID, generation and enforcement checks remain.
+  The Linux focused regression passed 1/1 (42.89 seconds including compilation);
+  the surrounding runtime regressions passed 17/17 (5.50 seconds), and strict
+  Kubernetes-driver all-target Clippy passed (31.80 seconds). These are source
+  checks, not a second reboot pass. Log:
+  `/tmp/k3s-openshell-pending-gates-20261020.log`.
+  Linux release compilation took 5 minutes 35 seconds. The gateway ELF SHA-256
+  is `6daf0aaac9ec805b20313874840f1f24887098928492bf1a2fa715c67087bcc6`;
+  extraction from the image matched. The pushed `gateway` image digest is
+  `b36083f28400e0136521bfa72ffdf91aaddbf0b0f9a6345bd261963080692d95`.
+  Helm revision 5 rolled out Ready with that exact image. The first image-script
+  push failed because Docker's active build driver does not support attestations;
+  the same script's native local-load mode and a standard push succeeded.
+- Inspection also found that a supervisor process restart reloaded expired
+  credentials from its immutable launch bundle before policy discovery, while
+  incorrectly treating the Kubernetes source as static. The follow-up reuses
+  OpenShell's existing projected-ServiceAccount bootstrap and paired credential
+  refresh. It does not change Lore, introduce an issuer, or add a recovery
+  controller. Reviewed commit `e41ef49128efc79491cd858eacb3da2a85c5e271`
+  renews either-expired pairs before policy discovery, checks the returned runtime
+  generation and retains native Kubernetes renewal provenance. Fresh launch
+  pairs skip this exchange because their runtime identity may not yet have been
+  persisted when the supervisor starts. Its Linux core authentication suite
+  passed 16/16 (19.90 seconds including compilation); the gateway's existing
+  native identity rejection cases passed 2/2 (104.91 seconds including compilation).
+  Strict lint exposed four mechanical warnings, corrected without behavioral
+  changes in `d7a990083214e8a618f05b1b471aeeac6d9aa82a`. Core/supervisor
+  all-target Clippy with the image build's supported default features then passed
+  in 26.09 seconds. An initial `--all-features` lint command selected mutually
+  exclusive telemetry features and was an invalid check invocation, not a source
+  defect. Both recovery fixes are published on the maintained fork's `main`.
+  Linux built the supervisor in 81 seconds; its extracted ELF matched SHA-256
+  `b3e6ce5adb6915d62743d7d933dd192b42cdec254e9e1a37cf91321793c6a7bd`.
+  The published `supervisor` image digest is
+  `f1d8f896daa08d85f8667a595c82544d93cbe73f2d16250387ab484ee5a286d2`.
+  Helm revision 6 selected this image and the existing gateway JWT lifetime of
+  60 seconds for one QA launch; projected Kubernetes ServiceAccount lifetime
+  remained 3600 seconds. Native Start of `vv-hub-qa/time-live-qa` produced
+  supervisor Pod UID `3456181d-58d8-4e22-a24e-bc963b0bc62e` and runtime
+  generation `4d0b221c-e1d4-4daf-b80b-b871f3293c8c`. Its immutable launch pair
+  had epoch 2 and expired at `2026-10-20T11:05:48Z`. Logs reported paired renewal
+  at 11:05:39, 11:06:29 and 11:07:20 UTC; native `sleep 0` succeeded after the
+  original expiry. This proves live renewal, not expired-bundle startup.
+  Helm revision 7 restored the normal gateway lifetime to 3600 seconds before
+  application restoration. The expired-bundle process restart was not proved by
+  the subsequent reboot. Source review then established that both native Pods
+  intentionally use Kubernetes `restartPolicy: Never`: supported recovery creates
+  a fresh authenticated generation rather than restarting those containers with
+  the same immutable bundle. Same-Pod expired-bundle startup is therefore not the
+  host-recovery acceptance criterion. Live renewal and its source tests remain
+  separate evidence.
+- Completed Mac Hub, Artifact and Media worktrees and their temporary branches
+  were removed after verifying clean trees equal to published `main`:
+  `9b83c26`, `9a53544` and `f01cdb0`, respectively. Active OpenShell/installation
+  worktrees and other agents' worktrees remain. Receipt:
+  `/tmp/k3s-completed-worktrees-cleanup-20261020.json`.
+
+Second full-host reboot, 2026-10-20:
+
+- The reboot was requested at 11:10:38 UTC after restoring the normal 3600-second
+  JWT lifetime and the owned application inventory. SSH returned at 11:14:27 UTC;
+  the new boot ID is `0beca792-4f06-41a8-90c8-09b2852b185a`. The RustDesk
+  relay was healthy this time; its Mac offline banner lagged successful SSH.
+  Sparse Chrome probes observed HTTP 502 and 530 during recovery.
+- Gateway startup first exited on temporary PostgreSQL DNS resolution failure
+  at 11:14:32 UTC. Kubernetes restarted it and it became Ready. This is successful
+  process recovery, not a database or credential failure. At 11:14:51 UTC, its
+  native reconciliation again logged `supervisor is unavailable; suspending
+  workload`. Owned Sandbox resources subsequently had `operatingMode=Suspended`
+  and absent workload/supervisor Pods. No postboot native Start was issued.
+  The second reboot therefore **failed application recovery**; neither
+  expired-bundle process startup nor final model acceptance is claimed passed.
+- Kubelet events before suspension reported bootstrap Secret mount-cache misses,
+  followed by PodFailed/PodSucceeded events. Those events alone do not identify
+  which control dependency caused suspension. The remaining source path is
+  being traced before another change. Existing boundary identity/fence checks
+  must remain distinct from transient readiness. The sanitized Linux receipt is
+  `/tmp/k3s-expired-bundle-reboot-20261020.json`.
+- Native policy readback confirms Hub, Time, Artifact, Media, the synthetic
+  provider, both Computers and Artifact/Media QA opt into `restart_policy=always`.
+  The Time QA runner uses `never`; its terminal state is expected and is not an
+  application auto-recovery failure. The accepted correction will reuse native
+  lifecycle gates, fresh-generation credentials and restart backoff for observed
+  terminal infrastructure loss. It must not turn an explicit Stop or completed
+  one-shot factory into a restart, or weaken UID/fence checks. Pod identity is
+  expected to change during recovery; persistent workspace/session/task state is
+  the continuity requirement.
+- Cleanup held across reboot: legacy reference gateway/tunnel units were absent
+  and inactive, no superseded application Docker containers restarted, and the
+  root filesystem had 772 GiB free. `nvidia-smi` still reported the RTX 4090 and
+  driver 615.71.09 (0% utilization, 468 MiB of 24,564 MiB allocated); this is
+  device visibility, not a CUDA/inference qualification. The updated sanitized
+  receipt SHA-256 is
+  `68b9b30971494810dab9fac8ee6b7eedda7fcc34d824361f7170f313fedecff8`.
+- The reviewed correction is frozen as OpenShell
+  `d0b4a26897c6cc65c25fb54a3fb6b92936227872` (tree
+  `482141ab4867512325edb52814b29660d39f386d`). The driver retains desired
+  Running for an admitted terminal supervisor with intact recorded identities
+  and fences, then the gateway uses its existing Always/OnFailure replacement
+  machinery. Infrastructure loss has no invented command exit code. Queued old
+  loss observations are re-read under the lifecycle gate; explicit Stop wins;
+  fresh runtime readiness clears the recovery marker. Authenticated pending Start
+  replay uses the native credential preparation path. Missing/deleting Pods or
+  changed identities/fences retain their existing refusal paths. Linux source
+  gates are running in `worktrees/k3s-openshell-reconcile-d0b4`; this commit has
+  not yet been deployed or passed the repeat-reboot gate.
+- Architecture review of this correction found 306 added production Rust lines,
+  381 test lines and 20 driver-documentation lines. It deliberately extends the
+  existing restart controller to observed, admitted terminal runtime loss; it
+  is not merely a configuration fix. It adds no controller, installation-specific
+  exception, startup ordering, Pod restart-policy change or permission bypass.
+  Linux passed all 301 driver tests and the server infrastructure-restart
+  (5), restart (30 passed, one disposable-PostgreSQL test ignored) and automatic
+  restart (3) filters. Strict Clippy found one used-underscore binding; lint-only
+  `9a72464a4161856fad53c230ad47743da9a41ce4` renames that guard.
+  Documentation-only `2117d2d88f204ebe7acd3b1c5259bce5b1fcdd87` updates
+  protobuf comments and the server README to describe the deliberate recovery
+  extension. Non-comment protobuf content is unchanged.
+- Deployment coordination, 2026-10-20: concurrent embedding work reports Helm
+  revision 8 on GPU-capable gateway `f70a959` and publishes combined source
+  `3fbd3d8e1f21287550222b561b55e545da2d9240`. The foundation coordinator is
+  integrating that exact source with the lint/documentation follow-ups in its
+  own OpenShell worktree. **The foundation `/root/builder` owns the next gateway
+  build/deployment, scoped failure probe and host-reboot qualification.** Build
+  the combined source on Linux; do not deploy the recovery-only branch over the
+  GPU fix. Read current Helm values before the image-only update and preserve
+  concurrent configuration. No combined deployment or recovery pass is claimed
+  at this checkpoint.
+- The combined source is now frozen and feature-published as
+  `6df7541337d36af65adf641e0c018b40ffdb0c91` (tree
+  `c54f6b71eb95463ebdc3b5a337532da6c1393159`), a non-rewriting merge of
+  `2117d2d8` and exact `3fbd3d8e`. The GPU implementation is byte-identical to
+  the latter; its only server-code difference is the lint guard rename.
+  Strict Clippy passed on `9a72464a` in 70.90 seconds. The combined Linux driver
+  suite passed 306/306 (21.21 seconds including task setup; 2.34 seconds test
+  execution), and combined driver/server all-target strict Clippy passed in
+  71.41 seconds. The reviewed combined revision is now published on `origin/main`.
+  Linux is building the gateway through its standard mise task with the shared
+  target cache. Its first invocation exited 127 before compilation because SSH
+  omitted the existing mise directory from PATH; prepending that directory fixed
+  task execution without a source change. A fresh live read confirms
+  Helm revision 8 with gateway digest `174df861…`, and Mac Chrome's saved
+  Computer-session GET still returned HTTP 503 at 11:44:52 UTC (203.4 ms).
+  No recovery-only image was rolled over the concurrent GPU fix.
+- Linux built and published the combined `6df75413` gateway at
+  `sha256:14c1bf69b9d107049d86395087a8639afeaca18eeec4e2891f51cdc22232ab68`.
+  Its staged and image-extracted ELF SHA-256 both equal
+  `56e677af9188f0264e80b750c9987b8d9b4a669de7a2b6bf23ddf3a8238f3a1b`;
+  registry publication took 14.90 seconds. Activation is held briefly for a
+  final read-only lifecycle ordering review: a terminal-supervisor observation
+  preceding the driver's readiness annotation must not become an unrecoverable
+  stopped/error intent. A candidate derived from actual Helm revision 8 changes
+  only the gateway digest. No deployment is claimed by this build receipt.
+- The ordering review found a real, narrower stale-status race. Native
+  v1beta1 can retain `Suspended=True/PodTerminated` after resume. Before
+  reconciliation publishes `terminated`, dependency projection changes Ready
+  to false; the old Suspended condition can then produce durable Stopped and
+  prevent a later automatic restart. An unavailable dependency alone would
+  otherwise remain Provisioning. The correction projects the verified,
+  currently desired-Running terminal generation as unavailable/Provisioning
+  until publication, removing only that stale Suspended status. Actual restart
+  still requires the published recovery marker and all existing admission,
+  identity and fence checks. Genuine Stop/Delete remains authoritative.
+  The `6df75413` image was not activated; the narrow correction and focused
+  regression are being prepared before another Linux build.
+- The correction is committed as `d7724db4e1f3eaf6d880f4dd20267ca5f0a54fff`;
+  documentation follow-up `53e3665811a72dd1555edb18aeb4fedef4158dbd` is the
+  final reviewed source (tree `2c3f3b29842e16978e833f947dea096b3a7509b8`),
+  now published on `origin/main`. Linux passed the focused pre-/post-publication
+  and genuine-Stop regression, all 306 driver tests, strict all-target driver
+  Clippy (20.04 seconds) and docs validation (8.58 seconds, zero errors and
+  three warnings). Server restart results remain applicable; this follow-up
+  changes no server code. The final Linux image build is underway.
+- The final Linux gateway image is published at
+  `sha256:1bdeade25a8239b7c385924915de59f520be3c48322f79ef4be62d7ce5801564`.
+  Its image-extracted and staged ELF SHA-256 match
+  `c00c6756230f163e639e89edf6322c0fe05fe0dd7dc6d87a2da39377668ec121`;
+  registry publication took 14.29 seconds. A gateway-only Helm upgrade using
+  freshly read values completed in 12.34 seconds at revision 9. The new gateway
+  Pod UID is `c5eea73d-e5d0-449f-b83b-cbbfaaa02cd8`, Ready with zero restarts;
+  supervisor/runtime pins and other live Helm values are unchanged.
+  Root's public Hub control-plane GET returned 200 at 12:00:18 UTC (231.15 ms)
+  with the same published SHA-256 as before rollout. Its existing operator grant
+  refreshed and passed independent JWT signature/identity verification.
+  Restoring the operator's existing localhost port-forward after its old Pod
+  exited is management access, not an application forwarding change.
+  The scoped supervisor-loss probe is starting on the owned Always-policy
+  `media-live-qa`; neither that probe nor full-host recovery is yet claimed passed.
+- Scoped unexpected-supervisor termination now passes on Helm revision 9.
+  Native Start of owned `media-live-qa`
+  (`3b01add3-7685-43c3-8b45-45d859257cb3`, policy `always`) took 3.01 seconds;
+  baseline native `/bin/true` took 0.12 seconds. The builder terminated only its
+  verified supervisor host PID 260031 with SIGKILL, without native Stop or Pod
+  deletion. At 12:03:56 UTC the native record was Starting with restart count 1
+  and `InfrastructureRestart=True/SandboxRuntimeTerminated`; at 12:04:09 UTC
+  it was Ready. The 13-second interval measures Starting to Ready, not the
+  unrecorded portion before Starting. The runtime generation changed from
+  `48889116-d490-4d1a-9044-c57d233124e9` to
+  `7ad4582a-6a6e-4700-8fac-3582a1f5bedd`. Workload Pod UID changed from
+  `49324a3f-c847-406d-8f99-ca76c30e52dd` to
+  `d8b656dd-e326-4d38-8332-77182dc8778b`; supervisor UID changed from
+  `d3f92ce3-3095-4919-8ef5-8468c6899e56` to
+  `6670dde7-88ac-4a4c-9021-05688328d270`. Both replacement Pods were Ready
+  with zero container restarts, and native `/bin/true` passed in 0.20 seconds.
+  The unrelated GPU QA workload's Pod UID and container identity were unchanged.
+  Explicit Stop then remained Stopped for 30.233 seconds (12:04:48.487 through
+  12:05:18.720 UTC), with restart count zero, no command exit code, the same
+  runtime generation and no owned Pods. An explicit QA-only Start restored Ready
+  for the reboot baseline. The durable Linux receipt is
+  `/home/rozgo/.config/veoveo/k3s/evidence/openshell-gateway-53e-recovery-20261020/receipt.json`,
+  SHA-256 `08fab8701734344f04b818fad6fe23ad33163df475bfb993851353dc41c2ba2a`;
+  a verified copy is on the Mac at
+  `/tmp/k3s-live-admin-20261020/gateway-53e-recovery-receipt.json`.
+  All owned Always-policy workloads are Ready before the third reboot; the
+  Never-policy Time QA runner remains intentionally Stopped.
+  Mac Chrome rendered the saved member Computer session and its prompt input;
+  session GET returned 200 at 12:11:18.966 UTC (155.10 ms), with the original
+  session ID and zero model cost. Public control-plane GET returned 200 at
+  12:11:11.450 UTC (332.73 ms), retaining revision
+  `gcp-01a158ad-7202-75e1-b34b-def5302a3d86` and SHA-256
+  `56cc38f30fd0f8c4c18c2eba50f1629727432edda7fa5dac0b2c1757814a12ef`.
+  Full-host recovery remains the next gate; no model call has been made.
+- Third full-host reboot, 2026-10-20: the host reboot was issued at 12:13:32 UTC;
+  SSH returned at 12:15:34. Boot ID changed from
+  `0beca792-4f06-41a8-90c8-09b2852b185a` to
+  `5da92057-917b-411a-8539-3271c97d47c9`. By the 12:17:04 inventory, Hub,
+  Time, Artifact, Media, its synthetic provider, both Computers and the two
+  Always QA runners were native Ready, each with restart count one, no invented
+  command exit code and a fresh runtime generation. No manual sandbox Start
+  occurred before this snapshot. The Never Time QA runner stayed Stopped.
+  All 25 PVC identities, phases and volume bindings matched the preboot inventory.
+  The gateway recovered through Kubernetes restart after a transient PostgreSQL
+  DNS lookup failure; this required no new retry orchestration.
+  Persistent Linux postboot inventory:
+  `/home/rozgo/.config/veoveo/k3s/evidence/openshell-gateway-53e-recovery-20261020/postboot.json`,
+  SHA-256 `7ff98cfe7ec82dab116615cd920fbb117e268c33f999e5858b1f7ef10212b128`.
+  The first reboot command used a read-only host mount and was refused without
+  restarting; the established maintenance command succeeded with its required
+  writable mount. This command correction changed no application source.
+- Mac Chrome's original session GET returned 200 at 12:17:05.208 UTC (145.90 ms),
+  preserving its ID, title and zero model cost. Public control-plane readback
+  retained the exact preboot revision and digest (200, 146.29 ms).
+  A newly created terminal returned 200 and its public WebSocket produced
+  `k3s-postboot-verified` in 941 ms (three frames, 66 output bytes).
+  This is a fresh terminal after reboot, not persistence of an OS PTY process.
+  Settings rendered and its API requests returned 200; the browser automation
+  navigation wait timed out before the later rendered-state observation.
+  However, clicking its **Back to app** button escaped to the domain root.
+  The retained `document.baseURI` and navigation entry prove a client-side
+  history change, not a Hub HTTP redirect. Source inspection found titlebar
+  history storing mounted paths while seeding `/`, then navigating with
+  `resolve:false`. A scoped OpenCode correction will store route-relative
+  history and use normal router base resolution. Final model acceptance waits
+  for this actual UI failure and the prepared service-state verifiers.
+- The prepared post-reboot verifiers passed against the actual preboot records:
+  Time `restart_persistence_verify` passed 1/1 in 0.94 seconds, retaining event
+  `time://events/event-01a15897-852d-7460-aea7-c998a497a6bc`, version 2 and
+  cancelled Task `gtr_8QhoO8u-_1BB_tVqfnB0aKIT6kMW9XlycU9SDygJ_pg`.
+  Artifact's verifier passed 1/1 in 1.80 seconds for
+  `01a158d8-abce-72e1-a159-ba9e11932b42`, retaining its available timestamp
+  `2026-10-20T10:25:57.631321Z`. Media passed 1/1 in 1.89 seconds with retained
+  Task `gtr_-gLh9A8Y4mTuhWmPX88I2dpp1OjCD2llq1M0ZWcBXaE`, prediction
+  `01a158cd195774c08adf4b53eabd6775` and a fresh subscription. Its 65,536
+  synthetic fixture bytes retained SHA-256
+  `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`;
+  this is not real model inference or image-encoding acceptance. Only the Never
+  Time QA runner was explicitly started to execute its verifier. The services
+  and Always QA runners needed no manual restart.
+  OpenCode's scoped four-line titlebar correction is published for validation as
+  `ed62aad52c80ecdf4297310ce84305aff5717b7d`; it changes no Hub or OpenShell code.
+- The OpenCode navigation fix `ed62aad52c80ecdf4297310ce84305aff5717b7d`
+  passes Linux history tests (4 tests / 21 assertions, 0.08 s), PWA routing
+  tests (8 / 33, 0.18 s) and application typecheck (2.88 s). The Linux web
+  bundle built 6,032 modules in 6.42 s; the executable build took 51.29 s.
+  Version `0.0.0-hosted-computer-202610201233` has executable SHA-256
+  `f7bf8ee942fc2d8d0963f4d2005b8946ef691f2af6fcfdbb39af15fe5b26929e`.
+  The Linux Computer image is
+  `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-computer@sha256:12c2ba83bd6f3dea715d1f8ab25ee20dd81dfb8145868f9a193f73cb4ce695d4`.
+  Build and push took 3 s and 25.19 s. Image smoke checks verified amd64,
+  UID/GID 10001, private directories and the exact executable. These checks do
+  not yet prove the actual browser Back interaction.
+  Native template `installation/computer-ed62` changes only the image from
+  the admitted 2 CPU / 4 GiB template. Hub adopted that future default at
+  `2026-10-20T12:40:39.973Z` in 191.477 ms, HTTP 200, revision
+  `gcp-01a15954-0209-7d60-b678-3a0c077b157e`, SHA-256
+  `e120f5ddfa0d61ae2c85fc619cfdb0bc28a81d0229a6da9385cf072228431baa`.
+  Exact readback changed only the template name. Existing Computers retain their
+  frozen provisioning snapshot; they are deliberately reset and recreated for
+  this development rollout rather than silently modifying their admitted spec.
+  Only the two recorded Computer owners and their native resources/session
+  families are in reset scope. Published Lore data, grants and services remain.
+  Receipt: `/tmp/k3s-live-admin-20261020/computer-ed62-live-default.json`.
+- Mounted-browser acceptance now passes on `computer-ed62`: direct Settings
+  opens, **Back to app** remains under the Computer prefix, adding the private
+  project enables New session, and browser Back/Forward retain that prefix.
+  Two fresh owner Computers are Ready: member
+  `01a15957-5d5c-7372-9bb1-e00a353b8159` / native workspace
+  `cwajqk24ul5co4yscfc`, and administrator
+  `01a15959-ce5b-7482-a224-d49ce41a374c` / `cifjcu4httw7tg5vzan`.
+  Both run the exact `12c2ba83…` image. Member native Lore device login and
+  explicit REV2 clone passed in 0.34 s; both known file hashes matched.
+- The first final model scenario is **partial, not passed**. Exact
+  `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`, Build agent, session
+  `ses_ea6a4ba5fffeiMYI5YQYiqW8MT`, prompt inbox
+  `msg_1595c4dea001Dmu3qNPmbwiTo2`, started at
+  `2026-10-20T12:49:43.752Z`. Eight steps / 240 seconds were configured;
+  six provider turns completed in 168.589 s from persisted user-message creation
+  to final assistant completion, cost USD 0.0111555704. Token counters: input
+  18,245; output 2,071; reasoning 1,482; cached input 60,864.
+  The model's remote `lore -P --json repository info` failed in 223 ms,
+  exit 16, **Not authenticated**. Its follow-up local revision/source/hash
+  command completed in 43 ms and matched REV2/hash, while also logging the
+  remote auth-endpoint error. These local bytes do not establish remote access.
+  CodeMode discovery took 16 ms, two concurrent `resolve_time` calls took
+  284 ms, and `expand_schedule` settled in 398 ms to one 09:00–10:00 UTC
+  occurrence on 2026-10-22, `truncated:false`. Recorded nested tool outcomes
+  confirm those calls; no Task ID was exposed to the model.
+  Initial browser `wait` returned HTTP 503 at 30.352 s while the model continued;
+  a later idle check returned 204. The durable-log API returned only a sync marker,
+  so measured model/tool evidence comes from the session export, not invented log
+  events. Export omitting hidden reasoning is
+  `/tmp/k3s-final-mimo-qualification-20261020/first-run.json`, 52,258 bytes,
+  SHA-256 `147667981d5b02751082557518fbe70f6ddca314847139ba8a43b52df7991345`.
+  The credential-store discrepancy was subsequently diagnosed and corrected as
+  recorded below. No Lore grants or authorization rules were changed.
+- The first model attempt exposed an operator setup error, not a missing Lore
+  authorization feature. Native `sandbox exec` used UID/GID 10001 and
+  `HOME=/sandbox`, without the image's XDG/Lore environment. Its earlier login
+  wrote `/sandbox/.config/lore/tokenstore.toml`; OpenCode uses the configured
+  `/sandbox/home/.config/lore/auth` store, which was empty. Repeating native Lore
+  device login with the image's existing environment fixed the actual workload.
+  OpenCode's own browser PTY then ran remote repository info with exit 0 and the
+  expected repository ID/source hash. No token was copied and no application,
+  issuer, grant or Lore authorization code changed. The wrong operator-only store
+  was removed after the positive control. The sanitized Linux diagnosis is
+  `computer-ed62-reset-20261020/lore-store-path-diagnosis.json` under the retained
+  K3s evidence directory, SHA-256
+  `57837e4c5e07a13baedbedc3869f8d26889dc4e06fa0ddf90c46e0fa589ba6d4`.
+- The second bounded model scenario **passes the requested operations**. Build
+  agent, exact `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`, session
+  `ses_ea69c1ad3ffeKqVD2BVH1CSrMt`, inbox
+  `msg_15964398c001vWI9PgeM9Q41lG`, admission HTTP 200 at
+  `2026-10-20T12:58:22.820Z`. The same prompt SHA-256 is
+  `a0a964667e539cb3a2302c481daead3fcd596306e0cb12fcf441f9bda37628ee`.
+  Seven provider turns completed between persisted user creation
+  `12:58:23.007Z` and final assistant completion `12:59:44.290Z`: **81.283 s**,
+  under the configured eight-step/240-second limits. The trailing idle record
+  reports `succeeded`. Cost USD **0.0131970424**; tokens input 24,202, output
+  2,151, reasoning 697 and cached input 86,784. No substitute model or Media
+  generation was called.
+  The trace includes an actual model error: `tools.shell` inside CodeMode returned
+  `Unknown tool` in 12 ms. Two discovery turns (three search requests, 12/13 ms
+  per turn) preceded the corrected native shell invocation. That foreground shell
+  completed in **94 ms**, exit 0. Authenticated remote repository metadata verified
+  ID `01a1586c89057ea3adcfc848da54077b`; separate existing local revision/source
+  reads matched revision
+  `6f6e421befee367e83606f2e0f35b2fdd09b1daab2861fce1263cab31ae11c9f`
+  and SHA-256
+  `6a542b5339909414f1dbdc904b14b6e60e29cadfdf8d61e097fa35d52fd0b110`.
+  Those local reads are not a new remote fetch. Lore's native headless
+  secure-storage `PermissionDenied` warning was nonfatal; the integration did not
+  change its behavior.
+  The exact Hub Time discovery took **14 ms**, concurrently with the shell;
+  two concurrent `resolve_time` calls took **277 ms**, and `expand_schedule`
+  took **366 ms**. These durations use each persisted tool's `ran` to `completed`
+  interval, excluding model argument generation. Returned authority-bearing
+  instants were preserved; `calendar-final-k3s` v1 expanded to one UTC
+  2026-10-22 09:00–10:00 occurrence with `truncated:false`. The client exposed the
+  settled result rather than a Task ID. The model's final prose omits its initial
+  wrong-tool error; this execution record retains it. This qualifies the scoped
+  Computer/Lore/Hub workflow, not real Media inference or general publication.
+  Read-only Time database evidence independently identifies the settled native
+  Task as `01a15964-de30-7e62-90dc-78b8a7def7c2`, succeeded at 12:59:05 UTC,
+  revision 4, 12 ms server execution. The first attempt's successful Time Task
+  was `01a1595d-d258-7060-8f2f-db7c667e8fcd` at 12:51:23 UTC, 70 ms. Both
+  belong to the reference tenant and ordinary member, for `expand_schedule`;
+  these IDs were obtained by the operator, not exposed to the model. Receipt
+  `mimo-final-20261020/time-task-receipt.json` in Linux K3s evidence has SHA-256
+  `5a4277b0c5a6ba6c1a25712f2a7f38a518693b566d15ea55ac4804ffe1d8f6d4`.
+  The eight-step temporary project override was removed only after its expected
+  SHA-256 matched; removal was verified. The generic installation documentation
+  is published at `ef233c758e3691f6ea8305c9d1b820f604957204` with the exact native
+  exec environment, final pins and measured acceptance boundaries.
+  The final session export, with reasoning content removed and actual tool parts
+  retained, is `/tmp/k3s-final-mimo-qualification-20261020/second-run.json` on Mac
+  and `mimo-final-20261020/second-run.json` under the Linux K3s evidence directory:
+  71,277 bytes, SHA-256
+  `e5b3c595b87053ffa0979a961b0cb81ced33fd9ff8acbd016b92a84d10425f08`.
+  Mac Chrome displayed the saved completed session after removing the temporary
+  override and reloading; screenshot `computer-final.jpg` beside the Mac receipt
+  is 354,853 bytes, SHA-256
+  `056363343cafd88751f7a48586579aacccca516412f9252f5f0c1a485453a90d`.
+- Earlier Bioma installation checkpoint `ff5d72339f7869e56ff28e5758729128b701e0d4`
+  was published on `origin/main` with gateway `b36083f…` and supervisor
+  `f1d8f896…`, recording the then-failed reboot and pending acceptance. The final
+  published pins supersede that gateway with `1bdeade2…` and the Computer image
+  with `12c2ba83…`; the supervisor remains unchanged.
+  Historical Docker receipts remain explicitly historical.
+
+- Closeout documentation: the existing three-view guide now reflects the deployed
+  K3s ownership, separate human/factory credential paths, qualified Computer and
+  factory fixture, and still-planned general publisher. Root manually reviewed
+  all three views in Mac Chrome and exercised details, navigation, zoom/fit and
+  SVG/PNG export. Unique IDs, inline JavaScript/JSON and local links pass; final
+  HTML SHA-256 is
+  `ce5d3073666bb64e6418350e73134f38272af7ae889eaeacd4d0a3b96c9e5ef9`.
+  A local audit initially treated the embedded `text/plain` export stylesheet as
+  JavaScript; correcting that audit's script-type handling passed without changing
+  the guide. No new diagram package or generated-image collection was added.
+  The owned Mac Hub/Artifact/Media/OpenShell/OpenCode/installation worktrees and
+  merged task branches are removed. Concurrent embedding and native-services
+  worktrees/edits are preserved. Linux publication/cleanup is recorded below.
+
+- [x] **K1 — Pin and prepare the common foundation.** Record exact K3s, Cilium,
+  Agent Sandbox controller/CRDs, CloudNativePG, official SeaweedFS chart and
+  maintained-fork image pins for Ubuntu Linux x86_64. Linux builds Linux images;
+  require immutable pullable amd64 images. Mac source/component/integration tests
+  remain, with Docker fixtures as needed; do not provision Lima/K3s or require
+  multiarch image publishing for this slice. K3s uses its independent embedded
+  datastore. Require real Cilium ingress/egress enforcement, Services/DNS,
+  immutable pullable images, PVCs, RBAC, native secrets/config and correct TLS trust.
+  Keep local Keycloak external where needed and Mac MPS explicitly external.
+
+### Required Hub runtime reconfiguration — prerequisite
+
+Removing startup-only runtime mappings is required **before Kubernetes acceptance**,
+not optional cleanup and not a request to restart Hub or hide mappings behind DNS.
+Source-test this change on Mac, then prove it on the Linux deployment.
+
+- [x] **K2 — Implement coherent live destination/config adoption.** Registration,
+  DB-authoritative catalog and grant updates, native bindings and Computer
+  defaults now adopt live changes. The former startup-fixed paths were in
+  [catalog.rs:139–155](../veoveo-hub/crates/veoveo-hub/src/catalog.rs#L139),
+  [tests:615+](../veoveo-hub/crates/veoveo-hub/src/catalog/tests.rs#L615) and
+  [server.rs:113](../veoveo-hub/crates/veoveo-hub/src/bin/hub/server.rs#L113).
+  Separate stable gateway/auth bootstrap from MCP request destinations (OpenShell
+  workspace, sandbox, port) and Computer template/default selection. Prepare/admit
+  replacement transport/provisioner state, publish/adopt coherently, reject invalid
+  changes while retaining active working state, and replace only affected pools.
+  Retain old state for in-flight operations/explicit draining.
+  Reconcile missed notifications on reconnect. Do not promise arbitrary launch-only
+  configuration hot reload. Creating/opening Computers already needs no Hub restart;
+  changed templates apply only to future or explicitly replaced workloads.
+- [x] **K3 — Close the actual Computer backend gap first.** Replace Hub's
+  [Docker-only persistent-workspace guard](../veoveo-hub/crates/veoveo-hub/src/computers/provisioning.rs#L185)
+  with a proper backend-neutral/backend-aware contract using existing Kubernetes
+  PVC persistence. After K2 and the required gateway/storage foundation are available,
+  qualify a private Kubernetes Computer before wider platform acceptance: creation,
+  browser assets/API/WS/SSE, Hub/default model configuration,
+  native Lore login, provider renewal, Stop/Start, owner isolation and retained
+  files/session IDs. No fake Docker config, new Lore rules or implicit grants.
+
+### Foundation cutover and deployed acceptance
+
+- [x] **K4 — Place and qualify the foundation.** Kubernetes directly manages
+  CloudNativePG PostgreSQL, official-chart SeaweedFS with explicit PVCs,
+  single-replica Lore, gateway and tunnel. Gateway PostgreSQL is outside the
+  OpenShell Helm release but inside the cluster, with distinct gateway/application
+  DBs and roles; sharing a PostgreSQL cluster initially is acceptable. Preserve
+  native Lore S3/PostgreSQL storage and Hub-issued-token authorization. Verify
+  private gRPC, signed S3 byte transfers, public origins and actual service recovery
+  with late/interrupted dependencies. Use native controllers, readiness/restarts
+  and service retry/reconnect; no custom orchestrator, proxy or startup DAG.
+- [x] **K5 — Prove dynamic ownership without unrelated restarts.** Capture Hub pod
+  UID/process start and unrelated pod identities before each scenario. On the same
+  running Hub, add/register/update/remove MCPs, run/finish disposable factories,
+  create/stop/resume Computers and hot add/change/remove MCP destinations. Change
+  Computer template/default selection, grants/catalog/providers through supported
+  APIs; prove existing Computer instances stay unchanged unless explicitly replaced.
+  Reject invalid configuration and prove the active working state remains usable. Interrupt
+  notifications and verify reconnect reconciliation. Prove Hub and unrelated
+  workloads keep their identities/process start while the intended changes become
+  effective. Roll only the affected service for image/config changes requiring
+  recreation. Helm owns foundation, OpenShell owns sandbox resources: no competing
+  GitOps/Helm sandbox inventory or inventory-checksum Hub rollout. Preserve explicit
+  active Task/drain/reconnect semantics; do not automatically retry non-idempotent
+  mutations or assert zero downtime.
+- [x] **K6 — Complete the clean Linux replacement and retire old launch paths.**
+  The user explicitly authorized clearing the old Linux runtime first to reclaim
+  disk space; no old deployment or application-data preservation is required.
+  Reset/reseed disposable dev data, retain source/trusted installation inputs, and
+  prove the new Kubernetes deployment before declaring acceptance. Remove Linux
+  platform Compose definitions/launch paths from the supported deployment path;
+  preserve Mac Docker test tooling and external local identity bootstrap.
+  Installation files seed initial foundation/data only and never overwrite a live
+  DB-authoritative catalog on restart. Qualify Linux host restart and durable state;
+  do not label single-host restart recovery HA.
+- [x] **K7 — Keep evidence layers separate.** Record exact sources/images, agent/model,
+  scenario inputs, commands, timings, pod/workload identities, bytes/hashes, errors
+  and boundaries. First deterministic/component checks, then deployed probes, then
+  the bounded final OpenCode `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` scenario. No model
+  calls during implementation. Existing Docker, embedding and issuer receipts do
+  not satisfy a Kubernetes gate by adjacency.
 
 ## Agent-Operated Platform Adoption Plan
 
@@ -676,6 +1709,972 @@ Architecture and component ownership are recorded in
   views/details of `diagrams/veoveo-platform.html`. All three views, navigation,
   embedding/runtime details, Fit and SVG/PNG exports were inspected in Chrome
   on 2026-10-19; the exported 2960×2480 PNG was also visually reviewed.
+
+## Multimodal Embedding Replacement — 2026-10-19
+
+New implementation goal explicitly authorized by the user. Replace the text-only
+purpose union with ordered multimodal content items; return one normalized embedding
+per item at a common requested dimension. The preceding text-only closeout stays
+historical. The architecture section records the MCP/Artifact/runtime boundary.
+
+Current checkpoint, 2026-10-20: Mac deployed qualification is complete. Runtime
+`2a3c1d6bc9eca39c2d3410235fac204b720d4626` and MCP
+`7cc6333b4406ce3a0721062fc070a3ef1709b678` are published on `origin/main`,
+independently verified with remote ref readback and clean local trees. Earlier
+publication-pending entries below describe their historical checkpoints. Linux
+multimodal deployment must join the current Kubernetes foundation; the retired
+Docker runtime is not current acceptance evidence.
+
+- [x] **Pinned native investigation and decoder prerequisites.** Exact model revision
+  `914f7f89142e33e77833254d9c9b90c3cef7303b`; 32 real full-model MPS encode cases,
+  19 preprocessing-only cases and 6 expected rejections. Managed Mac codec installed;
+  Linux model-stage decoder image built and smoke-tested, but active Linux runtime
+  still uses its earlier text-only image. Evidence:
+  `../veoveo-template-installation/state/embedding-api-investigation-20261019/REPORT.txt`.
+- [x] **Native composition authorization.** Reuse typed Artifact calls from
+  Embedding's request context. Review and qualify bounded nested request delegation
+  in SDK/Hub, retaining original authority, actor history, expiry and Task/session
+  liveness. Align affected dependency revisions; no alternative credentials/path.
+  Reviewed SDK source is published at `f369804dd2bda5c69103f480169769c80fac2859`.
+  Both Docker checks passed all repository gates and 232 tests with 3 skipped on
+  Mac Docker Desktop Linux/arm64 and native Linux/amd64. Coverage includes
+  Gateway → Relay → Ledger, missing declared uses and originating Task termination.
+  The production Hub change, published at `c00c0ab099a50b811fa81d66415f7ca3b0784580`,
+  was qualified at base `bfde2f2` with binary diff SHA-256
+  `65c1d9622973c0ce8d7d691e4de6d1344a0ebf7e90514321846c30abc35d839c`
+  on both Mac Docker and native Linux: 227 tests passed, one skipped per platform, including the native
+  PostgreSQL/Keycloak nested-call and session fixtures. Its first run had one test
+  ordering error: a newly cancelled Task was later asserted live by an existing
+  session-isolation assertion. Moving cancellation after that assertion corrected
+  the fixture without changing authorization code. Artifact's SDK-only alignment
+  passed both platform gates with 112 tests passed and 9 skipped per platform;
+  its exact reviewed source is published at `aa1ca94dd8e557ac3622192ff20fa756e96015ae`.
+  Native Linux Hub and Artifact builds took 252.21 and 203.83 seconds, respectively,
+  on `rozgo-sim-pc` (x86_64, Docker 29.2.1), with source archive hashes verified
+  before each build. Hub and Artifact are now deployed on Mac; the real composed
+  application call also passes there, as recorded below. Linux deployed composition
+  remains part of the separate CUDA qualification gate.
+  The earlier connectivity diagnosis
+  was an operator error: attempts used the unrelated direct alias at `10.61.10.50:22`
+  instead of the established RustDesk SSH endpoint `rozgo@127.0.0.1:2222`.
+  Two coordinator checks with strict known-host verification succeeded against
+  `rozgo-sim-pc` in about 1.05 seconds. No RustDesk restart, reinstall or configuration
+  change was needed. After the user resumed the goal, the builder completed the native
+  Linux gates through that verified endpoint. No emulated-platform result substitutes
+  for those gates. Exact commands, images and logs are retained in the corresponding
+  `hub-validation/REPORT.txt`, `artifact-validation/REPORT.txt` and `linux-validation/`
+  evidence directories. The correction and evidence limits are recorded in
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/BUILDER-NETWORK-ACTION-AUDIT.txt`.
+  Earlier SDK native Mac full-suite execution reached
+  216 passing tests, with 16 fixture setup failures because PostgreSQL programs
+  were absent from PATH; both pinned PostgreSQL Docker environments passed those
+  tests. Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/sdk-validation/REPORT.txt`.
+- [x] **Full-model runtime implementation and native MPS probes.** Enable vision/audio encoders, typed ordered content,
+  optional prefixes/dimensions, admitted signed transfers and ephemeral verified
+  bytes, native preprocessing, actual-token/resource preflight and complete ordered
+  output validation. Measure capacity on the full model before fixing final limits.
+  Runtime source `53d7a734c9f49647b4e489454bde45eb61ef0822` is committed locally;
+  publication and deployment remain pending native acceptance. Its 23 deterministic
+  tests passed natively and in both Mac/arm64 and Linux/amd64 Docker checks.
+  These checks use synthetic model fixtures and install no model/media packages.
+  Exact-source native MPS qualification passed 20 encode cases producing 33 vectors,
+  5 preprocessing-only cases and 7 expected rejection cases. It covers all modalities,
+  ordered heterogeneous and joint items, all supported dimensions, native soundtrack
+  extraction, 31-second audio preservation and explicit 5-second truncation.
+  One joint 8,192-token item took 7.178 seconds; two such items returned `[2,768]`
+  in 14.263 seconds with native `batch_size=1`. Each included a 384×256 image,
+  31-second WAV and 32-frame 192×128 video. The retained vector archive is 89,554
+  bytes with SHA-256 `c46a646c3359ff1c501330b4fa7b42fcf6c89e50b16b8f45b779a3cee8f40a0e`.
+  The frozen three-concept corpus passed all three text-to-image, text-to-audio and
+  text-to-video top-one matches; this is a semantic smoke test, not a quality benchmark.
+  A malformed-image probe initially bypassed the backend's error handler in its
+  harness. The corrected probe exercised the real encode boundary and confirmed
+  `preprocessing_failed` with zero forwards; production source was unchanged.
+  Processing identity now uses RFC 8785 canonical JSON, with a retained Unicode and
+  numeric-format fixture for the pending Rust/Python parity check. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-validation/REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-native-mps/native-results.json`.
+  Coordinator output verification is retained in that directory's
+  `coordinator-output-review.json`. These are local runtime probes with loopback
+  fixture transfers, not deployed Artifact/Hub authorization or CUDA acceptance.
+  MCP review then found a gap between metadata admission and the stated decoded-audio
+  budget: per-source actual samples were checked, but their actual aggregate was not.
+  The reviewed local follow-up `2a3c1d6bc9eca39c2d3410235fac204b720d4626` checks
+  the aggregate after each validation decode and stops before further decoding,
+  token preprocessing or inference on overflow. Its 24 model-free tests pass,
+  including synthetic underreported-duration cases for explicit audio and video
+  soundtracks. Builder native Mac and Docker/arm64 gates passed all 24 tests.
+  Six focused real-MPS cases returned eight vectors on the new revision, including
+  one item with two images, two audio parts and two videos, and two such ordered
+  items. The two 8,192-token capacity items completed in 14.475 seconds. The two
+  repeated joint cases matched their `53d7a73` vectors bit-for-bit; this is a
+  measured result for those inputs, not a general numerical guarantee. A scratch
+  harness referenced an unused missing image before capacity inference; correcting
+  that lookup allowed the capacity cases to run without repeating the four completed
+  cases. Six unmodified complete Python responses and actual capabilities were
+  captured for Rust wire validation, with private transfers excluded. The coordinator
+  verified all eight vectors against the retained archive, source identities and
+  ordered token counts. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-validation-2a3c1d6/REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-native-mps/regression-2a3c1d6/coordinator-output-review.json`.
+  The exact follow-up also passed all 24 deterministic tests on native Linux/amd64
+  in 3.43 seconds (including the Docker build), image
+  `sha256:03ed09c613eb326db354e00edaba462e8768b9f660affaf9370b9f61a87a7433`.
+  Publication and deployment remain pending; the preceding full native matrix
+  remains evidence for `53d7a73`.
+  Earlier model-level MPS capacity probes also passed for one joint 8,192-token item and
+  two separate 8,192-token items with native `batch_size=1`. The two-item encode
+  returned `[2,768]` in 13.940 seconds including instrumentation. Media fixtures
+  are generated data; vectors are real model inference. RSS and MPS allocation
+  counters are retained separately and may overlap. These probes do not qualify
+  the deployed API, CUDA capacity or general media quality. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/RESOURCE-PROBE-REPORT.md`.
+- [x] **Typed MCP and discovery.** Replace the contract coherently; expose Artifact
+  references, native options/defaults and effective processing/coverage. Preserve
+  Core usage attribution, bounded admission and conservative ambiguous outcomes.
+  Implementation is reviewed and frozen, with native caller-bound Artifact resolution
+  before inference usage reservation, private transfer bounds and independent
+  typed output validation. The Python/Rust JCS fixture passes focused checks.
+  Final dependency freeze uses published Artifact `aa1ca94`, SDK `f369804` and
+  unchanged Core `433ed5f`, with no local patch or path dependency. The coordinator
+  independently verified all 31 changed/new file hashes and the tracked diff digest
+  `75a7579f59a534c80c2c01cddbb6a06a6ff7dd3d089318578163418138bbaa80`.
+  The exact corrected tree is committed locally as
+  `496f39e29f019f3aaef96dcc747347c1e79435ba`; publication waits for deployed Mac
+  acceptance. Discovery is proved by component tests, not yet the deployed replacement.
+  Locked focused compilation, contract dependency isolation and acceptance fixtures
+  pass. The acceptance helper had drifted to a 0.001 cross-device component tolerance;
+  review restored the frozen pre-scoring plan's 0.0001 maximum absolute difference
+  and retained cosine ≥ 0.9999. A synthetic boundary regression rejects a 0.0002
+  component difference despite passing cosine. This is an acceptance-test correction,
+  not measured cross-device parity. The final source and focused receipts are in
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/mcp-validation/`.
+  All six retained complete Python responses pass the replay-free Rust wire check.
+  They exposed a real deserialization bug: Serde's internally tagged buffering
+  combined with the dependency graph's arbitrary-precision JSON feature could not
+  decode fractional media durations and timestamps into `f64`. The reviewed fix
+  captures the closed coverage payload with native `serde_json::RawValue` and
+  decodes the selected closed coverage struct directly, preserving the public
+  schema. Regression checks cover both JSON bytes and the SDK's structured
+  `serde_json::Value` path. No inference was repeated for these wire checks.
+- [x] **Component and integration gates.** Synthetic contract/provider tests are
+  distinct from real decoding/inference. Cover direct/composed Artifact access,
+  denial, content integrity, dimensions/order, malformed media, bounds, timeout and
+  no replay. Run exact-source Mac/AMD64 component gates through the builder.
+  The first full MCP Mac gate caught an unnecessary `as_ref()` in the deployed
+  probe helper under strict Clippy. After that one-expression fix, the next gate
+  passed 28 tests but the composition fixture failed SDK identity admission:
+  its synthetic Artifact and reusable composed-caller setup used RMCP's default
+  implementation name instead of their declared server names. Both fixtures now
+  use native `Implementation` identities, and the existing metadata-only test
+  constructs both setups. No production authorization guard or composition assertion
+  was weakened. The coordinator verified the full 31-file follow-up manifest
+  `f21696a73da51e795b1ca1bea1145c5d577e28891be3526e14a135ac8e2f9589`.
+  The targeted composition test passed in 1.274 seconds with PostgreSQL 18.6 and
+  real Core usage SQL; Artifact responses and vectors remain synthetic fixtures.
+  An initial focused harness invocation used a login shell that removed PostgreSQL
+  tools from PATH and failed before assertions; the non-login invocation preserved
+  the pinned image environment. Both failed full-gate logs and that harness failure
+  are retained separately. The corrected full Mac Docker gate passes all checks
+  and 29 tests, with 5 skipped, in image
+  `sha256:23db29550dd20326a805e18bbc8adf91c2b7d38b390437359069b5d2c35b5585`.
+  Its 264,306-byte log has SHA-256
+  `d3d16c3fa77f0db07e7a487ec66c1fc1f486093f971a85e08bd9e277ef66b339`.
+  All 31 frozen file hashes match before and after the build. Native Linux also
+  passes all gates and 29 tests, with 5 skipped, in 140.26 seconds. Its image is
+  `sha256:d5b9f52acaa4be93abfbf4222aa0605565147e82c7425c4005c64c7c22e4aaf0`;
+  the 264,180-byte log has SHA-256
+  `28bba3c0a7a5e8145d0f69043b0be0601e39b1261026b9a43c527f6c092256e6`.
+  The remote source archive included all new fixture files, and all 31 hashes
+  matched before and after the build. The first post-build verifier invocation
+  omitted its manifest argument; the corrected invocation verified unchanged source.
+  Mac contract-only tests also pass all four cases. Mac full-command wall time was
+  not separately instrumented; the log retains individual stage timings.
+  Deployed and model-driven acceptance are still separate gates.
+  A subsequent test-only readiness correction replaces an unroutable direct
+  probe-origin health check with native Hub discovery and the probe's declared
+  contract resource. It retains the existing registration and cleanup path.
+  The five-file freeze `7c9eb373` passes both full Docker gates: 29 tests passed
+  and five skipped per platform, in 107.57 seconds on Mac/arm64 and 141.27 seconds
+  on native Linux/amd64. Images are
+  `sha256:007c64cf57a72a5d4e8a75b9031f47bf5a4688577a59e1533775f7157a315015`
+  and `sha256:af6df2a64501c99cd329bc35a2ad192081e7167c59d97143ed8ee62fe3b96121`.
+  These component checks alone do not prove deployed composed delegation; the
+  later Mac call is recorded below. The exact reviewed five-file source is now
+  committed locally as `7cc6333b4406ce3a0721062fc070a3ef1709b678`, with no further
+  source change or push. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/mcp-validation/native-readiness-check-20261020/`.
+- [x] **Mac deployed qualification.** Through ordinary Hub/Artifact/OpenShell paths,
+  qualify each modality, a heterogeneous batch and a joint multimodal item; record
+  real vectors, media coverage, usage, GPU placement, capacity and restart behavior.
+  Include a fixed semantic matching corpus as a separate bounded quality check.
+  Native Artifact preparation is complete: the existing Mac member uploaded 13
+  sources totaling 1,261,018 bytes, then verified each Available record and downloaded
+  bytes against its exact size and SHA-256. The source set includes valid generated
+  PNG/WAV/MP4 fixtures and one explicitly malformed 51-byte image fixture. The run
+  took 1,987.248 ms internally (2.07 seconds externally); no embedding inference ran.
+  Its staged manifest SHA-256 is
+  `4bfd8142ee796a0d765d005b22953d83808500a969433ee7b582f27dc9fb86a7`.
+  A preparatory guard originally required an already-owned Artifact, preventing a
+  legitimate first upload into an empty catalog. Removing that self-imposed
+  prerequisite retained all caller/tool checks and verifies the first returned
+  owner/context before uploading subsequent files. No grants or identities changed.
+  The frozen deployed inputs plan 32 successful calls producing 50 vectors, plus
+  one confirmed not-started malformed-image case. Coordinator review verified all
+  eight input files, 61 ordered media references, six exact native input copies
+  (only Artifact IDs differ) and six distinct media assets in the composed case.
+  These are prepared inputs, not deployed results. Real Artifact ACL denial still
+  needs an independently verified object outside the caller's actual read scope;
+  a missing ID or different owner in the same Work Context is not a substitute.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/artifact-fixture-staging/upload-first-20261020T0435Z/coordinator-review.json`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/COORDINATOR-INPUT-REVIEW.json`.
+  Mac runtime `2a3c1d6` is now running under the existing launchd label. The first
+  bootstrap returned an I/O error; a second bootstrap after restoring the prior
+  job's stdout/stderr paths succeeded. The sequence does not by itself establish
+  launchd's root cause. Authenticated loopback readiness returned HTTP 200 in
+  20.203 ms; capabilities returned HTTP 200 in 5.983 ms and report the full pinned
+  model, all four modalities, MPS/FP32, native batch size 1 and the expected decoder
+  package/library identities. The coordinator verified the retained receipt hash
+  `3f5d1d8f8352dbdb931cf3120e60c494d712d8ed313a9a841192b40cb8ce204c`.
+  This proves runtime startup/configuration, not through-Hub model inference.
+  Receipt: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployment/runtime-2a3c1d6/runtime-launch-health.json`.
+  The subsequent native Hub runs pass 16 media cases (29 vectors) and 13 options
+  cases (17 vectors) on the deployed Mac stack: Hub `c00c0ab`, Artifact `aa1ca94`,
+  Embedding MCP `496f39e` and runtime `2a3c1d6`. These include all four modalities,
+  heterogeneous batches, joint/repeated media, four dimensions, eight named
+  prefixes, a literal Unicode prefix and native media options. Coordinator review
+  verifies ordered shapes, finite vectors, unit norms (maximum norm error
+  `8.345016e-8`) and semantic input equality after declared default expansion.
+  Scoring the retained fixed corpus gives all nine expected top-one matches across
+  image/audio/video. No inference was repeated for scoring; this remains a tiny
+  generated-media smoke corpus rather than a general quality benchmark.
+  The single joint 8,192-token capacity call returns a validated vector in
+  10.109 seconds. The next frozen two-item call returns JSON-RPC `-32603` after
+  4.817 seconds with no retained output; it was not replayed. A later native
+  own-usage snapshot increased by exactly 16,384 actual tokens and one record,
+  initially leaving the execution boundary uncertain. A subsequent bounded
+  read-only operator query found two matching Hub completion audits and two
+  estimate/actual usage pairs. The failed Hub audit records `upstream_failure`
+  at 04:58:43.717Z; the 16,384-token actual record commits at 04:58:53.004Z,
+  about 9.287 seconds later. This supports continued inference after transport
+  loss, not model completion before the error. Hub and MCP assign different
+  request UUIDs, so matching this usage pair to that call remains a correlation
+  of principal, timing, order and quantity rather than an instrumented UUID join.
+  The 51-byte malformed-image case passes with an 8,192-token estimate and zero
+  actual-token delta. At that checkpoint, composed delegation, real Artifact ACL
+  denial and runtime/MCP/Hub restart acceptance remained open; later results follow.
+  Full results and cosine matrices:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/acceptance-runs/20261020T0530Z/REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/acceptance-runs/20261020T0530Z/COORDINATOR-OUTPUT-AND-SEMANTIC-REVIEW.json`.
+  Capacity diagnosis found four Hub Hyper `Io(UnexpectedEof)` events at the
+  failure time, MCP `task cancelled`, and a cancellation-drain timeout two
+  seconds later. These identify a connection failure and cleanup, not the
+  initiating cause; service-instance messages can interleave. The acceptance helper discarded the original
+  JSON-RPC rejection message, so request-ID presence there is unknown. An offline
+  diagnostic over all six retained real native-runtime responses passes the exact
+  public SDK serialization operations, native JSON-RPC envelope budgeting and
+  decoding, bitwise vector equality and public result validation. The two-item
+  capacity response is 47,016 serialized envelope bytes, below the unchanged
+  8 MiB SDK limit; the larger repeated-media response also passes. No inference
+  or network call ran for this diagnostic, and it does not prove deployed HTTP
+  transport or private route dispatch. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/capacity-diagnosis-offline/serialization-result.json`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/capacity-attribution-20261020/REPORT.txt`.
+  The retained supervisor events subsequently identify a provider-environment
+  refresh at 04:58:43.689Z with unchanged policy, followed by generation 4→5
+  invalidation just before all four native stream EOFs. Installed OpenShell source
+  and intent tests show that credential replacement invalidates old policy guards,
+  closing the shared HTTP/2 connection. This strongly explains the interruption;
+  individual stream-to-generation IDs were not captured. Native credential fencing
+  remains unchanged. The isolated transport diagnostic then passes once through
+  the real gateway: 10.022 and 7.009 seconds on one connection, followed by 20.018
+  seconds on a fresh connection, with all three 47,016-byte response hashes equal.
+  Those bytes replay retained output; this diagnostic performs no model inference.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/native-transport-delay/SOURCE-AUDIT.md`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/native-transport-delay/run-20261020T0531Z/REPORT.txt`.
+  A separately authorized fresh two-item capacity call now passes in 15.086 seconds,
+  with 8,192 tokens per item, two 768-dimensional MPS/FP32 vectors and exactly 16,384
+  additional actual tokens. Coordinator review verifies the unchanged frozen input
+  after declared defaults, ordered finite vectors and maximum norm error `9.825e-9`.
+  The original failed attempt and its completed usage remain in the evidence. A
+  setup invocation before this fresh call failed because upload Git filtering
+  selected no input file; correcting the upload ran no model retry. The caller's
+  provider revision differs in before/after snapshots, so this success does not
+  establish uninterrupted credential-generation continuity during inference.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/capacity-fresh-verification-20261020/run-20261020T0600Z/REPORT.txt`
+  and that directory's `COORDINATOR-CAPACITY-REVIEW.json`.
+  The native registered `embeddingprobe` caller now completes caller → Embedding →
+  Artifact on Mac. Its single frozen item contains text plus two distinct images,
+  two audio files and two videos. Native Hub tool discovery and the hosted-MCP
+  contract read establish probe readiness; six Artifact metadata reads precede
+  the composed call. Inference returns one finite 768-dimensional MPS/FP32 vector
+  with 1,667 tokens, all six ordered source identities and validated coverage.
+  The embed call takes 1,970.221 ms; the full harness takes 3,615.417 ms.
+  Coordinator review measures norm `1.0000000460631435` and verifies exact frozen
+  input after declared defaults. Own usage adds one 8,192-token estimate and one
+  1,667-token actual record for the original member. This is not a separate capture
+  of every signed actor claim, and no parity baseline was selected for this call.
+  The structured result is 12,913 bytes, SHA-256
+  `4eabb7f8391f227f90bca9c02d98f29234939e0c18d3552f2324121f25e67771`;
+  request ID is `01a157dc-dce0-7b11-8800-fac223af5fcd`.
+  The temporary binding was appended to a complete fresh authoritative snapshot
+  and published by the current Hub image's native import, retaining all other
+  fields and the same sandbox, policy, providers, mounts and exposure. Revision
+  `gcp-01a157da-4f44-7cf2-bc81-a198622cf108` is verified against the full candidate.
+  One earlier invocation rejected a full endpoint supplied where the probe
+  configuration requires a base origin; it stopped in offline preflight before
+  any network or inference. The corrected invocation made one actual call and
+  passed. Temporary binding cleanup, a real Artifact ACL denial and Hub restart
+  regression checks are still pending.
+  Across the retained media, options, capacity and composed receipts, 32 successful
+  native calls now contain 50 vectors. This counts the completed first case in the
+  original capacity report separately from that report's later transport failure;
+  the failed call has no retained vector and is not counted as a success.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/composed-probe-preparation-20261020/native-activation/composed-run-20261020T055039Z/REPORT.txt`
+  and that directory's `COORDINATOR-COMPOSED-REVIEW.json`.
+  Two additional single-case recovery calls now pass on this same Mac source.
+  Native MCP stop/start retains sandbox `43064660-b0ef-44b7-9737-08ce035ee647`,
+  image, policy, provider attachments, mounts and host-key fingerprint, then reaches
+  Ready with a new process. The joint text/image/audio/video call takes 966.547 ms.
+  Independent `launchctl kickstart -k` of the existing runtime changes PID
+  58345→86292; authenticated readiness and capabilities return HTTP 200. Its fresh
+  call takes 1,080.577 ms. Each returns one 768-dimensional MPS/FP32 vector and
+  835 tokens; both match the retained baseline and each other exactly, maximum
+  component difference 0. No inference was replayed automatically.
+  Structured outputs are 11,800 bytes each, SHA-256
+  `c71776074a88c234e317d6f9188ce69ccbafc2d5ea7c295f37c17e59375b8b05`
+  and `8ed8aa6cb5a307085491e678cb509b0f14963c6ca11bc851225fc03ddc0bf701`.
+  Request IDs are `01a157e8-5d69-7d60-8c51-d4335c0f1576` and
+  `01a157e9-3ee0-7e20-aa9b-1a33c1c0e2f2`. These are two extra recovery
+  calls/vectors, separate from the 32-call/50-vector matrix above.
+  The runtime bearer hash and 15-entry cache metadata/symlink/size manifest are
+  unchanged. Model tensor bytes were not rehashed during this check. The MCP
+  signing key was hashed only after restart, so the same persistent volume is
+  measured but signing-key byte continuity is not independently proved.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/recovery-20261020/REPORT.txt`
+  and that directory's `receipt.safe.json`.
+  A real Artifact ACL denial now passes. A disposable isolated client/context
+  prepares one 968-byte PNG through typed CreateUpload, signed PUT and
+  CompleteUpload, then verifies Available metadata, empty grants and exact signed
+  download bytes. Artifact `01a157fd-d4dc-7302-b140-bf8a10a08e34` has SHA-256
+  `d9ac751afd7795459fd4e0f4f59ab5c0b71c107cb23b279fb87067d4e6c108a2`;
+  its owner receipt is 550 bytes with SHA-256
+  `72440654abe03cf6cc9d74d2fa41ed36f651a8a61d1cbc14b3a8acca4f433215`.
+  The ordinary member in `local` receives a native Artifact read refusal followed
+  by the closed Embedding resolution rejection, request
+  `01a15801-8d31-76b0-b697-7b8a0746ee0c`, in 186.679 ms (293.925 ms full harness).
+  All before/after own-usage rows are identical: October 20 actual 58,570 tokens
+  and 36 records, estimate 401,408 tokens and 36 records. The result is
+  `confirmed_not_started`. No-runtime-dispatch follows from the deployed source
+  ordering and closed rejection plus unchanged usage; an independent runtime
+  dispatch counter was not captured. The full report is 4,562 bytes, SHA-256
+  `293b073f903f699e506c204131502050ca2c7efce7ee35d85cdc1563bcd41e71`.
+  This verifies a known-existing object outside the caller's read scope, separately
+  from the successful composed-chain call. Fixture cleanup now passes as recorded
+  below; the final Hub read regression gate remains open.
+  The scoped fixture catalog adds only its client, context, role and grant, while
+  removing the completed composition-probe binding. Fresh authoritative readback
+  confirms revision `gcp-01a157fa-34a9-7752-8f5e-44772a5bb7dc` equals the reviewed
+  candidate. Ordinary identities and grants are unchanged.
+  Two temporary-helper assumptions were corrected using native Keycloak readback:
+  the account response omits `serviceAccountClientId`, and mapper representations
+  include the default `introspection.token.claim=true`. The first partial client
+  was explicitly deleted; the second setup's completed mutations were not replayed.
+  Separate read-only verification checks its exact isolated issued claims, with
+  token contents kept in memory and no independent JWT signature-verification claim.
+  Native runner preparation also corrected an overlong name and an unavailable
+  `/sandbox` directory before any Artifact call; only the exact binary policy path
+  moved into a private writable `/tmp` directory. No production API changed.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/artifact-acl-negative-preparation-20261020/COORDINATOR-DENIAL-REVIEW.safe.json`,
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/owner-prepare-readback-20261020T0626Z/prepared.json`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/artifact-acl-fixture-preparation-20261020/IDENTITY-PREPARATION.safe.json`.
+  Fixture cleanup uses one native owner DeleteArtifact and observes `NoSuchKey`
+  through the same still-valid signed GET on poll 16, in 30.283 seconds. The
+  confirmation receipt is 268 bytes, SHA-256
+  `6507768ac4297a0c38da1d787e618866177e4ffdde5569d6d56ddbcbd6165b16`.
+  The exact owned Keycloak client, native owner runner and dedicated provider are
+  deleted; ordinary member custody is unchanged. Cleanup removes only the four
+  temporary catalog records. The current Hub image validates the candidate and
+  imports it in 0.186 seconds; same-sandbox stop/start takes 0.16/1.72 seconds.
+  Full authoritative readback independently matches the reviewed candidate at
+  revision `gcp-01a1580b-8e83-75e0-a8c3-42038e82fbbd`, native digest
+  `sha256:740bebf3e5094b8ca7a97a6275a4b4962b31421cfcfe6c1bbd1dfb57238e4ac5`.
+  The returned payload is 5,014 bytes, SHA-256
+  `0c4a077169d5e3ddbcf5c71a16fcafb2c9e7963e509ecc705a71c7fff56f6eb3`.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/artifact-acl-cleanup-20261020T0636Z/`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/artifact-acl-cleanup-preparation-20261020/COORDINATOR-PUBLICATION-REVIEW.safe.json`.
+  A native read-only regression helper (ELF SHA-256
+  `fa59d106533625a86f2a15dced086090a9107498e4ac164b8b36b01749bac9d0`)
+  passes discovery, Time/Media/Artifact/Embedding contracts and Time resolve/convert.
+  Its Media catalog call fails with `-32600`, catalog not loaded, after the Media
+  background refresh received HTTP 401 on three consecutive one-minute attempts.
+  Hub audit records `upstream_failure` for request
+  `01a15803-97ae-7161-872f-00897d532104`; no generation or embedding is requested.
+  This proves a catalog availability failure, not its credential-routing cause
+  or a connection to the Embedding changes. Read-only native metadata inspection
+  is in progress. The helper's initial runner attached qualification custody;
+  although it explicitly selected the original member, the next run will use only
+  existing member custody in `vv-services`. No failed call is counted as passing.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/native-service-read-probe-build-20261020/run-activation-20261020T063305Z/`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/media-catalog-diagnosis-20261020T063516Z/audit.safe.json`.
+  The fake Media catalog regression is now closed. The operator probe initially
+  selected a Fortinet CA bundle rather than the existing OpenShell gateway CA and
+  failed before HTTP. With the correct existing CA, the documented public fixture
+  credential returns HTTP 200 and three model IDs (1,239 bytes, SHA-256
+  `1b85cc68374cfc8a295795bb4d805777c430ad2ef818ee64a6a93b89a36cf7cd`).
+  One native update restores only that credential on the existing provider
+  `b3129f10-7e87-448b-92c5-2eff4bf33eb8`, resource version 2→3. The same Media
+  sandbox restarts with its existing configuration. The member-only native helper
+  then passes discovery, four contract reads, Time resolve/convert and Media
+  catalog in 326.359 ms; the catalog read takes 27.341 ms and returns three models.
+  Its earlier stored credential was not readable, so recovery does not establish
+  the exact prior authentication defect. No generation was requested. Both owned
+  read-probe runners are removed; failure evidence remains.
+  Evidence: `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/media-catalog-gate-20261020T0712Z/REPORT.txt`.
+  One final frozen joint-media call after the final Hub cleanup/restart also passes.
+  Request `01a1581b-25c2-7121-94a3-a9ac3d3d9f8d` takes 1,791.714 ms for embed,
+  2,021.754 ms for the full harness and 2.124 seconds for host native Exec. It
+  resolves the real PNG/WAV/MP4 and returns one 768-dimensional MPS/FP32 vector,
+  exactly equal to the retained baseline, with identical source coverage,
+  processing identity and 835 tokens. Daily own usage adds 835 actual tokens and
+  one record, plus the 8,192-token estimate and one record. The result is 11,800
+  compact structured bytes, SHA-256
+  `9b80eeac70caa34da9bb87dadda159345dd9872f3a25b9d35ee4ce523719513f`.
+  A preceding wrapper failed before launching the test because `/usr/bin/time`
+  was absent inside the runner; host timing corrected the invocation without an
+  inference replay. This final call brings the retained deployed matrix plus
+  three recovery calls to 35 successful calls and 53 vectors. It closes actual
+  post-Hub-restart Artifact/Embedding behavior, separately from the Time/Media
+  reads. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-mac/hub-final-recovery-20261020/REPORT.txt`
+  and that directory's `COORDINATOR-REVIEW.safe.json`.
+- [x] **Linux production image construction.** Native Linux/amd64 builds of
+  published runtime `2a3c1d6` and MCP `7cc6333` passed in 158.25 and 387.23 seconds.
+  Local Docker image/config IDs are respectively
+  `sha256:047994cb94f7312ec56f97a5f044859591ddaf7490cb61c804e982cb7b346d63`
+  and `sha256:acb4ac02a5cb4c785aa0bbe05423dff4566a55952c45d4a26ad2f82925641431`;
+  these are not registry manifest digests. Source archives and OCI revision
+  labels match. The existing exact model snapshot contains 13 files totaling
+  1,521,119,809 bytes, independently hashed; no model download occurred. Neither
+  image has been pushed or deployed. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/linux-image-build-20261020/BUILD-REPORT.txt`.
+- [x] **Kubernetes GPU prerequisite.** Builder GPT-6 Luna installed the official
+  NVIDIA device-plugin chart 0.20.1 with Helm 3.22.1 after exact-source lint,
+  render and server-side dry-run. The archive SHA-256 is
+  `b705142f03ac17906bfcface9319e2f7b9a570d2af7f04f23252723ce2c0bb8e`;
+  its selected Linux/amd64 image is
+  `nvcr.io/nvidia/k8s-device-plugin:v0.20.1@sha256:d279ecdb47b252c4cd96f4224650e9808c36012f6979570c9611ddbc5b0749a7`.
+  Only the new `kube-system/nvidia-device-plugin` Helm release and the verified
+  node's `nvidia.com/gpu.present=true` label were applied. The single install
+  took 2.15 seconds and produced release revision 1. Plugin Pod
+  `e666cf98-737d-41fc-8d5b-efc2303febfe` is Ready; node capacity and allocatable
+  both report one GPU. The official NVIDIA MPS-sharing DaemonSet remains dormant,
+  with zero Pods by owner UID and no eligible node label. This does not qualify
+  application GPU allocation or inference. Sixteen captured foundation Pod UIDs
+  remain unchanged. A wider coordinator snapshot shows the earlier Hub and its
+  supervisor Pods are now absent; it does not establish why. Their process
+  continuity is not claimed, and no Hub lifecycle operation was performed by
+  this installation. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/nvidia-device-plugin-install-20261020/REPORT.txt`
+  and `COORDINATOR-POST-METADATA.safe.json` in that directory.
+  The proposed runtime `/sandbox` permission change was withdrawn before any
+  build or publication: current native service identity is 10001:10001, and that
+  user can enumerate the unchanged image's owner-10001 mode-0700 directory.
+  UID 1000's measured denial was a countercase, not a deployed bootstrap failure.
+  New token/cache bootstrap inputs now use the effective service identity.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployment/linux-preflight-20261020/SERVICE-IDENTITY-REVIEW.safe.json`.
+- [ ] **Linux CUDA component qualification.** Coordinator acceptance revision,
+  2026-10-20, after the controlled feature experiment and before the remaining
+  five CUDA cases: separate model numerical parity from native media pipeline
+  agreement. The original end-to-end `maxComponentAbs <= 0.0001` failure remains
+  recorded below; it is not relabeled a pass. It compared different model inputs,
+  as the complete CPU captures and controlled intervention demonstrate.
+  The revised checks preserve native upstream processing:
+  identical-feature numerical parity retains both `maxComponentAbs <= 0.0001`
+  and cosine `>= 0.9999`; native cross-platform cases require exact source bytes,
+  model/options, cardinality, dimensions, tokens and coverage, finite normalized
+  vectors, actual full-model GPU placement and the existing cosine `>= 0.9999`.
+  Their maximum component difference and original comparison verdict are still
+  reported. Deployed Linux calls additionally compare against retained native
+  Linux vectors with both original numerical thresholds. No cosine threshold is
+  widened, and a failure of these revised checks stops qualification.
+  The controlled check currently covers one joint full-tower input only, not all
+  batches or capacity cases. This is a qualification-design correction based on
+  observed different video features, not a production transform or model change.
+  PyTorch also does not promise identical numerical results across platforms
+  ([upstream numerical accuracy](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html));
+  that general limitation does not itself establish the cause of our result.
+
+  The first frozen joint text/image/audio/video
+  case ran once inside the runtime image on the RTX 4090, with no external network
+  and read-only inputs/cache. All 744,371,488 parameters were CUDA FP32 tensors;
+  observed backbone, vision and audio forwards returned CUDA FP32 tensors.
+  It produced one saved normalized 768-dimensional vector and 835 tokens in
+  1.009939 seconds, including the probe's outer CUDA synchronization. Startup
+  took 14.720774 seconds; the Docker wrapper took 17.90 seconds. The frozen
+  cross-device gate failed: maximum component difference from the retained MPS
+  vector is 0.002152925357 against a 0.0001 limit; cosine 0.999912292982 passes
+  its 0.9999 minimum. Thresholds remain unchanged and the other five cases have
+  not run. Tensor shapes/device placement do not identify the numerical cause;
+  preprocessing values and arithmetic-mode settings were not captured.
+  The saved response is 26,907 bytes, SHA-256
+  `408d83b7d142c8262da9818cb61d3505c8eaf1c2e887986eb47c375aeda9c577`.
+  A preceding output-directory setup error stopped before model startup; its
+  corrected invocation is the sole inference. This is component inference with
+  local transfer fixtures, not deployed Artifact/Hub/Kubernetes qualification.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-native-cuda/linux-amd64-first-case-20261020/REPORT.txt`.
+  A separate frozen diagnostic now captures the complete native CPU preprocessing
+  on both platforms without any model encode/forward. Builder GPT-6 Luna executed
+  the unchanged runtime source; the coordinator independently verified both NPZs,
+  their complete array hashes and values. Each capture contains nine arrays,
+  23,457,657 bytes and 835 tokens. Eight arrays are byte-identical, including
+  image pixels, audio features, tokens, masks and positions. Only
+  `pixel_values_videos` differs: 530,057 of 3,870,720 values, maximum absolute
+  difference 0.0117647126317 and RMS difference 0.00146021607122. All media
+  coverage, processing settings and source identities match. Native preprocessing
+  took 0.035191 seconds on Mac and 0.254155 seconds on Linux, after model setup
+  of 6.079414 and 19.521833 seconds respectively. The private NPZs are 268,961
+  and 271,927 bytes. FFmpeg versions differ (8.1.1 versus 7.1.5), but decoded
+  pixels and resize intermediates were not captured, so the causal stage and its
+  contribution to the vector discrepancy remain unproved. The next diagnostic
+  observes those actual native video boundaries. Numeric settings describe these
+  new processes only; they do not establish earlier inference modes or executed
+  attention kernels. A transfer-packaging error and a precreated-output-directory
+  error preceded the sole successful Linux preprocessing call; neither reached
+  model startup. The Linux directory label `0751Z` is not its execution time:
+  the command log records 07:46:40–07:47:08 UTC. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/preprocessing-parity/results/REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/preprocessing-parity/COORDINATOR-ARRAY-COMPARISON.safe.json`.
+  A second no-forward trace observes the actual video resize input and return
+  without changing them. Decoded RGB input already differs before resize:
+  179,890 of 1,179,648 uint8 values, maximum difference 2 (Mac minus Linux is
+  0 through 2). The resize returns differ in 530,057 values, maximum difference
+  3. Both devices reproduce their earlier final video features byte-for-byte;
+  tokens, masks, frame counts and positions still match. Source/function hashes,
+  resize arguments and input strides agree. Each trace captures seven arrays,
+  20,240,184 bytes. Native resize takes 0.001247 seconds on Mac and 0.003213
+  seconds on Linux. This locates an observed difference before resize, but does
+  not identify a specific decoder implementation or quantify its contribution
+  to embeddings. The Mac folder's `0807Z` label is not an execution timestamp.
+  The Linux wrapper's whitespace-sensitive utilization parser failed before its
+  final K3s print; an independently issued command still launched the approved
+  trace. That preflight control-flow error is retained, and no trace was replayed.
+  The next reviewed experiment will substitute only the captured Mac video
+  feature tensor in one CUDA qualification call, verifying every other feature
+  remains identical. This is a diagnostic intervention, not a serving change or
+  native end-to-end acceptance; the original failed gate remains unchanged.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/video-preprocessing-trace/results/TRACE-REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/video-preprocessing-trace/COORDINATOR-BOUNDARY-COMPARISON.safe.json`.
+  The controlled experiment now passes. Builder GPT-6 Luna ran exactly one
+  encode on the same runtime/image/model, with no numerical-setting changes.
+  Both normal preprocessing calls first matched all nine retained Linux arrays,
+  then matched all nine retained Mac arrays after replacing only the video
+  tensor. Actual backbone, vision and audio floating tensors remained CUDA FP32.
+  Maximum component difference from Mac is 0.000000684987754, cosine
+  0.9999999999837053, well within the unchanged controlled thresholds.
+  Request `01a15862-26eb-73c6-aa7e-f0102893f864` returned one normalized
+  768-dimensional vector and 835 tokens. Setup took 10.817289 seconds; the
+  synchronized encode including diagnostic guards took 1.244866 seconds.
+  Its 26,898-byte response has SHA-256
+  `71794291d7f38cf43e51fb44bf5fa1407d99c14a4a514e2492c4c7651f6a96ce`.
+  The coordinator independently verified all recorded feature identities,
+  vector bytes, comparisons and observed placements. This establishes that the
+  retained Mac video features suffice to recover numerical parity for this input;
+  it does not qualify native decoding or replace the original failed end-to-end
+  comparison. No serving transform, precision setting or image changed.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/cuda-identical-features/results/REPORT.txt`
+  and `cuda-identical-mac-video-features-20261020T081615Z/COORDINATOR-REVIEW.safe.json`
+  beneath that results directory.
+  The next native case, `joint-text-image-video-native-audio`, fails the retained
+  cosine minimum as well as the original maximum-component check. Builder ran it
+  once at 08:28:15 UTC on the same image/runtime/model. Request
+  `01a1586d-24c2-77c3-a99e-1c8ecbb2e112` returned one finite normalized
+  768-dimensional vector and 887 tokens; all six observed forwards returned,
+  with the required CUDA FP32 floating placements. Maximum component difference
+  is 0.001991043333 and cosine 0.999847141497, below 0.9999.
+  Both original and revised acceptance verdicts are therefore failed; the other
+  four native cases were not started. No threshold was changed and no inference
+  was retried. Setup took 13.982982 seconds; the case took 1.080465 seconds,
+  during concurrent registry upload, so this is not an isolated performance
+  benchmark. The 26,604-byte response has SHA-256
+  `68084f52965f2494084eb8e75cbc8ec69d4602c5c97da9443ca24dc96fd16e8e`.
+  An earlier shell-escaping error in the Kubernetes preflight stopped before
+  inference and was corrected separately. The coordinator independently
+  verifies the saved vector, nonvector fields and observed forwards. A separate
+  no-forward capture for this exact soundtrack input is being prepared;
+  the first input's controlled result does not establish this case's cause.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-native-cuda/linux-amd64-remaining-cases/joint-text-image-video-native-audio-20261020T082815Z/COORDINATOR-REVIEW.safe.json`.
+  The coordinator subsequently authorized the four remaining distinct native
+  cases to collect batch/capacity evidence, without replaying either failed case
+  or changing the frozen harness. Only an isolated `cross_device_parity` failure
+  with complete retained outputs and every other check passing permits the next
+  distinct case. All original numerical verdicts remain recorded. An optional
+  user question about strict cross-platform equivalence is pending; the working
+  deployment assumption is native preprocessing on each platform, consistent
+  with the original native-processing scope. Strict cross-platform numerical
+  equivalence remains unqualified and is not a promised API property. This
+  separates continued Linux validation from the failed portability checks; it
+  does not convert those checks into passes. Native Linux deployment must still
+  match its retained Linux component vectors at both original thresholds.
+  The second input's no-forward captures are now independently verified in full.
+  Each contains nine CPU arrays totaling 23,566,219 bytes and 887 tokens.
+  Seven arrays are byte-identical. Native audio features differ in 39,493 of
+  51,584 float32 values (maximum absolute difference 0.000511169434,
+  RMS 0.0000149997004); native video features differ in 530,057 of 3,870,720
+  values (maximum 0.011764712632, RMS 0.001460216071). Exact source bytes,
+  options, frame indices/timestamps, 64,512 retained audio samples and coverage
+  match. Mac/Linux preprocessing took 0.045391/0.058908 seconds after setup
+  of 6.731315/11.812834 seconds. Both guards record zero inference attempts.
+  This establishes two differing model-input tensors for the soundtrack case;
+  it does not identify a decoder/kernel cause or isolate either tensor's
+  contribution to the embedding difference. No further diagnostic inference
+  or serving preprocessing replacement is authorized. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/preprocessing-parity-native-audio/REPORT.txt`
+  and `COORDINATOR-ARRAY-COMPARISON.safe.json` in that directory.
+  All four remaining distinct native CUDA cases have now run once, with no model
+  retry. Builder GPT-6 Luna retained each original `cross_device_parity` failure;
+  coordinator GPT-6 Astra independently rehashed the complete responses/NPZs,
+  checked source/image/model identity and reran the frozen offline validation.
+  Every non-parity check passes, including ordered output cardinality, exact
+  tokens/options/coverage, finite unit vectors, all 744,371,488 parameters on
+  CUDA FP32, and returned CUDA FP32 backbone/vision/audio forwards.
+
+  | Case | Tokens per item | Synchronized case seconds | Max component difference from MPS | Cosine |
+  | --- | --- | --- | --- | --- |
+  | Two images, two audio and two video parts in one item | 1,655 | 1.130528 | 0.001740848646 | 0.999910643192 |
+  | Two items with those same ordered parts | 1,655 / 1,655 | 1.683737 | 0.001740848646 each | 0.999910643192 each |
+  | One full-capacity joint item | 8,192 | 2.652190 | 0.001971216872 | 0.999888126339 |
+  | Two full-capacity joint items | 8,192 / 8,192 | 4.640433 | 0.001971216872 each | 0.999888126339 each |
+
+  Both intentionally repeated batch outputs are byte-identical to their
+  corresponding single-item Linux vectors. The last call returned two
+  768-dimensional vectors with 16,384 total tokens, request
+  `01a15886-9f29-733e-aaa0-6dbaec621f2a`; its 55,490-byte response has SHA-256
+  `8223c7bc0072102f08a7d9600f9a3933d67b754e44d3d638a5a739fe561e591a`.
+  Its sampled process RSS peak is 3,214,819,328 bytes, CUDA allocator peak
+  5,403,103,232 bytes and reserved peak 7,434,403,840 bytes. These separate
+  counters must not be added. Registry upload overlapped the measurements;
+  no isolated performance guarantee is established. This completes collection
+  of the six native CUDA cases, not strict portability or deployed acceptance.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/runtime-native-cuda/linux-amd64-remaining-cases/REPORT.txt`
+  and `COORDINATOR-FOUR-CASE-REVIEW.safe.json` in that directory.
+- [ ] **Linux deployed qualification.** Integrate reviewed published source/images
+  with the replacement native OpenShell Kubernetes placement and CUDA runtime,
+  preserving the current foundation's identity/custody and Artifact storage
+  boundaries. Repeat modality, batching, authorization, capacity and recovery
+  checks with CUDA evidence. The current Kubernetes plan supersedes the historical
+  Docker rollout: fresh SSH inventory on 2026-10-20 found only the retained build
+  container in the default Linux Docker daemon, with K3s containerd workloads
+  running separately. The old application runtime was deliberately cleared under
+  that plan. Earlier runtime `f55b855`/CDI inventory is historical and must not be
+  presented as current deployment. Do not recreate it. Isolated Docker CUDA checks
+  remain component evidence only; deployment waits for the current foundation.
+  The isolated nine-file Kubernetes integration now passes exact-source review
+  and server-side dry-run for its three PVCs and two one-time seed Jobs on the
+  existing native service namespace. All five names remain absent afterward;
+  no storage, Job or application was created. Both seed Jobs pin the verified
+  public Python amd64 utility and use service UID/GID 10001. The model-cache Job
+  receives one reviewed standard tar stream through native stdin/attach, with no
+  downloader or persistent bootstrap process. Copy integrity and native offline
+  cache resolution remain required before runtime admission. Native driver/policy
+  admission is a separate pending check. A fresh dependency snapshot still finds
+  the existing Hub sandbox not Ready, no Artifact sandbox, and no Pods in either
+  control or service workspace; those shared workloads were not modified.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/k8s-cache-bootstrap-dryrun-20261020/REPORT.txt`
+  and `workload-status.stdout.txt` in that directory.
+  A later metadata-only snapshot after the controlled CUDA run now finds both
+  shared dependencies Ready/Running: Hub Pod
+  `c44994ff-f222-4d0c-ab0f-11ff4158eb61` and Artifact Pod
+  `fb7da02e-8e19-4dbb-b825-9287b6ba5f63`. Their lifecycle was not changed by
+  embedding qualification. This supersedes the earlier absent-Pod snapshot;
+  embedding's own admission and application calls remain pending. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/cuda-identical-features/results/HUB-ARTIFACT-POD-SNAPSHOT.safe.json`.
+  The canonical cache archive is now prepared and independently reviewed:
+  1,521,152,000 bytes, SHA-256
+  `bea440f459b0c8a3be431ae32ee3626308a23abf91c6f7ae49f1dca0dba64fcd`.
+  All 30 exact members match the reviewed inventory: two directories, 15 relative
+  symlinks and 13 regular payload files totaling 1,521,119,809 bytes. Full payload
+  hashes and link strings match. Two native link chains terminate in selected
+  shared `HF_HOME/hub/blobs` files, so the guide was corrected to preserve those
+  chains instead of copying only the model-repository subtree. No link is
+  flattened and no unrelated cache or credential is included. Archive preparation
+  is not PVC population or deployed qualification. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/k8s-cache-bootstrap-dryrun-20261020/COORDINATOR-ARCHIVE-REVIEW.safe.json`.
+  The reviewed three PVCs and one cache-seed Job have now been created in the
+  existing service namespace. The single native attach streamed the archive
+  once, exited zero in 4.755 seconds, and the Job completed with container exit
+  zero at 08:35:26 UTC. Its UID is
+  `8738ed31-8244-43cc-86a8-e7479ae1260c`; the sole Pod UID is
+  `99cd646e-7246-4964-868f-4704fa325308`. The cache claim is Bound; state/config
+  claims await consumers. Kubernetes omitted the default-false `tty` field,
+  causing one checker to stop before attach; a corrected absent-or-false
+  predicate allowed the sole transfer. These receipts establish successful
+  receiver completion, not copied-file integrity or native cache resolution.
+  The frozen one-shot native OpenShell verifier must rehash all files, verify
+  every relative link and resolve the exact snapshot offline using the published
+  runtime image before serving admission. No token seed, provider or embedding
+  runtime/MCP sandbox has been created. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/k8s-cache-seed-execution/REPORT.txt`.
+  MCP image publication now succeeds separately. Its immutable registry manifest
+  is `sha256:eb431060a23da3eb8e7b0da0027a84c756935c1e87d9372a5042928c47dbb8fd`,
+  with read-back config digest matching the built `acb4ac02...` image and source
+  `7cc6333b4406ce3a0721062fc070a3ef1709b678`. The push exited zero in 8.35 seconds.
+  The runtime's first Docker push did not publish a manifest: a recorded registry
+  HTTP 503 was followed by retries, then a ten-second interval with no change in
+  the observed outbound flow's byte counters. That flow's ownership was not
+  exposed, so attribution to the push is inferred. After exact process review,
+  only the runtime push client received SIGINT; Docker, RustDesk and SSH were not
+  restarted. Its elapsed time was 2,511.04 seconds; a numeric final exit status
+  was not captured. Authenticated reads subsequently confirmed both tags absent
+  before the separate successful MCP push. This does not establish the cause of
+  the registry failure or a layer-size limit. Runtime publication remains a
+  prerequisite for the native cache verifier and serving admission. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/linux-image-publish-20261020/REPORT.txt`.
+  The subsequent single `regctl image import` completes with exit zero at
+  09:50:59 UTC after 2,509.36 seconds. Remote readback resolves the runtime to
+  manifest `sha256:e4ff6bca755b284ce4a53e3d0b75dc5bfd3bf5747f9f4da3935dda169123ef6c`
+  (2,232 bytes, 13 layers) and the original config
+  `sha256:047994cb94f7312ec56f97a5f044859591ddaf7490cb61c804e982cb7b346d63`.
+  Its revision label and all thirteen ordered root-filesystem diff IDs match the
+  tested local image; no source change or rebuild was needed. Publication does
+  not yet prove a Kubernetes pull, cache verification or serving readiness.
+  The subsequent native cache verifier now passes on that exact registry image.
+  Its no-network, no-GPU sandbox runs as UID/GID 10001 and verifies every file
+  and symlink before and after native offline snapshot resolution. All thirteen
+  files, fifteen links and 1,521,119,809 bytes match; the checker takes 5.950
+  seconds, while native creation/attachment takes 299.372 seconds. One earlier
+  overlength name is rejected before creation. After coordinator review, guarded
+  cleanup removes only the completed verifier and cache-seed Job; the cache claim
+  remains. This establishes the actual Kubernetes image/cache path, not inference.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/k8s-cache-verification/run-20261020T095418Z/REPORT.txt`.
+  Runtime credential bootstrap now completes independently of image publication.
+  After confirming no retained owned runtime bearer or current embedding provider,
+  the operator created one private bearer, imported the two existing native
+  registration/inference profiles and stored only their designated credentials.
+  The registration value comes from retained trusted Hub configuration. The
+  one-shot token-copy Job `29437aad-5ba5-47ce-90d7-5aabb5a9e861` completed as
+  UID 10001 with exit zero; its configuration claim is now Bound. Guarded cleanup
+  removed only that completed Job and its bootstrap Secret. The operator file,
+  native providers and all three claims remain; the already-populated model cache
+  was not reseeded. No embedding sandbox or GPU request was created. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployment/linux-runtime-token-bootstrap-20261020.json`.
+  The deployed-Linux recipes and offline comparison helper are also prepared.
+  Six frozen inputs map new Artifact IDs only by exact MIME, size and SHA-256;
+  comparison uses the retained native Linux vectors at both original thresholds.
+  Coordinator review rehashed all source/reference files and checked native typed
+  validation, output serialization, source mapping and coverage. Builder's first
+  compile found an unsupported digest-formatting operation; a scoped byte-format
+  correction now passes five offline tests, strict Clippy and release compilation.
+  These tests use synthetic data, not model inference. Separately, exact MCP
+  `7cc6333` compiled its Linux acceptance executable without running tests; a
+  preserved packaging copy strips only debug information and successfully lists
+  tests inside the selected existing QA image with networking disabled. The
+  original executable and all source/lock identities remain recorded. Artifact
+  staging, inventory and bounded administrative-read executables are built from
+  their frozen sources. No deployed comparison or authenticated QA call is
+  established by these build receipts. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/comparator-focused-build-receipt.json`
+  and `linux-build-receipt.json` in that directory.
+  Native admission of the dedicated `vv-hub-qa/embedding-linux-qa` runner now
+  succeeds with the reviewed immutable acceptance image, one CPU, 1 GiB and no
+  GPU. Its actual exec identity is UID/GID 10001, and all four uploaded Linux
+  executable sizes and hashes match their build receipts. One authenticated
+  administrative GET returns HTTP 200 and revision
+  `gcp-01a158ad-7202-75e1-b34b-def5302a3d86`; the existing embedding binding already
+  targets `vv-services/embedding:8803`, so no replacement is needed.
+  The bounded native Artifact inventory completes in 690.705 ms with one page
+  and zero administrator-owned objects. No existing denial candidate is available;
+  the reviewed isolated-context fixture is still required. These observations
+  prove the QA access path, not deployed embedding inference. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/linux-qa-policy-review-20261020/`,
+  including the private administrative read and safe ACL inventory summary.
+  The first Linux stager preflight verifies all offline fixture bytes, then
+  stops in 239.905 ms because this member's own-usage endpoint has no rows.
+  It creates no Artifact and performs no upload. The unchanged planned
+  `text-two-items` acceptance case will run first after serving readiness, with
+  expected token counts `[6,6]`; its checked actual usage can establish the
+  identity required by the stager. The later media corpus will contain the other
+  fifteen original cases, preserving the total sixteen without duplicate
+  inference. The original empty-usage preflight remains recorded in the cache
+  verifier run's `preflight-receipts/` directory.
+  Linux serving admission subsequently creates the GPU runtime and CPU MCP
+  sandboxes, but application readiness does not pass. The first runtime create
+  required approval of the existing `nvidia` RuntimeClass through the native
+  `openshell.ai/sandbox-attachable=true` label. The first MCP attempt also used
+  the operator-forward port 18443; its replacement uses the actual gateway
+  Service port 8080 and reaches the runtime route. Neither correction proves
+  successful model startup. A bounded agent-container log capture at 10:22:32
+  UTC identifies the runtime's fatal startup predicate:
+  `torch.cuda.is_available()` is false, raising the closed GPU-unavailable
+  error before model construction. Uvicorn exits with status 3 and OpenShell
+  replaces the sandbox under its configured restart policy. The preceding
+  `joblib` serial-mode warning and later supervisor teardown are separate
+  observations. GPU allocation is therefore not usable CUDA access. Native
+  Kubernetes GPU-claim propagation is under source/live investigation; no
+  deployed embedding request or model inference has run. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/runtime-deploy-20261020/REPORT.txt`
+  and the private `runtime-agent-logs-20261020T102222Z/` capture beside it.
+  A subsequent restricted configuration read confirms that the native agent Pod
+  requests/limits one GPU with RuntimeClass `nvidia`, while its protected boundary
+  claims omit `openshell.gpu`. Source `b849a25c` omits that claim in both initial
+  and reconstructed Kubernetes boundaries; the existing sandbox uses it to admit
+  GPU device filesystem access. The isolated driver correction now propagates
+  the claim from the validated agent Pod's positive native integer GPU limit.
+  The correction is committed as `7878752f06bda8e58d34f0ecd43031e758dfd7e0`.
+  Its local library suite passes 305 tests; all-target compilation, strict
+  Clippy and a Mac arm64 gateway link with the Kubernetes driver also pass.
+  The initial Clippy failure was one documentation-format lint, corrected
+  without changing tested logic. The additional repository lockfile check
+  fails identically on clean baseline `b849a25c` because the unchanged feature
+  suite lockfile needs an update; the root workspace's locked checks pass.
+  The locked Linux/amd64 gateway build now passes in 283.05 seconds, followed
+  by the repository image build and a network-disabled `--help` smoke. The
+  gateway ELF is SHA-256
+  `32adea4b0f63c7655ae25a27a0e428d6fb58fe30c408cb91dba91728a4d7964b`.
+  Correcting the candidate's OCI source URL to the VeoveoAI fork changes only
+  image metadata: all 23 ordered rootfs diff IDs and the ELF remain identical.
+  Final local config ID is
+  `7c00a3eee9f1df07e978a74877ac6b08587cbe27e97cfc83a2a47ec13a2edf46`;
+  it is not a registry manifest digest. Publication and native startup/restart
+  validation remain pending. The
+  canonical-venv CUDA diagnostic has not run: one earlier probe used the wrong
+  interpreter, the corrected attempt lost readiness before exec, and later SSH
+  attempts timed out before reaching OpenShell. The existing RustDesk SSH
+  endpoint subsequently recovered without connection-setting changes. A fresh
+  10:43:35 UTC read finds the runtime stopped and the CPU MCP starting; it does
+  not establish who terminated the runtime. The actual gateway image is
+  `gateway@sha256:add687d9afe99a841db1511ff4c906a297c623b98f1228b8e85ef4429061123a`,
+  rather than the older recorded `openshell/gateway@sha256:66b3121b44778d0d9d68651f0f724cac13cde7b5beaa740b49fdd429b65cd4a2`.
+  Registry inspection finds matching first 22 layers and a different final
+  layer, with no source labels on either image. The available task-owned
+  receipts do not identify the live binary's source; rollout review must
+  preserve current configuration and account for this provenance gap.
+  The source omission is verified; the correction's effect on deployed
+  CUDA availability is not yet proved. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/runtime-cuda-visibility-20261020T102539Z/probe-receipt.json`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/k8s-gpu-claim-validation-20261020/REPORT.txt`.
+  Build and live-image evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/linux-gateway-build-7878752-20261020/REPORT.txt`
+  and `../veoveo-template-installation/state/embedding-multimodal-20261019/gateway-image-identity-compare-20261020/REPORT.txt`.
+  A later 10:59:06 UTC read confirms the concurrent foundation recovery update
+  is live: Helm revision 5, gateway manifest
+  `b36083f28400e0136521bfa72ffdf91aaddbf0b0f9a6345bd261963080692d95`
+  from the separately recorded `2c9fe478` build. The `7878752` GPU-only image
+  remains unpublished and must not replace that newer recovery behavior.
+  The combined branch is now frozen at
+  `f70a959c2da8617d5a0a1599b542e844db01f401`: `2c9fe478` plus the unchanged
+  GPU correction and concise native provisioning/restart documentation.
+  Original `7878752` evidence remains separate. The combined source passes
+  all 305 Kubernetes-driver tests, including GPU-claim admission and the
+  recovering-supervisor case, all-target compilation, strict Clippy and the
+  native documentation build (zero errors, three existing warnings).
+  Its Linux/amd64 executable was cross-compiled on Mac with the pinned
+  Rust/Zig workflow in 4 minutes 32 seconds. The 88,571,416-byte ELF has SHA-256
+  `90708ad4d6afbb37fcf13f5a2ece421e1f1261480a36227c0190294e4fa3ef25`;
+  the repository GLIBC check passes at 2.28. The OCI config is
+  `bb7321249865a0170171a9a4365c50b32c0f7600440aac1d7a92404b74224454`,
+  with matching source labels and a passing network-disabled launch smoke.
+  Transfer and Linux image load preserve all 23 rootfs diff IDs. The first
+  registry push lost SSH with exit 255 before a manifest result; two follow-up
+  reads reset during key exchange before remote execution. After the host
+  reboot, the old push process and its log were absent, and an authenticated
+  registry read confirmed the tag was not found. The failed-attempt cause
+  remains unproved. Following a fresh exact image/config/source/layer check,
+  one separately authorized second push exited 0 and returned manifest
+  `174df861c65503874a6713f5d8b682ef54a06e2a9c6bd16647f715efc886b202`
+  (schema2, 5,119 bytes). Independent registry readback verified that manifest
+  digest and config
+  `bb7321249865a0170171a9a4365c50b32c0f7600440aac1d7a92404b74224454`,
+  including Linux/amd64, source/revision labels and all 23 rootfs diff IDs.
+  Push elapsed time was not captured as one monotonic interval. Publication
+  is verified; no gateway rollout or deployed CUDA inference has occurred.
+  A fresh render from current public/private values differs from Helm's active
+  values at ten configuration keys. The image-only candidate now uses native
+  persisted release values and server-side dry-run before rollout; it preserves
+  the current non-gateway image pins and settings. No broader settings repair
+  is included in this change.
+  The source branch is published as `origin/embedding-gpu-recovery`.
+  The installation branch is rebased onto current foundation `afed7098` and
+  published as `origin/embedding-kubernetes` at `b494e36`, preserving all
+  eight operational inputs byte-for-byte.
+  The concurrent `e41ef491`/`d7a990083`
+  supervisor credential fixes use existing gateway endpoints and do not
+  require inclusion in this gateway binary. Their qualification remains with
+  the foundation task. At the earlier checkpoint, Kubernetes Pods were Ready,
+  but native operator queries returned TLS EOF and then connection refused;
+  no canonical-process or application-readiness success followed from that
+  observation. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/linux-gateway-publish-20261020/CURRENT-STATE-20261020T1059Z.txt`.
+  The combined build/transfer, publication history and verified registry receipt is
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/gateway-gpu-recovery-validation-20261020/REPORT.txt`.
+  Subsequent deployment checkpoint, 2026-10-20: the published `f70a959`
+  gateway manifest
+  `174df861c65503874a6713f5d8b682ef54a06e2a9c6bd16647f715efc886b202`
+  is deployed at Helm revision 8; the image-only upgrade took 12.38 seconds.
+  The native gateway reports Connected after restoration of the same 18443
+  operator forward. A fresh probe using the runtime's canonical Python reports
+  `torch.cuda.is_available() == true`, `device_count == 1` and successful CUDA
+  initialization. This does not claim a protected GPU-claim read or full-model
+  inference. Hub and Artifact were subsequently started once each from their
+  post-reboot Stopped state; Embedding recovered through its normal retry.
+  The first deployed Linux `text-two-items` acceptance now passes: one real CUDA
+  request returned two normalized 768-dimensional vectors, tokens `[6, 6]`,
+  and actual usage 12. The embed call took 713.106 ms; the complete test took
+  1.57 seconds. Request `01a1591e-7abe-7da2-9e72-d65b75ccae71` is retained in
+  a 52,811-byte report, SHA-256
+  `0f043eb34978699abdfb4d12a4c06f2f2b21f27d552e77bb2f4e3e012e15f464`.
+  This text-only batch does not qualify Linux media, Artifact authorization,
+  composition, recovery or numerical portability. Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/first-text-two-items-20261020T114038Z/REPORT.txt`.
+  The user subsequently prioritized merging existing work into main without
+  expanding scope; further deployed probes are held while that merge completes.
+  The next integration source
+  `3fbd3d8e1f21287550222b561b55e545da2d9240` is a non-rewriting merge of `f70a959`
+  with exact `d0b4a26897c6cc65c25fb54a3fb6b92936227872`, retaining the GPU
+  propagation fix and terminal-generation recovery/authenticated-start handling.
+  It is published on `origin/embedding-gpu-recovery`; combined checks and its
+  deployment remain pending. The deployed `f70a959` build evidence above remains
+  unchanged and is separate from this next source integration. The foundation
+  owner has incorporated this branch into `6df7541337d36af65adf641e0c018b40ffdb0c91`;
+  its shared gateway checks and deployment remain with that workstream.
+  Main publication is now independently verified: OpenShell `6df754133`,
+  Embedding MCP `7cc6333`, Runtime `b9a5c49` (documentation atop unchanged
+  serving source `2a3c1d6`), and installation `985f1b0`. Installation used an
+  atomic non-force push after focused checks; all eight operational inputs
+  remain byte-identical to `b494e36`, with foreign working-tree edits preserved.
+  Main publication does not close the remaining Linux qualification gates.
+  During the connection outage, the frozen isolated ACL-owner helper passes
+  two pure authority/origin guard tests, strict Clippy and a Mac arm64 release
+  build using Rust 1.99. Its Linux executable and real Artifact lifecycle remain
+  pending; these checks perform no authentication, upload, deletion or inference.
+  Evidence:
+  `../veoveo-template-installation/state/embedding-multimodal-20261019/linux-acl-fixture-preparation/owner-validation-20261020/REPORT.txt`.
+  The exact two temporary catalog records and narrow native GET/PUT workflow
+  are prepared under `deployed-linux-preparation/control-plane-publication-20261020/`.
+  Curl availability and current authority remain unverified. Native Hub offers
+  no client expected-revision/CAS precondition, so the documented immediate
+  head comparison is not atomic and publication still requires coordination
+  with other catalog writers. No catalog or policy was changed.
+- [ ] **Final client acceptance and documentation.** Only after deterministic and
+  deployed gates pass, use OpenCode with explicit
+  `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` for the final scenarios and verify recorded
+  tool outcomes. Update this status, architecture, component contracts and all three
+  views of the existing platform diagram; retain exact source/image/byte evidence.
+  The diagram currently distinguishes historical text deployment from multimodal
+  work in progress. Browser review remains pending: the browser tool rejected the
+  local `file:` navigation under its URL policy; no alternate browser transport
+  was used to bypass that restriction.
+
+This goal excludes custom clip extraction, chunking, aggregation, vector storage and
+retrieval. It adds no legacy contract compatibility or development-data migration.
 
 ## Current Native Path
 
@@ -5550,6 +7549,7 @@ XML, unique-node and local-source-link checks pass. Browser review of these new
 guide bytes remains pending; the earlier guide's visual receipt does not cover
 this edit. Main-checkout documentation edits by the other team remain untouched.
 
+
 ## Computer Main Integration — 2026-10-19
 
 The coordinator integrates and publishes the Computer work on `origin/main`,
@@ -5627,9 +7627,10 @@ published Computer task branches are removed remotely. Unrelated upstream branch
 are retained. Lore and OpenCode now select `main` as their GitHub default branch.
 Ongoing multimodal changes in SDK, runtime and the same documentation files remain
 uncommitted by this coordinator; this closeout does not claim those trees are clean.
-The initial full-management proposal included new dependency/readiness and
-issuer-independent startup capabilities. The subsequent placement review supersedes
+Historical, superseded native-Docker placement review: the initial full-management
+proposal included new dependency/readiness and issuer-independent startup capabilities. The subsequent placement review supersedes
 that proposal: use existing OpenShell capabilities, service-owned connection
 recovery and native process restart, without service launch ordering. Installation
 bootstrap only provisions resources/configuration. Keep local-development Keycloak
-outside OpenShell on any host OS. The revised plan is linked above and is not deployed.
+outside OpenShell on any host OS. The later Kubernetes target above supersedes this native-Docker placement; neither
+infrastructure candidate has been deployed.
