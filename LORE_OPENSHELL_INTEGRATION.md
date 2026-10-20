@@ -1975,8 +1975,10 @@ native authentication. Hub delivers only a public typed checkout descriptor thro
 owner-bound native Exec. OpenShell's `ExecSandbox` RPC requires its existing
 `sandbox:write` scope and workspace authorization. The Hub provider recipe already
 requests that scope; the selected sandbox policy must also admit that exact RPC.
-There is no separate `sandbox:exec` scope or new external Exec endpoint. These
-paths still require component and deployed qualification.
+There is no separate `sandbox:exec` scope or new external Exec endpoint. The Hub
+onboarding source is published as `628e18d`; its full Mac/Linux component gates each
+passed 248 tests. Installation packaging and deployed first-use qualification remain
+pending; those component checks do not establish native login/checkout acceptance.
 
 The Computer checks out the authorized workspace for instructions/environment files;
 working checkouts, caches, scratch and session history remain private unless the

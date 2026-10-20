@@ -1379,16 +1379,41 @@ Nextest passed 248 tests (one skipped) in 28.069 seconds; Linux passed the same
 seconds respectively. The focused Linux caller-lifetime regression passed in
 12.17 seconds. Receipt
 `/tmp/hub-e0-workspace-freeze-20261020/receipt-v5.json`, SHA-256
-`44355ac4a139f2d4d2ad2615d7faf09377b8a28e0e086f5913134c828a4da1f7`,
+`3d06a6e1ccb6aaf307fd584e671e950c8f2740245b5ab0ee250a508354cd8318`,
 records the source, SQLx and log identities, diagnostic history and model-free
-validation. Its pre-publication status is historical: the builder subsequently
-pushed exactly `628e18d` and verified origin main, preserving newer E3 edits.
+validation. Coordinator corrected a receipt-only SDK revision transcription against
+committed Cargo.toml/Cargo.lock and recorded the subsequent push of exactly
+`628e18d`; tested source and gate-log identities are unchanged. The builder verified
+origin main while preserving newer E3 edits.
 Coordinator verified all 29 hashes and 205 tracked SQLx entries in that commit
 and independently checked both final gate logs against the receipt.
 Validation used captured build inputs and plain temporary source exports,
 allowing E3 implementation in the main checkout without changing the tested source.
-No new Git worktree remains. Embedding SDK adoption is separately frozen for
-validation; no runtime deployment has changed for this slice.
+No new Git worktree remains; no runtime deployment has changed for this slice.
+
+Embedding deployment adoption is now published as
+`0d42bda0c1b7ddb80003ec3dbe2245e97875fa2a`, with all 12 frozen source paths and
+57 SQLx entries independently checked. Both Docker `--target check` gates passed:
+31 Nextest tests passed and five were skipped on each host, in 6.145 seconds on
+Mac and 6.139 seconds on Linux. Their check stages took 72.1 and 92.1 seconds.
+The first attempt exposed a missing `CallError::DeploymentMismatch` diagnostic
+match arm; the next required regeneration of 31 Core Task queries for deployment
+ownership. The other 26 metadata entries were unchanged. These fixes change no
+Embedding provider behavior. Receipt
+`/tmp/embedding-e0-validation-20261020/receipt-v3.json`, SHA-256
+`409e0514db5042e4704bc934cd70dce5ea10a65394dbf552bf47f76191e21c84`,
+records the failed attempts and final gate logs. Coordinator independently verified
+both final log hashes and the source/metadata sets. No inference or deployment ran.
+
+The first E3 state/API slice is frozen for compilation and focused database checks:
+`/tmp/hub-e3-state-freeze-20261020/source-manifest.json`, SHA-256
+`b5b3656aaa8fc808e1cf421afd5a179fd9d40d6d5c742d8d2daff9674cb7e27c`,
+40 paths over `628e18d`. It implements typed desired/serving state, current-generation
+retry/publication fencing and owner definition updates with source reservations in
+the same transaction. Unchanged component definitions retain their accepted builds;
+definition reads use one consistent database snapshot. Native source transfer,
+build/worker startup and actual selected activation are still being implemented.
+Validation uses a plain frozen export so those later changes can proceed on main.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
