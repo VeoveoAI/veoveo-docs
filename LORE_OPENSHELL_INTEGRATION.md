@@ -2159,6 +2159,15 @@ provider credentials. Build/check commands run in the foreground under native
 Exec's process group and deadline; they must not detach background jobs. Native
 Exec owns cancellation of those commands, while s6 owns serving worker lifetime.
 
+For native Lore materialization, the helper receives the short-lived scoped token
+through private Exec input and invokes Lore's existing `--access-token` option.
+Lore uses that supplied authorization without reading or writing its cached token
+store (`lore-transport/src/auth/exchange.rs`). The token is briefly present in the
+child Lore process arguments; it is absent from the gateway's logged top-level
+helper command, source receipts and worker definitions. Do not print child command
+arguments. This uses the native CLI contract without changing Lore authorization,
+introducing a credential-store format or manufacturing a human refresh grant.
+
 Candidate publication requires the SDK's existing listener-root `/readyz` to report
 application readiness at the exact admitted placement, plus the matching live
 registration. A missing readiness endpoint is a candidate failure; `/livez` is not

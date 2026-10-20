@@ -1478,6 +1478,22 @@ Validation used captured build inputs and plain temporary source exports,
 allowing E3 implementation in the main checkout without changing the tested source.
 No new Git worktree remains; no runtime deployment has changed for this slice.
 
+E0 installation packaging also passes a Linux-only smoke. `builder` (GPT-6 Luna)
+verified all 11 frozen installation source hashes, built the Computer image on
+Linux/AMD64 from the retained pinned Factory/Lore contexts and matching OpenCode
+package, and inspected it in a network-disabled, read-only container as UID/GID
+10001. Native Lore reported `0.10.2-nightly+local`; OpenCode reported
+`v0.0.0-hosted-computer-202610201233`; `computer-workspace --retry` returned the
+expected pending-descriptor exit 75. The initial smoke needed isolated tmpfs
+configuration/log directories because OpenCode writes state even for `--version`.
+The local image is `veoveo/computer:e0-packaging-smoke`, ID
+`sha256:2ccfe0601469f32accfc47e92ee47b43594ef4aaa78d350ea40d35e3cc940d66`.
+Receipt `/tmp/installation-e0-packaging-receipt-20261020.json`, SHA-256
+`90ce2361d4360e7549f76329c10ec956b36eddccedd6c31b34181bd581f329b0`, retains all input
+image and binary identities. Syntax/JSON/YAML checks passed as well. This image was
+not published or deployed; the smoke has no identity, network or first-use workspace
+acceptance and predates environment CLI packaging.
+
 Embedding deployment adoption is now published as
 `0d42bda0c1b7ddb80003ec3dbe2245e97875fa2a`, with all 12 frozen source paths and
 57 SQLx entries independently checked. Both Docker `--target check` gates passed:
