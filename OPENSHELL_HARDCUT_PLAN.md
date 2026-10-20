@@ -4,17 +4,15 @@ The next infrastructure slice is the
 [full native OpenShell management plan](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan).
 Move PostgreSQL, shared SeaweedFS and Lore from Compose to existing OpenShell
 workloads, using native volumes, policies, providers, exposures and restart policies.
-Use the existing installation bootstrap for initial creation and ordered starts
-with bounded readiness waits. Routine host boot starts Docker, the external local
-identity provider where used, and the gateway; OpenShell restores workloads using
-its persisted specifications/phases and existing restart policies. Restoration
-has no service dependency order or application-health waits. Long-running services
-select Always so dependency-related process exits can retry with native backoff;
-actual cold-boot behavior remains a deployment gate. Manual service starts are
-maintenance, not normal operation. Keycloak is a local development dependency on any host OS
-and stays outside OpenShell, starting before the gateway when it supplies OIDC.
-No new dependency engine, health framework or gateway authentication startup change
-is required. Docker remains the compute backend. This is planned, not deployed.
+Installation bootstrap provisions resources and configuration without service
+launch ordering. Long-running services use their existing connection retry and
+reconnection behavior, with native Always restart/backoff when a process exits.
+OpenShell restores eligible persisted workloads; it does not order them by service
+dependency or wait for application health. Verify recovery with late and interrupted
+dependencies; fix any observed failure at the service boundary. Keycloak is the
+external local-development identity provider on any host OS. No new orchestration,
+watchdog, health framework or gateway authentication startup change is planned.
+Docker remains the compute backend. This is planned, not deployed.
 
 Status: the local macOS hard cut and direct-IdP Lore authoring path pass focused
 acceptance. Clone/edit/push, the small branch hook, native credential renewal,
@@ -5631,6 +5629,7 @@ Ongoing multimodal changes in SDK, runtime and the same documentation files rema
 uncommitted by this coordinator; this closeout does not claim those trees are clean.
 The initial full-management proposal included new dependency/readiness and
 issuer-independent startup capabilities. The subsequent placement review supersedes
-that proposal: use existing OpenShell capabilities and ordered installation
-bootstrap; keep the local development Keycloak outside OpenShell on any host OS.
-The revised plan is linked above and is not deployed.
+that proposal: use existing OpenShell capabilities, service-owned connection
+recovery and native process restart, without service launch ordering. Installation
+bootstrap only provisions resources/configuration. Keep local-development Keycloak
+outside OpenShell on any host OS. The revised plan is linked above and is not deployed.

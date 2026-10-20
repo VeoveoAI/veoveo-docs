@@ -2004,33 +2004,30 @@ local identity provider into OpenShell is not part of this migration.
    Configure existing CPU/memory limits as appropriate. Do not introduce a new
    storage manager or scheduling layer.
 
-3. **Use one bootstrap command for initial installation.** Extend the existing
-   installation bootstrap to create/configure native workloads and start PostgreSQL
-   and SeaweedFS. Wait for their actual service readiness with
-   bounded checks, then run the existing trusted schema/bucket setup. Start Hub
-   after its database is usable, then Lore after storage and Hub issuer metadata
-   are reachable. Start the MCP services after their required stores and Hub are
-   usable. Keep these as ordinary installation commands using the existing native
-   API/CLI, not a dependency graph engine or long-running reconciliation daemon.
-   On routine host boot, the OS starts Docker, external local Keycloak where used,
-   and the OpenShell gateway. The gateway reads persisted sandbox specifications
-   and phases from its own store, loops over eligible sandbox IDs and calls the
-   compute driver's StartSandbox operation. Explicitly stopped/terminal workloads
-   stay stopped, apart from specific recoverable runtime-loss states. The Docker
-   driver starts the existing runtime; missing backend resources are reported as
-   errors, not automatically recreated from an installation manifest.
+3. **Let services recover through their existing clients and restart policies.**
+   Installation bootstrap provisions native workloads, volumes, credentials and
+   required initial storage configuration. It does not encode service launch order,
+   run a dependency scheduler or continuously manage application readiness.
+   Configure the existing Always restart policy for long-running service workloads;
+   omission selects Never. Prefer each service's existing connection retry and
+   reconnection behavior. If dependency unavailability makes its process exit,
+   OpenShell restarts that process with native backoff. Keep finite factory jobs
+   on their separate completion semantics.
 
-   This restore loop has no service dependency order and does not wait for
-   PostgreSQL, S3 or Hub application health before starting a consumer. Its
-   iteration order is not a startup contract. Configure the existing Always restart
-   policy for these long-running services: a consumer that exits because its
-   dependency is unavailable can retry through native process restart/backoff.
-   This does not promise recovery from every infrastructure error. Initial
-   bootstrap ordering applies to installation, not later gateway restores. Qualify
-   cold boot with deliberately late dependencies before claiming this is sufficient;
-   do not add an orchestration framework in anticipation of an unobserved failure.
-   Manual OpenShell start/stop commands are maintenance operations, not the normal
-   startup procedure. No additional boot-time orchestrator is planned.
+   On host boot, the OS starts the host-managed components and OpenShell gateway.
+   Keycloak remains an external local-development dependency. The gateway reads
+   persisted sandbox specifications and phases from its own store and calls the
+   compute driver's StartSandbox for eligible records. Explicitly stopped/terminal
+   workloads stay stopped except for specific recoverable runtime-loss states.
+   Missing backend resources remain errors. This restore loop provides neither
+   service dependency ordering nor application-health waits.
+
+   Verify that each service becomes usable when a dependency starts late or returns
+   after an interruption. A service that stays alive but cannot recover needs a
+   focused fix in its own startup/reconnection path, supported by the observed
+   failure. Do not add an external orchestration or watchdog layer. Restart policy
+   alone is not evidence that every live dependency failure already self-heals.
+   Manual start/stop commands remain maintenance operations.
 
 4. **Switch recipients and verify the actual protocols.** Update existing native
    exposures, policies and registered endpoints for PostgreSQL, S3 and Lore gRPC.
@@ -2056,7 +2053,9 @@ local identity provider into OpenShell is not part of this migration.
    bounded MiMo acceptance only after deterministic and deployed checks pass.
    Completion means PostgreSQL, SeaweedFS and Lore are OpenShell-managed, their
    Compose definitions/launch paths are removed, and the existing bootstrap brings
-   up both the Linux reference and local development without manual sequencing.
+   up both the Linux reference and local development without service launch ordering.
+   Delayed and interrupted dependencies recover through service behavior and native
+   restart policies.
 
 This is a service-placement and installation cleanup plan. It supersedes the
 initial proposal to add native dependency/readiness contracts, deferred OIDC startup
