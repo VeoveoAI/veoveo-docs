@@ -2019,9 +2019,9 @@ synchronization or additional Lore permission scheme is introduced.
 
 ### Computer-Local Apply And Lore Reconciliation
 
-**Accepted and authorized for implementation, 2026-10-20; not yet implemented or
-qualified.** A Computer-local environment file and source directories drive an
-explicit apply through Hub that snapshots the selected inputs into the separate
+**Implementation in progress, 2026-10-20; initial local-path compilation and focused
+checks pass, with deployed qualification pending.** A Computer-local environment
+file and source directories drive an explicit apply through Hub that snapshots the selected inputs into the separate
 private override runtime. An opt-in watch repeats that apply. The personal Lore
 checkout can hold these ordinary working files; Lore commit/push publishes
 versioned, shareable source/configuration and is not required for every edit.
@@ -2062,14 +2062,28 @@ generation so a superseded fetch/build cannot activate after a newer apply.
 The composition, routing, independent runtime and retention rules remain:
 a stopped Computer leaves its override on the last successfully applied snapshot,
 not a live mount into a disappearing home directory. Snapshot identity/provenance,
-local transfer/watch, admission and reconnect semantics require implementation and
-qualification. No current Hub apply endpoint or OpenCode watcher is claimed here.
+local transfer/watch, admission and reconnect semantics require completion and
+qualification. The owner HTTP apply endpoint and explicit CLI watch are implemented
+in the checked source snapshot; neither is deployed or qualified end to end yet.
+
+Definition following is distinct from each component's source selection. An
+executable-owned typed record selects either local definition input or one registered
+Lore deployment/repository/branch/path containing the same `EnvironmentDefinition`
+DTO. It retains the exact resolved native revision and a positive selector generation.
+Explicit local apply atomically replaces definition-follow mode, so an earlier file
+read cannot overwrite newer local intent. Component branch followers remain
+independent selectors. Authoritative reads happen outside database transactions;
+publication compares current ownership, selector mode and generation under the
+existing control transaction. This adds no second manifest format or Lore permission
+model. The definition-follow adapter is approved and still being implemented.
 
 For published inputs, use native Lore repository subscriptions rather than adding
 per-environment compiled hooks. Branch create/push/delete notifications wake a
 reread of authoritative branch/revision state; subscribe before the initial read,
 and reread on reconnect and periodic reconciliation. Lore's current in-memory
-stream has no replay cursor. Watch registered repository/branch IDs and environment
+stream has no replay cursor. Its receiver is registered before Subscribe returns,
+and lagged events are silently dropped; periodic rereads are required even when the
+stream remains connected. Watch registered repository/branch IDs and environment
 paths dynamically; no repository name is compiled into Hub and no Lore behavior or
 permission change is required. Native subscriptions do not observe local file saves.
 

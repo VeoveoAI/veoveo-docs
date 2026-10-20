@@ -1563,6 +1563,35 @@ exact overlay, commands and log hashes. The coordinator independently verified a
 gates, source publication and integrated deployment remain pending; the active
 native adapter and Computer apply/watch client are outside this checked snapshot.
 
+The first integrated local-activation snapshot subsequently passes Linux compilation
+and 12 focused tests. `coder` (GPT-6.1 Sol) supplied 69 source paths over `628e18d`;
+`builder` (GPT-6 Luna) verified all hashes in the frozen export and validator container.
+Source manifest v2 SHA-256 is
+`28422d0be4620014c3c5f2d0d942d6e8f523fc671596b571153027d08a49dccb`.
+This includes the explicit Computer apply/watch client, native runtime reuse,
+registration recovery and readiness-gated publication. Compile fixes adapted imports,
+constructors and workspace/template metadata access to the already pinned SDKs;
+no upstream change was required.
+
+Fresh PostgreSQL 18.6 preparation applied Core then Hub 0001–0011 migrations.
+`cargo sqlx prepare --workspace -- --all-targets --all-features` passed from
+22:46:18 to 22:46:24 UTC on 2026-10-20. It generated 145 current query files:
+121 baseline entries were unchanged, 84 stale baseline entries disappeared and
+24 new query hashes were added. This is a regenerated workspace set, not a partial
+target selection; it has not yet replaced primary-checkout metadata. The valid
+Linux manifest `/tmp/hub-e3-local-sqlx-v2-manifest.json` has SHA-256
+`9177c12e95921cffafeb1a091e39e698d9eeed3b1c1570da3de095fae2cdcb1b`.
+Preparation log `/tmp/hub-e3-sqlx-prepare-v2.log` has SHA-256
+`26e90e510a0a2b1798a69a40c72c7373ae606f865cd14b6ba1f93263ba897f17`;
+the coordinator independently read and verified both files on Linux.
+
+Workspace all-target/all-feature `cargo check` passed, followed by two activation
+library tests, one source/definition binary test and nine environment helper tests.
+The pending Lore adapter's unused native-principal method is the sole reported
+warning. Full Docker gates, helper/runtime images, deployed activation, Lore following
+and durable restart/reconnect recovery remain unfinished. No model call or deployment
+was made for this compilation checkpoint.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
