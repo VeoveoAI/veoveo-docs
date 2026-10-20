@@ -1175,6 +1175,28 @@ persisted native RFC 7592 credentials. A consumed one-use initial admission does
 not become a reusable namespace credential; an expired registration requires a
 fresh scoped admission from trusted runtime reconciliation.
 
+Core Task deployment affinity is now published on `main` as
+`1dd9994073515a85f90c3b5c71598366ab804a28`. The runtime owns the admitted
+deployment identity; creation, claims, recovery, idempotency and Task operations
+are scoped to it. Both Mac and Linux `docker build --progress=plain --target check .`
+passed with 355 Nextest tests and two skipped on each host. Linux Nextest took
+10.828 seconds, the final check stage 134.0 seconds and image export 18.0 seconds.
+Measured command wall times were 142.36 seconds on Mac and 183.439 seconds on Linux.
+Fresh PostgreSQL 18.6 migration and SQLx checks passed. Linux reported a nonfatal
+potentially-unused-query metadata warning; no missing query metadata was reported.
+The separate serial Task package run passed 11 unit, one conformance, 58 integration
+and four documentation tests. Eight fixture shutdown/backend failures in the first
+parallel native run passed individually and in that unchanged serial package run;
+resource contention is plausible, not proven. Required dependency checks initially
+rejected two TLS dependency advisories and a yanked cipher release. Updating only
+`webpki-root-certs` to 1.0.10, `rustls-webpki` to 0.103.16 and `chacha20` to 0.10.2
+cleared them, without deny exceptions. Final container logs on Mac are
+`/tmp/core-e2-mac-check-v4.log` and `/tmp/core-e2-linux-check-v4.log`.
+Consolidated receipt: `/tmp/core-task-deployment-20261020/receipt.json`, SHA-256
+`eadc0debdb408eb2a6490bb1ce8c83f09d6993a183ba7a980d1ad9a5b7ca0b81`.
+These are component checks; SDK adoption, Hub routing and deployed Task retention
+remain pending.
+
 Hub's first E1 draft now passes Linux SQLx preparation, all-target/all-feature
 compilation in online and offline modes, and focused composition (3/3) and
 registration snapshot (2/2) tests. This is uncommitted source over `9b83c26`,

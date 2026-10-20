@@ -1893,6 +1893,16 @@ not retroactively change that captured composition. Component and data permissio
 still apply to each operation. Following a base instead resolves its current
 authorized inheritance chain.
 
+An operation that already captured a composition uses that exact retained record.
+Task reads and downstream delegation check current access to the captured selected
+environment, plus current component/data policy and current admitted deployment
+bindings. They do not resolve that environment's newly edited base chain. Removing
+access to the captured selected environment denies the operation; finding the same
+deployment through a different environment does not restore that access. Repeated
+projection of the same source Task for the same deployment, owner and profile keeps
+its first captured composition rather than retargeting existing work. Fresh requests
+continue to resolve and authorize the current configuration.
+
 For a logical component, absence from `components` means inherit from the selected
 base. An explicit override wins; if selected but unhealthy it is **unavailable**,
 not a fallback to the base. Removing the entry explicitly resumes base selection;
@@ -1939,6 +1949,27 @@ checkout can hold these ordinary working files; Lore commit/push publishes
 versioned, shareable source/configuration and is not required for every edit.
 Applying local files transfers only the explicitly selected source/configuration;
 it does not publish the Computer's home, history or unrelated scratch.
+
+Implementation decision, 2026-10-20: explicit local apply uses the existing private
+Artifact upload/download contract for a selected source archive. Its client already
+supports streaming bytes, declared size/SHA-256, idempotency and verified completion.
+The source adapter belongs at executable composition, beside native Lore integration;
+generic environment activation consumes a resolved source identity and does not name
+either server. Do not add an OpenShell upload protocol, an Exec chunking protocol or
+an application credential path. This is source transfer, not OCI publication or a
+mandatory Factory job. Archive/upload latency must be measured separately.
+
+Reserve the desired generation and apply identity when authenticating the request,
+before transferring bytes. Authorize the exact Artifact through the caller's existing
+access, compare its verified digest/size with the selected snapshot, and materialize
+and verify it in the native workspace PVC before marking that source ready. Signed
+download URLs are temporary transfer inputs, not persisted source identity; pass
+them through private native Exec input rather than logged command arguments. A late
+completion cannot replace a newer desired generation. An interrupted incomplete
+transfer remains visible and can retry that still-current apply with fresh caller
+authority. Once materialized, build/restart recovery uses the retained source bytes,
+independently of the Computer or the transfer credential's lifetime. None of these
+source-activation behaviors is qualified by the separate runtime mechanism probe.
 
 Local snapshots and resolved Lore revisions feed the same typed activation
 contract and revision-worker lifecycle. An override has one active source selector:
