@@ -1343,10 +1343,11 @@ The source manifest's older pre-pin status string is stale; its recorded pins an
 verified files are final. No runtime deployment or real provider call occurred.
 These checks do not qualify callbacks or source activation in a selected environment.
 
-E0 onboarding source is frozen for builder validation, not qualified. The current
-Hub v3 freeze has 28 paths over `ea83968e`, manifest
-`/tmp/hub-e0-workspace-freeze-20261020/source-manifest-v3.json`, SHA-256
-`5c16cfa27b264b43a09feb43d5f40aa388a7b62ee4d20dd2b43887f21ff3e2fd`.
+E0 onboarding is locally committed as
+`628e18d7af17d19d72107218650841745537a64c`, not yet pushed or qualified. Its v5
+freeze has 29 source paths over `ea83968e`, manifest
+`/tmp/hub-e0-workspace-freeze-20261020/source-manifest-v5.json`, SHA-256
+`016d6483667709b50663add36fa48b484c21095e20df14112b05e7ff49202282`.
 The installation freeze has 11 paths over `02a960e`, manifest
 `/tmp/installation-e0-workspace-freeze-20261020/source-manifest.json`, SHA-256
 `d001d6d4d7da3e124f59b0e6accdecf7b6b4a1cc3506d1eed7cf90dd52057bf9`.
@@ -1367,9 +1368,17 @@ PostgreSQL binaries were absent from PATH; the builder reports the corrected run
 passes. The first Docker gate then found missing standard protobuf include files;
 v3 adds `libprotobuf-dev` beside the existing compiler in the development image.
 This supplies headers for Lore's existing generated API without a protocol change.
-The full Mac/Linux component gates and native deployed first use remain pending.
-Embedding SDK adoption is separately frozen for validation; source activation is
-the next implementation slice after the builder releases Hub.
+The following Clippy gate required one needless-borrow correction. Mac v4 then
+passed 247 tests and failed one: the calls fixture never held native kernel
+Instances for two of its registered services, so normal orphan collection removed
+the caller before an expired-token assertion. V5 retains real issued-login
+Instances for both services; the five-second grace and authentication assertions
+remain unchanged. The full v5 Mac/Linux gates and deployed first use remain pending.
+Coordinator verified all 29 hashes and 205 tracked SQLx entries in the local commit.
+Validation now uses captured build inputs and plain temporary source exports,
+allowing E3 implementation in the main checkout without changing the tested source.
+No new Git worktree remains. Embedding SDK adoption is separately frozen for
+validation; no runtime deployment has changed for this slice.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
