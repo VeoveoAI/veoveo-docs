@@ -1592,6 +1592,22 @@ warning. Full Docker gates, helper/runtime images, deployed activation, Lore fol
 and durable restart/reconnect recovery remain unfinished. No model call or deployment
 was made for this compilation checkpoint.
 
+Template candidate readiness is published as `c249ef4` on
+`veoveo-template-mcp-rust/main`. Its existing SDK `/readyz` now reports the actual
+kernel instance's availability, after registration, database connection and
+migration. `builder` (GPT-6 Luna) ran the complete Docker `check` gate on both
+hosts against the same two-file snapshot: 16/16 tests per host, with the final
+check stage taking 56.5 seconds on Mac and 69.0 seconds on Linux. These are component
+gates, not a deployed candidate probe. Receipt
+`/tmp/mcp-template-readiness-20261020/receipt.json`, SHA-256
+`a13b074de8e7372a5784ce8cc030a34430966de2a79ffbd62f3a8f7fb3bbdb32`,
+retains source and image identities. The first Linux attempt contained a macOS
+AppleDouble migration sidecar in its temporary source tar; rebuilding that tar with
+`COPYFILE_DISABLE=1` removed the packaging contamination without changing source.
+The coordinator matched both source hashes before publication and independently
+verified the successful Linux log SHA-256
+`af0bb64b856f009e3f3640072ebbd34d395a5d19ae08c3bc4edb96af24a0d220`.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
