@@ -2785,8 +2785,8 @@ Docker runtime is not current acceptance evidence.
   This text-only batch does not qualify Linux media, Artifact authorization,
   composition, recovery or numerical portability. Evidence:
   `../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/first-text-two-items-20261020T114038Z/REPORT.txt`.
-  The user subsequently prioritized merging existing work into main without
-  expanding scope; further deployed probes are held while that merge completes.
+  At that checkpoint the user prioritized merging existing work into main
+  without expanding scope; further deployed probes were held until it completed.
   The next integration source
   `3fbd3d8e1f21287550222b561b55e545da2d9240` is a non-rewriting merge of `f70a959`
   with exact `d0b4a26897c6cc65c25fb54a3fb6b92936227872`, retaining the GPU
@@ -2802,6 +2802,37 @@ Docker runtime is not current acceptance evidence.
   atomic non-force push after focused checks; all eight operational inputs
   remain byte-identical to `b494e36`, with foreign working-tree edits preserved.
   Main publication does not close the remaining Linux qualification gates.
+  One subsequent deployed Linux media batch now passes. Builder GPT-6 Luna
+  executed one embedding request through native Hub, Embedding and Artifact;
+  coordinator GPT-6 Astra
+  independently verified the retained result. MCP `7cc6333` and runtime
+  `2a3c1d6` used `google/embeddinggemma-2@914f7f89142e33e77833254d9c9b90c3cef7303b`.
+  The case `two-items-each-same-ordered-multimodal-parts` contains two identical
+  items: text `repeated multimodal parts`, then PNG/WAV/MP4 twice in that order.
+  This uses three unique Artifact IDs and twelve ordered media references,
+  not twelve distinct assets. The media are synthetic fixtures; inference is
+  real CUDA FP32. Request `01a15a04-a5df-7e32-a7a2-66884f63f12d` returns two
+  normalized 768-dimensional vectors, 1,655 tokens each / 3,310 total. The
+  embed call took 6,961.736 ms; harness elapsed 9,272.723 ms; test time 9.29 s.
+  Usage adds one actual record / 3,310 tokens and one estimate record / 16,384;
+  the estimate is not an observed inference cost. Both vectors exactly match
+  their retained native Linux FP32 references: maxAbs 0 and cosine
+  0.9999999999999998, at unchanged limits 0.0001 / 0.9999. This does not repair
+  strict cross-Mac failures or close the full Linux suite. Full media/options,
+  capacity, real ACL denial, registered-caller composition, recovery and final
+  embedding client acceptance remain pending. The same existing operator
+  forward was restored; this test changed no source/deployment and retried no
+  inference. The earlier forward's exit cause remains unknown; replacement
+  client broken-pipe/reset messages do not establish that cause.
+  Compact output is 24,808 bytes, SHA-256
+  `7adce59d6ab02400544548aee8f714d9653cde07b7059d5f378b168298e5d550`.
+  The full private acceptance receipt is 72,881 bytes, SHA-256
+  `e44de7b0df8a5284bb94e551fc7c513a88a6cb228e4bdbb045eac68b31ca3fb3`;
+  comparator receipt is 2,282 bytes, SHA-256
+  `d40eb8fb10eb1047489a4b49a99b5efe03d21221c59f670af83a222e2420afe7`.
+  The 7,457-byte [execution report](../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/quick-media-two-items-20261020T155127Z/REPORT.txt)
+  has SHA-256 `8931fadeac114788c1ea24b82c00d223259930de2cc2941e72bd88d6748648d1`;
+  its raw vectors and identities remain in ignored private evidence.
   During the connection outage, the frozen isolated ACL-owner helper passes
   two pure authority/origin guard tests, strict Clippy and a Mac arm64 release
   build using Rust 1.99. Its Linux executable and real Artifact lifecycle remain

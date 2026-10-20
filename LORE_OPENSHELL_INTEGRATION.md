@@ -208,8 +208,8 @@ was not readable, so the precise authentication defect is not independently prov
 One final joint-media call after Hub cleanup/restart resolves actual Artifact
 sources and returns a vector identical to the retained baseline, with 835 tokens.
 This closes Mac deployed qualification. Runtime `2a3c1d6` and MCP `7cc6333` are
-published on their respective `origin/main` branches; Linux CUDA deployment and
-final client acceptance remain open in the
+published on their respective `origin/main` branches; complete Linux CUDA and
+final embedding client qualification remain open in the
 [execution checklist](OPENSHELL_HARDCUT_PLAN.md#multimodal-embedding-replacement--2026-10-19).
 
 The current Kubernetes direction above supersedes the historical Linux Docker
@@ -227,11 +227,13 @@ and audio forwards use CUDA FP32 tensors. Its fixed cross-device parity gate
 fails: maximum component difference from the retained MPS vector is
 0.002152925357 against a 0.0001 limit, while cosine 0.999912292982 passes its
 0.9999 minimum. The output is preserved, thresholds are unchanged and the cause
-remains under investigation. Runtime and MCP Linux images are built but not
-deployed; this probe is not Kubernetes or caller-authorization acceptance.
+remained under investigation at that checkpoint. Runtime and MCP Linux images
+were then built but not deployed; that probe was not Kubernetes or
+caller-authorization acceptance.
 The Kubernetes GPU prerequisite now passes separately: official NVIDIA chart
 0.20.1 is installed, its pinned device-plugin Pod is Ready and the node reports
-one allocatable GPU. No embedding workload has yet allocated that resource.
+one allocatable GPU. At that prerequisite checkpoint, no embedding workload had
+yet allocated that resource.
 Separate no-forward captures now show eight of nine native preprocessing arrays
 are byte-identical across platforms; only video pixel features differ. Tokens,
 image pixels, audio features, masks, positions and media coverage agree. This
@@ -273,6 +275,23 @@ including two 8,192-token items in one request. Each repeated batch item matches
 its corresponding single-item Linux vector byte-for-byte. All original
 cross-platform comparisons remain failed; component execution and capacity
 evidence do not establish Kubernetes deployment or strict portability.
+
+A subsequent real Linux Kubernetes media call now passes through native Hub,
+Embedding and Artifact with unchanged MCP `7cc6333` / runtime `2a3c1d6` and the
+same pinned model. Two identical items contain text `repeated multimodal parts`
+plus PNG/WAV/MP4 twice: three unique Artifact IDs, twelve ordered media references.
+Synthetic media fixtures produced real CUDA FP32 inference, two normalized
+768-dimensional vectors and 1,655 tokens per item. The embed call took
+6,961.736 ms; both vectors exactly match retained native Linux references
+(maxAbs 0, cosine 0.9999999999999998). One actual usage record adds 3,310 tokens.
+Builder GPT-6 Luna executed the single call; coordinator GPT-6 Astra independently
+verified its output. Only the same existing operator forward was restored; no
+source/deployment change or inference retry was made. This is one-case deployed
+acceptance, not strict cross-Mac parity or complete Linux qualification. Full
+media/options/capacity, real ACL denial, registered-caller composition, recovery
+and final embedding client acceptance remain pending. The
+[retained execution report](../veoveo-template-installation/state/embedding-multimodal-20261019/deployed-linux-preparation/quick-media-two-items-20261020T155127Z/REPORT.txt)
+records exact request, source/output hashes, usage and proof limits.
 
 Media processing controls are closed and explicit. Runtime preflight checks actual
 processed lengths and media resource bounds before inference; unknown fields reject.
