@@ -1978,8 +1978,8 @@ gap, not whether to keep a duplicate Veoveo implementation by default.
 ## Full Native OpenShell Management Plan
 
 Proposed execution plan, reviewed 2026-10-19. Keep native OpenShell as the single
-manager for platform workloads, including Lore, SeaweedFS and PostgreSQL, and
-retire Compose after the native replacements work. This is a runtime and startup
+manager for containerized platform workloads, including Lore, SeaweedFS and
+PostgreSQL, and retire Compose after the native replacements work. This is a runtime and startup
 change; Lore's authorization model, Hub-issued native grants and per-user identity
 remain unchanged. The following native capabilities are required work, not claims
 that OpenShell already implements them.
