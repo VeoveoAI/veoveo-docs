@@ -1608,6 +1608,36 @@ The coordinator matched both source hashes before publication and independently
 verified the successful Linux log SHA-256
 `af0bb64b856f009e3f3640072ebbd34d395a5d19ae08c3bc4edb96af24a0d220`.
 
+The next native E3 checkpoint passes Linux compilation and 14 focused tests.
+`coder` (GPT-6.1 Sol) supplied 80 source files over `628e18d`; `builder`
+(GPT-6 Luna) checked the frozen v3 set, manifest SHA-256
+`057e73efa12fdfaf7475d4369976e3b0ff262fa433f6469871ccfbe384b0d753`.
+This adds native exact-revision Lore materialization and interrupted activation
+recovery. Phase, admission and publication writes now use the existing Singleton's
+connection: a terminated former owner's connection cannot advance or fail the
+replacement owner's build. That database regression passed with the other two
+activation tests in 0.81 seconds; the source transaction test passed in 0.66 seconds,
+and ten environment helper tests passed in 0.07 seconds. Compilation for those
+groups took 61 seconds, 24.85 seconds and 2.83 seconds respectively.
+
+Fresh PostgreSQL 18.6 preparation applied Core and Hub 0001–0011, producing 151
+SQLx entries, manifest SHA-256
+`0d070cdb8a854694842532d52bd523e41159d6f02863240ffbef3619ef423105`.
+The subsequent all-target/all-feature `cargo check` passed in 0.26 seconds with
+a warm cache. An initial moved-owner compile error was corrected before v3;
+an ineffective first overlay and a wrapper that initially masked Cargo's nonzero
+exit were rejected, not counted as passes. Successful logs remain inside Linux
+container `hub-e3-local-validator-20261020` under `/tmp/hub-e3-native-v3-`:
+`sqlx-prepare.log` SHA-256 `ac19393efa1d5a4f0de69d8be5772f420bfe9d87443417476c67caa355948959`,
+`cargo-check.log` SHA-256 `3e81642bc8909f56f24b11a597d231c5e98d71908986daa6c96d78ce6a1134d7`,
+and `focused-tests.log` SHA-256 `fdcdbb490067442de4c5176b4108e93b19a1589fe1d6c5c8b0f64912f6a4618a`.
+The coordinator independently matched all four remote hashes and inspected the
+test results. This frozen checkpoint excludes subsequent watch reconnect,
+continuous Lore following, historical Task-worker recovery and definition-file
+following changes. Full component gates, E3 publication and deployed acceptance
+remain pending. Separately, builder is building the already-published E0/E1/E2
+baseline images on Linux; building/pushing them is not rollout or qualification.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.

@@ -2077,6 +2077,17 @@ publication compares current ownership, selector mode and generation under the
 existing control transaction. This adds no second manifest format or Lore permission
 model. The definition-follow adapter is approved and still being implemented.
 
+Definition reads must work before any component runtime exists and while the
+Computer is stopped. The approved executable adapter packages the existing native
+Lore CLI with Hub and uses an exact-revision bare repository plus native single-file
+extraction into private temporary storage. This avoids duplicating Lore's encoded
+content reconstruction. Hub owns the foreground child's timeout, cancellation and
+cleanup; current native scoped grants authorize the read. The adapter bounds the
+returned definition bytes, while Lore's parallel-I/O limits are not described as
+total repository download limits. This adds neither a materialization service nor
+a Lore protocol or authorization change. Native CLI execution and the complete
+follow path still require deployed qualification.
+
 For published inputs, use native Lore repository subscriptions rather than adding
 per-environment compiled hooks. Branch create/push/delete notifications wake a
 reread of authoritative branch/revision state; subscribe before the initial read,
