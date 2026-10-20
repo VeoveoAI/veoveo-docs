@@ -1405,15 +1405,33 @@ Embedding provider behavior. Receipt
 records the failed attempts and final gate logs. Coordinator independently verified
 both final log hashes and the source/metadata sets. No inference or deployment ran.
 
-The first E3 state/API slice is frozen for compilation and focused database checks:
-`/tmp/hub-e3-state-freeze-20261020/source-manifest.json`, SHA-256
-`b5b3656aaa8fc808e1cf421afd5a179fd9d40d6d5c742d8d2daff9674cb7e27c`,
+The first E3 state/API slice passes Linux compilation and focused database checks:
+`/tmp/hub-e3-state-freeze-20261020/source-manifest-v4.json`, SHA-256
+`570fecccc35c6c10a7dd8aff27411d8e63cf1e66c184656e9469dfa190ac28ff`,
 40 paths over `628e18d`. It implements typed desired/serving state, current-generation
 retry/publication fencing and owner definition updates with source reservations in
 the same transaction. Unchanged component definitions retain their accepted builds;
 definition reads use one consistent database snapshot. Native source transfer,
 build/worker startup and actual selected activation are still being implemented.
 Validation uses a plain frozen export so those later changes can proceed on main.
+
+`builder` (GPT-6 Luna) prepared SQLx against fresh PostgreSQL 18.6 with the pinned
+Core migrations followed by Hub 0001–0010: 223 metadata files, including 18 additions
+and all 205 baseline files unchanged. Workspace all-target/all-feature compilation
+passed. The two focused activation library tests passed in 1.44 seconds; the
+definition/source transaction test passed in 2.06 seconds. These exercise competing
+reservations, stale publication rejection, unchanged-component retention and
+idempotent definition replay, not native runtime activation. Compile iterations
+corrected a struct-variant pattern and a shared SQL result alias: Axum's `Json`
+was the wrong wrapper, and a fully qualified replacement exceeded PostgreSQL's
+identifier limit. A short shared SQLx type alias resolved both. The unused native
+principal helper warning remains until the adapter consumes it; no full strict gate
+or deployment is claimed. Docker's diagnostic stage and image export succeeded;
+the outer shell wrapper subsequently failed on zsh's reserved `status` variable.
+Receipt `/tmp/hub-e3-state-freeze-20261020/receipt-v4.json`, SHA-256
+`47ea5cd9ef403ddec7c4554bd475e643888a634948b0f6c7d10b20fbea3cbb67`,
+records commands, image identity and full log hashes, independently verified by
+the coordinator. Neither this slice nor the later helper work is published yet.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
