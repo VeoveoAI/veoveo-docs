@@ -1329,6 +1329,26 @@ source paths and 61 metadata hashes. Receipt:
 `303b29ba560b15c79fc242bcb1f554f20bdfcf7ec04cb013d084f1863f1bdfa5`.
 No runtime deployment changed.
 
+E0 onboarding source is now frozen for its first builder validation, not qualified.
+The Hub freeze has 27 paths over `ea83968e`, manifest
+`/tmp/hub-e0-workspace-freeze-20261020/source-manifest.json`, SHA-256
+`74a6abb2e1ca2271eabed52ec7f5f74ceecf5b40e0394be6116f3cb66386dafd`.
+The installation freeze has 11 paths over `02a960e`, manifest
+`/tmp/installation-e0-workspace-freeze-20261020/source-manifest.json`, SHA-256
+`d001d6d4d7da3e124f59b0e6accdecf7b6b4a1cc3506d1eed7cf90dd52057bf9`.
+Coordinator review verified both manifests against the working trees. The source
+implements stable per-owner native repository association, current-client
+admission, once-only creator publication and nonblocking optional Computer
+onboarding. A public descriptor and the native `computer-workspace` helper perform
+login/checkout without replacing unrelated files. Review corrected post-publication
+name/default-branch checks so mutable Lore labels do not replace stable identity,
+current-client admission at publication, RFC Problem responses and interrupted-job
+status. Native Lore permissions are unchanged. Formatting, whitespace, helper
+syntax and JSON/YAML parsing passed; the Hub dependency graph excludes `lore-base`
+and `lore-io`. Fresh SQLx preparation, compilation, component tests and native
+deployed first use remain pending. The coder moves to Embedding SDK adoption while
+the builder owns these frozen trees.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
