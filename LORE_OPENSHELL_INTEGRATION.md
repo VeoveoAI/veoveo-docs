@@ -81,6 +81,49 @@ Computer working storage, including its home and native client state, survives
 routine runtime recreation. Computer, factory and deployed service lifetimes are
 independent. Hub admits browser access using the current user's application session,
 then forwards to that user's Computer through authenticated native `ForwardTcp`.
+The SDK shares its gateway HTTP/2 channel; the current HTTP proxy opens a native
+relay and local HTTP/1 connection for each browser request. Browser asset bursts
+require TCP capacity for parallel requests, separately from the SSH connection budget. The selected
+correction gives native TCP forwarding typed, configurable active and pending
+limits, separately from SSH, and configures Hub's own total forwarding capacity.
+Normal HTTP traffic does not use fixed retry sleeps. Cold-listener readiness has
+its existing bounded wait. HTTP connection pooling can reduce setup work later;
+it is not needed to remove the small native connection caps. Configuration and
+rollout evidence are tracked in the execution plan.
+Subsequent blank-page diagnosis reproduces a separate HTTP/2 mediator defect:
+retired protocol streams still counted as exchange tasks cause valid replacement
+streams to be refused. The candidate correction keeps bounded exchange tasks and
+drives native HTTP/2 I/O while waiting for task retirement. Component regression
+tests pass, and the exact supervisor image is now deployed on the actual Linux
+host. Hub, Computer and MCP service workloads recover to Ready. Native Computer
+shell, all 57 startup assets and `/api/info` return 200; authenticated public
+rendering remains a separate acceptance boundary. The user also isolates a
+client-router separator defect: mounted navigation produces `//settings` and
+`//new-session`, while manually removing the extra slash works. OpenCode
+`4bd4891` corrects only the router base, with the existing asset/PWA base retained;
+its browser-routing regression and app typecheck pass. The actual Linux host has
+built the source and image, and the installation Computer template selects it.
+The user authorizes discarding this dev Computer workspace during replacement.
+The native workspace reset also removes its provider instances; a normal browser
+OAuth handoff must recreate the Computer before runtime acceptance. Subsequent
+image deployments should retain owner providers and replace only the native
+cloned template and sandbox, avoiding repeated sign-in.
+The stale Hub Computer mapping is also reset for this development recreation.
+The user-authorized removal of a stale local browser denial restores Chrome
+automation, and normal Entra sign-in creates the new Computer on the fixed image.
+The first callback reaches its native listener before OpenCode binds the port;
+Hub `e564f60` admits the observed native Cancelled result in its existing bounded
+cold-start wait. Its focused regression and compilation pass, and its Linux runtime
+is deployed and Ready. A subsequent browser handoff completes. The user creates a
+session and receives MiMo replies; Settings and session navigation render with the
+single-slash router base. These are user-driven observations, separate from final
+agent qualification. Native Hub tool discovery and Lore login remain open: the
+Computer image copied an example Hub URL, and Chrome blocks the device approval
+redirect under the page's same-origin-only form policy. Installation `0192bb0`
+reads `COMPUTER_HUB_URL`; Hub `bfde2f2` derives it from the selected registered
+profile and admits only the device request's configured broker authorization
+origin in that page's form policy. The native Lore protocol and permissions do not
+change. These fixes await Linux checks, rollout and browser verification.
 OpenShell owns runtime lifecycle, isolation, credential custody and diagnostics.
 Computer-enabled installations give trusted Hub one dedicated native control
 identity for both service forwarding and provisioning. Native workspace creation

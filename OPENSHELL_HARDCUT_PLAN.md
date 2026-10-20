@@ -4397,6 +4397,411 @@ JSON, executable JavaScript and three inline SVG documents pass static checks.
 The browser origin approval gate also refuses the local diagram preview; visual
 review remains pending, with no alternate browser route used.
 
+The next manual sign-in reaches the user's Computer at 22:53:44 UTC. Native
+sandbox `d1b80178-3038-4a87-a02a-3115e90b88d7` is Ready; the owner row is ready,
+its refresh family is attached and one browser session exists. This establishes
+first-use provisioning and browser admission, but the screenshot shows a blank
+OpenCode page. An earlier callback at 22:53:12 returned native `Cancelled`, and
+two retries of consumed login state were refused before the successful fresh
+callback; this is not a claim of an uninterrupted first-attempt onboarding path.
+Hub returns 503 for two startup assets while 59 Computer requests
+succeed. Native-origin checks find both files intact: the browser-storage module
+is 863 bytes, SHA-256
+`63e9ac3b023650386f40370eaca865b56c77279dec5efdc4fbd9fc9b119278b9`;
+the project-avatar CSS is 3,313 bytes, SHA-256
+`1f1b371c471d676a004862a1b613d81223c13512e953ddcb7f5ccffefcdc7c56`.
+Both return the correct MIME type and HTTP 200 locally. HTML has the correct
+per-Computer base path and online-only marker, and local API info returns 200.
+The user's console later reports 503 for different language/location modules.
+No API bootstrap request follows the failed module imports. Existing Hub logs
+omit the transport cause, and the available native records do not establish its
+exact status; do not present the capacity diagnosis as a measured native error.
+
+Source inspection identifies a concrete capacity mismatch: Hub permits 64
+simultaneous forwarding streams, while native OpenShell shares a 20-connection
+per-sandbox limit between TCP and SSH and separately caps pending opens at
+32 per sandbox and 256 per replica. Each HTTP request opens a native relay and
+loopback HTTP/1 connection; the SDK already shares its gateway HTTP/2 channel.
+A bounded wait/retry proposal was committed as `bc7adc` but never built or
+deployed. The user explicitly rejects artificial delay and directs higher
+parallelism. The selected implementation gives native TCP forwarding typed,
+configurable active/pending budgets separately from existing SSH limits, with
+defaults and explicit reference settings of 128 active connections per sandbox,
+1,024 active per replica, 128 pending per sandbox and 512 pending per replica.
+Hub's Computer forwarding budget becomes typed configuration with a value of 512.
+The normal HTTP path retains immediate connection establishment; the existing
+cold-listener readiness wait remains separate. No HTTP request replay, new proxy,
+native authorization change or OpenCode HTTP/2 rewrite is selected. Connection
+pooling is a later measured optimization, not a prerequisite for this correction.
+Only gateway and Hub builds/restarts are expected; existing Computer working
+storage, runtime/supervisor images and native Lore behavior remain intact.
+The correction is frozen in OpenShell `7c7c9331`, Hub `67654f36` and installation
+`3df6b8fe`. Coordinator review confirms configuration reaches both active and
+pending native TCP budgets and that the guard releases active slots on drop.
+Hub's focused configuration and retry-classification tests pass, as does binary
+compilation. The new Mac ARM64 full gate passes 226 tests with one skipped;
+its check image is
+`sha256:d79cd57930d0a15ab545a837023435578dc27e4e21e988a597b46184a1ae7ec4`.
+The actual Linux x86_64 runtime builds as
+`sha256:d92dd1b889425cc11e313ba60657a295451e35a3c532606408327e002dcb2da6`,
+with binary SHA-256
+`73574d4c25f4fb82c62da82c04df872050794bcdcada4ee76fc573640a19c769`.
+Its actual Linux x86_64 full gate also passes 226 tests with one skipped (34.211 s
+test phase), check image
+`sha256:117358075bb3b0ddbba4d83d929ee0d369f559fe8a4da2d07ef873a5178936e6`.
+Both Hub gates use the clean source archive SHA-256
+`87e7b6e2a07371bae557953e21145e694da332738ce07be1431e455bbc4a0beb`.
+Native gateway focused TCP tests and strict Mac Clippy pass on `7c7c9331`.
+The first Linux build fails because Debian bookworm cannot satisfy the vendored
+Z3 C++ requirements; the prebuilt-Z3 retry reaches final link but fails on the
+older system ABI. A task-owned Debian trixie builder with pinned Rust 1.95.0 and
+the supported `prebuilt-z3` feature succeeds. The source archive is SHA-256
+`faef023077c8aca005d9171cde2574469cbc2020122f6dcbafcbd98a81cb9787`;
+the gateway binary is
+`828bddb37d82df8abbb8fc84a3d0cd4f073ea5b15f8b539466daba31b64f3f4a`.
+It executes on the actual Ubuntu host and all dynamic libraries resolve.
+These are build and host compatibility results. The subsequent Linux cutover
+installs that gateway binary and the validated limit configuration, retaining the
+existing native state and credential custody. The first one-off Hub import uses
+the wrong trusted Docker network and fails DNS resolution before publishing.
+The stopped helper is retried using the retained operator invocation (host
+network and the existing `host.openshell.internal` loopback mapping); import
+then succeeds after the unchanged active-revision guard. New active revision is
+`gcp-01a156a8-2ca3-7bd0-a176-ba18fbe029ba`. Only
+`computers.forwardingConnectionLimit=512` changes in the full catalog; the
+embedding binding and Lore endpoint remain present. The recreated Hub is native
+sandbox `02062d6c-89e2-42e7-9b7a-5f315d38f728` on the tested `d92dd1b8` image,
+with its original logical name, provider, policy, mounted configuration and
+bearer-passthrough exposure. It reaches Ready and public `/readyz` returns 200;
+`/computer` returns 303 without following the redirect.
+
+Time, Artifact and Media temporarily report Starting with exit code 1 during
+native recovery. Docker wrapper presence and a Ready condition entry are not
+treated as application readiness. They subsequently reach Ready with new main
+instances and cleared exit codes after native backoff. Their observed restart
+count is cumulative; no exact startup error is captured, so the underlying
+application exit cause remains unestablished. Their images and policies do not
+change. Other preexisting workload identities remain intact.
+The builder writes a new private 79-byte sentinel
+inside the actual user's `/sandbox` working volume before restart, SHA-256
+`84beae344237d1888660f83c9aac385946ca2e3a830178b3d32302ef36251e96`.
+After restart, the same Computer ID and
+`openshell-workspace-64ae873d6b411d1ebee7d8bf72fab97e` working volume retain that
+exact sentinel hash. Computer restart count remains zero while its main-process
+instance changes. The native Computer endpoint returns 200 for `/` and
+`/api/info`, and all 57 referenced entry-page assets return 200 (49 JavaScript,
+8 CSS). A bounded 24-connection native-forward fetch returns 24 successful,
+identical 79,727-byte language modules in five seconds. These probes use no
+browser cookie and do not establish public authenticated browser rendering.
+The user later shares a screenshot from the actual Linux Chrome session at the
+same Computer path. It visibly shows the OpenCode home screen and its empty
+session state, proving that the page renders in the user's browser. It does not
+show a created session, model response, or Hub tool call. The screenshot was
+shared before the candidate HTTP/2 supervisor fix was deployed; do not attribute
+the recovery to that fix. The browser automation integration itself continues
+to reject the origin, so no browser logs or network waterfall were collected.
+The sanitized local rollout receipt is
+`/tmp/computers-forwarding-cutover-20261019/receipt.json`, SHA-256
+`2366ed1f9a11488f4b0f3e650c30e447982055ff6c27446c41c95a6c079a9e3e`.
+Review catches swapped per-sandbox/per-replica labels in the first receipt;
+a narrow read of the actual deployed TOML confirms the approved values are
+correct, and only the receipt is corrected. No second gateway restart occurs.
+The updated diagram's embedded JSON, executable JavaScript and three SVG
+documents pass static checks. Visual review remains blocked by the existing
+browser-origin permission decision.
+
+The user's subsequent reload still shows a blank page. Retained Hub logs contain
+four successful entry-page requests and 236 asset requests: 212 return 200 and
+24 return 503. No `/api/*` bootstrap request follows. Failures occur in four
+waves at 00:30:00.865, 00:33:51.815, 00:34:26.529 and 00:35:19.804 UTC on
+October 20. Hub reports native forwarding `Unavailable`; matching gateway logs
+show successful relay-open/claim pairs, without a corresponding failed-open
+warning. The operator's successful direct-forward probe bypasses the Hub
+sandbox's HTTP/2 L7 mediator and therefore does not qualify that layer.
+
+Source review finds a separate mediator accounting defect. Its advertised
+HTTP/2 concurrency is 32, but its admission guard counts exchange tasks awaiting
+completion or joining. A peer can retire protocol streams and send compliant
+replacements before those tasks are reaped; the guard then sends
+`REFUSED_STREAM`, which the pinned tonic maps to `Unavailable`. GPT-6.1 Sol coder
+adds a deterministic real-relay reproducer: hold 32 streams, retire 16 at the
+peer, flush 16 replacements while relay polling is paused, then resume. GPT-6
+Luna builder runs it against unchanged production source at `7c7c9331`; it fails
+on stream 65 with `REFUSED_STREAM` in 0.08 seconds after a 56.06-second compile
+(57.964 seconds wall time). Sanitized receipt:
+`/tmp/computers-h2-rollover-red-20261020/receipt.json`, SHA-256
+`f23f18acbb4305b653fb536f247f82c46106b7226b40da9750f14e0ad8a4b5b8`.
+This proves the mediator defect locally; the deployment still needs the fix and
+an authenticated browser result to establish that it resolves the observed UI.
+
+The candidate stops accepting exchanges at task capacity while continuing to
+drive the native HTTP/2 connection with `poll_closed`. Native protocol handling
+queues replacements until a task retires. It retains the 32-task bound, adds no
+fixed delay or replay, and removes the incorrect refusal. All seven focused
+HTTP/2 tests pass, including rollover and cancellation, in 0.13 seconds after a
+14.33-second compile. Strict Clippy first rejects an unread response-handle
+collection in the new test; the fixture now observes its retained response count.
+Revalidation passes all seven tests in 0.12 seconds and strict all-target crate
+Clippy exits zero after 13.97 seconds. The fix
+belongs in the supervisor image, not the already updated gateway executable.
+The Docker driver resolves its supervisor image when the gateway initializes;
+rollout must reload that configuration and recreate the Hub supervisor through
+native lifecycle operations. Gateway reconciliation can interrupt other running
+sandboxes, so it is not described as Hub-only downtime.
+
+The repository's `build:docker:supervisor` task cross-builds the Linux amd64
+supervisor on the Mac using the pinned GNU glibc-2.28 target. Release compilation
+finishes in 1 minute 55 seconds; staged and target binary SHA-256 both equal
+`0d36909bb2ab9efc6b6f821da8e5760316d7c254b2fe7bd25e4ac70e10fa07a1`.
+The resulting image is
+`sha256:e35532b00a8d26a3d134dc9424230685fa53b91a40a5aa8a0c98b4b2f3d31cf8`,
+tagged `openshell/supervisor:h2-rollover-20261020`, with Linux amd64 metadata and
+entrypoint `/openshell-supervisor`. Source is base `7c7c9331` plus the validated
+single-file change; diff-patch SHA-256 is
+`a363b1d8932026ce7879e838e9b274383bf93f481d34ac31e2296e7ffe1e1d60`.
+This is an image build result, not actual Linux execution or browser acceptance.
+Coordinator authorizes exact-image transfer, guarded supervisor-image selection,
+native gateway reload and Hub supervisor replacement while preserving all
+application images, providers, configuration, exposures and Computer storage.
+The actual Ubuntu host loads that exact image and independently verifies the
+supervisor executable hash. The installation changes only
+`OPENSHELL_SUPERVISOR_IMAGE`; native gateway restart reconciles the same 14
+sandbox identities. Hub and the Computer become Ready, and the Computer app
+container, working-volume identity and sentinel hash remain unchanged. Public
+TLS-verified `/readyz` returns 200. Artifact, Media and Time initially report
+`exit_code=1` and later recover to Ready through native retry, with
+`exit_code=null`. Their restart count of 37 is cumulative, not a measured delta.
+Bounded retained error buffers do not establish the original exit cause.
+
+A subsequent native Computer probe returns the 6,096-byte `/settings` HTML
+shell with the expected mounted `<base>`, all 57 referenced assets return 200,
+and `/api/info` returns 200 with 158 JSON bytes. Public Computer route probes
+without a browser cookie return 401, so these checks do not establish an
+authenticated browser render.
+
+The user then demonstrates a distinct client-routing failure: clicking Settings
+or New session navigates to `/computer/c/<id>//settings` or `//new-session` and
+renders a black page. Manually removing the doubled separator makes New session
+work. Hub preserves the incoming suffix and does not generate that browser URL.
+GPT-6.1 Sol coder reproduces the exact duplicated links with the installed
+Solid Router: its resolver joins a trailing-slash mount base with an absolute
+route. OpenCode commit `4bd4891e9e3d67460eb43dcfcdefb5172c1279ff` trims the
+separator only for the router base; HTML, asset, API, PWA and storage bases retain
+their canonical form. The existing browser keeper exercises actual Solid links
+and programmatic navigation at root and a multisegment Computer mount, including
+query and fragment. The targeted unchanged-source case fails in 164 ms; the
+fixed suite passes 8 tests / 33 assertions in 150 ms. App typecheck, formatting
+and diff checks pass. These results are retained in the agent tool transcript,
+without a separate timing for typecheck.
+
+The actual Linux host builds OpenCode `4bd4891` with pinned Bun 1.4.2. An attempted
+213 MB transfer of a Mac-built Linux executable is stopped while incomplete and
+is not used. Locked dependency installation resolves 2,541 packages in 61.95
+seconds; the web bundle builds 6,032 modules in 8.48 seconds. The route suite also
+passes 8 tests / 33 assertions on Linux. The resulting native x64 executable is
+version `0.0.0-hosted-computer-202610200115`, SHA-256
+`6c4e6c85fd66e95fc82523bd0274545e36b6cda6a111b790fbda0b7c00241685`.
+The Linux-built Computer image is
+`sha256:efe89371e6e8dd058d805422b9b7bd8db0ba3212b5a56a989e460060f30e2c0f`;
+offline inspection confirms linux/amd64, the exact executable and UID 1000.
+The native `installation/computer` template now selects that image with the same
+CPU 2, memory 4Gi, persistent-workspace setting and nonsecret environment values.
+Its new template ID is `1f503a2f-1a99-476c-b00c-3799abf11824`.
+
+The user explicitly permits discarding this disposable development Computer
+workspace; its preservation must not block deployment. Native resource deletion
+removes the old sandbox, cloned template, two owner provider instances and then
+workspace `cpne3wuk5kqtpir5345`. The Hub row and external Computer ID remain.
+This full workspace reset also discards native refresh custody, so the standard
+browser OAuth handoff must recreate the owner workspace before the new image is
+running. Public `/readyz` is 200 and `/computer` returns 303 into that flow.
+No authenticated public UI or new sandbox readiness is yet proved. The coordinator
+requests that one normal sign-in and the builder watches native recreation.
+Mac Chrome inventory works, but acquiring the existing Computer tab is again
+explicitly refused by the browser tool's saved/managed origin policy; no alternate
+browser or CDP path is used.
+
+The user's click on `/computer` exposes an incomplete development reset: the
+old browser binding remains valid, so entry tries the deleted native sandbox and
+returns 503 instead of beginning OAuth. In one guarded development transaction,
+the builder removes only the exact old Computer row and its two browser-session
+rows; no refresh-family, identity or installation configuration row changes.
+The user then explicitly requests removal of the stale local browser denial.
+Read-only inspection finds the exact public origin in the current conversation's
+user-owned `origins.denied` list. Removing that one entry restores normal Chrome
+tool access; other denied origins remain unchanged. This establishes the local
+saved denial as the observed tool blocker, rather than a missing user grant.
+
+Using the existing Bioma Entra browser account, the coordinator performs
+normal sign-in. Hub creates Computer `01a156fc-c527-7231-8543-dd212f266e0c`, native
+workspace `c5wpyb4wedk4oclzduk`, sandbox
+`68213dc1-2917-47d9-bd01-f289e1363fc3`, running the Linux-built fixed OpenCode image.
+The callback still returns 503: at `01:46:09.351Z` the supervisor records a failed
+connection to `127.0.0.1:4096`, Hub reports native forwarding `Cancelled` at
+`01:46:09.352Z`, and OpenCode begins listening at `01:46:09.502Z`. These timestamps
+strongly support a listener-start race. The existing cold-start retry classifier
+admits Unavailable and DeadlineExceeded, but omits this observed Cancelled result.
+Hub commit `e564f60d024c2c9acfd0c37043589675bb76424f` includes Cancelled only in that
+existing bounded pre-HTTP readiness wait. It adds no warm-request retry and
+preserves authority, configuration and capacity refusals. The existing regression
+passes 1/1 and library compilation takes 14.41 seconds; formatting and diff checks
+pass. The actual Linux runtime build takes 136.4 seconds and produces image
+`sha256:198d134ed2a771e8ad59dde3c2c75c3bbf61a2c5e422d2f3fe45d5654f03e010`,
+with Hub executable SHA-256
+`ec6f0ca8f2a181bed3d6a3c85ac2c317012bd69a82e900edf0a97bf45843be05`.
+Native recreation retains `vv-control`, its control provider and configuration,
+then restores the exact HTTP exposure. Sandbox
+`81d885f6-29fd-4eff-9d8a-21d9bdb95092` is Ready; TLS-verified public readiness is
+200 in 0.173 seconds. A subsequent normal browser handoff completes and the Hub
+Computer row is ready. The user's MiMo replies render in the actual Mac Chrome
+Computer session; the UI records 6 seconds and 3 seconds for two replies. These
+are observed user calls, not an agent qualification run. A bare `lore` shell call
+prints native usage and exits 2 because no subcommand was supplied; that proves
+CLI execution, not authentication or private repository access.
+
+The coordinator's one Stop/Start recovery probe temporarily interrupts the user's
+next prompt with HTTP 503. The Computer subsequently resumes and its existing
+session remains visible. No further restart qualification should interrupt the
+active user; necessary development deployments remain authorized.
+
+Two remaining failures are isolated before further model calls. OpenCode's actual
+private file log records MCP connection failures to `veoveo.example.com`: the image
+copied the generic example URL rather than the selected installation resource.
+Installation `0192bb0b89b3f1fccc8dc3de108782642546a3b6` replaces that URL with
+`{env:COMPUTER_HUB_URL}`. Hub `bfde2f284111cda9cd625005e2dc6450e7b06b38`
+derives this environment field from the selected profile's typed protected resource
+when cloning each native Computer template. A read-only query of active control
+revision `gcp-01a156a8-2ca3-7bd0-a176-ba18fbe029ba` confirms the current value is
+`https://veoveo.bioma.ai/mcp/computer`; no installation origin is compiled into
+the generic image or Hub implementation.
+
+The native Lore CLI reaches Hub's expected device authorization page. A normal
+Chrome approval click receives HTTP 302 to the configured Microsoft authorization
+endpoint, but Chrome's Log/Audits events prove that the initiating page's
+`form-action 'self'` policy blocks that redirect. Re-clicking the consumed request
+does not establish a new token expiry. Hub `bfde2f2` resolves the stored request's
+current resource, public client and selected identity provider, and adds only that
+provider's authorization origin to the form policy. Manual code entry first uses
+a same-origin GET form, without placing the browser capability in its URL; actual
+approval retains the existing POST/browser binding. No Lore security or client
+protocol change is made. The existing browser-binding test passes 1/1 and Hub
+binary compilation passes in 21.78 seconds; formatting and diff checks pass.
+The existing native issuer HTTP fixture then passes 1/1 in 14.85 seconds and
+strict all-targets Clippy passes in 14.61 seconds. An initial attempt lacks the
+existing PostgreSQL 18 binaries on PATH and fails before any test executes;
+selecting the installed Homebrew keg resolves that fixture setup. These are Mac
+component checks. Linux runtime compilation, rollout, fresh browser approval and
+native CLI completion remain pending.
+
+The first candidate Computer rebuild accidentally reuses an older cached OpenCode
+package (`79f58e2e…74ddc3`) instead of the proven router-fix executable
+`6c4e6c85…241685`. Image `sha256:77f66144cec6136d93dfa7e48f69be319bf332a40a65166f87a620b24b6580f4`
+is rejected before template selection or deployment. The replacement must retain
+the exact router-fix binary from the verified current image and verify its full
+hash in the final image. This is a rejected build input, not a deployed regression.
+The corrected candidate is built on Linux and its actual embedded executable hash
+matches the required full `6c4e6c85…241685` identity and router-fix version. It is
+held unselected until the new Hub runtime is ready.
+
+Continuous development deployment is authorized. Subsequent image-only releases
+should retain the owner workspace and its provider instances and replace only
+the native cloned template and sandbox, avoiding a new user sign-in. The hosted
+Computer's durable storage requirement remains the product contract,
+independently of the authorized development reset. Isolated image HTTP checks
+serve the expected mounted shell; these do not replace a real router/browser
+navigation check.
+
+The user's Mac Chrome also displays a Safe Browsing `Dangerous site` interstitial
+on the public OAuth callback. This is a separate browser classification, not an
+HTTP 503 or certificate-error diagnosis. The precise classification trigger has
+not been obtained; neither compromise nor a false positive is established. The
+user explicitly authorizes Mac Chrome access, but the integration continues to
+reject the origin under its saved permission policy. This is a tooling refusal,
+not missing user authorization. No browser-policy bypass is used.
+The user then enables full CDP access in the desktop app. A fresh supported
+navigation still receives the same origin-policy refusal. Official OpenAI
+documentation identifies Settings → Computer Use → Chrome → Manage as the
+website allowlist/blocklist control, separately from full CDP developer mode.
+User and workspace Codex configuration contain no browser-deny entry. Inspection
+of the desktop app itself is also refused by Computer Use. App restart is the
+next documented troubleshooting step; no claim is made that it removes a real
+site-level or managed deny.
+
+A separate user report concerns the old Mac `tmp-client`, not the Linux Computer.
+Its launcher supplies a five-minute Keycloak service-account token through an
+environment variable and explicitly disables OpenCode OAuth. Both running local
+processes retain a token whose decoded, unverified expiry is
+`2026-10-18T04:25:41Z`. Local Hub readiness is 200. The same existing token flow
+issues a fresh 300-second token; correctly framed MCP discovery and tool listing
+then return 200 in 13 ms and 20 ms, with 19 tools. An initial diagnostic omitted
+the required MCP method header and returned protocol error `-32020`; correcting
+the request framing resolves that probe error without a server change. No model
+call or runtime mutation occurs. Native OpenCode supports OAuth refresh, but the
+local test realm has no public OpenCode client registered. The user explicitly
+selects the local Mac Hub for this client and confirms that Linux Computer work
+should continue in parallel. The Mac fix uses a native public PKCE client and
+OpenCode's existing demand-driven refresh, preserving the local endpoint; no
+custom credential refresh loop is selected. A native Keycloak user-property
+mapper supplies the actual user's immutable ID to the Hub's opaque principal and
+initiator claims, with explicit member/contributor admission in the selected
+existing context. Existing service identities and all Lore configuration remain
+unchanged. The local `/computer` endpoint currently returns 404 while readiness
+is 200; browser Computers have not been deployed on this Mac installation.
+
+Installation commit `5e4a5e99` adds the opt-in local public-client configuration;
+17 helper tests pass. Native Keycloak now has the `opencode-local` public client,
+with authorization-code PKCE and refresh, the exact loopback callback, and the
+existing user's native ID claims. The reviewed complete Hub candidate changes
+only OAuth clients, explicit member admission and context membership. Its
+SHA-256 is
+`916f90932ce47b5840515f9b11cfdb83355dbc4c30be29180a36651dbf653b81`.
+The old local Hub image lacks the native control-plane import command, so it is
+replaced with the already tested `67654f36` runtime rather than writing SQL.
+Native GetSandbox supplies the complete original spec; recreation retains its
+command, policy, `vv-hub-forwarder` attachment, config volume and named exposure.
+The imported active revision is `gcp-01a1568b-156a-7dc3-893c-cbfef72fe23b`,
+digest `sha256:740bebf3e5094b8ca7a97a6275a4b4962b31421cfcfe6c1bbd1dfb57238e4ac5`.
+The new local sandbox `4a530a3b-ea8b-4dba-aa04-9d44df586db3` is Ready on image
+`sha256:7fb7fdf1a6ec9cf8016134f4295b2eab4583c7130252cba2fe20654a8f961eac`;
+TLS-verified readiness and protected-resource metadata both return 200. The
+Hub-hosted issuer routes return 404; source review identifies the absence of a
+matching Hub-hosted issuer in this external-Keycloak profile as the expected
+branch. The advertised Keycloak issuer is the intended native OpenCode login path.
+The reviewed hosted-computer OpenCode binary is installed locally, with public
+CA trust configured for new shells. Its existing background service initially
+lacks that environment, so the first native authentication attempt fails TLS
+before opening a browser. The supported `opencode service set env` command
+configures `NODE_EXTRA_CA_CERTS` for the hosted-computer channel; the unrelated
+mcp-tasks service remains running. Project OAuth configuration is activated and
+native authentication reaches the real Keycloak login. The browser origin gate
+denies agent access, so the user completes the existing browser flow manually.
+The callback page shows authorization success and native CLI exits zero with
+`Connected to veoveo`. The obsolete `tmp-client/launch-opencode.py` is removed at
+the user's request; normal launch is `opencode` in the project directory.
+The actual native reconnect returns 204 in 53.56 ms and discovers 19 Hub tools
+under the approved human principal. The issued token lifetime is 300 seconds.
+At 19.41 seconds after its actual expiry, native reconnect returns 204 in
+103.94 ms and again discovers 19 tools. The same credential row still contains
+the expired access token immediately before the request; OpenCode replaces both
+access and refresh token hashes in place, retaining the expected human identity
+and a new 300-second lifetime. The native refresh-start log is observed at
+00:06:10.452 UTC on October 20. No direct token-endpoint probe, custom refresh loop
+or second browser authorization performs this renewal. This proves demand-driven
+renewal in the running native OpenCode service across a real expiry.
+
+The user's first prompt then fails locally with `missing API key`. The selected
+hosted-computer channel has a separate credential store, and migration omitted
+the existing DeepInfra provider key from the previous store. Native provider
+authentication imports that same key without changing the OAuth row or restarting
+the service: `POST /api/integration/deepinfra/connect/key` returns 204 in 14.42 ms.
+Private equality checking and the native available-model snapshot confirm the
+active key and `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` selection. This proves provider
+credential activation, not inference; no agent model call is made during repair.
+The local receipts are under `/tmp/computers-local-opencode-native-20261019/`
+(`baseline.json`, `post-expiry.json`, `model-credential-resolution.json` and `README.md`), without
+credential values. The missing key is an integration omission in the launcher
+replacement, separate from the successful Hub OAuth flow.
+
 The first frozen HLI1 source fingerprint was
 `b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
 on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
