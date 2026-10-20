@@ -1,5 +1,10 @@
 # OpenShell Hard Cut Plan
 
+**Next planned slice:** [personal Lore workspaces, environment overrides and fast
+source activation](#next-slice--environment-overrides-and-fast-source-activation).
+The foundation and Computer receipts below remain qualified; this new workflow is
+planning only, with no implementation goal activated by this document update.
+
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
 revised 2026-10-19. **Implementation authorized and started on 2026-10-19.** K3s deployment/acceptance is Linux x86_64 only. Mac remains ordinary source
@@ -1098,98 +1103,133 @@ Source-test this change on Mac, then prove it on the Linux deployment.
 
 ## Agent-Operated Platform Adoption Plan
 
-Accepted target, 2026-10-18. This checklist implements the consolidated
-[product architecture](LORE_OPENSHELL_INTEGRATION.md#product-workflow-and-full-platform-plan).
-All phases below are **pending**; adjacent Mac/Linux proofs do not complete them.
-The reference Linux, signed webhook and final MiMo work remains separate. The user
-authorized native human Lore access on 2026-10-18; that part of A is now active,
-following the [direct access decision](LORE_DIRECT_OIDC_PLAN.md#human-access-decision).
-Other phases remain planned. Each phase
-uses deterministic/component checks first, deployed probes second, and a bounded
-model-driven acceptance only after the expected behavior passes. Use the exact
-`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` for final OpenCode acceptance, no substitution
-or model calls during iteration. Record measured tool outcomes, inputs, versions,
-timings, identities, byte/hash evidence and limits separately for each layer.
+### Next Slice — Environment Overrides And Fast Source Activation
 
-- [ ] **A — Hosted Computer and human Lore onboarding.** Qualify
-  the supported OpenCode build in each user's private OpenShell Computer,
-  connecting to Hub with interactive sign-in, renewal,
-  role-filtered discovery, normal Tasks and Artifact publication/retrieval. Qualify
-  Lore CLI direct authenticated clone/sync, stage/commit/push and login/refresh from
-  the hosted Computer over the private Lore route against native repository permissions. A local commit changes
-  no platform revision; a successful push publishes the exact expected revision.
-  Use users with different native Lore permissions. Both can sign in, inspect
-  permitted code and select accessible branches. Denial of a protected-branch push
-  must leave other permitted Lore operations available. Preserve each component's
-  existing grants; do not infer repository exclusion from platform usage or coding.
-  Exercise expired/revoked credentials and separate Lore/Hub audiences. Existing
-  supervised factory Lore renewal is not acceptance of this human path. Use
-  ordinary local agent file/shell tools.
-  Human login uses native OAuth device authorization, native encrypted credential
-  storage and automatic refresh, independently of repository selection. Qualify
-  native operation authorization, expiry/rotation/concurrent refresh and logout
-  separately from existing factory issuance. Hub supplies nonsecret setup; its
-  bearer is not a repository credential. The authorized upstream update selects
-  `ec6bdc2195753b50f70696d367788b4bc8d08964`, which implements native device login
-  and repository token exchange. It supersedes our unqualified OIDC prototype.
-  Native refresh remains `NotSupported` at that revision. Source adoption, local
-  factory regression and complete human onboarding remain separate gates.
-- [ ] **B — Deterministic factory and trusted publication.** Split future factory
-  templates from agent/Computer templates. A pushed immutable Lore revision runs
-  declared commands in a fresh native OpenShell sandbox without OpenCode/model.
-  Preserve historical model-build evidence, but do not use it as the job contract.
-  Qualify registered source selection, trusted independent checks, bounded resources,
-  failed-check diagnostics, exact source/workload/image provenance and retry by a
-  new user push. Resolve and qualify the general trusted image construction and
-  distribution path using existing native build/image contracts; Artifact content
-  storage is not an OCI registry. Prove author jobs lack Docker socket and
-  deployment/registry credentials. Define and qualify the user-facing build-status,
-  logs and result-link contract using existing native status/Hub surfaces before
-  choosing any new API. Prove push success, build success and deployment selection
-  remain separately observable. Preserve exact Git handoff while Cargo pins need it.
-- [ ] **C — Lore schema, reconciliation and environment routing.** Finalize the
-  narrow environment composition schema over native workload/templates, approved
-  bindings and lifecycle declarations. A thin module in the existing trusted Hub
-  process consumes notification hints, reads authoritative revisions and periodically
-  reconciles. Test missed/duplicate events, restart recovery and delayed results
-  after supersession/deletion. Only registered sources can deploy; the editing
-  branch cannot grant itself targets, providers, resources or quota. Verify readiness
-  by registration plus an application probe before selection.
-  Run one shared base and two private overrides, each replacing one service while
-  inheriting another. Verify independent user access and contexts, selected-version
-  discovery, delegation/downstream routing, concurrent Tasks, retained Task versions,
-  pinned and following bases, label rename and cycle rejection. An unhealthy override
-  must stay unavailable. Promote tested digests by destination config; source merge
-  alone must not redirect traffic. Delete one branch-bound environment during active
-  work; prove drain/cancel policy, owned cleanup, revocation and no resurrection,
-  while the other environment, shared resources, retained state and bootstrap survive.
-  Test route inheritance separately from data isolation and document migration limits.
-  The current newest-instance-per-slug route is not this acceptance.
-- [ ] **D — Hosted Computer persistence and lifecycle.** Provision a private persistent
-  native OpenShell Computer with OpenCode, Lore CLI, Hub connection and trusted-config
-  default `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Qualify browser/session access, reconnect,
-  human Lore authentication, provider credential custody/renewal, storage persistence,
-  isolation, logout/revocation and explicit deletion/retention. No shared admin
-  identity or retired Desktop adapter. Model inference stays agent/provider-owned.
-  Repeat A's native-permission scenarios for separate users' hosted
-  Computers; compare authorized capabilities and publication identities. Private
-  scratch and unpublished commits must stay outside platform canonical source.
-  Stopping the Computer or deleting a factory job must leave the published project,
-  Artifacts and selected service deployment intact. This phase can be designed
-  alongside B/C once A's identity contracts are clear. It remains a separate
-  product qualification from the storage backend work below.
-- [ ] **E — Durable infrastructure and GPU adoption.** Qualify protected volumes,
-  PostgreSQL/storage protocol access, backups and actual restore before changing
-  existing durable placement. Preserve the IdP cold-start bootstrap. Separately
-  qualify native NVIDIA CDI and a tiny checked CUDA computation on the selected
-  Docker driver. Hardware inventory is not execution acceptance. Apply the same
-  admitted resource, ownership and retention contracts; do not introduce Kubernetes,
-  Flux, a parallel scheduler or a replacement runtime inventory.
+**Implementation authorized and started, 2026-10-20; not yet deployed-qualified.**
+The active goal includes personal workspace defaults, environment composition,
+Computer-local apply/watch and Lore-driven updates through one activation contract.
+The qualified Linux
+K3s foundation, owner-isolated Computers/native Lore, manually exercised agent-free
+factory and final Computer MiMo scenario retain their measured scope above. Mac
+remains ordinary source development/tests; deployment acceptance is Linux only.
 
-Initial scope uses native Lore CLI/protocol and existing Hub MCP tools. All platform users
-can use permitted capabilities; source, compute, billed actions, promotion and
-administration require independent grants. Computer, factory and deployed-service
-lifetimes remain independent.
+This replaces the former B-before-C factory/image-publication ordering. Environment
+selection and source activation come next; a fresh isolated factory/OCI publication
+is not mandatory per edit. Historical factory-model and image/deployment receipts
+remain evidence for their exact scenarios, not this workflow. General trusted image
+publishing is optional/separate. The existing diagram stays unchanged until the
+new workflow is implemented and proved, per the user's standing direction.
+
+[Computer-local apply](LORE_OPENSHELL_INTEGRATION.md#computer-local-apply-and-lore-reconciliation)
+and published Lore inputs are both authorized. Local apply/watch captures selected
+source/configuration without requiring a Lore push per edit. Native repository
+notifications plus authoritative reads update explicitly tracked published branches.
+Both use one resolved source/activation contract. Each override has one active
+source selector; a local apply replaces branch following explicitly so a later
+notification cannot silently overwrite the experiment.
+
+Use the one proposed [`components` override contract](LORE_OPENSHELL_INTEGRATION.md#environment-overrides-and-fast-source-activation).
+Do not implement competing environment formats, a runtime inventory, another
+orchestrator, OpenShell security relaxation or additional Lore authorization rules.
+
+Implementation checkpoint, 2026-10-20: Core commit
+`bba305055222d297c598ce8cdddc6094ff191055` is published on `main`. It adds distinct
+canonical UUIDv7 `EnvironmentId`, `DeploymentId` and `BuildId` types, without
+transport or runtime dependencies. Mac and Linux `docker build --target check .`
+both passed on identical source: 352 Nextest tests passed and two skipped on each
+host. Mac focused execution tests passed 3/3, types doctests 54/54, and strict
+package Clippy passed. These are component checks only; no environment routing or
+source activation has been deployed. Implementation: `coder` (GPT-6.1 Sol);
+validation: `builder` (GPT-6 Luna); coordinator reviewed and published the commit.
+
+The SDK slice now separates logical service slug, target deployment and retained
+execution composition. Initial selection uses configured MCP connection headers;
+OpenCode currently scopes connections per Location, not per chat. The first
+storage binding is explicit use of the existing logical service schema under
+separate binding admission. Environment editing alone cannot grant that access.
+This slice does not implement database cloning or claim `search_path` isolates
+component SQL that explicitly names its schema.
+
+- [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
+  authorized repository provisioning or reuse and stable user → actual repository
+  ID binding, plus the Computer's workspace checkout. Version instructions and
+  environment definitions there by default; path/display naming is convention only,
+  and users may choose other authorized repositories. Team workspace repositories
+  use the same contract; no repository per environment is mandated. Do not autosync
+  home, scratch, caches or session history, invent a project registry format, or add
+  Lore permission semantics. Explicit native commit/push remains publication.
+- [ ] **E1 — Typed identity, selection and multi-instance registration.** Define
+  stable environment/component/deployment/revision IDs, optional authorized acyclic
+  base pin-or-explicit-follow and a component map of owned overrides. Permit the
+  environment file in an existing registered Lore repository. Omitted means inherit;
+  explicit unhealthy override means unavailable; removal resumes the base or becomes
+  unavailable if absent there. Labels carry no semantics. Separate authenticated
+  environment selection from business WorkContext/data ACL. Current
+  `RegistrationSnapshot` is one-current-server-per-slug; support multiple live
+  instances without a newer registration taking another environment's route.
+- [ ] **E2 — Session-context routing and complete composition capture.** Bind an
+  authenticated Hub MCP connection/session to selection using qualified native
+  client/SDK contracts; the current route is `/mcp/{profile}`, not an implemented
+  environment-selection API. Verify OpenCode's actual configuration/context surface;
+  no assumed picker. Two simultaneous sessions retain different maps while using
+  normal logical tool names. Scope discovery/schemas, cache keys, paging, downstream
+  delegation and Task lookup to resolved composition plus deployment revision.
+  Shared services preserve per-call selection. Capture long Task/in-flight ownership
+  before route replacement and retain old worker/source until completion or explicit
+  cancellation. Use existing typed SDK/Core/domain boundaries and tests.
+- [ ] **E3 — Reusable-runtime source activation.** Implement Computer-local apply and
+  opt-in watch with identified source snapshots, plus a dynamic native Lore
+  subscription set in the existing trusted Hub process. Subscribe before reading;
+  reconcile authoritative branch/revision state after notification hints, reconnects
+  and periodically. Only explicit source-branch followers advance. Use one typed
+  activation contract for local snapshots and exact Lore revisions, with accepted
+  desired generations rejecting stale completions. Prepare a separate source directory in the existing owned
+  sandbox/PVC; reuse incremental build cache and the admitted toolchain/interpreter.
+  Implement and qualify the small in-runtime build/launch/child-worker ownership
+  contract, preferably with an existing language runner and stable template
+  entrypoint. Native Exec builds/probes but does not by itself prove durable daemon
+  lifetime across caller disconnect. Rust workers use unique build-specific actual
+  executable paths (`/sandbox/builds/<build-id>/service`) to preserve native pins;
+  rebuilding the same source with changed output must not reuse the pinned path.
+  Interpreted workers must not rewrite old imports either. App readiness plus distinct registration precedes
+  atomic selected route/catalog activation. No per-edit image push, Pod/sandbox
+  replacement or Hub restart; template/toolchain changes remain explicit workload
+  changes. Keep desired/serving failures visible and the last serving revision
+  during failed candidate preparation; never silently fall back to the base.
+- [ ] **E4 — Deterministic and Linux deployed scenario.** First use the existing SDK
+  fixture and one real Rust MCP; add a small interpreted example only if needed to
+  prove the reload distinction. Run one base and two independently owned overrides
+  of one logical component. Select them in simultaneous sessions; update only one
+  branch follower while the other override, pinned selections and base remain
+  unchanged. Verify tool names/schemas/discovery and downstream selection. Exercise
+  local apply/watch without a Lore push, explicit switching between local snapshots
+  and branch following, and disconnect/reconnect without replaying obsolete applies.
+  Exercise
+  failed build, failed start, unhealthy selected override, explicit override removal,
+  absent base, a retained long Task, Computer stop, worker/runtime restart and
+  reconciliation after missed/duplicate notifications. Test base pin/follow,
+  inherited-only base updates, owned override retention, cycles and label rename.
+  Route separation does not prove cloned data: check explicit bindings/current ACLs.
+  Reject late activation after supersession/deletion; do not replay mutations.
+- [ ] **E5 — Measured acceptance and honest boundaries.** Record exact desired,
+  serving and resolved composition/source revision IDs; app worker PID/identity,
+  sandbox/runtime/Pod and Hub process identities before/after each change. Measure
+  source-fetch, incremental build/check, child start/readiness and route/catalog
+  activation times separately. Ordinary source updates must retain sandbox/Pod/Hub
+  identities and leave unrelated workloads unchanged, while worker identity changes.
+  Do not promise fabricated latency, zero downtime or arbitrary hot reload. Keep
+  component/deterministic, deployed and model evidence separate. Only after those
+  gates pass, qualify the exact `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` with recorded
+  real tool outcomes under a bounded scenario; no model calls during iteration.
+
+Promotion selects tested exact source plus runtime/bindings under existing
+independent checks/admission. Factory jobs remain isolated agent-free build/check
+capabilities for jobs needing them; they are not the compulsory per-edit publisher.
+Only explicitly selected Computer files enter a local apply/watch snapshot; Lore
+commit/push publishes versioned shared source/configuration. Services and
+published data survive the author's Computer stopping. Infrastructure remains the
+qualified K3s foundation with native OpenShell ownership; this slice does not
+reopen placement or add data cloning, migrations or new authorization semantics.
 
 ## Upstream Lore Adoption — 2026-10-18
 

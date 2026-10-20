@@ -344,16 +344,23 @@ gates in the execution plan. The native investigation evidence is retained under
 
 ## Product Workflow And Full Platform Plan
 
-Accepted product direction, revised 2026-10-19; the new user onboarding, automatic factories,
-composition and hosted Computer flows below are **planned, not qualified**. This
-section is the consolidated target; the execution checklist and historical evidence
-below retain their measured scope. The active reference Linux/webhook qualification
-remains separate. On 2026-10-18 the user separately authorized solving native human
-Lore access and updating Veoveo to current upstream Lore, removing superseded
-local additions. The selected upstream `ec6bdc219575` implements native OIDC device
-login and repository token exchange; refresh remains unimplemented at that
-revision. Adopt its native client path and qualify the remaining gaps. The local
-OIDC prototype is superseded. Other new product phases remain planned.
+Accepted next-slice direction, revised 2026-10-20: **environment selection,
+owned component overrides and fast source activation**. Implementation authorized
+and started on 2026-10-20, including Computer-local apply/watch and native Lore
+subscriptions as inputs to one activation contract. None of this new workflow is
+yet deployed-qualified. The Linux K3s foundation,
+hosted Computers, native Lore access and isolated deterministic factory fixture
+have their separate qualified receipts. Environment composition, multiple routed
+instances per logical service and the source-update loop below are not implemented.
+
+For this slice, ordinary source edits do **not** require a new OCI image, Pod or
+sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
+and build cache. Template/toolchain changes and general trusted image publication
+are separate workload changes. This supersedes earlier mandatory
+push → fresh factory → image publication → new service sandbox instructions for
+this source-backed loop; historical recipes and receipts retain their original
+scope. The existing diagram is deliberately unchanged until this workflow is
+implemented and proved, per the user's direction; it does not yet depict this plan.
 
 Users operate Veoveo through their own agents. The initial product gives each user
 a hosted native OpenShell **Computer**:
@@ -383,23 +390,29 @@ content.
    Users upload inputs/outputs to Artifact when they want platform access to them.
    Platform operations reference Lore revisions and Artifact identities; content
    is not automatically duplicated between stores.
-4. **Build the published revision.** The thin trusted integration reads authoritative
-   Lore state after a notification or periodic reconciliation. It starts a bounded,
-   deterministic factory job from the exact immutable pushed revision in a fresh
-   OpenShell sandbox. The factory needs the declared toolchain and commands, with
-   no OpenCode or model required. Local agent checks do not replace this verification.
-5. **Verify and publish the result.** Trusted checks and a separate trusted publisher
-   bind the source, workload definitions, check evidence and runtime image digest.
-   Author-controlled jobs receive neither deployment/registry credentials nor a
-   Docker socket. A zero exit from an agent-edited check command alone is not an
-   independent verdict. A failed job returns diagnostics; the user's agent fixes
-   the working copy and pushes again. Success at push, build and deployment are
-   separate states.
-6. **Select and deploy.** An authorized environment configuration selects verified
-   artifacts and native workload definitions. The integration admits the requests,
-   calls OpenShell's SDK and waits for registration plus an application readiness
-   probe before Hub selection. Promotion changes the destination configuration to
-   select tested digests; a source merge alone does not redirect callers.
+4. **Resolve the selected environment.** Hub admits the authenticated execution
+   context's environment selection and resolves its component map, including pinned
+   or explicitly following base selections. The same logical MCP tool names select
+   different deployment revisions/endpoints in different sessions; no global
+   registration is edited to replace every user's service.
+5. **Prepare source in the owned runtime.** An explicit Computer-local apply captures
+   selected files as an identified snapshot; an override following a Lore branch
+   instead resolves its exact immutable published revision. Both prepare a separate
+   source directory in the existing override sandbox. Local edits need no commit
+   or push before trying them. Run the service repository's declared checks/build
+   through existing scoped native execution, reusing its toolchain and build cache.
+   A separate agent-free factory remains available when isolated verification is
+   needed; it is not an obligatory OCI publisher for every edit.
+6. **Activate ready work.** The in-runtime launch contract starts a revision-specific
+   child worker. After its application probe and distinct registration pass, Hub
+   atomically selects the new route and catalog for new operations in the affected
+   composition. Keep old worker/source state for captured operations and Tasks;
+   never rewrite its imports or executable in place. Failed preparation keeps the
+   explicitly recorded last serving revision and exposes desired-versus-serving
+   failure. It does not silently switch an unhealthy selected override to its base.
+   Promotion selects a tested exact source revision plus runtime/bindings; independent
+   checks may still be required. Push, checks, readiness and activation are separate.
+
 7. **Use and retrieve.** Agents call services through the Hub under the user's
    permissions and context, inspect Tasks/results and retrieve authorized Artifacts.
    Build status, diagnostics and result links reuse native status and Hub surfaces;
@@ -418,15 +431,15 @@ content.
 | Lore | Canonical versioned project source, configuration, instructions and assets intentionally versioned; native revisions and authorization |
 | Artifact | Explicitly uploaded inputs, generated outputs, datasets and deliverables, governed by content access/retention |
 | Factory job | Bounded build/check execution from an immutable published revision; disposable working storage |
-| Service deployment | Independently running immutable application version selected by admitted environment configuration |
+| Service deployment | Independently selected exact source revision, runtime/template and bindings; a reusable sandbox may retain several revision workers while operations drain |
 
 Files must be pushed or uploaded before the platform can use them. Private agent
 history on the Computer is not canonical project state. Reference identities
 between Lore and Artifact; do not create an automatic second content store. Use
 existing authorized Artifact upload/download byte paths for bulk data, keeping it
 out of MCP/LLM payloads and Hub relays. Artifact is not an OCI image registry or
-builder. General trusted runtime-image construction/distribution remains an explicit
-qualification gate against the existing native build/image path.
+builder. Trusted runtime-image construction/distribution remains a separate optional
+release path; it is not a prerequisite for every update in the source-backed loop.
 
 The user's agent receives permitted content and may send it to its model
 provider. Canonical remote storage does not establish zero client or model copies.
@@ -441,7 +454,7 @@ provider. Canonical remote storage does not establish zero client or model copie
 | Artifact | Managed content metadata, access and authorized direct byte transfers |
 | Hub | Public installation/browser entry point, MCP discovery/actions, application permissions, execution context, delegation and Tasks; planned thin source/revision integration in the existing trusted process |
 | OpenShell | Hosted Computer and factory/service sandbox execution, native templates/SDK, credentials, policy, forwarding, lifecycle and diagnostics |
-| Trusted publisher | Independently accepted check evidence and immutable runtime-image provenance/publication |
+| Trusted publisher | Separate optional image/release path with independently accepted checks and immutable image provenance; not the per-edit source activation owner |
 
 Platform MCP operations go through the Hub. Inside the hosted Computer, the native
 Lore CLI connects to the private Lore server over its admitted network. Lore owns
@@ -454,9 +467,9 @@ Hosted model credentials use native provider custody.
 Source read/write, compute, billed operations, environment selection/promotion and
 administration are independently permissioned. Enforce permissions in the Hub and
 native services, preserve the acting user/context, and narrow delegation. Hosted
-Computers must not share an administrative identity. Browser/Computer session
-access and human Lore login/refresh are separate pending qualifications; existing
-supervised factory credentials do not prove human Computer Lore access. The retired
+Computers must not share an administrative identity. Browser/Computer session access and human Lore login/refresh have separate
+qualified receipts; supervised factory credentials alone do not prove that human
+path. The retired
 Desktop authentication adapter is not part of this product.
 
 Human Lore onboarding follows the [direct access decision](LORE_DIRECT_OIDC_PLAN.md#human-access-decision).
@@ -471,10 +484,11 @@ write must not block login, permitted inspection or branch selection. No separat
 platform author/non-author policy is introduced.
 The Hub session and Lore session have separate audiences and lifecycle. This design
 uses the hosted Computer; native client and browser/session acceptance remain
-distinct. The authorized upstream upgrade brings native device login and
-repository exchange from `ec6bdc219575`; refresh is still unimplemented there.
-Preserve native explicit-token semantics, while treating the old agent-in-factory
-qualification as historical. Human Computer credentials need separate acceptance.
+distinct. The historical upstream baseline `ec6bdc219575` lacked refresh; current
+maintained source and qualified native user refresh are recorded in the
+[Hub-issued native Lore section](#hub-issued-native-lore-credentials) and execution
+checklist. Preserve native explicit-token semantics while treating old
+agent-in-factory qualification as historical.
 The rejected local OIDC prototype is superseded by upstream adoption.
 
 ### One Installation Address
@@ -512,9 +526,9 @@ ingress. No remote configuration changed. Sanitized inspection receipt:
 ### Configuration Ownership And Infrastructure As Code
 
 Lore stores versioned desired configuration referencing native OpenShell templates
-and workload definitions plus one narrow composition schema. The current measured
-backend is Docker. The accepted Kubernetes target uses Helm/operators for the
-foundation and OpenShell for sandbox resources; it adds no custom infrastructure
+and workload definitions plus one narrow composition schema. The qualified Linux
+backend is Kubernetes; Mac keeps normal development fixtures. Helm/operators own the
+foundation and OpenShell owns sandbox resources; this adds no custom infrastructure
 language or competing runtime inventory.
 
 | Owner | Versioned or trusted configuration |
@@ -580,7 +594,8 @@ Factories run deterministic build/check commands against published revisions in
 separate OpenShell sandboxes. They contain no OpenCode, model credentials or agent
 instructions. The agent remains on the Computer and can fix source and push again.
 Successful independent checks produce artifacts eligible for preview or promotion;
-general revision-triggered build and composition automation remain later work.
+the next planned slice is environment-scoped source activation in a reusable
+runtime, rather than mandatory image publication for each source edit.
 
 Computer working storage, including its home and native client state, survives
 routine runtime recreation. Computer, factory and deployed service lifetimes are
@@ -840,8 +855,9 @@ and [revision commands](../lore/lore-client/src/cli/commands/revision.rs) alread
 provide working-copy staging, commits and synchronization; repository clone and
 branch push retain their native semantics. OpenShell
 [`create_sandbox`/`exec`](../openshell/crates/openshell-sdk/src/client.rs) provide
-the runtime operations. These existing primitives ground the plan; the automatic
-source-to-build contract and user onboarding are still pending.
+the runtime operations. These primitives ground the proposed source loop; they do
+not establish durable child-worker ownership or environment composition. Computer
+onboarding has separate qualified receipts.
 
 The end-to-end target is the [product workflow above](#user-author-build-promote-and-use).
 Its user/agent entry point is a Computer, while factories run deterministic jobs.
@@ -862,17 +878,21 @@ Target sequence (revision-triggered integration remains planned):
    repository permissions. OpenShell controls network access. Native Lore owns
    the user's login/refresh state; native OpenShell owns the separately configured
    Hub provider refresh and model credentials. These are distinct credential paths.
-3. A Lore notification wakes the small revision integration. It reads the exact revision
-   and approved environment definition, then asks OpenShell to run fresh checks/builds.
-   Trusted publication records the resulting immutable image digest and check evidence.
-4. The integration requests a service sandbox through the same OpenShell SDK and Docker
-   driver. OpenShell owns startup, supervision and restarts. After application readiness,
-   Veoveo makes that immutable version available in the authorized composition.
+3. A Lore notification hints that desired state changed. Hub's planned thin module
+   rereads the registered environment and source references authoritatively; periodic
+   reconciliation repairs missed notifications. Only explicit branch followers
+   advance. Pinned environments and unrelated users/base/overrides are unchanged.
+4. The module prepares the exact source revision and child worker in the override's
+   existing native Kubernetes runtime, using its persistent cache. The in-runtime
+   owner, application probe and multi-instance registration must be implemented and
+   qualified before atomic route/catalog activation. No image push or Hub restart
+   is required by this ordinary source-update design.
+
 5. An MCP client calls the Veoveo Hub with its execution context. The Hub resolves
    the selected service version, checks application permission and opens authenticated
    OpenShell forwarding to that service. The service receives a narrowed application
    token. Neither the user nor agent receives the Hub's OpenShell management token.
-6. Later pushes repeat the same path; promotion selects a tested artifact. Branch deletion
+6. Later pushes repeat that scoped path; promotion selects tested exact source, runtime and bindings. Branch deletion
    triggers an authoritative ownership check, Task drain/retention decisions and native
    OpenShell deletion of owned workloads. Inherited services and bootstrap remain.
 
@@ -892,9 +912,10 @@ A long-running service is therefore already a native workload, not a feature tha
 requires a separate deployment controller or a Veoveo process supervisor.
 
 The public API inspected does not establish a deployment-group controller with
-replica counts, autoscaling or coordinated rolling updates. Start with one sandbox
-per owned service version. Create a new immutable version, qualify it and change
-composition selection; do not claim template edits update existing sandboxes.
+replica counts, autoscaling or coordinated rolling updates. For the planned source
+loop, reuse one admitted sandbox per owned override and keep revision workers
+separate within it. Template/toolchain changes remain explicit native workload
+changes; do not claim template edits update existing sandboxes.
 If fleet orchestration becomes required, first evaluate an OpenShell extension or
 upstream contribution. Do not silently recreate it in Veoveo or restore Flux.
 
@@ -1019,15 +1040,18 @@ against the threat model before migration; do not weaken it to make a probe pass
 
 ## One Service Deployment Path
 
-Every managed MCP service version runs as an OpenShell service sandbox. Use its
-runtime image digest, canonical command, native resource request, approved policy,
+Every managed MCP deployment uses an OpenShell service sandbox. A source-backed
+deployment may retain several exact revision workers in that sandbox. Use its
+admitted runtime image/template, canonical launch contract, native resources, approved policy,
 provider attachments and authenticated forwarding. Author/build/check sandboxes use the
 same execution system with different workload definitions. Published services stay
 independent of their author's workspace lifetime.
 
-The path is Lore revision, fresh OpenShell checks/build, verified artifact digest,
-OpenShell service sandbox and endpoint, then Veoveo application routing. Promotion
-selects tested artifacts in any authorized environment through that same path.
+The planned source-backed path is exact Lore revision, declared checks/incremental
+build, a ready revision worker in its existing admitted OpenShell runtime, then
+composition-scoped Hub routing. It does not require an image publish or a new
+sandbox per source edit. Promotion selects tested exact source plus runtime and
+bindings; image-backed releases remain a separate option.
 There is no OpenShell-only preview mode alongside a Helm/Flux release mode.
 
 Use native authenticated `ForwardTcp` for private MCP connectivity from the
@@ -1812,13 +1836,12 @@ This slice used the existing staged Hub placement configuration and a Git-built
 Artifact image; it did not extend the Time-specific Lore/factory acceptance to
 Artifact or implement general composition.
 
-Automatic source-to-deployment integration remains a later, thin module in the existing
-trusted Hub process: Lore notification plus authoritative revision read, fresh
-OpenShell checks/builds, trusted publication of an immutable image, then native
-service deployment and readiness before selection. Registration currently routes
-the newest instance of a slug; parallel version selection, composition and Task
-version retention remain later work. The first slice uses one selected version of
-each service and does not claim to solve those semantics.
+The next planned integration is the [environment override and source activation
+contract](#environment-overrides-and-fast-source-activation), in the existing trusted
+Hub process. It reuses admitted runtimes for source changes; general trusted image
+publishing is separate. Current registration still selects one current server per
+slug: parallel deployment selection, composition-scoped discovery/delegation and
+Task revision retention require implementation, not merely another sandbox.
 
 Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs),
 [forwarded identity](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs),
@@ -1829,21 +1852,188 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ## Data-Driven Environment Definitions
 
-Use the [same Lore composition schema](INFRASTRUCTURE_CANDIDATE.md#configuration-and-lore-integration)
-for any environment name. Names are labels, not lifecycle or authorization rules.
-A definition can own deployments, inherit an authorized base, or combine both.
-Pinned or tracking base selection, permitted identity/data bindings, resource requests,
-retention and branch-deletion behavior are explicit inputs. Promotion selects
-verified immutable artifacts in any authorized destination, without a fixed sequence
-of stages. The immutable environment identity is separate from its label and branch
-name; the resolved composition captures exact versions for routing and Tasks.
+### Environment Overrides And Fast Source Activation
 
-Keep the schema narrow: native OpenShell workload/template, policy and provider
-references for all execution, and approved binding references for state and identity.
-Do not copy these systems' schemas into a new infrastructure language. Trusted
-admission policy outside the editing branch constrains references, grants, quotas
-and targets. An environment cannot authorize its own issuer or privileges. Root
-identity, Lore, controllers and the secret store survive deletion of an experiment.
+**Proposed, not an executable schema or current API — 2026-10-20.** Use one narrow
+Lore-versioned definition, which may live in an existing registered repository;
+there is no requirement for one repository per environment. `components` is the
+single map of logical component IDs to **owned overrides**, not a competing second
+`overrides` field. Stable IDs carry identity; display labels and branch names have
+no special stage, routing or permission semantics.
+
+```yaml
+schemaVersion: 1
+id: "<environment-id>"
+displayName: "My Media experiment"
+base:
+  environment: "<base-environment-id>"
+  follow: admitted  # alternatively: revision: "<resolved-composition-revision>"
+components:
+  "<media-component-id>":
+    source:
+      repository: "<registered-lore-repository-id>"
+      branch: "<stable-lore-branch-id>"  # alternatively: revision: "<exact-lore-revision>"
+    runtimeTemplate: "<versioned-native-runtime-template-ref>"
+```
+
+This Media example illustrates product selection, not an installed parser or Hub
+fixture. Base `follow` and exact `revision` are exclusive, as are source branch
+following and source revision pinning. The base is optional and must be authorized
+and acyclic. A source push advances only definitions explicitly following that
+registered branch. Base updates change inherited selections only; owned overrides
+persist. Runtime settings, policy/provider schemas and resource admission stay in
+native OpenShell definitions. Any data/identity bindings reference approved records;
+there are no embedded secrets or branch-authored permission grants.
+
+For a logical component, absence from `components` means inherit from the selected
+base. An explicit override wins; if selected but unhealthy it is **unavailable**,
+not a fallback to the base. Removing the entry explicitly resumes base selection;
+without a base entry the component is unavailable. Routing isolation does not clone
+data: inherited services use their existing data under current ACLs, and override
+data bindings must be explicit. This plan adds no Lore authorization rules.
+
+The first implementation supports an explicitly admitted binding to the logical
+service's existing database schema. Permission to edit an environment does not
+grant permission to use that storage binding. Registration currently grants the
+logical service's database role automatically; deployment admission must remove
+that implication. Independently keyed override workers receive authority for their
+particular deployment, not the namespace owner's signing key or the installation's
+global registration secret. Isolated copies of application data are outside this
+slice: current component SQL explicitly names its schema, so changing `search_path`
+would not establish isolation.
+
+### Accepted Personal Lore Workspace Default
+
+**Accepted planning direction, not implemented onboarding.** A personal Lore workspace
+repository is the default home for versioned user setup, not an automatic mirror of the Computer's home or a mandatory repository
+per environment. The user may choose another authorized location. Illustrative paths are `environments/my-work.yaml`,
+`environments/media-experiment.yaml`, root `AGENTS.md` and `projects/README.md`
+containing ordinary project links. Root `AGENTS.md` supports existing instruction
+discovery when the workspace checkout is the working directory; an optional
+`instructions/` directory can hold referenced documents. These are illustrative
+layout conventions, not a required schema or a new project registry protocol. Service source stays in its own repositories,
+referenced by stable IDs and branch/revision selectors; shared definitions may
+live in a team workspace repository. Hub can associate a user with a stable native
+repository ID under existing Lore permissions. Automatic repository creation,
+default association/onboarding and its user-facing surface remain to be designed
+and qualified; none is implemented by this plan. The Computer checks out the authorized workspace for instructions/environment files;
+working checkouts, caches, scratch and session history remain private unless the
+user explicitly commits and pushes selected source/configuration. No automatic home
+synchronization or additional Lore permission scheme is introduced.
+
+### Computer-Local Apply And Lore Reconciliation
+
+**Accepted and authorized for implementation, 2026-10-20; not yet implemented or
+qualified.** A Computer-local environment file and source directories drive an
+explicit apply through Hub that snapshots the selected inputs into the separate
+private override runtime. An opt-in watch repeats that apply. The personal Lore
+checkout can hold these ordinary working files; Lore commit/push publishes
+versioned, shareable source/configuration and is not required for every edit.
+Applying local files transfers only the explicitly selected source/configuration;
+it does not publish the Computer's home, history or unrelated scratch.
+
+Local snapshots and resolved Lore revisions feed the same typed activation
+contract and revision-worker lifecycle. An override has one active source selector:
+applying a local snapshot replaces its branch-following selection explicitly, so
+a later branch notification cannot overwrite that local experiment. Returning to
+branch following is another explicit selection change. Track the accepted desired
+generation so a superseded fetch/build cannot activate after a newer apply.
+
+The composition, routing, independent runtime and retention rules remain:
+a stopped Computer leaves its override on the last successfully applied snapshot,
+not a live mount into a disappearing home directory. Snapshot identity/provenance,
+local transfer/watch, admission and reconnect semantics require implementation and
+qualification. No current Hub apply endpoint or OpenCode watcher is claimed here.
+
+For published inputs, use native Lore repository subscriptions rather than adding
+per-environment compiled hooks. Branch create/push/delete notifications wake a
+reread of authoritative branch/revision state; subscribe before the initial read,
+and reread on reconnect and periodic reconciliation. Lore's current in-memory
+stream has no replay cursor. Watch registered repository/branch IDs and environment
+paths dynamically; no repository name is compiled into Hub and no Lore behavior or
+permission change is required. Native subscriptions do not observe local file saves.
+
+### Environment Selection, Source Activation And Retention
+
+**Selection and routing.** Selection belongs to an authenticated Hub execution/MCP
+context, separate from business `WorkContext` and data authorization. Two sessions
+of one user can select different maps while calling the same logical tools, such
+as `media__run`; composition resolves the logical component to its deployment,
+revision and endpoint. Multiple live registrations must coexist without the newest
+registration stealing another environment's route. The current
+[RegistrationSnapshot](../veoveo-hub/crates/veoveo-hub/src/registration/snapshot.rs#L56)
+contains one server per slug, and
+[registration selection](../veoveo-hub/crates/veoveo-hub/src/registration/watch.rs#L96)
+chooses one current instance: this is required implementation work.
+
+The public MCP route is currently `/mcp/{profile}`. The proposed selected-environment
+connection/session binding is not an existing API or an assumed OpenCode environment
+picker. First qualify a normal client configuration binding its authenticated Hub
+MCP connection/session to an environment; verify the actual OpenCode context surface
+before designing its ergonomics. Discovery/tool schemas, caches, pagination,
+downstream delegation and Task lookup must all use the resolved composition and
+deployment revision. A shared service preserves each call's selection, rather than
+changing global downstream configuration. Native SDK/Core/domain types should own
+these contracts in their existing layers; do not add a parallel conformance system.
+
+Source inspection confirms OpenCode already passes configured MCP connection
+headers, but owns those connections per Location rather than per chat session.
+The first client surface will use a typed `veoveo-environment` HTTP selector on
+separately configured connections/Locations, leaving the OAuth resource URL
+unchanged. Hub must authenticate and admit that selection; the header itself is
+not authority. OpenCode's current `ai.opencode/sessionID` tool-call metadata does
+not cover discovery and cannot provide a separate environment per chat by itself.
+The signed downstream context retains the admitted environment and immutable
+composition revision, while each hop separately names its target deployment.
+These are implementation decisions awaiting deployed qualification.
+
+**Source activation.** Hub's existing trusted process owns only thin desired-state
+reconciliation: notifications are hints, authoritative Lore reads plus periodic
+reconciliation determine current intent. OpenShell owns sandbox/PVC/execution and
+native main-process recovery. The service repository declares build/check/launch
+commands; a reusable versioned template supplies the interpreter/toolchain. Ordinary
+source changes reuse the override's admitted sandbox, PVC and incremental cache.
+Fetch each exact revision into its own directory, build/check it, then start a
+separate revision worker with an admitted distinct listener/endpoint. Only after
+application readiness and registration succeeds, atomically publish the selected
+route **and catalog** for new operations. No ordinary edit requires OCI publication,
+sandbox/Pod replacement or Hub restart; template/toolchain changes are a separate
+workload lifecycle operation.
+
+A small in-runtime process-ownership contract still needs implementation and
+qualification, preferably using the language's existing runner and a stable template
+entrypoint owning child workers. Native scoped Exec can build/probe; it is not proof
+that a daemon survives its caller or disconnect. OpenShell remains the recovery
+owner for the canonical main process; do not change its supervisor/security or add
+an external process controller. On recovery, reconcile desired/serving source and
+worker state before routing; do not replay non-idempotent mutations.
+
+Rust builds use **unique build-specific actual executable paths**, for example
+`/sandbox/builds/<build-id>/service`, under a narrowly admitted path pattern. Record
+the exact source, runtime/toolchain and output identity for each build; rebuilding
+the same source must not reuse a pinned path with different bytes. Native
+[TOFU identity](../openshell/crates/openshell-supervisor-network/src/identity.rs#L138)
+rejects different bytes at a pinned path; this plan neither disables nor resets it.
+Interpreted code also uses separate source directories/child workers when retaining
+operations: never mutate imported files beneath an old worker. A reusable sandbox
+is not a single reusable process. Current MCPs do not already provide this workflow.
+
+**Activation and retention.** In-flight operations and long Tasks capture their exact
+deployment and resolved composition. Keep the old worker/source/runtime bindings
+until completion or explicit cancellation; new work selects the ready replacement.
+An old Task must not be sent to the newest registration. A failed build/start before
+activation retains the explicitly recorded last serving revision, with desired and
+serving revision/failure visible. If the selected serving override itself becomes
+unhealthy, return unavailable; retaining a known serving revision during candidate
+preparation is not permission to silently route to the base.
+
+Private Computer scratch is never automatically published. Explicit local apply
+or an enabled watch captures selected files for the private override; a Lore push
+updates only selectors following that branch. The selected service remains independent of the Computer's
+lifetime. Isolated agent-free factories remain available for bounded jobs and
+independent checks, not mandatory image publishers. Promotion selects a tested exact
+source revision plus runtime and bindings; independent verification may be required
+by destination policy. General trusted image publishing remains optional/separate.
 
 ## Identity And MCP Enforcement
 
@@ -2118,8 +2308,9 @@ provide a safe privileged container builder.
 
 Use the existing Veoveo Task facilities where appropriate for durable coordination,
 without building another sandbox scheduler or assuming OpenShell is a complete CI
-workflow engine. Submit approved immutable images and native definitions through
-OpenShell's SDK; no Flux deployment bundle or separate CI service is required. A
+workflow engine. The planned source loop activates exact revisions within admitted
+native runtimes; image publication is a separate release/toolchain path. Submit
+workload changes through OpenShell's SDK; no Flux deployment bundle or separate CI service is required. A
 human-friendly Lore branch follows revisions; the deployed record always names the
 resolved revision and digests. Recheck active branch generation and permissions at
 publication and deployment. Long-lived MCP Tasks keep their version binding.
