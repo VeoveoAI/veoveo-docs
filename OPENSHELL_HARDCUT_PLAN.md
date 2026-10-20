@@ -1520,6 +1520,33 @@ Receipt `/tmp/hub-e3-state-freeze-20261020/receipt-v4.json`, SHA-256
 records commands, image identity and full log hashes, independently verified by
 the coordinator. Neither this slice nor the later helper work is published yet.
 
+The E3 runtime helper now passes focused Linux checks. `coder` (GPT-6.1 Sol)
+implemented snapshot extraction, immutable build output capture, bounded command
+diagnostics and s6 worker preparation. `builder` (GPT-6 Luna) checked a frozen
+52-path combination of state v4 and helper v5, with 223 SQLx metadata files, using
+fresh database preparation and workspace all-target/all-feature compilation. Image
+`veoveo-hub:e3-helper-v5-diagnostic` is
+`sha256:b5d8861ab8e286af468fd76c388b7136ee9c5187c2d80c5762c1c112508c4c28`.
+The final helper v6 changes only process wait/drain handling; its exact file was
+mounted read-only over that image for network-disabled checks. Seven helper tests
+passed in 0.18 seconds after 53.45 seconds of compilation; strict helper Clippy
+passed in 29.45 seconds. These cover archive links/containment, bounded and separate
+stdout/stderr, failed-check diagnostics and immutable output reuse. They do not
+exercise native Exec cancellation, s6 registration recovery or the owner HTTP flow.
+
+Review corrections separated machine-readable stdout from stderr, removed redundant
+child process groups so native Exec retains cancellation ownership, and made command
+read errors wait for the foreground child before returning. Compile checks also
+corrected SDK import/secret-accessor mismatches and one unused import. The existing
+unused source-authority method warning remains in the frozen Hub adapter; helper
+Clippy has no warnings. Receipt
+`/tmp/hub-e3-helper-freeze-20261020/receipt-v6.json`, SHA-256
+`e52f86977c300d3a0ece66a35b32073de09bf03eb880f7b28b14cee590b6871a`, records the
+exact overlay, commands and log hashes. The coordinator independently verified all
+52 source hashes and three complete log hashes on Linux. Full Mac/Linux component
+gates, source publication and integrated deployment remain pending; the active
+native adapter and Computer apply/watch client are outside this checked snapshot.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.

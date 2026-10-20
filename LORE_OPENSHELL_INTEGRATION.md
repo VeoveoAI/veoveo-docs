@@ -2150,6 +2150,23 @@ definitions carry no registration credentials or native policy grants. Live trus
 runtime admissions reference existing environment/component identities and approved
 storage bindings; current owner/tenant checks apply without adding another group ACL.
 
+Native provider attachments are also explicit operator-owned runtime admission.
+OpenShell's named workload template supplies image/environment/resource/driver
+settings; native Create receives policy, providers and the fixed main command as
+governance inputs. The adapter retains the actual native template revision and
+checks those inputs when reusing its owned runtime. Source recipes do not supply
+provider credentials. Build/check commands run in the foreground under native
+Exec's process group and deadline; they must not detach background jobs. Native
+Exec owns cancellation of those commands, while s6 owns serving worker lifetime.
+
+Candidate publication requires the SDK's existing listener-root `/readyz` to report
+application readiness at the exact admitted placement, plus the matching live
+registration. A missing readiness endpoint is a candidate failure; `/livez` is not
+a substitute. This uses `HostedServer::readiness`, already used by Time, and adds
+no candidate token, fake composition or preselection authorization bypass. Readiness
+does not prove MCP behavior: the deployed scenario separately exercises discovery,
+schemas and calls through ordinary authenticated selected-environment sessions.
+
 Reserve desired generation and idempotency before source transfer or branch reads.
 Publication compares the accepted generation and updates the serving selection and
 control revision within the existing database transaction, using a typed activation
