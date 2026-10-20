@@ -20,9 +20,8 @@ GPU/CUDA remain separate. See
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
 platform with Lore, OpenShell, Hub, Time, private Artifact and Media. Its other
-views explain the historical Mac credential path and the planned agent-operated
-workflow above the current Linux qualification snapshot. Update it alongside this
-document after every major architecture change;
+views explain native credential custody and the hosted Computer publication workflow.
+Update it alongside this document after every major architecture change;
 keep planned paths visibly distinct from qualified ones.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
@@ -30,6 +29,13 @@ Desktop is no longer an acceptance requirement. The locally qualified path uses
 The Desktop authentication adapter, signer dependencies and Desktop ingress are
 retired; durable data and private recovery state are preserved. External issuers
 and interactive human Lore login require separate qualification.
+
+On 2026-10-19 the user adds Hub-issued native Lore credentials to the active
+hosted Computer goal. Entra authenticates people into Hub; Hub owns repository
+assignments and issues the tokens Lore already understands. This supersedes the
+direct-IdP issuance direction for the new Computer workflow, not its historical
+qualification receipts. The [accepted issuer design](#hub-issued-native-lore-credentials)
+is implemented and deployed; native user acceptance is still pending.
 
 This direction refines the [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md).
 Extension builds and maintained VeoveoAI forks of Lore or OpenShell are permitted
@@ -98,7 +104,6 @@ stopped-process `import-control-plane` command, followed by a same-image native
 restart. Preserve concurrent Computer configuration and all other fields; a
 mounted-file edit and restart alone do not publish a binding change.
 
-<a id="product-workflow"></a>
 
 ## Product Workflow And Full Platform Plan
 
@@ -301,6 +306,229 @@ of its own OpenShell recovery. GPU/CDI execution is a later, separately qualifie
 resource capability. Phases and concrete acceptance gates are recorded in the
 [execution checklist](OPENSHELL_HARDCUT_PLAN.md#agent-operated-platform-adoption-plan).
 
+## Product Workflow
+
+Users enter through the installation's Hub and open `/computer`. The initial
+supported workflow is a private hosted Computer for each user, provisioned on
+first use through native OpenShell. Each Computer runs the OpenCode web app,
+native Lore CLI and a configured per-user Hub connection. Installation configuration
+selects `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` by default. The source implementation
+is merged into `main`; its Linux acceptance remains open.
+
+OpenCode uses Hub for platform actions. Lore CLI connects directly to private Lore
+through the OpenShell-controlled network and uses the user's native Lore login
+and permissions. Everyone receives the CLI; repository and branch access remain
+Lore decisions. No shared administrator identity or additional source-access gate
+is introduced. The hosted path does not require public Lore gRPC ingress.
+
+Hosted Computer integration uses Lore's existing authentication and security model
+as-is. The user explicitly withdrew the custom direct-role mode and additional
+repository-creation checks on 2026-10-19. Keep the requested native refresh fix;
+install and connect the native CLI without adding source-access rules or changing
+repository and branch permission semantics. See the
+[native Lore boundary](LORE_DIRECT_OIDC_PLAN.md#hosted-computer-native-lore-boundary).
+
+Hub's new responsibility is the issuer side of that native contract. Repository
+assignments live in Hub, not Entra. The native CLI obtains a dedicated Lore login
+token, exchanges it for a repository token, and refreshes through Hub's advertised
+OAuth endpoints. Lore still receives native gRPC directly and enforces its existing
+token grants. Its server configuration trusts Hub's issuer; its authorization and
+client protocol code do not change for this design.
+
+Working files, drafts and session state are private scratch. A Lore push publishes
+an immutable revision; an explicit Artifact upload publishes managed content.
+Factories run deterministic build/check commands against published revisions in
+separate OpenShell sandboxes. They contain no OpenCode, model credentials or agent
+instructions. The agent remains on the Computer and can fix source and push again.
+Successful independent checks produce artifacts eligible for preview or promotion;
+general revision-triggered build and composition automation remain later work.
+
+Computer working storage, including its home and native client state, survives
+routine runtime recreation. Computer, factory and deployed service lifetimes are
+independent. Hub admits browser access using the current user's application session,
+then forwards to that user's Computer through authenticated native `ForwardTcp`.
+The SDK shares its gateway HTTP/2 channel; the current HTTP proxy opens a native
+relay and local HTTP/1 connection for each browser request. Browser asset bursts
+require TCP capacity for parallel requests, separately from the SSH connection budget. The selected
+correction gives native TCP forwarding typed, configurable active and pending
+limits, separately from SSH, and configures Hub's own total forwarding capacity.
+Normal HTTP traffic does not use fixed retry sleeps. Cold-listener readiness has
+its existing bounded wait. HTTP connection pooling can reduce setup work later;
+it is not needed to remove the small native connection caps. Configuration and
+rollout evidence are tracked in the execution plan.
+Subsequent blank-page diagnosis reproduces a separate HTTP/2 mediator defect:
+retired protocol streams still counted as exchange tasks cause valid replacement
+streams to be refused. The candidate correction keeps bounded exchange tasks and
+drives native HTTP/2 I/O while waiting for task retirement. Component regression
+tests pass, and the exact supervisor image is now deployed on the actual Linux
+host. Hub, Computer and MCP service workloads recover to Ready. Native Computer
+shell, all 57 startup assets and `/api/info` return 200; authenticated public
+rendering remains a separate acceptance boundary. The user also isolates a
+client-router separator defect: mounted navigation produces `//settings` and
+`//new-session`, while manually removing the extra slash works. OpenCode
+`4bd4891` corrects only the router base, with the existing asset/PWA base retained;
+its browser-routing regression and app typecheck pass. The actual Linux host has
+built the source and image, and the installation Computer template selects it.
+The user authorizes discarding this dev Computer workspace during replacement.
+The native workspace reset also removes its provider instances; a normal browser
+OAuth handoff must recreate the Computer before runtime acceptance. Subsequent
+image deployments should retain owner providers and replace only the native
+cloned template and sandbox, avoiding repeated sign-in.
+The stale Hub Computer mapping is also reset for this development recreation.
+The user-authorized removal of a stale local browser denial restores Chrome
+automation, and normal Entra sign-in creates the new Computer on the fixed image.
+The first callback reaches its native listener before OpenCode binds the port;
+Hub `e564f60` admits the observed native Cancelled result in its existing bounded
+cold-start wait. Its focused regression and compilation pass, and its Linux runtime
+is deployed and Ready. A subsequent browser handoff completes. The user creates a
+session and receives MiMo replies; Settings and session navigation render with the
+single-slash router base. These are user-driven observations, separate from final
+agent qualification. Native Hub tool discovery and Lore login remain open: the
+Computer image copied an example Hub URL, and Chrome blocks the device approval
+redirect under the page's same-origin-only form policy. Installation `0192bb0`
+reads `COMPUTER_HUB_URL`; Hub `bfde2f2` derives it from the selected registered
+profile and admits only the device request's configured broker authorization
+origin in that page's form policy. The native Lore protocol and permissions do not
+change. The Hub fix is deployed and Ready; Linux checks and fresh browser/native
+CLI verification remain separate gates.
+OpenShell owns runtime lifecycle, isolation, credential custody and diagnostics.
+Computer-enabled installations give trusted Hub one dedicated native control
+identity for both service forwarding and provisioning. Native workspace creation
+and global-profile reads require the configured platform-admin role, with explicit
+workspace, sandbox and provider read/write scopes and an exact RPC allowlist.
+This is a new installation authority, not an implicit enlargement of the existing
+forwarder. The same native credential reference serves both Hub connections;
+endpoint binding cannot dispatch two providers on the same ForwardTcp endpoint.
+Computers never receive this control identity. Their Hub and Lore actions retain
+the acting user's application authority. Native issuance, mediation and renewal
+of the new control identity still require deployed qualification.
+See [implementation and Linux acceptance](OPENSHELL_HARDCUT_PLAN.md#hosted-computers--implementation-and-linux-acceptance)
+for source-tested, deployed and still-pending boundaries.
+
+## Hub-Issued Native Lore Credentials
+
+Accepted on 2026-10-19 as required work within the existing hosted Computer goal.
+The user explicitly approves Hub owning repository assignments and issuing Lore
+tokens after Entra authenticates the person. This is an extension of Hub's existing
+authorization-server responsibility. It does not restore the retired Desktop
+adapter or standalone signer, and does not change Lore's native security model.
+
+| Responsibility | Owner |
+|---|---|
+| Human sign-in and upstream identity proof | Existing Entra integration |
+| Repository registrations, explicit access assignments and grant changes | Hub's revisioned control plane and existing PostgreSQL publication/audit |
+| Device authorization, refresh families, repository token exchange, signing and JWKS | Hub's existing authorization server, generalized to protected resources |
+| Native repository IDs, actions and Lore claim encoding | Typed in-process integration outside the generic Hub OAuth library |
+| Signature/audience/expiry checks, repository operations and branch semantics | Unchanged native Lore server/client |
+| Runtime networking and factory credential renewal/injection | Native OpenShell |
+
+The generic issuer must operate on registered protected resources rather than
+require an MCP profile for interactive grants and persisted refresh families.
+Reuse `CatalogSection`, `ProtectedResourceDescriptor`, catalog admission, the
+existing signer, session storage and transactional audit. Keep the composition
+boundary explicit: one Hub executable links the native integration; there is no
+new daemon or permission database. The common signer owns standard claims and
+accepts an authorized typed issuance result. The integration supplies typed native
+grants, not arbitrary claim templates or request-provided JSON.
+
+Repository and grant management is live data, not executable registration. Typed
+deployment records carry audiences, endpoints/recipients, client bindings,
+repository scope templates and token lifetime policy; repository and assignment
+records carry IDs, tenants, principals and native actions. Only the native wire
+protocol, claim types and action vocabulary belong in code. The example
+`lore-repo-{id}` template is installation data, not a compiled prefix.
+
+Use the existing authenticated control-plane API to publish revisions and replace
+the running catalog. Each issuance resolves the current admitted section; no
+startup snapshot of repository rights survives in an issuer adapter or refresh
+family. Managing repositories or grants requires no Hub restart. PostgreSQL's
+active revision is authoritative across restarts; the configuration file seeds an
+empty installation only. Deliberately importing a complete installation catalog is
+an explicit trusted operator action. Do not preserve only Lore data through an
+ad hoc merge with a startup file. Existing in-flight requests retain their admitted
+snapshot. Replicas follow active-revision changes through the existing database
+notification and reconciliation mechanism, admitting and adopting the current
+revision under the same publication lock as local administrative updates. Reconnect
+reconciliation recovers missed events. Propagation is asynchronous; local publication
+does not establish simultaneous adoption or instantaneous token revocation.
+
+Initial grant records identify the native repository, Lore deployment, tenant and
+explicit principal assignment with native action permissions. Publish them through
+the existing control-plane revision mechanism and administrative authority. Neither
+Hub administration nor Work Context membership silently grants repository access.
+Work Context membership is an MCP admission condition, not an additional prerequisite
+for native Lore grants. Native issuance checks the registered resource/client and
+the explicit tenant/principal repository assignment; retained platform attribution
+does not confer or withhold repository authority.
+No new read-only role is inferred from native `permission: []`: that grant allows
+ordinary repository operations, including unprotected writes.
+
+The unchanged native client requires RFC 8628 device authorization and RFC 8693
+public-client token exchange, plus refresh. Its initial device request names only
+the public client and scopes, so that registration must select the dedicated Lore
+resource. Browser verification reuses Hub's Entra authentication broker. Discovery
+advertises the actual device/token/JWKS endpoints. Public-client repository exchange
+is a typed grant path separate from existing authenticated server delegation.
+
+Login and repository access tokens have distinct issuance authority. Both must be
+accepted by Lore's configured verifier and native recipient check. A login token
+permits the native login-level operations and repository-token requests; repository
+claims come from current Hub assignments at exchange. A repository token cannot
+become unrestricted issuance authority. Use one stable native user identity through
+login, refresh and exchange, a dedicated Lore audience, and the existing signed
+`root_domains` claim when the private recipient is not represented by the audience
+hostname. Hub's Ed25519 signing profile is source-compatible with Lore. Lore only
+needs issuer/audience/claim/client/template configuration changes for this design.
+
+Grant removal stops subsequent issuance. Already-issued native repository tokens
+may remain accepted until expiry; cached tokens and in-flight operations retain
+their native semantics. Token lifetime is an installation policy, not a new Lore
+authorization rule. The retained `refresh_authentication` bug fix is independent
+of this issuer change and remains the only requested client fix.
+
+Native repository creation records creator metadata but does not add a Hub grant.
+Initially, trusted Hub registration and explicit assignments provide known IDs/URLs.
+Automatic creator assignments and self-service onboarding require an explicit
+product workflow; they are not claimed native behavior. Native catalog listing
+remains independently configured and does not acquire per-user filtering from this
+issuer work. Do not add creation admission, branch ACLs, catalog filters or an
+external native auth service to compensate for those semantics.
+
+Computer OAuth traffic can use native OpenShell REST policies for Hub's OAuth
+paths, disjoint from OpenCode's MCP path, with the ordinary proxy and CA mechanism.
+Private Lore gRPC remains direct. Its installation endpoint must use a DNS name
+covered by the native server certificate and resolvable by OpenShell's trusted
+resolver. Native TCP policies reject literal-IP endpoint hosts. The selected
+reference endpoint is `grpcs://host.openshell.internal:41337`: the existing Lore
+container publishes that port on host loopback only, and OpenShell resolves its
+native alias to the compute backend's exact host-gateway address. The Computer
+admits the exact hostname, port and Lore executable with `protocol: tcp` and
+`tls: skip`. The latter disables proxy TLS interception, not Lore's certificate
+verification; immediate gRPC TLS requires this native passthrough setting. The
+Computer also sets `SSL_CERT_DIR=/etc/ssl/certs` so its installed private-service
+CA remains available alongside OpenShell's injected `SSL_CERT_FILE`. Factories
+retain their existing inspected gRPC rules and provider credential binding. The
+native backend pin replaces the earlier bridge-IP `allowed_ips` constraint; no host DNS edit or
+loopback CIDR allowlist is needed. The server leaf certificate must include
+`host.openshell.internal` under the existing trusted CA. The Computer template,
+factory configuration and Hub deployment registry use the same endpoint; Hub
+derives native recipient claims from that live deployment data. This is transport
+configuration, not a change to Lore authorization. An actual Computer-image
+native sandbox on Linux completes TLS/gRPC environment discovery with this route
+and reaches Lore's expected unauthenticated response. User login, repository
+operations and renewal remain to be qualified. Factories remain
+deterministic and use their own service identities.
+Their existing native renewal uses `client_secret_post`; add generic, explicitly
+registered support for that method in Hub rather than a token helper. Human native
+refresh state remains in each private Computer; factory secrets remain in native
+OpenShell custody.
+
+The implementation and acceptance sequence is
+[HLI1–HLI7](OPENSHELL_HARDCUT_PLAN.md#hub-issued-native-lore--accepted-goal-extension).
+Historical statements retiring Hub's former Lore issuer or requiring direct IdP
+issuance describe the earlier factory slice; this accepted design supersedes them
+for the active goal without reinstating their old implementation.
+
 ## Native Responsibilities
 
 OpenShell owns every capability it already implements. Veoveo must not duplicate
@@ -311,14 +539,16 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Need | Reuse | Remaining integration |
 |---|---|---|
 | Source and immutable revisions | Lore repositories, grants, hooks and notifications | Approved source-to-workload bindings |
-| Hosted Computers, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Human onboarding, exact source/artifact provenance and environment selection |
+| User Computers | Private OpenShell workspaces, persistent sandboxes, native forwarding and templates | Hub browser admission, first-use provisioning and OpenCode/Lore configuration |
+| Builds, checks and deployed services | Separate OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
 | Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
 | Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials, management renewal and factory access qualified locally; wider issuer adoption remains separate |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
-| Hosted Computer and compute access | Native OIDC and workspace membership | Per-user ownership and mapping approved source authority to runtime access |
+| Computer access | Hub application sessions and native workspace isolation | One owner per Computer; current permissions and session revocation |
 | Human identity | Configured OAuth/OIDC provider | Application subject/permission mapping |
+| Native source credentials | Hub signing, sessions, catalog publication and audit | Typed repository assignments and native Lore device/exchange/refresh issuance; accepted, not yet qualified |
 | MCP application behavior | Existing Veoveo Hub and service contracts | Composition, discovery, narrowed delegation and Task authority |
 
 Native [templates](https://docs.nvidia.com/openshell/v0.1.4/how-it-works/sandboxes/templates)
@@ -345,7 +575,7 @@ or require access to its database. Agents continue to use the ordinary Lore CLI.
 | Veoveo to OpenShell | Official async `openshell-sdk`, with explicit workspace and HTTPS/OIDC configuration; generated Tonic clients through `raw_grpc_fresh()` for RPCs such as `ForwardTcp` |
 | Veoveo to Lore | Version-pinned Rust client surfaces: `lore` for high-level repository operations and `lore-proto` generated clients with native transport/authentication for remote RPCs |
 | Lore to revision integration | Native branch notifications as wakeups, followed by authoritative reads; periodic reconciliation repairs missed events |
-| Agent to Lore | Native Lore CLI/protocol; supervised opaque-token path qualified locally, direct human device login/renewal still pending |
+| Agent to Lore | Native Lore CLI with user login and refresh, over the private OpenShell-controlled network; separate factory credentials retain their native custody path |
 | Veoveo Hub to deployed MCP service | Native authenticated OpenShell forwarding, carrying MCP requests with Veoveo's narrowed application token |
 
 OpenShell documents consuming its [Rust SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust)
@@ -380,6 +610,31 @@ for that specific configuration, not qualification of human device login or host
 Computer sessions. Hub-to-service calls continue to use authenticated native
 OpenShell forwarding and narrowed application tokens; users and agents do not
 receive the Hub's OpenShell management token.
+
+Target sequence (revision-triggered integration remains planned):
+
+1. A user signs in through the installation's identity provider and opens `/computer`.
+   Hub authorizes the application session and its owner-specific browser route;
+   trusted provisioning uses native OpenShell management authority. The user's
+   Hub application grant remains distinct from that management authority.
+2. OpenShell starts or resumes the user's persistent Computer. The agent edits
+   private working files and uses native Lore CLI to publish under the user's
+   repository permissions. OpenShell controls network access. Native Lore owns
+   the user's login/refresh state; native OpenShell owns the separately configured
+   Hub provider refresh and model credentials. These are distinct credential paths.
+3. A Lore notification wakes the small revision integration. It reads the exact revision
+   and approved environment definition, then asks OpenShell to run fresh checks/builds.
+   Trusted publication records the resulting immutable image digest and check evidence.
+4. The integration requests a service sandbox through the same OpenShell SDK and Docker
+   driver. OpenShell owns startup, supervision and restarts. After application readiness,
+   Veoveo makes that immutable version available in the authorized composition.
+5. An MCP client calls the Veoveo Hub with its execution context. The Hub resolves
+   the selected service version, checks application permission and opens authenticated
+   OpenShell forwarding to that service. The service receives a narrowed application
+   token. Neither the user nor agent receives the Hub's OpenShell management token.
+6. Later pushes repeat the same path; promotion selects a tested artifact. Branch deletion
+   triggers an authoritative ownership check, Task drain/retention decisions and native
+   OpenShell deletion of owned workloads. Inherited services and bootstrap remain.
 
 Only the source/revision-to-workload mapping and Veoveo application semantics are
 custom. Runtime state, credential custody, execution, forwarding, restarts, policy
@@ -489,13 +744,20 @@ migration to preserve disposable fixtures. See the
 [execution record](OPENSHELL_HARDCUT_PLAN.md#upstream-lore-adoption--2026-10-18)
 for actual source, tests and cutover status.
 
+The Linux reference shares one SeaweedFS service between Artifact and Lore. Each
+component has its own bucket and scoped storage identity. Lore also uses its own
+schema and restricted database login in the existing PostgreSQL instance. Sharing
+these services does not combine application credentials or repository and artifact
+permissions. Backend access checks remain separate from native Lore user and
+repository acceptance.
+
 ## Workspaces And Runtime Placement
 
-A hosted Computer is the authoring workspace and uses a native OpenShell sandbox.
-A factory sandbox
-is an independently isolated deterministic build/check job, normally with one primary
-repository and any additional explicitly authorized dependencies. Verification starts
-from the recorded published revision, not the Computer's mutable directory.
+A Computer is the user's persistent authoring and service-operation environment.
+It can contain several repositories permitted by native Lore. Each Computer has
+its own OpenShell workspace and stable sandbox identity. A factory is an independent
+build/check job; verification starts from the published revision rather than the
+Computer's mutable directory. Factories have no agent runtime or inference provider.
 
 An OpenShell workspace is an access grouping containing sandboxes, providers and
 templates. A Veoveo execution context selects service versions. Map them explicitly:
@@ -565,8 +827,8 @@ This describes the application integration sequence. Hub/Time, the prepared Time
 factory pass, private Artifact and private fake-provider Media now have local
 acceptance recorded in the execution checklist.
 The [visual guide's Platform now view](diagrams/veoveo-platform.html#platform)
-shows the qualified Mac deployment; its [Linux reference view](diagrams/veoveo-platform.html#next)
-shows the deployed Bioma reference and its remaining qualification gates. Hub plus Time were
+shows Mac and Linux evidence separately; its [next integration view](diagrams/veoveo-platform.html#next)
+shows hosted Computers, publication and independent factories. Hub plus Time were
 qualified first, followed by a build-only factory task from a known-good Time Lore
 revision and then private Artifact. This is an unused local Mac installation: replace and restart local
 services directly. Production continuity, parallel deployments and rollout

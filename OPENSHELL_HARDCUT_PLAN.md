@@ -23,6 +23,13 @@ subsequent Linux signed Events qualification recorded below.
 Ownership and exact scope are in [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md).
 Desktop graph/diff and browser-session recovery were withdrawn, not marked passed.
 
+The active hosted Computer goal includes the user-approved
+[Hub-issued native Lore extension](#hub-issued-native-lore--accepted-goal-extension),
+accepted and resumed on 2026-10-19. Entra authenticates users; Hub owns repository
+assignments and issues native Lore tokens. This supersedes earlier direct-IdP
+issuance instructions for the new goal. Existing Linux application acceptance
+does not establish acceptance of this new issuer or the hosted Computer workflow.
+
 The architecture is [Lore and OpenShell integration](LORE_OPENSHELL_INTEGRATION.md).
 The [platform visual guide](diagrams/veoveo-platform.html) must be updated with every
 major architecture change and whenever an illustrated pending path is qualified.
@@ -825,6 +832,13 @@ a native bootstrap/recovery solution, not weaker authentication.
 
 Bootstrap resources and durable state are independent of disposable Lore branches.
 Their lifecycle owner may be OpenShell without making them preview-owned data.
+
+The 2026-10-19 placement review retains consolidation under native OpenShell as
+the target, including Lore and storage, while keeping the existing MCP workloads
+there. The accepted immediate sequence is to establish Computer-to-Lore native
+connectivity and authentication with the currently running services first. Then
+move durable services with qualified protocol routing, readiness dependencies and
+restart recovery. The current host-loopback connection fix is not that migration.
 
 ## Subsequent Adoption
 
@@ -3412,3 +3426,2112 @@ Further adoption remains open:
 
 Prefer native schemas, APIs and extension points. Maintain narrow VeoveoAI patches
 only for demonstrated gaps, preserving Lore/OpenShell security and ordinary logic.
+
+### Hosted Computers — Implementation And Linux Acceptance
+
+The active Computer goal now includes the actual Linux reference at
+`https://veoveo.bioma.ai/computer`. Local component tests and cross-built binaries
+do not complete this goal. Coordinate the live switch with the ongoing installation
+qualification; do not run parallel deployment changes or paid model calls.
+Preserve the other team's Lore storage and qualification edits.
+
+The accepted product boundary is one private, persistent native OpenShell Computer
+per user. Its OpenCode web app, native Lore CLI, per-user Hub connection and default
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` configuration are ready on first use. The user's
+native Lore permissions govern repository access; there is no extra author gate or
+shared administrative identity. Working files remain private until pushed to Lore
+or uploaded to Artifacts. Independent factories build published revisions and have
+no OpenCode, inference credentials or agent instructions.
+
+Source work lives under `/Users/rozgo/VeoveoAI/.worktrees/` in
+`computers-openshell`, `computers-opencode`, `computers-lore`, `computers-hub`,
+`computers-installation` and `computers-docs`. Main checkouts and the running
+installation are not changed by this source work. The coordinator owns architecture,
+review and evidence; the GPT-6.1 Sol coder owns implementation and the GPT-6 Luna
+builder owns builds and checks. Neither worker makes model calls during iteration.
+
+Source checkpoint, 2026-10-19:
+
+- **Native Lore refresh:** local commit `821da21710a9085797dc8a9d98955c1f3af1c389`
+  refreshes the selected public client's native OIDC login before resource-token
+  exchange. Credential-pair updates use existing process/file locks, refresh token
+  rotation is retained, and invalid grants require login again. Synthetic issuer
+  tests include two real child processes sharing one credential store and exactly
+  one refresh request. Credential tests (38), transport authentication tests (111),
+  login tests (12), authentication tests (15), CLI compilation and strict
+  credential/transport clippy pass. The broader revision clippy lane still has
+  pre-existing findings. No installed CLI, real IdP refresh or crash-atomic
+  provider/filesystem transaction is proved by these tests.
+- **Factories:** installation commit `71e2c0b` removes OpenCode, its configuration
+  and instructions, and the factory inference provider. A local Linux ARM64 image
+  build passes; an offline container as UID 1000 has Lore, Rust/Cargo and the Hub
+  SDK client, with no `opencode` executable or `/etc/opencode` directory. This
+  fixture uses the existing cached Lore `0.10.1-nightly+local`; it does not qualify
+  the new user-refresh commit. Image identity:
+  `sha256:909420cc2ced205e1dd46fbfbd0e02708e697c2b5babca800c3a3be2aba8c0a2`.
+- **OpenShell persistence:** local commit
+  `90577de61bbea00c389b0920cdb931dcc9e58b1a` implements managed Docker working
+  volumes and retained sandbox identity/specification. Focused server persistence
+  tests (8), invalid-retention rejection (1), persisted startup/recovery tests (12),
+  provisioning-worker tests (2), Docker-driver library tests (141; 2 ignored) and
+  all-target compilation and strict affected-crate clippy pass. A real Docker-driver
+  persistence fixture passes (4.61 seconds). The first isolated native gateway test
+  failed on Stop → Start: initial readiness and workspace bytes passed, then the
+  control supervisor fails and the sandbox enters `Error/ContainerExited`.
+  The underlying supervisor diagnostic was lost during test cleanup; the observed
+  failure does not yet establish its cause. Source review identifies a likely
+  identity mismatch: changing the generation of an existing runtime leaves its
+  generation-bound outer fence unchanged. The source correction
+  preserves generation and rotates authentication on same-runtime Start, while
+  committing a fresh identity and owned operation atomically after an observed
+  missing-runtime response. Missing-runtime tests retain their fresh-generation
+  requirement. The next native run passes initial readiness (864 ms), Stop → Start
+  (2,695 ms) and retained identity after runtime loss (4,886 ms), then fails
+  recreation with `SandboxTokenWriteFailed`: the recovery request omitted the
+  gateway token that normal Create derives from the native launch bundle. The
+  recovery source now derives that same driver-only token from the freshly minted
+  bundle, with no token added to the public persisted specification. This failed
+  run took 55.85 seconds; Cargo reports failure, but its numeric
+  exit code was not retained because the wrapper used zsh's read-only `status`
+  variable. Owned fixture resources were removed. The final recovery keeper and
+  strict clippy pass, followed by the native gateway E2E (one test, 14.26 seconds;
+  48.95 seconds including command/build overhead). Cumulative milestones are
+  initial Ready at 0.863 seconds, Stop → Start at 2.630, retained runtime loss at
+  4.812, recreated Ready at 10.714, gateway-restart preservation at 13.900 and
+  explicit deletion/reclamation at 14.243. The retained sentinel is 54 bytes,
+  SHA-256 `c414da577a789a3862fc6c645daa100b4309b5f0f60f478d43857381e908883a`.
+  This uses an isolated local gateway and cached OpenShell 0.1.4 runtime/supervisor
+  fixtures; it does not qualify the actual Linux installation. Async provisioning
+  errors use owned native Stop before retry. The later matching Linux build and
+  isolated lifecycle result are recorded below; public Computer acceptance remains
+  pending.
+- **Native forwarding readiness:** follow-up local commit
+  `ea9b680dc780c1f24fd0cbf703cbfaf9b04f2d40` makes ForwardTcp success wait for
+  the existing connected-target relay claim. It also owns both stream directions,
+  closes an idle target when the caller drops the response, and preserves request
+  EOF as a half-close so the target can deliver its final response. No protobuf or
+  SDK API changes are needed. Twelve forwarding tests and eight existing relay
+  integration tests pass; strict all-target server clippy passes in 77 seconds.
+  A broad new StreamExt import initially collided with existing extension traits;
+  qualifying only the new call fixes that compile error. A later comment-only
+  doc-markdown lint was corrected without rerunning unchanged behavior tests.
+  Matching native Linux builds/E2E subsequently pass as recorded below. Installation documentation commit
+  `cb8540ee60be37e1010aff2f3f2ee86e78a69fc7` pins this revision; its image inputs
+  are unchanged from the tested `16dcf3c` tranche.
+- **OpenCode serving:** local commit
+  `376324a9fe6870e6e9825e97bcd96d4948d84d5a` adds base-path serving, explicit
+  trusted loopback proxy mode, mount-scoped browser storage and online-only serving.
+  The final repository check passes all 34 tasks (22.05 seconds wall time), and
+  all five CLI WebUi tests pass (107 assertions, 1.56 seconds).
+  The focused browser cache/persistence suite passes (15 tests, 13.91 seconds),
+  along with prior browser regressions (18), base-path tests (1), theme preload
+  tests (7), proxy regressions (8) and five package typechecks. An earlier CLI WebUi
+  failure, `InvalidHTTPResponse`, came from the buffered test proxy replaying
+  transport-framing headers; the fixture now lets the HTTP server own framing
+  while preserving encoded content. The E2E typecheck retains four known baseline
+  errors. Final embedded-web-UI packages build for macOS ARM64 (53.38 seconds),
+  Linux ARM64 (44.45 seconds) and Linux x86_64 baseline (43.56 seconds). Executable
+  SHA-256 values are, respectively,
+  `2da0a16007cee6c74bd9e8df448c3ee5ef7ee4cda2007cb6619b532773e60365`,
+  `3f2d72d652d99a7c68e1b8b59597c782cf17a543bfb993ab75610d31a86bf1d8` and
+  `79f58e2eaefa35cd30dd3cb73c7eca83ff2f45a67b0b41684cde1e4cbe74ddc3`.
+  A macOS package smoke test with an isolated home and model fetching disabled
+  returns HTTP 200 for `/api/info` and the web UI, marks HTML private/no-store,
+  and refuses `/registerSW.js` with HTTP 404. No inference was requested. Online-only
+  serving disables offline app caching so a fresh browser navigation must reach
+  Hub admission. A path namespace is not an origin security boundary. The isolated
+  Linux image execution below does not qualify authenticated remote browser access.
+- **Hub and installation:** local Hub commit
+  `e35f79823c0327a77ec817ffd8ec11022ee41fb4` adds typed installation inputs,
+  owner mapping, browser-bound single-use PKCE state, native-family admission and
+  durable pending/ready custody transitions. Two PostgreSQL-backed tests cover
+  login state and serialized handoff/rollback; the bootstrap policy test, locked
+  compilation and strict clippy pass. Clean SQLx generation and a fresh offline
+  compilation also pass; removed metadata belongs to Core queries, not Hub queries.
+  OAuth HTTP routing, native provisioning and streaming browser forwarding are now
+  implemented in the worktree. The first runtime SQLx/compile gate fails after
+  36.56 seconds: a logout query uses `family_id` where the existing refresh-token
+  table declares `family`, the HTTP client has no enabled `.form` method, and the
+  native policy error type does not support the selected `anyhow::Context` call.
+  Those errors are corrected. A follow-up callback Handler error was traced by an
+  explicit Send diagnostic to the form serializer remaining live across an await;
+  scoping it like the existing native OAuth helper fixes the lifetime. SQLx prepare
+  now passes (7.44 seconds), producing 91 current queries with aggregate SHA-256
+  `7841086149dc0db336a80c8a0d7c7a2949f8c015db4d0ccb90ea76e58465767c`.
+  Locked offline workspace/all-target/all-feature compilation passes (0.22 seconds
+  on the warmed target). The first focused test run passes six cases and fails
+  three PostgreSQL fixture starts because version-18 tools are absent from PATH;
+  the corrected environment reaches the suite (seven pass, two fail). Those
+  failures identify test setup defects: the new admission fixture lacks the
+  installation OAuth-client resolver, and the extended handoff keeper reuses an
+  already-inserted browser-cookie digest for its second login. Binding the native
+  resolver and using a fresh replacement digest fixes both; all nine focused
+  Computer tests pass (1.10 seconds). No concurrency cause is established by the
+  duplicate-key error. Strict Hub clippy initially reaches two collapsible-if style
+  findings; native let-chains correct both without changing behavior. The final
+  locked workspace/all-target strict clippy passes in 8.83 seconds. The reviewed
+  runtime is committed as `1e4aa5c0f8091d62030cf614e24c93f8b1b340f0`. The first full
+  Mac-host Linux ARM64 Docker check compiles, then fails its SQLx prepare check:
+  the committed metadata is missing queries. Its source is clean and contains the
+  same 91 metadata files. Source inspection establishes the cause: SQLx 0.9 emits
+  freshly compiled dependency queries into the same workspace directory, while
+  warm dependencies emit nothing. Hub's existing README requires an empty target
+  directory and retention of Core queries. The foundation's removal of 85 files
+  because they belonged to Core was incorrect; the warm generation and subsequent
+  offline compile did not validate that cleanup. Native regeneration against the
+  exact pinned graph and migrations in a clean container produces 176 queries:
+  the existing 91 are unchanged and all 85 additions exactly match the entries
+  incorrectly removed by the foundation. Commit
+  `df67d0c001088587d9f888c559b827e6c5953854` retains this full generated set;
+  aggregate SHA-256 is
+  `2e507e0c722f5ae5bff0125d9c75225b9487fc9ff929b719cdee408c9daa27ea`.
+  No Rust or Docker gate change is required for that correction. The full Mac-host
+  Docker retry then passes SQLx, formatting, clippy, dependency policy and feature
+  checks. Of 216 selected tests, 215 pass and one database-contract test fails;
+  one additional test is skipped. That existing test reports eight violations in
+  the new Computer persistence: three queries lack tenant predicates, delivery
+  clearing lacks a key/batch bound, three tables lack retention declarations, and
+  the browser-session family foreign key lacks a leading-column index. The source
+  correction resolves the native family first, derives its typed tenant/principal
+  for Computer reads, and carries owner predicates through custody locking and
+  completion. Logout clears every successor envelope in ordered batches under the
+  existing revocation/audit transaction. Retention declarations preserve durable
+  Computer lifetime; the family index supports the existing cascade. The existing
+  keeper covers wrong-owner refusal plus 1,001 synthetic envelopes across multiple
+  batches, including audit rollback. Fresh PostgreSQL 18.6 preparation against
+  Core and the revised unreleased migration compiles in 36.86 seconds, generating
+  178 metadata files (four replaced and two added), aggregate SHA-256
+  `42e0bed375e8dc00a3b0d611f21538e692afc864515e17dfb538a9c1d538a1d2`.
+  The corrected source and generated metadata are committed as
+  `9da92b37340f1849b9e23145cab790977a3dff4e`. Offline workspace/all-target/all-feature
+  compilation passes in 0.29 seconds. The existing database-contract test passes
+  with zero violations across 75 queries and 24 tables; all nine focused Computer
+  tests pass in 1.22 seconds. Strict workspace/all-target/all-feature clippy passes
+  in 9.41 seconds. The checker remains intact. The full Mac-host Linux ARM64
+  Docker gate then passes: 216 tests pass, one is skipped, test execution takes
+  33.342 seconds and the whole build takes 201.92 seconds. Its check image is
+  `sha256:2356424b84960109a0050575625415a915d26371f315a4b3fcb7e442ca949603`.
+  The actual Linux x86_64 gate also passes all 216 selected tests with one skipped
+  in a 249.586-second Docker build,
+  along with migrations, SQLx, formatting, clippy, dependency and feature checks.
+  Its check image is
+  `sha256:a307862b3878e060f028ea4b2a03e2c050d8f24a8a2a6fdc1927a26377f4e0ad`.
+  The first Linux wrapper invocation lacked Docker on PATH and did not start a
+  build; using the already-present executable corrects only that harness failure.
+  The matching Linux x86_64 runtime image then builds in 124.000 seconds:
+  `sha256:1ada0a05a1fc87c77f022be373687c7f13b8167ab56fee7983d42d460742a251`,
+  144,568,409 bytes. Its first invocation exits 126 before any Docker build because
+  it selects a non-executable CLI path; the established task-local Docker executable
+  succeeds without source changes. The reviewed source archive is SHA-256
+  `7f9368f41bfdea9475c317e7b8f026b67a4a9571d088cbceb7ef9e22a8fb218c`.
+  Focused receipts and
+  `docker-check-macos.log` are in
+  `/tmp/computers-hub-database-rules-validation-20261019/`. The added audit
+  authentication method uses Core's
+  existing declaration UPSERT and requires no data reset, record rewrite or Core/SDK
+  pin; existing Artifact evidence remains intact.
+  Review also found that native Sandbox Ready precedes application listening and
+  ForwardTcp currently returns RPC headers before actual target connection.
+  The native correction above awaits the existing relay claim before success,
+  without changing wire fields, so initial provisioning can wait for TCP readiness.
+  This establishes listener availability, not arbitrary application health.
+  Installation commit
+  `16dcf3c9e3d0106f65064bdb1226c17582f34209` adds the independent Computer image
+  and configuration. It passes OpenCode's native schema and the native OpenShell
+  parser (four policies and two profiles).
+  Lore is now built from `821da217` into ARM64 image
+  `sha256:e88c8357466a2d452370f57f4898297a99259ef9a3e0f23d1f0c772136335df6`
+  in 105.97 seconds. Combining that image, the reviewed factory image and the final
+  OpenCode Linux ARM64 package builds Computer image
+  `sha256:bae2d09b9131c633544ff71332640401960b1ae313de1e6b802625f290bde85e`
+  in 2.50 seconds. Offline image inspection confirms UID/GID 1000, private writable
+  scratch/HOME/XDG/Lore directories and root-owned, non-writable `/etc/computer`.
+  OpenCode reports `0.0.0-hosted-computer-20261019-final-linux-arm64`; Lore reports
+  `0.10.2-nightly+local`, executable SHA-256
+  `36b682a584d0113d57442da7c05770fec6c0797600a2e41d849c305db47193e6`.
+  No factory-token environment key or token-named file was found in the inspected
+  config/home. A 1.46-second native startup smoke passes: API HTTP 200, correct
+  mounted HTML base and online-only marker, private/no-store, and HTTP 404 for
+  both service-worker endpoints. The initial config harness ran from the wrong
+  monorepo directory and could not resolve `effect`; the native schema passed
+  from its package directory. An initial smoke request incorrectly sent the
+  public mount prefix directly to the backend; the corrected request follows
+  Hub's strip-prefix contract. Neither correction changes production source.
+  Browser sessions
+  must follow current Hub family expiry/revocation and permissions, including
+  open streams. Native OpenShell owns Hub refresh after custody handoff. A crash
+  with ambiguous handoff requires reauthorization; healthy provider status alone
+  does not prove which user's family was installed.
+
+Read-only remote baseline: SSH through `127.0.0.1:2222` reached Linux
+`6.8.0-147-generic x86_64` in approximately 0.94 seconds. Public `/readyz` and OAuth
+discovery returned HTTP 200 with successful TLS verification in approximately
+0.24 seconds each. `/computer` returned HTTP 404 in 0.38 seconds. This establishes
+access and the existing public baseline, not a deployed Computer. No service was
+restarted, no credentials were exported and no model request was made.
+
+The next Linux inventory reports Docker 29.2.1, OpenShell CLI 0.1.3 and 278 GB free.
+Matching `ea9b680` gateway/runtime/supervisor artifacts are not installed. The
+authorized isolated lane uses fresh task-owned sources, image/resource names,
+state and ports; it does not reuse or restart the deployment's service containers
+or other teams' active test resources. The final OpenCode x86_64 executable now runs
+on that host with matching SHA-256
+`79f58e2eaefa35cd30dd3cb73c7eca83ff2f45a67b0b41684cde1e4cbe74ddc3`.
+`--version` and `serve --help` each exit successfully in approximately 0.07 seconds,
+with the expected trusted-proxy and base-path flags. These checks use task-owned
+HOME/XDG paths and disabled model fetching; no inference is invoked. The remote
+receipt is `/tmp/computers-linux-qualification-20261019-16dcf3c9/opencode-linux-x64-smoke.log`.
+The Linux Lore image build also exits successfully. The resulting Linux x86_64
+Computer image is
+`sha256:462d8574f84b04f7d9b801b1b9110885c6593c57311833526471999f18861a75`.
+The matching Lore and deterministic Factory images are, respectively,
+`sha256:902afddd87de1dad21228bb02af2c11af15a208b57348621dadc3ae5a3bcf305`
+and `sha256:0b2787908f6875b70b04dd18d521e3acd281da0b117c5c4fed571dc1fb2cf7eb`;
+all three inspect as `linux/amd64`. Factory and Computer builds take 51.65 and
+2.25 seconds. The first Lore build lacks a wall timer; its log creation-to-last-write
+interval is 203 seconds and its Cargo stage reports 104.5 seconds, which are not
+substitutes for a measured end-to-end wall duration.
+Its offline container smoke now passes: UID 1000, writable private state paths,
+API HTTP 200, expected mounted HTML base and online-only marker, private/no-store,
+and HTTP 404 for `/sw.js` and `/registerSW.js`. The embedded OpenCode hash matches
+the reviewed package. Native Lore reports `0.10.2-nightly+local`, SHA-256
+`19afa922a9bcdbf5cbb27ade9e0dfc3a0dfe2ccc1c43223d4fa0e9739397a49a`.
+The smoke takes approximately 2.3 seconds and its owned container is removed.
+This proves native target execution and HTTP serving with
+network disabled, not authenticated Hub ingress or OpenShell sandbox lifecycle.
+Local ARM64 receipts are not substituted for the remaining target-platform tests.
+
+The matching native OpenShell Linux gateway compiles from `ea9b680` in 15 minutes
+3 seconds, using the repository-pinned Rust 1.95, Zig 0.14.1 and cargo-zigbuild
+0.22.3 inside a task-owned builder. The staging wrapper then fails because that
+builder lacks `jq`; adding the prerequisite inside the builder allows reuse of
+the compiled gateway. Host packages and running gateway services are unchanged.
+The staging rerun succeeds in 3 minutes 49 seconds. Matching Linux AMD64 images
+are built locally from that archive: gateway
+`sha256:b568c51af00da3d6bca59814031ec50c70caf873439b453b95d12c5af09ea41c`,
+sandbox runtime
+`sha256:ab35dbc40835a6ed1e77bbc45472df3eb44660440177fc3988d53b7bbfb5cf95`,
+and supervisor
+`sha256:907ee27979dcefb5bcf13aeaa370372eeb4fe61e4ffb62dc13dc00bc955cfe54`.
+Their image builds take 4.80, 0.58 and 1.06 seconds respectively. These artifacts
+have not been pushed or installed into the running deployment. The matching
+release CLI builds in 4 minutes 11 seconds, SHA-256
+`f1b4e7cf58b460ff666a64b19081a489d49096e42fe2ea23d2da8bec90dc9b24`.
+The repository's supported prebuilt gateway/CLI inputs select those exact release
+artifacts for isolated E2E, avoiding a redundant debug gateway build. The first
+native lifecycle attempt reaches the owned gateway and supervisor but fails
+before retention assertions: the derived fixture's `/workspace/project` is
+root-owned and unusable by sandbox UID 1000. The wrapper cleans up its own
+gateway and sandbox. Correcting ownership in the task-owned derived image gives
+fixture `sha256:a682a600cb160bf5df8e8422c877a6d30e9408fcf9b62a0dfc8e151a9cc948fd`.
+The unchanged native lifecycle test then passes on Linux x86_64: one test in
+16.07 seconds, 23 seconds including wrapper overhead. Initial readiness,
+same-runtime Stop/Start, retained identity after observed runtime loss, fresh
+generation/recreation, owned gateway restart and exactly owned Delete cleanup
+all pass. Its 54-byte sentinel retains SHA-256
+`1b9f92125f09ac7da8591dac422a2537c101c0a93680aa9a7b390529e027b460`.
+This fixture checks generic workspace retention; it is separate from the pending
+Computer image's native OpenCode session/project persistence scenario. The first
+fixture failure and corrected pass remain separate logs under
+`/tmp/computers-openshell-linux-qualification-20261019-ea9b680/logs/`.
+
+The Linux Docker inventory contains no Lore runtime; no Lore systemd unit or
+TCP listener on port 41337 was found. This does not exclude a separately hosted
+private endpoint. Ownership of the Linux Lore prerequisite is being clarified
+with the existing storage/installation owner before changing that service.
+
+Remaining acceptance, in order:
+
+The installation permission review identifies one additional prerequisite. Native
+credential binding cannot select two providers for the same ForwardTcp endpoint.
+A Computer-enabled Hub therefore uses one new dedicated native control identity
+for both existing service forwarding and Computer provisioning, with one opaque
+environment reference. Native CreateWorkspace and global GetProviderProfile
+require the configured platform-admin role; scope enforcement additionally requires
+workspace, sandbox and provider read/write scopes. Its egress policy admits the
+fourteen RPCs actually used and the unbound public `/oauth/token` POST, preserving
+existing IdP and database rules. It does not admit credential export, Delete,
+Exec, provider Update or wildcard RPCs. This installation change is source-tested;
+it has not been issued or attached on the live deployment. User Computers retain
+their own Hub grants and native Lore login, never this management identity.
+Source review also finds that the initial Computer policy lacks the signed object
+byte route needed for Artifact publication. The installation now adds only native
+curl access to the exact public object authority over unbound TCP/TLS, preserving
+SigV4 and excluding Hub/model credentials. The updated agent instructions require
+a fresh Computer image; earlier image receipts do not cover that text. The
+updated Linux x86_64 Computer image builds in 3.2 seconds from the same reviewed
+Factory, Lore and OpenCode inputs:
+`sha256:928de5288cd5001e7b1f8ac836e73702d6f2e1ba93951c1f6859ddbfcb68621f`.
+The actual image then passes its task-owned native OpenShell lifecycle test in
+15.92 seconds. Native `/api/info` responds; POST creates one Session and Project;
+PATCH changes a nonempty title and synthetic metadata. Native SSE delivers
+`server.connected`, `session.renamed` and `session.metadata.updated`. The same
+session/project IDs, creation times, title, metadata and scratch bytes survive
+Stop/Start, observed runtime loss with fresh-generation recreation, and owned
+gateway restart. A synthetic marker in Lore's private home directory also survives;
+it is not an actual login credential or proof of Lore authentication. Explicit
+Delete removes the owned volume. The temporary Rust test reuses the existing
+native SDK/gateway fixture, with bounded Hyper HTTP/SSE and no model calls;
+source SHA-256 is
+`a7b9a37702a8a506a98ddd7848490171b8abf98530c7bcfdda38a11a25c84c17`.
+The safe retained state is 602 bytes, SHA-256
+`478f2a235297ac66e007fb24e3944bb9918937a249e93b2d63099121569796c6`,
+for Session `ses_eac7c1ed1ffeyzQmjmAraqRRKI` and Project
+`1ab5f4e6ab9cf5ef60c57dc7b5b29a22821f4c5f`. The synthetic Lore/scratch marker is
+57 bytes, SHA-256
+`428fbfc7ff72481767ef2b95eb2bfa85e1271fa18e8d56fd372bbb911604a4aa`.
+Cumulative milestones are Ready at 1.819 seconds, session/SSE recorded at 2.481,
+Stop/Start verified at 3.765, runtime loss retained at 5.954, recreation verified at
+12.125, gateway restart verified at 15.502 and owned deletion at 15.915.
+The wrapper exits zero. Its local receipt is
+`/tmp/computers-final-handoff-20261019/computer-native-api-lifecycle.log`, SHA-256
+`b1ea22d64b84dd4179ffd598bc0d84ea94cc69cf4c06722c135f3e91ddad2410`.
+The first wrapper preflight lacks Docker on PATH and starts no gateway or sandbox;
+the corrected task-only PATH selects the already-present approved Docker CLI.
+This proves Computer application-state retention and native HTTP/SSE, not Hub
+browser authentication, two-user permissions, actual Lore refresh or model access.
+The ARM64 image rebuild also passes in 2.839 seconds, with the same reviewed
+Factory, Lore and OpenCode inputs and no binary rebuild:
+`sha256:74caaa250552a1fedc33f04443695fb2861bc2594c409fdb69ee8b1b64e5127f`.
+The retained receipt bundle is `/tmp/computers-final-handoff-20261019/receipt.json`,
+SHA-256 `ffb9bbe9da71718c79a993273d14726a99bd369fe2f00f9dfa175d211fb706b0`.
+Its build and lifecycle logs sit alongside it. All images remain prepared artifacts;
+no public or installed service has changed. No live object transfer has been
+attempted by this work.
+The first expanded native policy check fails before profile assertions: the
+example Lore identity endpoint selects transparent TCP on the same public host
+as managed Hub MCP. Native ambiguity analysis reports conflicting
+`transparent_tcp_eligible` metadata. The earlier parser-only receipt did not test
+that admission rule. The example is corrected to select a distinct actual
+IdP authority while preserving Lore's native end-to-end TLS. Bioma's Entra issuer
+already has a separate host; this does not call for a new alias, proxy or public
+Lore route. The failed check takes 5.40 seconds, including 4.88 seconds compilation.
+The corrected native parser/profile/ambiguity run passes in 3.18 seconds:
+Computer policy, both Hub control variants with the exact fourteen RPCs, the
+endpointless provider definitions and negative conflicting-provider/overlap
+fixtures are admitted or refused as expected. Installation commit
+`455b5eac0d02468c9810fb32786311281c5d17f2` contains that reviewed eleven-file
+change. This source result does not prove native issuance, credential renewal,
+signed transfers or deployed browser access.
+
+The reviewed cutover uses the existing native control plane, not a second
+installation controller. Import the global user profiles and create the reviewed
+Computer template before starting Hub; its provisioner validates these at startup.
+Merge a public `computer-browser` PKCE/refresh client, `computer` profile and a
+selected existing Work Context into the actual Hub catalog. The profile uses the
+existing Entra identity provider and Hub authorization server; extend the existing
+upstream OIDC client's allowed resources for `/mcp/computer`. Its upstream callback
+remains `/oauth/callback`; the public Computer client's callback is separately
+`/computer/callback`. Preserve current memberships, permissions, service bindings
+and key references. Validate the full merged configuration with the native Hub CLI,
+then stage the additional Computer policy into the existing read-only Hub config
+volume alongside its selected configuration.
+
+Enabling `computers` or changing native transport requires an actual Hub restart,
+and changing its image requires coordinated native replacement: neither catalog
+reload nor restarting the existing Docker container installs a new image. The
+native CLI has no in-place image-update command. Before selecting the replacement
+operation, inventory the exact owned Hub sandbox, mounts and exposure and preserve
+any working state it owns. The fresh-sandbox example is not authority to delete an
+existing sandbox. Reestablish its same public exposure as necessary, retaining
+PostgreSQL, object storage, config/signing state and unrelated workloads. Startup
+applies the additive Computer schema and audit declarations; no application reset
+is required. These are reviewed source requirements, not claims that the new IdP
+client, final catalog, private Lore endpoint or replacement operation is prepared
+on the live installation.
+
+1. Source/component prerequisite passes as recorded above, including both full Hub
+   Docker gates and actual Linux Computer application-state lifecycle. Do not repeat
+   unchanged gates merely for rollout. Browser-cache namespaces remain separate
+   from server-side authorization; they are not origin security boundaries.
+2. Coordinate the public installation switch using the built Linux Hub runtime and
+   Computer/native OpenShell images identified above. Both Computer platform images
+   are built; the actual Linux image passes the isolated application-state checks.
+   The user required no parallel deployment changes during the other team's Linux
+   qualification. Check current deployment activity before changing shared services;
+   do not turn that constraint into a request for the user to discover installation
+   ownership or technical setup. Resolve the native operator session and prepare
+   the private Lore configuration from existing installation inputs. Distinguish
+   the reviewed source/image identities from the unchanged live revisions.
+3. Open `/computer` as two separate users. Prove first-use provisioning, distinct
+   owner workspaces/storage, HTTP/SSE/WebSocket access, cross-user refusal and
+   session expiry/revocation. Repeat account switching in one browser profile.
+4. Qualify native Lore login and refresh against the selected IdP, private network
+   connectivity, permitted reads/writes and denied operations. Prove the user's
+   Hub actions and native provider renewal beyond the initial token lifetime.
+   Existing factory credentials are not evidence for this user-login path.
+5. Verify each user's exact scratch bytes after stop/start, runtime recreation and
+   coordinated gateway restart. Publish selected content to Lore and Artifacts,
+   then run a separate factory against the exact published revision. Confirm that
+   the factory has no OpenCode or inference credentials.
+   The isolated prerequisite above passes with native OpenCode state: create a
+   unique scratch directory, POST `/api/session` with a
+   nonempty title, that directory and synthetic metadata, then PATCH a second
+   nonempty title and retained marker. Save the returned session/project IDs and
+   creation time outside the runtime. After each native lifecycle transition,
+   retrieve the same session and project and compare the stable fields and scratch
+   bytes; never recreate them after restart. `/api/info` is the bounded readiness
+   check. Backend paths omit the public Computer mount prefix. An empty patched
+   title invokes title generation, so this deterministic scenario must never send
+   one. These are application-state checks, not model or real Lore-login evidence.
+6. Only after deterministic and deployed gates pass, run the bounded Computer
+   OpenCode qualification with the exact MiMo model, at most eight steps and
+   240 seconds. Reuse the existing real Artifact and exercise a Time Task; do not
+   submit another image generation. Coordinate this paid call with the reference
+   qualification owner and retain actual tool outcomes, timings, identities and
+   byte/hash evidence. No silent model substitution or model-driven repair loop.
+
+Keep secrets, bearer values and signed URLs out of committed evidence. Update this
+checkpoint and the existing three-view diagram as implementation and acceptance
+advance; none of the pending paths is qualified by an adjacent component test.
+
+Coordination recheck at 2026-10-19 09:44:49–09:45:01 UTC: public `/readyz`
+returns 200 and `/computer` returns 404, with no redirects followed. The Linux
+host has no Lore-named Docker container or systemd unit and no listener on 41337;
+this does not exclude a separately hosted private Lore endpoint. The latest
+reference execution record reports its completed Time-first MiMo scenario, but
+that separate client receipt does not qualify the hosted Computer or authorize
+parallel changes. The earlier request for a formal installation release and private
+Lore owner was an overly broad coordination blocker, not a failed component gate.
+The documentation worktree's detail-data/static checks pass. Diagram visual
+review remains pending: automatic browser approval rejected its local `file://`
+preview, and the requested localhost preview has not been approved.
+
+The 2026-10-19 14:42 UTC read-only inventory narrows the remaining work. The live
+Hub is still `ed6778f6a7e61df4f4c42241a589d9450f2bd63f`, its selected catalog has
+no Computer client/binding, and its configuration volume has no Computer policy.
+The built `9da92b3` image has not been selected by the installation. Public
+`/readyz` returns 200 and `/computer` returns 404. System and user systemd job
+queues are empty; running QA sandboxes alone do not establish concurrent work.
+No services, data or credentials were changed by this inventory.
+
+The installed native CLI's mTLS profile fails authenticated `whoami` and provider
+listing with `missing authorization header`. Another saved OIDC profile has an
+expired access token; its refresh capability and compatibility with the selected
+CLI remain to be investigated using native session operations. These facts do not
+establish that the user must supply a new credential. Separately, the existing
+Linux Lore image already contains the server and CLI, and the installation's
+trusted `vv-lore` service supplies the private PostgreSQL/SeaweedFS deployment
+recipe. The remaining Lore investigation concerns Linux provisioning inputs and
+native per-repository authorization with Entra; factory Keycloak credentials and
+successful native refresh tests do not prove that human issuer interface. Safe
+preparation continues without a generic permission or endpoint question.
+
+Native operator recovery then succeeds without user input: the matching
+`ea9b680` CLI, with `XDG_CONFIG_HOME` selecting the existing `veoveo-reference`
+profile, completes authenticated `whoami` in 3.3 seconds including SSH and lists
+provider profiles, both with exit zero. Native session handling refreshes the
+saved grant; its store remains mode 0600 and its access expiry is now in the
+future. No token is manually exported or copied, and no service, sandbox or
+installation configuration is changed. The earlier operator failure came from
+the selected CLI/configuration context and expired access token, not a measured
+need for a new user credential. Private rollout preparation resumes using that
+existing native session. Entra/Lore per-repository grant compatibility remains a
+separate source/design investigation; it must not be replaced by global grants
+or an additional token issuer to make login pass.
+
+The coordinator approves the bounded native direct-role implementation described
+in `LORE_DIRECT_OIDC_PLAN.md`: signed IdP role assignments map to typed exact
+repository grants inside Lore, using its existing authorizer, partition grants
+and native listing. The GPT-6.1 Sol coder owns the isolated `computers-lore` source
+change over `821da217`; the GPT-6 Luna builder independently stages Linux inputs
+using the recovered native operator session. No live identity or service changes
+are made by staging. Signed scalar recipient claims already work in Lore; actual
+Entra access-token issuance/renewal and permission behavior remain unproved. The
+change is an authorization representation within native Lore, not permission for
+global grants, a Hub Lore signer or a replacement authorization service.
+
+
+### Computer native Lore and Entra preparation — 2026-10-19
+
+The GPT-6.1 Sol coder implements the reviewed direct-role mode in isolated Lore
+commit `b32265924ccf1d3c09de8f76ea4eecc8c2562b05`. Exact typed repository/action
+mappings feed the existing authorizer, partition grants and native paginated
+repository catalog. Empty actions retain ordinary native writes, not read-only
+access. Review catches and corrects a synchronous-handler fallback: a finite
+admitted grant for another repository must deny access, not reinterpret the raw
+JWT through the older structured-claim path. No new issuer, wire protocol or
+service-account bypass is introduced.
+
+The GPT-6 Luna builder runs the frozen source on macOS: 71 authorization, 57
+settings, nine OIDC, six obliterate and twelve partition-access tests pass, plus
+one transport test proving the native original-access-token path without an
+exchange template: 156 total. Test execution times are respectively 0.26, 0.00,
+0.53, 0.01, 0.36 and 0.02 seconds; first compilation takes 1 minute 59 seconds.
+Locked CLI/server consumer compilation passes in 57 seconds including wrapper.
+Strict server Clippy exits 101 after 66 seconds with ten diagnostics in unchanged
+`hooks/factory_branch.rs` and `plugins/s3_postgres.rs`; it reports none in changed
+files. This is not a green full Clippy gate, new Linux build or Entra receipt.
+Logs are retained at `/tmp/computers-lore-direct-roles-validation/`.
+The reviewed ten-file source manifest aggregate SHA-256 is
+`a6ae929c032d517f9e93b24893ab90d88bca3a496c4bf130c6b8bd03caf88680`.
+
+Native Entra setup now advances using the existing Linux operator account, without
+a new user login. On OpenShell API application
+`8a6d434f-8c4c-4e2c-9756-9b2d94118d17`, the reviewed app-role PATCH preserves
+four existing roles, adds Application membership to `openshell-admin`, and adds
+five exact application scope roles. Existing `sandbox:write` supplies the sixth.
+PATCH succeeds in two seconds, and nine-role readback matches the reviewed body.
+The dedicated single-tenant `vv-hub-native-control` application is created in one
+second, with application ID `61e0ebf1-d8f8-4747-beac-e908da2bb9e1`; its service
+principal is `e5ece6f5-586a-4a13-867d-0cff89aeae0e`. Exactly seven assignments are
+verified: `openshell-admin`, `workspace:read`, `workspace:write`, `sandbox:read`,
+`sandbox:write`, `provider:read`, and `provider:write`. No `openshell:all` or Graph
+runtime permission is assigned. Credential creation and native refresh custody
+follow as a separate step; this readback has zero password/key credentials.
+The running Hub and its existing forwarder identity remain unchanged.
+
+Two preparation errors are corrected explicitly. A shallow copy altered the
+local before-snapshot while constructing a PATCH; drift comparison stops before
+any write, and a fresh independent snapshot restores the review baseline. A
+colon-delimited assignment loop then produces an invalid GUID after the first
+successful role grant; Graph returns HTTP 400. Correct structured-ID handling
+assigns the remaining six roles and verifies the exact set. Neither error is an
+Entra authorization refusal. Nonsecret receipts and payloads remain under
+`/tmp/computers-entra-preparation-20261019/`. The normalized nine-role readback
+SHA-256 is `a029afde6954ea359d669fabf1baad093a0fa6ef663f3f6abd9c40d431da740a`;
+the seven-assignment readback is
+`29d754df964a11f7da5f70a50af5f3fadb188f3feb8b7cff96bdd90ac5159e16`.
+
+Explicit workspace-scoped native inventory confirms the existing Hub exposure:
+`vv-control/hub/http`, port 8080, `bearer_passthrough`. An earlier empty default
+workspace list did not establish a missing exposure. Cloudflare's selected native
+route and Hub's loopback-host allowance remain required.
+
+The actual trusted Linux bootstrap root is
+`/home/rozgo/VeoveoAI-reference/src/veoveo-template-installation`, project
+`vv-local`, using `compose.yaml` and `compose.storage-tls.yaml`. The earlier
+`/home/rozgo/vertex/veoveo` path was not the active installation. Read-only checks
+at the actual root find no Lore service/configuration/CA yet; PostgreSQL and
+SeaweedFS retain their existing volumes and private addresses 10.231.10.2/.3.
+Lore is prepared for the unused private 10.231.10.10:41337 endpoint, with matching
+TLS IP SAN, advertised native URLs and signed recipient claim. The storage TLS
+leaf verifies against the existing public OpenShell root. Lore will connect to
+`https://veoveo-objects.bioma.ai:9000` through a Lore-only private address mapping,
+preserving its actual TLS and signing authority. It needs no public gRPC route or
+replacement storage certificate.
+
+Installation `c70a35b2ff175460e4262e949f1d77585c261764` updates the existing
+Factory/Lore Dockerfiles to install reviewed public CA files, one certificate per
+file, through the normal system trust update. Computer inherits Factory trust;
+private keys never enter those contexts. The four-file manifest aggregate SHA-256
+is `8e4e404e665ac63cb8bbd8df49a711a6be5551754a9dc94d1314bc12aac5e160`.
+Native bootstrap inputs are staged locally at
+`/tmp/computers-lore-bootstrap-20261019/` for review. They are not installed merely
+by staging. New Lore, Factory and Computer images must include the actual Linux
+trust inputs and Bioma origin; the previous Computer image embeds the generic
+example MCP origin and is not the final public installation artifact. No new
+runtime, native Lore user login or Computer browser acceptance is claimed here.
+
+
+Native credential custody then succeeds. The actual API identifier URI is
+`api://8a6d434f-8c4c-4e2c-9756-9b2d94118d17`. The dedicated endpointless provider
+profile passes native lint/import, and `vv-control/vv-hub-native-control` is
+created without replacing an existing provider. One 90-day client credential has
+nonsecret key ID `0adea6a5-ebb9-493b-b17f-7afaf4a374d1` and expires
+2027-01-17 15:15:25 UTC. Its response is held only in a mode-0600 Linux temporary
+file, supplied through native `--secret-material-env`, and removed after native
+ConfigureProviderRefresh succeeds. Initial RotateProviderCredential succeeds in
+one second. Status is `refreshed`, with next refresh at 2026-10-19 16:13:18 UTC
+and initial access expiry at 16:16:18 UTC. No bearer export or manual JWT copy is
+used. This proves initial acquisition/custody, not renewal beyond that expiry.
+The live Hub still uses its prior forwarder attachment.
+
+The new Linux-only P-256 Lore CA and server leaf are generated through the reviewed
+native OpenSSL recipe. Chain verification and IP 10.231.10.10 / DNS
+vv-lore.internal SAN checks pass. The public CA SHA-256 fingerprint is
+`18:0B:52:F2:83:DB:0A:A5:ED:64:D2:68:B7:76:67:47:AF:0C:88:6E:0D:3A:66:ED:12:58:03:F2:53:EE:74:56`;
+the server leaf fingerprint is
+`6E:98:C5:77:49:D8:43:DD:B2:42:81:D9:1B:36:33:58:19:23:C7:31:64:4A:C1:63:FE:CF:A3:A4:F0:5B:E0:29`.
+The public-only image context contains one certificate per file: the new Lore root
+and existing storage root. Private keys stay mode 0600 on Linux and never enter an
+image or Mac copy. An initial relative storage-leaf path was wrong; corrected
+verification uses the actual `state/storage-tls/tls.crt`, then both chains pass.
+No storage data, service runtime or existing certificate is replaced.
+
+Installation `b6a6b6e9d4dc6dff83769355b10a24b89265f247` also aligns the Factory's
+SDK CLI input to the published typed-contract revision
+`b0b8d868cf91c50706b8bfe7edc8c1eec937d7ea`, replacing its stale `a1d9d65` pin.
+The Factory remains deterministic with no OpenCode or model credentials. The
+Dockerfile SHA-256 is
+`3b1a6e0e18c7c149824bf423f50b241423a6bc135ce12f1d4ea0388f8c91c127`.
+
+The privately staged actual Bioma Hub configuration preserves existing service
+bindings, `reference-work` memberships and the upstream `/oauth/callback` URI.
+It adds the `computer` profile, public `computer-browser` client with
+`/computer/callback`, the `/mcp/computer` resource and native Computer controls.
+The matching built `9da92b3` runtime validates both the base and merged config;
+the merged result reports two profiles. Its SHA-256 is
+`347280f0ee2bbaabbf6d267ed2c094cc25e6f58192a89d729a4bc57ccbe8de67`, retained at
+Linux `/tmp/computers-entra-preparation-20261019/hub-computer-merged.json`.
+An initial validation with the older live image rejects the new catalog section;
+that image does not implement Computers. Nothing has selected the staged config
+or new runtime yet.
+
+Review of first native publication finds a separate authorization omission:
+RepositoryCreate carries its target ID in the body and bypasses partition-metadata
+admission. A valid issuer login alone can reach creation in the current native
+path. The coordinator approves a narrow creation-admission method on the existing
+RepositoryAuthorizer, using the requested body ID before hooks, stores, existing
+metadata lookup or forwarding. Token-grant modes reuse their current exact grants;
+native external ReBAC creation must retain its existing new-resource authorization
+flow. Matching new image builds wait for this correction and focused regression
+results. The earlier 156-test receipt does not qualify this newly discovered path.
+
+Native Entra Lore registration payloads are prepared separately for review. The
+public CLI may request the one Lore API delegated scope as the signed-in user;
+API app-role assignment is not a separate login gate. Only exact repository role
+assignments grant source access. The bounded two-user scenario gives both existing
+qualified users `Lore.Time.Member` for canonical repository
+`280a718d5d3574271274bba5c8db344b`. Only the ordinary member receives
+`Lore.Acceptance.Member` for synthetic repository
+`019a0119a7007d5aa201754caee43a11`; Hub administrator status must not admit that
+repository. Neither role grants privileged actions or service-account bypass.
+These payloads, native create semantics and real token issuance still require
+execution evidence; staging is not a login, publication or permission proof.
+
+
+Native branch semantics are also inspected before acceptance: repository members
+may change protection through BranchProtect/BranchUnprotect or modern branch
+metadata. A protected push is refused while that state is set; this is not a
+per-human branch ACL that prevents the same member from unprotecting it. Preserve
+these native semantics. Cross-repository/no-role denial is the isolation gate;
+conditional protected-push refusal is reported separately, without a human
+service-account bypass or broader branch authorization change.
+
+
+### User correction: preserve Lore security behavior — 2026-10-19
+
+The user explicitly rejects changing Lore's security model or adding rules on top
+of it. This supersedes the coordinator's direct-role and body-ID creation-admission
+approvals above. Stop that authorization work. Remove the task-owned uncommitted
+creation patch and revert custom Lore commit `b322659`, preserving the explicitly
+requested native refresh fix at `821da217`, upstream authentication and the other
+agent's storage implementation. Withdraw the custom installation role-mode recipes
+and Graph payloads; do not substitute global grants, another signer, an additional
+authorization service or further branch rules.
+
+The finite Lore Graph script had already stopped on its first mutation, API
+application creation, with `Authorization_RequestDenied` at 15:30:22 UTC, request
+ID `55496760-00b1-49d0-85f1-5a69682cce93`. Its response file is empty and no later
+mutation ran. There is no successful creation response for a Lore API/CLI, service
+principal, recipient policy, consent or role assignment. The builder issues no
+further Lore Graph calls and has no Lore test or build running. This is not a new
+user permission request; the rejected authorization design is withdrawn regardless
+of that Graph failure.
+
+The Computer goal remains: OpenCode web at `/computer`, native Lore CLI and private
+connectivity, each user's Hub connection, persistence, and independent deterministic
+factories. Computer/OpenShell management credential custody and prepared Hub
+configuration remain valid work. No Lore security-model modification is a Computer
+completion gate. Source cleanup and its exact resulting identities follow below.
+
+
+Cleanup verifies the complete Lore source tree, not only selected files. Local
+revert commit `7ce28b6c576252c3fe743ceb5dfe43f6df92fb9f` is clean; its tree ID
+`c668e85c6f790f25c867de95d4ca3a9eab1f5628` exactly equals native refresh baseline
+`821da21710a9085797dc8a9d98955c1f3af1c389`. `git diff 821da217 HEAD` is empty.
+The uncommitted creation-admission patch and its new test are removed after
+matching the task-owned manifest. No custom authorization change remains in the
+Lore tree, and no such change reached the running installation. Upstream, storage
+and the explicitly requested native refresh fix remain intact.
+
+Installation withdrawal is committed as
+`caf5d046f86c12c9f411684c5c257a786f485272`, with a clean worktree. The custom
+Entra role guide and TOML are removed; the Computer README again selects the full
+native refresh baseline. Public-CA contexts, the SDK pin and deterministic factory
+changes remain. Task-owned unexecuted custom auth payloads and recipes are
+withdrawn; read-only discovery/evidence is retained. No replacement security model
+is introduced.
+
+### Hub-issued native Lore — accepted goal extension
+
+Accepted and implementation resumed by the user on 2026-10-19. This is required
+scope within the current hosted Computer goal, not a separate optional project.
+The goal remains a private persistent Computer at `https://veoveo.bioma.ai/computer`
+for each user, serving OpenCode web with native Lore CLI, per-user Hub access and
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Extend it with Hub-owned repository assignments
+and Hub-issued native Lore credentials. Entra only authenticates the person into
+Hub. Keep private scratch, native OpenShell lifecycle, deterministic factories
+without OpenCode/model credentials, existing reference services and the final
+bounded acceptance requirements. Do not change native Lore authorization/client
+protocol behavior; retain the independently requested refresh fix.
+
+The user explicitly accepts the new Hub responsibility after the source review.
+Earlier instructions retiring Hub's old Lore issuer or requiring direct-IdP
+issuance are superseded for this goal. Do not restore that implementation or the
+withdrawn direct-role/creation-admission patches. The architecture is
+[Hub-issued native Lore credentials](LORE_OPENSHELL_INTEGRATION.md#hub-issued-native-lore-credentials).
+
+**Measured starting state:** Hub `9da92b3` already signs Ed25519 application tokens,
+publishes JWKS, brokers Entra login and maintains refresh families. Interactive
+grants and persisted bindings currently require an MCP profile. Its RFC 8693 path
+is authenticated registered-server delegation, not native Lore public exchange.
+It has no device-code grant. Native Lore `7ce28b6` remains clean and tree-identical
+to refresh baseline `821da217`; its device/exchange/refresh requests, EdDSA keys,
+native identity strings and ordinary HTTP proxy/CA support fit the proposed issuer.
+These are source findings, not new deployed acceptance.
+
+**Ownership and execution:** GPT-6 Astra coordinator owns architecture, canonical
+plans/diagram, review and evidence; the existing GPT-6.1 Sol coder owns source;
+the existing GPT-6 Luna builder owns compiling, checks and coordinated deployment.
+Reuse `.worktrees/computers-hub`, `computers-installation` and `computers-docs`.
+No implementation occurs in the main checkouts. Keep Lore unchanged. Serialize
+coding and validation of the same tree; preserve other agents' documentation and
+installation work. No OpenCode/model calls during iteration.
+
+- [x] **HLI1 — Resource-based issuer foundation.** Generalize hosted OAuth resource
+  resolution, authorization requests/codes, refresh families, revocation and audit
+  targets from mandatory MCP profile to a registered protected resource. Reuse
+  typed catalog admission and existing signer/session/publication mechanisms.
+  MCP remains a consumer; do not introduce a fake MCP profile for native Lore.
+  Scope standard token claims to the common signer and accept only authorized
+  typed issuance results. Existing server delegation keeps its own authenticated
+  contract. First source slice is implemented and reviewed; focused compilation
+  found three repairable Rust error groups before tests. Those source fixes are in
+  the integrated slice below; focused compilation and behavioral verification now
+  pass. Hub `adb4aa37` passes both full platform gates. This completes the source
+  foundation; native client/deployed qualification remains HLI6–HLI7.
+- [x] **HLI2 — Typed native contribution and assignments.** Bind the Lore-specific
+  contribution at the executable composition boundary, outside the generic Hub
+  OAuth library. A binary-only `contributions/lore` module is the minimal accepted
+  boundary: it avoids a dependency cycle and unnecessary relocation of binary
+  fixtures while shipping one process. Generic handlers dispatch registered typed
+  behavior; they do not branch on a Lore name. Native integration fixtures may
+  name Lore; generic Hub fixtures remain generic. Define deployment/audience/
+  recipient, native repository ID, tenant and explicit principal/action grants.
+  Publish typed assignments in the existing revisioned control plane with atomic
+  audit; use existing administrative authority. No implicit administrator or
+  Work Context grants, free-form JWT templates or duplicate permissions store.
+  Source admission, signed-claim and live-publication fixtures pass in both full
+  platform gates; actual native user grants remain deployed acceptance work.
+- [ ] **HLI3 — Native user login.** Add RFC 8628 device authorization, browser
+  verification through the existing Entra broker, durable expiring device state,
+  standard polling/error semantics, one-time redemption and refresh-family
+  issuance. Advertise actual device/token/JWKS endpoints through discovery. The
+  public client's registration selects the Lore resource because native device
+  requests contain only client ID and scopes. Use access JWTs, not ID tokens as
+  credentials. Keep the native CLI and its persistent token store unchanged.
+- [ ] **HLI4 — Repository exchange and renewal.** Add the native public-client
+  RFC 8693 exchange, separate from server delegation. Resolve the exact requested
+  repository and current assignments. Issue native `resources` entries with a
+  dedicated audience, stable identity and signed recipient binding. Login and
+  repository tokens have distinct issuance authority; a repository token cannot
+  mint unrelated grants. Reuse rotating refresh families and current admission.
+  Grant removal blocks new issuance; report the native expiry/caching boundary
+  for tokens already issued. Empty native permissions are not read-only.
+- [ ] **HLI5 — Factory service credentials.** Add generic hosted support for
+  explicitly registered `client_secret_post` clients to match native OpenShell's
+  existing client-credentials renewal. Reuse typed resource issuance and exact
+  repository assignments with distinct factory service identities. Preserve
+  native secret custody/injection. Factories contain no OpenCode, human refresh
+  token, model provider or custom token helper.
+- [ ] **HLI6 — Installation and actual Linux integration.** Configure Lore's
+  existing issuer/audience/native-claim/public-client/exchange-template settings
+  to trust Hub. Configure the Computer's native REST OAuth paths under the Hub
+  origin, disjoint from managed MCP paths, with existing proxy and CA support;
+  private Lore gRPC remains direct. Register known repository IDs and explicit
+  user/factory grants through Hub. Native creation does not automatically persist
+  creator grants, and native listing does not become grant-filtered. Coordinate
+  the final gateway/Hub cutover and required fresh native credentials; staged
+  files/images are not selected runtime. No parallel shared deployment.
+- [ ] **HLI7 — Qualification and completion.** Compile and run focused contract,
+  database, protocol and consumer regressions, then both required component gates.
+  Use the real unchanged Lore CLI against the integrated issuer, followed by
+  actual Linux two-user browser/session and repository access, token exchange,
+  refresh beyond expiry, grant withdrawal at the native expiry boundary and
+  persistence. Prove deterministic factory credentials/build independently of
+  Computers. Only after deterministic/deployed gates pass, run final Computer
+  MiMo acceptance at eight steps/240 seconds with the retained real Artifact and
+  a Time Task, no new generation. Record exact inputs, identities, hashes, timings,
+  errors and source/deployed/model boundaries. Update this checklist and all
+  three existing diagram views; merge/cleanup remain subsequent reviewed work.
+
+**Live data requirement, clarified by the user on 2026-10-19:** repositories,
+deployments, clients, scope templates, lifetime policy and explicit grants are typed
+control-plane data. Only Lore's native protocol/claim/action types are compiled.
+Reuse the authenticated live control-plane publication API and catalog replacement;
+do not register individual repositories in Rust or require a restart to edit
+assignments. Every issuance reads the request's current admitted section. Change
+generic startup so an existing active database revision is loaded, rather than
+overwritten by the seed file; seed only an empty installation. An explicit trusted
+operator import handles deliberate full installation replacement. Include the
+revision publication audit in the existing transaction, including revisions that
+only change contributed records. Prove a live assignment change affects the next
+exchange and survives an ordinary restart. Already-issued JWT expiry and
+in-flight snapshot semantics remain native. Review found that existing control-plane
+publication updated only the receiving process; registration notifications alone
+did not refresh other replicas' assignments. Extend the existing native database
+notification/reconciliation path to active control revisions. Each replica admits
+and adopts the current revision under the same lock as its local administrative
+publication, and reconciles after reconnect. Prove this independently of a local
+swap. This is asynchronous convergence, not simultaneous adoption or immediate
+revocation of existing native tokens. The source is included in the integrated freeze
+below; qualification remains pending.
+
+**Integrated source freeze, 2026-10-19:** GPT-6.1 Sol froze the Hub worktree on base
+`9da92b3`, with 89 changed/new/deleted source paths and no dependency or lockfile
+changes. Manifest `/tmp/computers-hub-native-issuer-source.json` has source
+fingerprint `a8ad43230d46aaa7eac45a649994a404cb089db366eeb75e2721d0d1fc05ee58`;
+SQLx metadata is excluded and owned by GPT-6 Luna's validation pass. The source
+includes the resource issuer, typed native contribution, device flow, public
+repository exchange, factory secret-post authentication, DB-authoritative startup,
+atomic publication audit, ordered local adoption and native notification/reconcile
+watcher. Owner request denial is distinct from signer/infrastructure failure, so
+withdrawn factory assignments are not reported as broken signing keys. Formatting
+and diff checks passed; this is not a compilation or deployed acceptance result.
+
+Written regressions exercise the hosted HTTP issuer with synthetic fixture identity
+approval, independently verified JWTs, login/resource separation, refresh, current
+user/factory grants, concurrent publication and restart with an old seed file.
+A separate two-handle fixture observes native control-revision notifications and
+reconciliation. These fixtures have not yet passed and do not establish real Entra,
+native Lore CLI/server, two-process propagation or Linux Computer acceptance.
+Builder validation owns the frozen Hub tree; installation configuration changes
+proceed separately in `computers-installation`. The live deployment is unchanged.
+
+**Integrated compilation update:** the first prepare attempt stopped after about
+38 seconds because a device-denial query with `RETURNING id` was consumed with
+`execute`; the source now uses `fetch_optional`. The next attempt stopped after
+about 36 seconds because the current SHA-256 output type does not implement
+`LowerHex`, in the device handler and its synthetic fixture; both now use the
+existing hex encoder. Both failures occurred before behavioral tests. Evidence:
+`/tmp/computers-hub-native-issuer-validation-20261019/attempt.json`.
+
+Re-frozen source fingerprint
+`2a6fe7f2eb499346806b275f12e365f2cd2722a2e6668ceebfb5c6bdd77cd429`
+passes full SQLx preparation against disposable PostgreSQL 18.6 with pinned Core
+and Hub 0001–0005 migrations. Fresh-target dependency-inclusive compilation
+produced 188 query metadata files: 17 added and seven removed from the 178-file
+baseline. `SQLX_OFFLINE=true cargo check --locked --workspace --all-targets
+--all-features` also passes, in 0.54 seconds using that prepared target. Focused
+behavioral tests and strict clippy are still running; no deployed claim follows.
+
+Installation review found an active legacy helper, `identity/configure-lore`, that
+hardcodes fixture repository/issuer data and provisions repository claims at the
+IdP. HLI6 retires that helper and its superseded tests and updates active runbooks
+to typed Hub publication. This is the requested hard cut in grant ownership,
+not an additional Lore authorization layer. Storage/TLS bootstrap and native
+factory integration stay under their existing responsibilities.
+
+**Focused gate completion and local commit:** Hub
+`c93a1c10e1b41bc84416631565ad41a39d481842` is committed and clean in the isolated
+worktree, with no push, merge or live selection. Its source matches reviewed
+fingerprint `e36cd6a12d79079b70f9de98dc252dbcb2f222f7276d33a12dbf26c9a878c79b`;
+all 188 regenerated SQLx entries are committed. GPT-6 Luna's focused gate is green:
+
+| Check | Measured result |
+|---|---|
+| Typed token profiles | 3 passed |
+| Device polling after boxed approval payload | 1 passed; 0.78 seconds runtime |
+| Native claims/templates, initiating-browser binding, database notifications/reconciliation | 4 passed, one per focused selection |
+| Hosted native issuer HTTP/JWT/refresh/live-grant/restart fixture | 1 passed; 14.78 seconds runtime on final representation |
+| Computer library regressions | 9 passed; 1.17 seconds runtime |
+| Hub state, refresh families, control store and control-plane fixtures | 9 passed; approximately 2.94 seconds combined runtime |
+| `cargo clippy --locked --workspace --all-targets --all-features -- -D warnings` | Passed; 2.27 seconds |
+
+These selections span the recorded non-SQL source fixes; unaffected passing tests
+were not rerun for unrelated fixture/lint edits. Final strict clippy compiles all
+targets/features, and both consumers of the changed device result were rerun.
+The Mac-host Linux ARM64 full `check` target subsequently failed in two existing
+control-plane tests: 223 passed, two failed and one skipped. Both failing assertions
+require private-key JWT for all hosted client-credentials registrations, while HLI5
+adds explicit `client_secret_post` registrations. Source review must distinguish
+stale expectations from any unintended broadening of admission before updating
+these tests. The actual Ubuntu x86_64 gate was interrupted before nextest after
+the same-source failure; its task-owned build processes were verified stopped.
+There is no Linux gate result or completed check-target image for this revision.
+Follow-up Hub commit `adb4aa37d656e8da6f7e6a54a5814db1ed2c8a20` corrects those
+stale expectations and one actual admission/runtime inconsistency: hosted
+secret-post authentication resolves `OAuthClientSecret`, so its admitted secret
+reference must have that purpose. External issuer metadata retains its existing
+contract. Mixed methods and missing private-key JWKS remain rejected. Formatting
+and diff checks pass; focused tests and both full gates are assigned to the builder
+on this new frozen revision. There are no SQL, query-cache or dependency changes.
+The builder subsequently reports 40/40 control-plane tests passing in 9.26 seconds
+and strict workspace/all-targets/all-features Clippy passing in 4.26 seconds.
+Both full Docker `check` gates are running against this exact revision. Linux uses
+an isolated source archive with SHA-256
+`a0331eb67ccd45484e342f03d4c74660c2ab791fe8c31a4258387b524eeea0e1`.
+
+**Full component gates complete on `adb4aa37`:** GPT-6 Luna ran the canonical
+`docker build --target check .` on the Mac's Linux ARM64 Docker host and the actual
+Ubuntu Linux x86_64 host. Both commands exited zero, each with 226 tests passed
+and one skipped. Nextest took 33.613 seconds on ARM64 and 34.536 seconds on x86_64;
+these are test-run durations, not complete build timings. The respective immutable
+check images are
+`sha256:5525941cdc83303d6883b343f1d23a8cda9537bf33f61174fa9a719dc8c39d15`
+and `sha256:fd7e352697db4ae72d1339bdc17b395b696aeb5c673a5658102b6519f7f01324`.
+Logs are retained under `/tmp/computers-hub-native-issuer-validation-20261019/`
+as `mac-adb4-full-check.log` and `linux-adb4-full-check.log`. The matching Linux
+runtime subsequently builds from that same isolated source export as
+`sha256:9e1255939bec4473a38a3a4daa98d0e2cb7b7e710d253bd42d4933bf70426e1b`
+(`linux/amd64`, `component` user). Release compilation takes 2m04s; a networkless,
+read-only `--help` smoke exits zero. No new image, catalog or gateway has been
+selected by the live installation.
+The native issuer fixture approves a synthetic identity
+through trusted fixture storage and uses no real Lore server or Entra session.
+It proves live withdrawal of user/factory assignments, concurrent publication order
+and persistence across restart with a stale seed. The notification fixture uses
+two in-process catalog handles and a real database listener; it is not a deployed
+two-process propagation receipt.
+
+Additional failures resolved during this gate: native fixture resource names were
+corrected to Core's lowercase identifier contract; common direct-invocation
+admission now recognizes device authorization as well as authorization-code login;
+the test administrator was given an explicit fixture-only admin read/write rule
+after the intended policy denial. Production policy was not bypassed. Clippy's
+oversized `DevicePoll::Approved` payload became `Approved(Box<DeviceApproval>)`,
+preserving typed fields and exhaustive matching with one allocation on approval.
+A needless borrow and nested conditional were corrected without lint suppression.
+The complete sanitized attempt history and current verdict remain in
+`/tmp/computers-hub-native-issuer-validation-20261019/attempt.json`.
+
+Installation HLI6 is separately frozen on `caf5d04` in 17 source paths, fingerprint
+`627b40ba837621cb862d948be21d20328fe3f6122714e79d0a78a290a6c427b3` at
+`/tmp/computers-installation-hli6-source.json`. Source review confirms matching
+native issuer/audience/client/template settings, exact disjoint OAuth REST paths,
+Hub-owned factory grants and retirement of the old IdP provisioning helper. The
+native factory hook already accepts the canonical Hub identity string; its old
+UUID-only restriction belonged to the retired helper. No Lore source, image pin or
+copied Computer image input changed. Syntax/consistency checks pass. Native
+OpenShell policy parsing and endpoint-ambiguity admission now pass, with zero
+ambiguities; native profile-set validation accepts the Computer Hub/model profiles.
+Native Lore `Settings::load` accepts the server template with its OIDC fragment,
+and `select_repository_authorizer` selects `ResourceGrants` with no `auth_url`.
+The final temporary harness run took 128.74 seconds including compilation. Two
+earlier harness setup attempts failed because the standalone manifest lacked
+Lore's native vendor patches and compiler cfgs; the harness now uses the source's
+existing settings. No installation or Lore source changed to accommodate it.
+Receipt: `/tmp/computers-installation-hli6-validation/receipt.json`. This is native
+configuration admission only: no server, identity exchange or backend was contacted.
+The matching Hub CLI also admits the complete synthetic example (`ok: 4
+profile(s)`). The unchanged 17-path installation source is committed at
+`cccccc40983255cf9217ef38836401ea34e82c8c`, with the same recorded fingerprint and
+a clean worktree. The actual private Linux catalog also passes the matching CLI
+(`ok: 2 profile(s)`), after an SSH copy to mode-0600 local input verified against
+SHA-256 `0a05bd216d1cd0d813158257b41e4c12c3e0a30a5fd14c123134a06bb4935bcf`.
+The corrected actual Computer policy passes native parsing/ambiguity admission as
+well. Both Hub platform gates subsequently pass as recorded above. This validates configuration;
+it does not import a catalog or select a live runtime.
+
+At 2026-10-19 17:25:15 UTC, a read-only public curl baseline with normal TLS
+verification reports `/readyz` 200, OAuth discovery 200 and `/computer` 404.
+The Linux inventory still selects the previous Hub image `6fd5cdb9761b`; no shared
+cutover occurred. Receipt: `/tmp/computers-public-baseline-20261019.json`.
+An earlier Linux Python urllib probe returned 403, while default curl from both
+hosts returned discovery 200; the client-dependent rejection's cause is not
+established. It does not substitute for the pending native Lore client check.
+
+Actual issuer configuration is privately staged under
+`/tmp/computers-hli6-cutover-20261019` on Linux, with directory mode 0700 and files
+0600. Repository and assignment arrays remain empty until native repository
+availability is proved. The unchanged native Create path connects with no selected
+repository, creates it, saves local metadata and emits the canonical repository ID
+(`lore-revision/src/repository/create.rs`). After native login and server readiness,
+use that emitted ID for explicit live Hub registration/assignments before testing
+repository reads/writes. No automatic creator grant or additional Lore rule is
+required. Dedicated backend credentials, deployment and native factory custody
+remain integration work. Private inspection of the current live Artifact
+configuration confirms both storage and signing endpoints use HTTPS authority
+`veoveo-objects.bioma.ai:443`. The staged Computer policy was corrected from port
+9000 to 443; its SHA-256 is
+`26afb3c9a5d06e63e5318521b784e7242e888f4ae8d7fa3b1d47349ed60f7f1d`.
+Lore's separate private S3 TLS mapping remains on port 9000. Host DNS resolves
+the public Artifact authority globally; no actual Computer exists yet, so its
+native DNS and byte-transfer behavior remain unmeasured. No signed URL was
+printed and no object download occurred during this configuration review.
+
+**Pre-cutover trust correction:** inspecting the exact retained Lore input
+`sha256:902afddd87de1dad21228bb02af2c11af15a208b57348621dadc3ae5a3bcf305`
+finds the native CLI/server but only the generic local-installation CA, fingerprint
+`37:07:83:D2:4D:E0:F6:F8:CA:D3:05:1E:86:89:23:9B:99:98:D4:19:A8:D1:C5:04:30:BB:B4:A4:35:D8:0A:7E`.
+The final `caf5` receipt really names this image; this is not merely a stale tag.
+Its prior version/startup receipt did not inspect the required Linux trust roots.
+CLI SHA-256 is `19afa922a9bcdbf5cbb27ade9e0dfc3a0dfe2ccc1c43223d4fa0e9739397a49a`;
+server SHA-256 is `07227e386ca6ab0949c9bbea3f28975329a73a14bf45825f2726b154c3dca4a2`.
+The verified staged public context contains the actual Lore and storage roots
+recorded above. Rebuild the unchanged native Lore source with the existing
+Dockerfile and that context; inspect the retained Factory and Computer images
+separately before deciding whether they need rebuilding. No Lore authorization
+change, TLS bypass or runtime certificate fallback is authorized by this finding.
+Sanitized evidence:
+`/tmp/computers-hub-native-issuer-validation-20261019/lore-image-inspection.json`,
+SHA-256 `dcbcdedd51d99e9ea385bbfd67311d90bd09779d5a201d1df0188bad3d03ef04`.
+Cutover remains held while the correct immutable artifacts are established.
+
+The corrected Lore runtime now builds as
+`sha256:d8ca55bb7653469fd8cbf754d2509e03c272240956677284bf3878dfa64f5366`
+on Linux x86_64 from installation `cccccc40`, native source tree
+`c668e85c6f790f25c867de95d4ca3a9eab1f5628` (identical to reviewed `821da217`),
+and the verified public CA context. Docker reuses the source-build layers and
+adds the two intended CA files through the normal trust-store update. CLI/server
+hashes and versions remain unchanged. Networkless inspection finds both exact
+Linux roots, each verified against the installed system trust bundle. Build log:
+`/tmp/computers-lore-final-821-linux-20261019/lore-build.log`.
+
+Separate networkless inspection confirms the retained Factory `aae9b06e…dd6193e`
+and Computer `c668229a…d3d1d96` already contain both verified roots; neither needs
+a trust rebuild. The Computer contains OpenCode SHA-256
+`79f58e2eaefa35cd30dd3cb73c7eca83ff2f45a67b0b41684cde1e4cbe74ddc3`, selects
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` and points MCP at
+`https://veoveo.bioma.ai/mcp/computer`. The existing native Lore CLI hash matches
+the inspected server image. These are immutable-image/configuration observations,
+not authenticated network or model receipts.
+
+The coordinator releases trusted preparation of only the dedicated Lore database
+login/schema, bucket/IAM identity, private native configuration/credentials and
+new absent Lore volume, following the existing installation recipe. The staged
+Lore-only Compose override is being updated to the corrected image and explicit
+`HOME=/data`, with UID/GID 1000 matching the existing TLS key ownership. Ordinary
+volume preparation provides the same identity a private writable home; no TLS key
+permission is relaxed. Lore start remains held until its selected inputs are
+verified; the shared gateway/Hub switch and paid qualification have not occurred.
+
+The corrected private Lore-only Compose overlay is frozen at SHA-256
+`1b358152a8fbcf0dac2d667b62d618f9f81221bc8dc004470029d5b867338e97`.
+Its only changes from the reviewed overlay are the corrected immutable Lore image
+and `HOME=/data`; UID/GID 1000, private network placement, TLS binds and storage
+inputs are retained. Trusted preparation creates database login `server_lore` and
+its own `lore` schema in the existing database. Readback confirms no superuser,
+CREATEDB, CREATEROLE or BYPASSRLS authority, no role memberships, no database CREATE
+and no CREATE on `public`; the role owns and can use its own schema. SeaweedFS's
+`lore` bucket and dedicated `lore-vv-lore` policy are also created. The IAM user,
+credential file and new Lore volume remain incomplete at this checkpoint.
+
+During preparation, a builder diagnostic printed the existing SeaweedFS admin
+password from container arguments. This violated the secret-handling instructions.
+The coordinator stopped preparation and released a native rotation of only
+`VEOVEO_SEAWEEDFS_ADMIN_PASSWORD`; private comparison confirmed it was distinct
+from both S3 bootstrap credential values. An initial preservation-check harness
+failed with `IsADirectoryError` after updating the mode-0600 environment file and
+before restart. The corrected continuation reused that newly generated value.
+Only `vv-seaweedfs` was then recreated, retaining image
+`sha256:7b5ca1f11aa4c91593612d2d4a9e253ec9152a4bd13a19e551290a042a4c52f5`,
+its existing data volume and read-only TLS bind; all other installation container
+IDs were unchanged. Native admin login with the new value returns 303 to `/admin`
+and sets a session cookie. The old value was not retained or independently tested,
+so this is not an independent old-password rejection receipt. The S3 TLS listener
+responds with 403. Authenticated controls then pass: bootstrap ListBuckets returns
+200 with `artifacts,lore`; Artifact's own bucket listing returns 200 and listing
+Lore's bucket returns 403. A unique 45-byte probe is uploaded/downloaded/deleted
+with 200/200/204, exact size/hash agreement and a subsequent 404. The first probe
+attempt wrote literal `false` because of a local curl-config serialization error;
+it was deleted and the corrected attempt read a binary fixture file directly.
+No existing application object was touched. Existing IAM users/policies are
+unchanged. No S3 key was rotated, no data volume was removed and no unrelated
+application was restarted.
+
+After those storage controls and dedicated Lore input/ownership checks pass, the
+coordinator releases only private Lore start using the frozen overlay and
+`--no-deps --no-build --pull never`. Native server/backend/TLS evidence must precede
+the separately reviewed gateway/Hub switch. Source gates remain green; no new
+native user login, Computer provisioning or paid qualification is claimed here.
+
+**Private Lore starts on Linux:** GPT-6 Luna finishes the dedicated native storage
+inputs and starts only `vv-lore` with the frozen overlay, exit zero. Lore selects
+the reviewed immutable `d8ca55bb…` image and listens at `10.231.10.10:41337`.
+The endpoint's hostname/SAN and installation Lore CA verify; an HTTP/2 request
+returns 200 with TLS verification result zero. Startup creates five tables in the
+`lore` schema, all owned by `server_lore`; native database authentication and schema
+USAGE succeed while database CREATE remains false. The new data volume is owned
+by UID/GID 1000 with mode 0700. These are server/TLS/backend startup observations,
+not an authenticated native repository-operation receipt.
+The first TLS probe verified `vv-lore.internal`. A follow-up connects to the actual
+native endpoint's literal IP with `openssl s_client -verify_ip 10.231.10.10
+-verify_return_error`, using the installed Lore root; it exits zero with
+`Verification: OK` under TLS 1.3. Receipt:
+`/tmp/computers-lore-storage-20261019/receipt.json`, SHA-256
+`590dc2a48b39d2769d57c9ad1066e3b8417b209367c5f790bb851e4139b647eb`.
+
+The installed Lore S3 identity independently lists its own bucket and reads its
+versioning status (200), round-trips a unique 33-byte fixture with SHA-256
+`815a3d853f102f105283df8bc8c253649d27cbbba29cb09e7761d919e49bc6db`, deletes
+it (204) and observes 404 afterward. Listing `artifacts` and IAM ListUsers both
+return 403. Its credential file is mode 0600, owned by UID/GID 1000. Before adding
+the installed scoped key, the builder observes an existing `vv-lore` user/key and
+preserves it; that differs from the earlier no-user report, and the prior key's
+creation provenance has not yet been reconciled. No shared or administrative
+credential is used by the Lore service. The gateway/Hub window remains held for
+the final native inventory, binary and config-promotion preflight.
+
+At approximately 2026-10-19 18:12 UTC, the coordinator releases the reviewed
+gateway-wide maintenance sequence after read-only preflight. The native service
+remains the existing user unit/state directory; its eight non-Hub Ready sandboxes
+must retain logical identity and recover after the gateway restart. The current
+Hub owns no persistent working volume; only its stopped logical sandbox is to be
+replaced, preserving `vv-hub-config`, JWKS and application data. The absent
+`installation` workspace/Computer template are conditional native creations, and
+the already-linted global profiles are imported individually. Trusted config
+promotion writes only the three reviewed files as UID/GID 10001, mode 0600; the
+matching Hub performs explicit stopped-process control-plane import before its
+replacement starts. The native-control provider reports refreshed custody, last
+refresh 18:07:58 UTC and expiry 19:07:57 UTC; this status alone does not prove an
+authenticated management RPC. Runbook:
+`/tmp/computers-hli6-cutover-20261019/COMPUTER_CUTOVER.md`, SHA-256
+`a9e94291018afcf7c3c295cdc9ba244b4617809d8dd674f367653818827a0369`.
+Release is not a claim that the new gateway, Hub or public Computer is selected.
+
+The builder then stops the existing logical Hub through native lifecycle (exit
+zero, under one second) and replaces/restarts the existing gateway service. The
+selected gateway binary SHA-256 is
+`cba364c003f995ce541e69942fadde2fcf8aaa5cdd83c3d8afefeeb2e800bc46`,
+matched byte-for-byte against the immutable reviewed gateway image before stop.
+The selected native CLI is
+`f1b4e7cf58b460ff666a64b19081a489d49096e42fe2ea23d2da8bec90dc9b24`;
+its release source matches `ea9b680` except for the task's lifecycle-test
+registration. Both version strings are `0.0.0`, so hashes/source evidence, not
+that build metadata, identify these artifacts. Gateway preflight passes and the
+existing user service becomes active on the new binary. The actual encryption
+key remains in place at `gateway/credentials/key-encryption-key.bin` under the
+existing state tree; it is neither copied nor rekeyed.
+
+Five independent QA/provider workloads recover to Ready. Time, Artifact and
+Media instead enter `MainProcessRestartBackoff` while Hub remains intentionally
+Stopped. Source review identifies a runbook ordering error: all three application
+entrypoints register with Hub before opening their MCP listeners, and registration
+failure exits the process. Requiring them Ready before starting Hub can therefore
+prevent recovery. The coordinator corrects the order: confirm the bounded runtime
+error is Hub discovery/registration, complete the new Hub import/start/exposure,
+then require application registration/listener/Ready recovery. Preserve the three
+logical identities and native retry state; no application reset, policy workaround
+or source change is warranted by this dependency. Other failure causes still
+require diagnosis. Revised private runbook SHA-256:
+`819f17fb65aced0c4c07b0af244729318a066e52456f3f3245cb2af85f45182f`.
+The bounded runtime log classification subsequently reports repeated `could not
+register` errors with HTTP 502 at the Hub registration endpoint for all three.
+Native CLI log requests had returned no lines; the builder used privately
+captured Docker logs to classify these errors without exposing credentials.
+This establishes the failing startup phase. The builder resumes Hub setup/import/
+replacement/exposure; recovery after Hub returns remains the required result.
+
+Native setup then creates the absent `installation` workspace and persistent
+Computer template and imports the two linted global profiles. The networkless
+trusted helper promotes the exact three files into `vv-hub-config`, preserving
+the existing JWKS; matching Hub validation and explicit control-plane import both
+exit zero. Only the stopped old Hub is deleted. Its replacement, native ID
+`fa2c63d6-731a-4e0e-87bf-3086046e0775`, selects the reviewed image/provider/policy
+but exits before readiness: migrations are current, then `connect native upstream
+gateway` fails with `connect error: transport error`. The new public exposure has
+not yet been restored. This is a distinct failure from application registration
+502s and remains under diagnosis.
+
+Source review locates this error before bearer-interceptor installation and RPC
+authorization. Both configured gateway endpoints remain
+`https://host.openshell.internal:17670`, using the readable injected supervisor
+CA. Host-side TLS verifies against the installation gateway CA and negotiates TLS
+1.3/HTTP2 with the expected SAN. The different injected sandbox CA is expected for
+native interception; it is not justification to replace trust or bypass mediation.
+Container-root DNS/hosts observations do not establish the transient main process's
+namespace. A bounded process watcher did not capture that child. The coordinator
+therefore releases one temporary narrow Rustls/connector diagnostic through the
+existing supported `RUST_LOG` setting, with private capture and exact restoration
+of the original environment bytes. No role, grant, policy, TLS or source change is
+made to compensate for the unresolved transport error.
+
+That single diagnostic retry remains inconclusive: the Hub restart count advances
+from 11 to 12 with the same generic error and no lower-level connector/TLS lines.
+The builder restores the original environment bytes (SHA-256
+`f77545f01378e390aaa57c101f59868fcd2db3e0f7a811e02ac5a3610c5afb61`),
+UID/GID 10001 and mode 0600. Read-only inspection cannot establish the actual
+workload namespace: host `/proc` access is denied to the SSH user, and the native
+supervisor explicitly cannot inspect the workload's mount or PID namespace.
+Docker-root resolver observations remain noncanonical. No DNS, TLS, ALPN or
+authorization cause has been proved. Further blind retries are held while source
+review identifies a supported diagnostic or preserves the SDK's typed transport
+error chain. Hub is still unexposed; application registration recovery remains open.
+
+The source review subsequently establishes the distinction: the canonical child
+inherits the workload container's mount/network view, but its DNS and connection
+syscalls pass through native seccomp-notify mediation. A plain Docker-exec process
+does not exercise that broker. Native `policy_dns` resolves
+`host.openshell.internal` from the driver's trusted `host_gateway_ip`. Thus the
+missing Docker-root hosts alias is not a proved configuration defect. The chosen
+source fix retains tonic's original connection error as a typed SDK error source,
+so ordinary startup error reporting can reveal its cause without changing routing,
+trust, policy or authentication. That diagnostic fix has not yet been built or
+deployed.
+
+A subsequent read-only native `logs --source sandbox --since 30m` capture contains
+208 OCSF events: 52 resolved gateway-name events, 52 allowed destination events and
+13 allowed socket events for `127.0.0.1:17670`. It also contains 13 TLS/handshake
+events whose cause is still being inspected. These observations establish that the
+native broker resolves and permits this path; they do not establish successful
+application TLS. No new live retry or configuration change is made. The SDK's
+first regression run stops at its five-second test deadline (19.285 seconds total
+command time): a bound, non-listening loopback socket did not produce the assumed
+immediate refusal on this host. This is a test-fixture failure, not a new finding
+about the deployed connection. The coder is correcting the portable fixture;
+production transport behavior remains unchanged.
+
+The corrected fixture sends a real TLS client hello to an owned loopback peer,
+which responds with an invalid TLS record. The typed original Rustls cause remains
+discoverable through the SDK error chain. That regression passes (one test, 0.33
+seconds test time / five seconds command wall time), as do three existing SDK error
+unit tests. Strict all-target Clippy subsequently passes in six seconds after one
+test-only `manual_let_else` correction. Frozen source fingerprint:
+`31ae458b35a20d1632cdc921274429afa4b1799ece812a076551aa5965351807`.
+Logs are `/tmp/computers-openshell-transport-errors-a7f6892.log`,
+`/tmp/computers-openshell-sdk-error-tests-a7f6892.log` and
+`/tmp/computers-openshell-sdk-clippy-31ae458.log`. These are local SDK checks, not a
+diagnosis of the deployed failure. The next Hub build will pin the reviewed fork
+commit for both SDK and policy; the existing native gateway/runtime remain selected.
+
+The SDK fix is published on the fork's task branch as
+`9724fb1834dec157b4482a1da97338fd8ca1e50c`. Hub commit
+`b24ccad0c524625de513b0b37bec4a5419d85c49` changes only its two OpenShell
+dependency pins and the five corresponding lockfile source identities. No registry
+versions or application source change. Compared with the former pinned OpenShell
+revision, SDK/Core/protocol sources are unchanged except for this diagnostic fix;
+the policy advance incorporates the already-reviewed disjoint REST/MCP route
+semantics used by the selected native gateway. Both Hub platform gates pass from
+this exact clean commit. The Mac-host Linux ARM64 gate exits zero in 211 seconds,
+with 226 tests passed and one skipped (33.059 seconds test time), check image
+`sha256:da44c95fcc83d9a744226d46062431bd75e610296b0512f7222971d09df85eb0`.
+The actual Ubuntu Linux x86_64 gate exits zero in 263 seconds with the same counts
+(34.773 seconds test time), check image
+`sha256:fc31d81976fab665964cee08dd97a824c9d3f5e0c0e38f5c9f31fdaf52180383`.
+Both include SQLx metadata verification, formatting, strict Clippy, dependency
+checks and the feature matrix. Linux source archive SHA-256:
+`e8243d92335f93375c9c7477d54c636c81dac276362d2c230eb8615d70591811`.
+Gate logs: `/tmp/computers-hub-b24ccad-mac-check.log` and
+`/tmp/computers-hub-b24ccad-linux-check.log`. The matching Linux runtime image builds
+in 129 seconds as
+`sha256:934b1c776ff3ba50f22a5af692c1a2e1c91680b69be8b812b7d4c78ed2a8b8ce`.
+Its extracted x86_64 ELF is 63,183,056 bytes, SHA-256
+`decdf123c4823fb3c98283c05976fc016a18a547c9f84a0ee7ac429a61880a67`;
+networkless `--help` succeeds. `--version` is not a supported command and returns
+Clap's usage error. Build log:
+`/tmp/computers-hub-b24ccad-linux-runtime.log`. These component/build checks do not
+diagnose the deployed transport failure. The coordinator releases the already
+reviewed native stop/delete/recreate of only the stateless Hub, retaining its
+logical name, exact policy, read-only configuration volume and dedicated provider.
+No gateway restart or configuration reimport is required. Capture the first typed
+startup cause before exposing the replacement; exposure and application recovery
+require readiness. No main merge has occurred.
+
+Native stop/delete completes and Get returns NotFound before recreation. The new
+`vv-control/hub` is `89770a5f-c12a-48cf-8dbb-8c2182f9668c`, selecting the
+verified `934b1c77` image and retained configuration/provider/policy. Its supervisor
+connects and accepts configuration, but the main process again fails after current
+schema checks. The complete seven-line anyhow block is:
+
+```text
+Error: connect native upstream gateway
+
+Caused by:
+    0: connect error: gateway transport failed
+    1: transport error
+    2: received fatal alert: NoApplicationProtocol
+    3: received fatal alert: NoApplicationProtocol
+```
+
+The builder's first filtered summary omitted the two decisive cause lines. Review
+of the complete contiguous error block establishes TLS ALPN negotiation failure;
+the SDK source-preservation change works. The same block appears in eight captured
+attempts. This failure precedes bearer authorization/RPC and does not justify
+changing grants, trust or Lore behavior. Native protocol selection is under source
+review. The new Hub remains Starting and unexposed; Time/Artifact/Media registration
+recovery and user acceptance remain open. Private logs are retained on Linux as
+`/tmp/computers-hli6-hub-main-private.log` and
+`/tmp/computers-hli6-hub-supervisor-private.log` (mode 0600). No further live changes
+follow this capture.
+
+Source review identifies the native configuration cause. In OpenShell
+`crates/openshell-supervisor-network/src/proxy/relay.rs`, HTTP2 is admitted only when
+`PreparedHttpPolicy::Inspect` contains exactly one endpoint configuration. The
+new native-control policy creates fourteen separate configurations for the same
+gateway host/port, so `l7/tls.rs` advertises only HTTP/1.1. Tonic requests HTTP2,
+which produces the measured `NoApplicationProtocol` alert. The former forwarder
+had one endpoint. This is a policy-structure error, not a certificate or grant
+failure.
+
+The approved correction uses one enforced REST endpoint selecting
+`/openshell.v1.OpenShell/**`, with the same fourteen exact POST allow rules and
+the same provider binding. The service-root selector selects the endpoint; it is
+not an allow rule. Native `l7/http2.rs` evaluates each request against the rules,
+so no additional RPC is admitted. Source and private policy staging must preserve
+every unrelated route, executable and filesystem setting. Existing native policy
+admission, engine construction, a single matching endpoint and exact rule-set
+comparison precede the supported policy-only update:
+`openshell policy set --workspace vv-control --policy <reviewed-file> --wait --timeout 60 hub`.
+No gateway/Hub rebuild, trust change or Lore change is required. Deployment and
+application recovery remain pending.
+
+The direct per-request evaluator is internal to OpenShell and cannot be constructed
+by the existing external checker. The coordinator declines a new in-crate test
+seam merely to repair this configuration. Structural checks and the reviewed
+per-stream evaluator remain distinct from executed RPC acceptance; actual required
+RPC calls and an unlisted-RPC denial remain deployment acceptance work after
+recovery. No new conformance framework is added.
+
+The one-endpoint native-control correction is published as installation
+`3f34d462e9c1ae77a0492363c9d5b28c53f6113f`. The existing parser/ambiguity
+check passes in 4.91 seconds and confirms the same fourteen ordered POST rules,
+provider binding and all unrelated policy fields. The supported policy update
+succeeds on Hub `89770a5f-c12a-48cf-8dbb-8c2182f9668c`, revision 2. A fresh
+attempt advances past the ALPN failure and stops at a different native policy
+validation error at 2026-10-19 19:11:10Z:
+
+```text
+Error: canonicalize trusted Computer native policy
+Caused by:
+    sandbox policy validation failed; network policy 'lore': protocol tcp endpoint '10.231.10.10' must use a DNS hostname, not an IP literal; direct IP connections bypass policy DNS and are blocked
+```
+
+The configured file `/etc/veoveo/hub/computer-policy.yaml` exists on the retained
+read-only configuration volume, mode 0600 and owner 10001:10001. This is semantic
+policy canonicalization, not filesystem access. Earlier staging checks parsed
+policy and checked ambiguity but omitted the complete native semantic validator;
+that earlier result does not establish full admission. Use the existing
+`validate_and_canonicalize_sandbox_policy` in that check, as Hub does, without
+introducing a new validation framework.
+
+Read-only host probes find no `vv-lore.internal` mapping or DNS answer. The existing
+TLS receipt already verifies that hostname and the private IP; no certificate
+change is needed to select the hostname. Source configuration is being corrected
+consistently to `grpcs://vv-lore.internal:41337`, retaining exact private-IP policy
+constraints. The proposed trusted host resolver record remains subject to checking
+the actual supervisor resolver path. No new DNS service, Lore authorization rule,
+TLS bypass or repository assignment is introduced. Hub remains Starting and
+unexposed, with application registration and real-user acceptance still pending.
+Native credential custody reports a successful refresh at 19:05:28Z with expiry
+20:05:27Z; this status alone does not prove a control RPC after the preceding
+credential expired.
+
+The builder measures the actual supervisor on host networking, with no Docker DNS
+override and `/etc/resolv.conf` selecting `127.0.0.53`. The host's existing
+systemd-resolved 255.4 is active and listens on that address, with `ReadEtcHosts`
+enabled by default. A host-owned `10.231.10.10 vv-lore.internal` record therefore
+uses the existing trusted resolver; no workload alias or separate DNS service is
+needed. The SSH account's noninteractive sudo check requires authentication, so
+the coordinator requests that exact host edit from the user. It remains pending;
+no alternate privilege path or unproved resolver fallback is introduced. Source
+configuration now selects the hostname consistently; full native validation and
+the coordinated runtime data updates remain in progress.
+
+Installation correction `5d31d76b8782fdca7f7acffe663cc3591f367dcc` is now
+published on `hosted-computer`, tree
+`4e791eceaf4593609d3469829329c7ab0ccb54f4`, with ten frozen source files
+matching fingerprint
+`ef8f1b52ba4ccfef3f2b3bca36b4dc3a34459f93c6b08b56ba1ee2406b8ec267`.
+The existing complete native policy validator passes for all four affected source
+policies and the private Computer policy, with zero endpoint ambiguities. The
+private candidate differs only at the Lore endpoint host; port 41337 and
+`allowed_ips: [10.231.10.10]` are preserved. Its installed SHA-256 is
+`025e7c5805b9dcd8aea03b78eea84ca66c93841b0810274fa41036360eeb322a`.
+The trusted networkless volume update preserves mode 0600 and owner 10001:10001;
+no other volume file changes. No image rebuild is needed for this data correction.
+
+Hub's normal retry starts its main process at 2026-10-19 19:29:15.926Z and reaches
+native Ready at the same sandbox identity, restart count 18. The structured
+application log reports `listening` on `127.0.0.1:8080` at 19:29:16.032658Z.
+Inventory finds nine sandboxes, zero user Computer template references or owner
+labels, and exactly one `installation/computer` source template. Native template
+creation is not an upsert, so the supported row-only delete/recreate changes only
+`environment.VEOVEO_LORE_REMOTE`; fresh readback matches every other spec field,
+including image, resources, driver configuration, environment, labels and
+annotations. No user sandbox, workspace or working volume is deleted.
+
+The existing `http` exposure is restored on Hub port 8080 with the same bearer
+passthrough mode and named Cloudflare target. TLS-verified public probes return
+`/readyz` 200 in 0.427 seconds, `/computer` 303 in 0.427 seconds, OAuth discovery
+200 in 0.272 seconds and the Computer protected-resource metadata 200 in 0.192
+seconds. These establish public HTTP availability and entry-point redirection,
+not browser sign-in or a provisioned Computer. Five non-Hub sandboxes are Ready;
+Time, Artifact and Media are initially still retrying registration and their normal
+recovery remains under observation. No model call occurs.
+
+The Hub catalog and retained rebuild input still need their endpoint-only update.
+An unauthenticated `GET /admin/local/control-plane` returns 401 in 0.354 seconds,
+as expected; this does not test the existing administrator custody. Native refresh
+status and the normal real-Entra application-grant flow are being checked after
+the authorized session hard cut. The Computer browser cookie does not authenticate
+administrative Bearer routes. No credential is extracted from native custody, no
+synthetic approval is used, and existing qualification policies are not broadened
+to manufacture an administrative client. The host DNS entry remains pending the
+user's privileged edit. Native Lore login and repository acceptance have not run.
+
+Subsequent native inventory confirms all nine existing sandboxes Ready, including
+Time, Artifact and Media, with unchanged application identities and no Computer
+sandbox. `qa-sdk-initial` attaches the retained `vv-hub-qualification` provider.
+The provider-wide refresh status reports both human grants
+`reauthorization_required`, recovery `reauthorize`, failure `oauth_invalid_grant`.
+The CLI displays last refreshes 18:11:57 and 18:11:58, with expiries 18:16:57 and
+18:16:58 on 2026-10-19; it omits the timezone, so these are retained as displayed.
+A preceding query using the historical `admin_access_token` selector
+returned no configuration; that narrow result was not evidence that the provider
+or all custody had disappeared. No credential material is read or exported.
+
+The coordinator attempts the actual public Computer browser flow through Cua.
+The browser origin approval gate rejects navigation to
+`https://veoveo.bioma.ai`, reporting permission declined. No sign-in, handoff or
+Computer provisioning occurs. Browser permission is requested; neither another
+browser nor an indirect login path is used to bypass that rejection.
+
+The supported fresh administrator path is the existing OpenCode MCP auth client,
+with public client `opencode`, scope `mcp`, resource
+`https://veoveo.bioma.ai/mcp/local` and registered loopback redirect
+`http://127.0.0.1:3210/callback`. Actual client data confirms
+`defaultWorkContext: reference-work`, which Hub selects when that optional request
+parameter is absent. The known 376 build supports the exact native callback and
+state checks: local Darwin ARM64 executable SHA-256
+`2da0a16007cee6c74bd9e8df448c3ee5ef7ee4cda2007cb6619b532773e60365`.
+Isolated task-owned configuration, all XDG roots, temporary directory and credential
+database are prepared without running authentication or a model. Once browser
+permission is granted, native authentication can create a fresh grant in that
+isolated store. Independently verify live JWKS, identity, audience, client and
+context before private administrative use and native refresh-custody handoff.
+This does not extract existing OpenShell custody or add an OAuth implementation.
+
+The final metadata-only receipt is
+`/tmp/computers-hli6-policy-validation/metadata-only-final-receipt.json`, mode 0600,
+SHA-256 `d3b29e06e7cd372350806509dfa1b52e018bec763659ed81c4c040bb79b76fab`,
+recorded at 2026-10-19 19:43:42Z by the GPT-6 Luna builder. It records the existing
+native validator's exit zero in 5.5 seconds, log
+`/tmp/computers-hli6-policy-validation/native-check-final.log` (SHA-256
+`11f17e33df93d7ae9ab9bb5c287db56b4a476a8686e1d1990c4d92c6f07c4af1`),
+the template row replacement and all nine native Ready states. Template row
+`e2083817-ae5c-497d-86e5-d40bbafb687b` becomes
+`7b7b4038-f46c-4905-bf64-0c175d8f8011`; only the Lore environment value changes
+in the canonical spec. A final TLS-verified status-only observation, without
+following redirects, retains readiness 200 (0.391123 seconds), Computer entry 303
+(0.391039), OAuth discovery 200 (0.379308) and Computer protected-resource metadata
+200 (0.391463). These are deployed HTTP probes, not browser or model acceptance.
+
+Actual retained QA credential keys are `HUB_ADMIN_REFERENCE` and
+`HUB_MEMBER_REFERENCE`. Future native refresh reauthorization must target those
+existing keys, not create a key from an obsolete example. Nonsecret native-auth
+inputs now exist at `/tmp/computers-hub-admin-auth-20261019` (directory 0700):
+`opencode.json` 0600, `launch.sh` 0700 and `README.md` 0600. Configuration SHA-256
+is `5f63ff8b649155c1dbf0b52b8a7d29e8cd7a61cd046e1233c35ec8c1ed959fac`;
+launcher SHA-256 is
+`c2cdddbd02fd4fd2e90467d4e12e78d613f993fec2e30402457aafd623e6c6e2`.
+The launcher checks the reviewed native client hash, isolates state and disables
+model-list fetching. Static JSON, shell syntax and permission checks pass. It has
+not run; browser permission and the host DNS edit are still pending. Updated guide
+JSON, JavaScript syntax, three SVGs and unique SVG IDs pass static checks; browser
+review and export checks remain unperformed for these guide bytes.
+
+The source-reviewed native acceptance checklist now includes an independent
+factory build, beyond repository clone/hash proof. A dependency-free locked Rust
+fixture is published at the real emitted repository/revision, then only the
+Computer's scratch source changes to a different marker. The separate factory
+must clone the published revision, build offline/frozen with its existing
+toolchain, and produce the published synthetic marker with retained byte/hash
+evidence. Its native provider attachments and absence of OpenCode/model access
+are checked separately. Checklist SHA-256
+`2586f3d769c87240d9f4ffe0d956d8249fb27361246a392267e3d11619bfc9fa`
+at `/tmp/computers-hli6-cutover-20261019/NATIVE_LORE_CHECKLIST.md`; none of these
+native user or factory operations has yet run.
+
+At 2026-10-19 21:03 UTC, implementation resumes after the user approves the native
+host-service connection fix. The earlier `/etc/hosts` proposal is superseded.
+Source review confirms that `host.openshell.internal` uses OpenShell's exact
+backend-provided host address without upstream DNS; its authorized raw TCP relay
+preserves Lore TLS/gRPC. The selected change publishes the existing Lore container
+only on `127.0.0.1:41337`, issues a leaf certificate containing that native hostname
+under the existing CA, and aligns Computer/factory policies, template environment
+and the Hub deployment endpoint. Remove the stale bridge-IP `allowed_ips` entry;
+do not replace it with a loopback range. Issuer, audience, repository grants and
+native Lore behavior stay unchanged. The coder owns installation source, the
+builder owns Linux rollout/probes, and the coordinator owns review and this record.
+Source preparation and read-only live inventory are underway; this entry does not
+claim the cutover or successful client connection. Existing browser-origin denial
+and fresh human authentication remain separate from this network fix. No model
+call or durable-service migration is authorized by this connection step.
+
+The revised installation source is frozen at
+`c2030495fe592f8f800e768f96184154315de5b8`, tree
+`c69080ff6e901c3af6b123551f742236cfae803d`. The existing native checker passes
+in 5.85 seconds with exit zero for four source policies and the new private
+Computer candidate; all have zero ambiguities. The private candidate SHA-256 is
+`87822ba03aa8b12614013a413eda0dcaa95a46506f8a1cc6a85a2cd5edb60b31`.
+Its only semantic changes from the installed policy are the Lore hostname and
+removal of its obsolete bridge-IP allowlist. Hub caches that policy at startup,
+so the approved rollout includes a native restart of the existing Hub sandbox.
+
+A builder diagnostic exposed Lore's dedicated S3 and PostgreSQL credentials in
+tool output. Their replacement and revocation are complete; no other service
+credentials or authorization rules changed. Private metadata receipts remain in
+`/tmp/computers-lore-credential-remediation-20261019-continuation` on Linux. The
+continuation exited zero in 2.05 seconds and confirmed replacement access and
+old-credential rejection. This incident is closed; the disposable development
+installation does not require further credential work for this assignment.
+
+Computer connection qualification then found two distinct setup errors. The first
+two Lore probes omitted `--policy`, so their exit-28 transport errors did not test
+the Computer's intended network rule. An explicit task policy retaining the exact
+Lore route produced TLS ALPN alert 120: `protocol: tcp` alone still permits native
+OpenShell TLS interception, which offered HTTP/1.1. The direct host endpoint passed
+TLS 1.3, hostname verification and HTTP/2 with the existing Lore CA. Native
+`tls: skip` on the exact Lore rule preserves the intended end-to-end gRPC TLS.
+Installation commits `be959d9` and `63bf967` add the standard certificate-directory
+environment and this passthrough setting; Lore and OpenShell code are unchanged.
+
+GPT-6 Luna builder ran the unchanged native Lore CLI in Computer image
+`sha256:c668229af4a278c6b40b4c0160a4fe8e16636881a9da2f4b21a8808d9d3d1d96`
+under that explicit, task-only rule with isolated HOME/XDG and no providers:
+`lore -P --json repository list grpcs://host.openshell.internal:41337` completed
+native `EnvironmentGet` and returned expected `Not authenticated` (exit 16) in
+about 2.0 seconds. The disposable sandbox was deleted. This proves the private
+DNS/TCP/TLS/gRPC transport, not a repository listing, user authentication or the
+full Computer policy. The corrected private Computer policy and template are now
+installed; the same Hub sandbox was restarted to load its cached policy and
+returned public readiness HTTP 200 in 0.207 seconds. The source Computer image
+also carries the certificate-directory setting for future builds; the current
+reviewed image receives it through its template. The sanitized local receipt is
+`/tmp/computers-hli6-policy-validation/lore-tls-rollout-receipt.txt`. The live Lore
+registry endpoint still needs the normal authenticated administrative update.
+Browser-origin permission remains pending after the tool's explicit rejection;
+no browser workaround or model call was made.
+
+The same source review found that the existing Artifact byte-transfer rule's
+explicit no-interception intent also required `tls: skip`. Commit `837d8a2` adds
+that one field to the exact signed-object endpoint. The matching installed policy
+is now selected after a final Hub reload; readiness returns HTTP 200 in 0.189
+seconds. No Artifact operation or model call was used for this configuration fix;
+authenticated Computer byte-transfer acceptance remains pending. Diagram detail
+text reflects the transport result; geometry is unchanged and browser review
+remains pending with the existing browser permission gate.
+
+The user's manual Linux-browser sign-in at 2026-10-19 22:01 UTC reached the
+Computer callback. Hub's OAuth token exchange returned HTTP 200, then the callback
+returned 503. The owner row and handoff existed, but no native workspace or browser
+session had been created. Native request logs ended at `GetWorkspace` after two
+profile reads. Source review identified a concrete native contract violation:
+`computer-` plus the 32-character UUID generated a 41-character workspace name,
+while OpenShell validates a maximum of 19 before checking existence. The original
+callback warning discarded the underlying cause, so the gRPC status itself was
+not measured in those logs.
+
+Hub commit `e7af2e6f2066e02d77e6d2da5a6238450faf3641` fixes construction with a
+stable 19-character name derived from the full UUID; Hub identity and browser base
+path retain that full ID. Existing cloned-template comparison remains before
+provider or sandbox adoption. Parent `a7c606c` retains the already-sanitized
+top-level callback error in the existing warning. No database, authorization,
+Lore, schema or compatibility changes are involved. GPT-6 Luna builder ran the
+extended existing owner-mapping regression (1 passed in 1.05 seconds) and Hub
+binary compilation (passed in 13.40 seconds); the initial fixture attempt lacked
+PostgreSQL 18 on PATH and was rerun with the installed tools. The actual Ubuntu
+x86_64 runtime build produced image
+`sha256:67d5e4063ade380aa46fde79b2431bf211176eb1f3f2e80496da6d5e80772911`.
+The corrected image is now deployed as native Hub sandbox
+`759c65ef-df38-42ad-8f08-cd766179d6a4`, with the original configuration volume,
+native-control provider and bearer-passthrough public exposure. An initial create
+attempt selected the user Computer policy instead of Hub's own policy and was
+rejected before creating a workload; the retained authored Hub policy restored
+the intended deployment without changing authority. Native and public readiness
+return HTTP 200 (public request 0.392 seconds), and `/computer` returns 303 to
+normal authorization. A fresh manual browser sign-in is requested; the previously
+consumed callback cannot resume setup. No model call has been made during this fix.
+
+The required macOS Docker component gate for that same clean Hub revision also
+passes: `docker build --target check .` exits zero in about 3 minutes 30 seconds,
+including image export. GPT-6 Luna builder records 226 tests passed, one skipped
+and zero failed; the check image is
+`sha256:6d4607849923bfcc65e04e70795715da0a30c71d8ec5d1459f672eff332ebabe`.
+The matching full Linux gate also passes on the exact source archive
+`fee0b2eff070e5e9c1f4ddc0498a8191bc231b70522a0cab810f082387fa1acc`:
+compile, Clippy, dependency and feature checks pass, with 226 tests passed, one
+skipped and zero failed. Test compilation takes 1 minute 36 seconds and execution
+34.418 seconds; total wall time is about 3 minutes. Its check image is
+`sha256:de09c8075d3233c55fe3d85bb18ce5f836b9d2261484d9273641a2c97f487e10`.
+These are component results on actual Ubuntu x86_64, separate from user acceptance.
+A corrected read-only check at
+22:28:47 UTC derives the exact native workspace from the Computer UUID and finds
+it absent. The original 22:01 owner/handoff row remains not ready, no browser
+session exists, and the pending login expired at 22:27:47. Repeating token-endpoint
+successes do not establish a new browser callback or successful provisioning.
+
+At 22:30 UTC, the coordinated embedding deployment owner publishes the remaining
+Lore endpoint correction together with its required native upstream binding.
+Existing trusted-operator access reads the complete authoritative document using
+Hub's own `active_revision.sql`; no custody credential or browser session is
+extracted. Exact semantic comparison permits only the new
+`vv-services/embedding:8803` binding and the `primary` Lore endpoint replacement
+with `grpcs://host.openshell.internal:41337`. Both baseline and candidate pass
+native validation in the same deployed Hub image (158 and 132 ms). The binding
+is startup-fixed, so the owner stops the sole serving Hub, rechecks the unchanged
+revision, and uses the existing native `import-control-plane` command. The Lore
+endpoint alone supports ordinary live publication; this combined update does not
+change the no-restart contract for repository or assignment management.
+
+Import exits zero in 264 ms. New revision
+`gcp-01a15649-3db0-70f1-914b-304edf87f66e` has native digest
+`sha256:f998a87a24240fd5ef1aa7aed13e4387312b98f6a9fac831d9a44c435087d4f3`;
+its complete payload equals the reviewed two-change candidate before and after
+restart. The same sandbox, image, effective policy, provider, mount and exposure
+are retained. The measured stop-request-to-Ready interval is about 42 seconds
+(22:29:45–22:30:27 UTC), not a continuously sampled public-outage duration.
+Public readiness returns 200 in 230 ms and native OAuth metadata returns 200 in
+193 ms. This is deployment/configuration evidence, not native user authentication
+or Computer provisioning. No authorization, session or Lore behavior changes.
+The other owner's receipt is
+`/tmp/veoveo-embedding-qualification/linux-control-plane-snapshot-20261019/receipt.md`
+on Linux, SHA-256
+`4ad622d8d04afc1fc4073a067597575afc6f2cb522d9373fdba9c85a6aa83845`.
+The prepared native Lore checklist now uses the same hostname and still records
+that its user/factory scenarios have not run. Computer browser acceptance resumes
+with a fresh manual sign-in; both full Hub component gates now pass as recorded above.
+The existing diagram's Hub detail text records the same status, and its embedded
+JSON, executable JavaScript and three inline SVG documents pass static checks.
+The browser origin approval gate also refuses the local diagram preview; visual
+review remains pending, with no alternate browser route used.
+
+The next manual sign-in reaches the user's Computer at 22:53:44 UTC. Native
+sandbox `d1b80178-3038-4a87-a02a-3115e90b88d7` is Ready; the owner row is ready,
+its refresh family is attached and one browser session exists. This establishes
+first-use provisioning and browser admission, but the screenshot shows a blank
+OpenCode page. An earlier callback at 22:53:12 returned native `Cancelled`, and
+two retries of consumed login state were refused before the successful fresh
+callback; this is not a claim of an uninterrupted first-attempt onboarding path.
+Hub returns 503 for two startup assets while 59 Computer requests
+succeed. Native-origin checks find both files intact: the browser-storage module
+is 863 bytes, SHA-256
+`63e9ac3b023650386f40370eaca865b56c77279dec5efdc4fbd9fc9b119278b9`;
+the project-avatar CSS is 3,313 bytes, SHA-256
+`1f1b371c471d676a004862a1b613d81223c13512e953ddcb7f5ccffefcdc7c56`.
+Both return the correct MIME type and HTTP 200 locally. HTML has the correct
+per-Computer base path and online-only marker, and local API info returns 200.
+The user's console later reports 503 for different language/location modules.
+No API bootstrap request follows the failed module imports. Existing Hub logs
+omit the transport cause, and the available native records do not establish its
+exact status; do not present the capacity diagnosis as a measured native error.
+
+Source inspection identifies a concrete capacity mismatch: Hub permits 64
+simultaneous forwarding streams, while native OpenShell shares a 20-connection
+per-sandbox limit between TCP and SSH and separately caps pending opens at
+32 per sandbox and 256 per replica. Each HTTP request opens a native relay and
+loopback HTTP/1 connection; the SDK already shares its gateway HTTP/2 channel.
+A bounded wait/retry proposal was committed as `bc7adc` but never built or
+deployed. The user explicitly rejects artificial delay and directs higher
+parallelism. The selected implementation gives native TCP forwarding typed,
+configurable active/pending budgets separately from existing SSH limits, with
+defaults and explicit reference settings of 128 active connections per sandbox,
+1,024 active per replica, 128 pending per sandbox and 512 pending per replica.
+Hub's Computer forwarding budget becomes typed configuration with a value of 512.
+The normal HTTP path retains immediate connection establishment; the existing
+cold-listener readiness wait remains separate. No HTTP request replay, new proxy,
+native authorization change or OpenCode HTTP/2 rewrite is selected. Connection
+pooling is a later measured optimization, not a prerequisite for this correction.
+Only gateway and Hub builds/restarts are expected; existing Computer working
+storage, runtime/supervisor images and native Lore behavior remain intact.
+The correction is frozen in OpenShell `7c7c9331`, Hub `67654f36` and installation
+`3df6b8fe`. Coordinator review confirms configuration reaches both active and
+pending native TCP budgets and that the guard releases active slots on drop.
+Hub's focused configuration and retry-classification tests pass, as does binary
+compilation. The new Mac ARM64 full gate passes 226 tests with one skipped;
+its check image is
+`sha256:d79cd57930d0a15ab545a837023435578dc27e4e21e988a597b46184a1ae7ec4`.
+The actual Linux x86_64 runtime builds as
+`sha256:d92dd1b889425cc11e313ba60657a295451e35a3c532606408327e002dcb2da6`,
+with binary SHA-256
+`73574d4c25f4fb82c62da82c04df872050794bcdcada4ee76fc573640a19c769`.
+Its actual Linux x86_64 full gate also passes 226 tests with one skipped (34.211 s
+test phase), check image
+`sha256:117358075bb3b0ddbba4d83d929ee0d369f559fe8a4da2d07ef873a5178936e6`.
+Both Hub gates use the clean source archive SHA-256
+`87e7b6e2a07371bae557953e21145e694da332738ce07be1431e455bbc4a0beb`.
+Native gateway focused TCP tests and strict Mac Clippy pass on `7c7c9331`.
+The first Linux build fails because Debian bookworm cannot satisfy the vendored
+Z3 C++ requirements; the prebuilt-Z3 retry reaches final link but fails on the
+older system ABI. A task-owned Debian trixie builder with pinned Rust 1.95.0 and
+the supported `prebuilt-z3` feature succeeds. The source archive is SHA-256
+`faef023077c8aca005d9171cde2574469cbc2020122f6dcbafcbd98a81cb9787`;
+the gateway binary is
+`828bddb37d82df8abbb8fc84a3d0cd4f073ea5b15f8b539466daba31b64f3f4a`.
+It executes on the actual Ubuntu host and all dynamic libraries resolve.
+These are build and host compatibility results. The subsequent Linux cutover
+installs that gateway binary and the validated limit configuration, retaining the
+existing native state and credential custody. The first one-off Hub import uses
+the wrong trusted Docker network and fails DNS resolution before publishing.
+The stopped helper is retried using the retained operator invocation (host
+network and the existing `host.openshell.internal` loopback mapping); import
+then succeeds after the unchanged active-revision guard. New active revision is
+`gcp-01a156a8-2ca3-7bd0-a176-ba18fbe029ba`. Only
+`computers.forwardingConnectionLimit=512` changes in the full catalog; the
+embedding binding and Lore endpoint remain present. The recreated Hub is native
+sandbox `02062d6c-89e2-42e7-9b7a-5f315d38f728` on the tested `d92dd1b8` image,
+with its original logical name, provider, policy, mounted configuration and
+bearer-passthrough exposure. It reaches Ready and public `/readyz` returns 200;
+`/computer` returns 303 without following the redirect.
+
+Time, Artifact and Media temporarily report Starting with exit code 1 during
+native recovery. Docker wrapper presence and a Ready condition entry are not
+treated as application readiness. They subsequently reach Ready with new main
+instances and cleared exit codes after native backoff. Their observed restart
+count is cumulative; no exact startup error is captured, so the underlying
+application exit cause remains unestablished. Their images and policies do not
+change. Other preexisting workload identities remain intact.
+The builder writes a new private 79-byte sentinel
+inside the actual user's `/sandbox` working volume before restart, SHA-256
+`84beae344237d1888660f83c9aac385946ca2e3a830178b3d32302ef36251e96`.
+After restart, the same Computer ID and
+`openshell-workspace-64ae873d6b411d1ebee7d8bf72fab97e` working volume retain that
+exact sentinel hash. Computer restart count remains zero while its main-process
+instance changes. The native Computer endpoint returns 200 for `/` and
+`/api/info`, and all 57 referenced entry-page assets return 200 (49 JavaScript,
+8 CSS). A bounded 24-connection native-forward fetch returns 24 successful,
+identical 79,727-byte language modules in five seconds. These probes use no
+browser cookie and do not establish public authenticated browser rendering.
+The user later shares a screenshot from the actual Linux Chrome session at the
+same Computer path. It visibly shows the OpenCode home screen and its empty
+session state, proving that the page renders in the user's browser. It does not
+show a created session, model response, or Hub tool call. The screenshot was
+shared before the candidate HTTP/2 supervisor fix was deployed; do not attribute
+the recovery to that fix. The browser automation integration itself continues
+to reject the origin, so no browser logs or network waterfall were collected.
+The sanitized local rollout receipt is
+`/tmp/computers-forwarding-cutover-20261019/receipt.json`, SHA-256
+`2366ed1f9a11488f4b0f3e650c30e447982055ff6c27446c41c95a6c079a9e3e`.
+Review catches swapped per-sandbox/per-replica labels in the first receipt;
+a narrow read of the actual deployed TOML confirms the approved values are
+correct, and only the receipt is corrected. No second gateway restart occurs.
+The updated diagram's embedded JSON, executable JavaScript and three SVG
+documents pass static checks. Visual review remains blocked by the existing
+browser-origin permission decision.
+
+The user's subsequent reload still shows a blank page. Retained Hub logs contain
+four successful entry-page requests and 236 asset requests: 212 return 200 and
+24 return 503. No `/api/*` bootstrap request follows. Failures occur in four
+waves at 00:30:00.865, 00:33:51.815, 00:34:26.529 and 00:35:19.804 UTC on
+October 20. Hub reports native forwarding `Unavailable`; matching gateway logs
+show successful relay-open/claim pairs, without a corresponding failed-open
+warning. The operator's successful direct-forward probe bypasses the Hub
+sandbox's HTTP/2 L7 mediator and therefore does not qualify that layer.
+
+Source review finds a separate mediator accounting defect. Its advertised
+HTTP/2 concurrency is 32, but its admission guard counts exchange tasks awaiting
+completion or joining. A peer can retire protocol streams and send compliant
+replacements before those tasks are reaped; the guard then sends
+`REFUSED_STREAM`, which the pinned tonic maps to `Unavailable`. GPT-6.1 Sol coder
+adds a deterministic real-relay reproducer: hold 32 streams, retire 16 at the
+peer, flush 16 replacements while relay polling is paused, then resume. GPT-6
+Luna builder runs it against unchanged production source at `7c7c9331`; it fails
+on stream 65 with `REFUSED_STREAM` in 0.08 seconds after a 56.06-second compile
+(57.964 seconds wall time). Sanitized receipt:
+`/tmp/computers-h2-rollover-red-20261020/receipt.json`, SHA-256
+`f23f18acbb4305b653fb536f247f82c46106b7226b40da9750f14e0ad8a4b5b8`.
+This proves the mediator defect locally; the deployment still needs the fix and
+an authenticated browser result to establish that it resolves the observed UI.
+
+The candidate stops accepting exchanges at task capacity while continuing to
+drive the native HTTP/2 connection with `poll_closed`. Native protocol handling
+queues replacements until a task retires. It retains the 32-task bound, adds no
+fixed delay or replay, and removes the incorrect refusal. All seven focused
+HTTP/2 tests pass, including rollover and cancellation, in 0.13 seconds after a
+14.33-second compile. Strict Clippy first rejects an unread response-handle
+collection in the new test; the fixture now observes its retained response count.
+Revalidation passes all seven tests in 0.12 seconds and strict all-target crate
+Clippy exits zero after 13.97 seconds. The fix
+belongs in the supervisor image, not the already updated gateway executable.
+The Docker driver resolves its supervisor image when the gateway initializes;
+rollout must reload that configuration and recreate the Hub supervisor through
+native lifecycle operations. Gateway reconciliation can interrupt other running
+sandboxes, so it is not described as Hub-only downtime.
+
+The repository's `build:docker:supervisor` task cross-builds the Linux amd64
+supervisor on the Mac using the pinned GNU glibc-2.28 target. Release compilation
+finishes in 1 minute 55 seconds; staged and target binary SHA-256 both equal
+`0d36909bb2ab9efc6b6f821da8e5760316d7c254b2fe7bd25e4ac70e10fa07a1`.
+The resulting image is
+`sha256:e35532b00a8d26a3d134dc9424230685fa53b91a40a5aa8a0c98b4b2f3d31cf8`,
+tagged `openshell/supervisor:h2-rollover-20261020`, with Linux amd64 metadata and
+entrypoint `/openshell-supervisor`. Source is base `7c7c9331` plus the validated
+single-file change; diff-patch SHA-256 is
+`a363b1d8932026ce7879e838e9b274383bf93f481d34ac31e2296e7ffe1e1d60`.
+This is an image build result, not actual Linux execution or browser acceptance.
+Coordinator authorizes exact-image transfer, guarded supervisor-image selection,
+native gateway reload and Hub supervisor replacement while preserving all
+application images, providers, configuration, exposures and Computer storage.
+The actual Ubuntu host loads that exact image and independently verifies the
+supervisor executable hash. The installation changes only
+`OPENSHELL_SUPERVISOR_IMAGE`; native gateway restart reconciles the same 14
+sandbox identities. Hub and the Computer become Ready, and the Computer app
+container, working-volume identity and sentinel hash remain unchanged. Public
+TLS-verified `/readyz` returns 200. Artifact, Media and Time initially report
+`exit_code=1` and later recover to Ready through native retry, with
+`exit_code=null`. Their restart count of 37 is cumulative, not a measured delta.
+Bounded retained error buffers do not establish the original exit cause.
+
+A subsequent native Computer probe returns the 6,096-byte `/settings` HTML
+shell with the expected mounted `<base>`, all 57 referenced assets return 200,
+and `/api/info` returns 200 with 158 JSON bytes. Public Computer route probes
+without a browser cookie return 401, so these checks do not establish an
+authenticated browser render.
+
+The user then demonstrates a distinct client-routing failure: clicking Settings
+or New session navigates to `/computer/c/<id>//settings` or `//new-session` and
+renders a black page. Manually removing the doubled separator makes New session
+work. Hub preserves the incoming suffix and does not generate that browser URL.
+GPT-6.1 Sol coder reproduces the exact duplicated links with the installed
+Solid Router: its resolver joins a trailing-slash mount base with an absolute
+route. OpenCode commit `4bd4891e9e3d67460eb43dcfcdefb5172c1279ff` trims the
+separator only for the router base; HTML, asset, API, PWA and storage bases retain
+their canonical form. The existing browser keeper exercises actual Solid links
+and programmatic navigation at root and a multisegment Computer mount, including
+query and fragment. The targeted unchanged-source case fails in 164 ms; the
+fixed suite passes 8 tests / 33 assertions in 150 ms. App typecheck, formatting
+and diff checks pass. These results are retained in the agent tool transcript,
+without a separate timing for typecheck.
+
+The actual Linux host builds OpenCode `4bd4891` with pinned Bun 1.4.2. An attempted
+213 MB transfer of a Mac-built Linux executable is stopped while incomplete and
+is not used. Locked dependency installation resolves 2,541 packages in 61.95
+seconds; the web bundle builds 6,032 modules in 8.48 seconds. The route suite also
+passes 8 tests / 33 assertions on Linux. The resulting native x64 executable is
+version `0.0.0-hosted-computer-202610200115`, SHA-256
+`6c4e6c85fd66e95fc82523bd0274545e36b6cda6a111b790fbda0b7c00241685`.
+The Linux-built Computer image is
+`sha256:efe89371e6e8dd058d805422b9b7bd8db0ba3212b5a56a989e460060f30e2c0f`;
+offline inspection confirms linux/amd64, the exact executable and UID 1000.
+The native `installation/computer` template now selects that image with the same
+CPU 2, memory 4Gi, persistent-workspace setting and nonsecret environment values.
+Its new template ID is `1f503a2f-1a99-476c-b00c-3799abf11824`.
+
+The user explicitly permits discarding this disposable development Computer
+workspace; its preservation must not block deployment. Native resource deletion
+removes the old sandbox, cloned template, two owner provider instances and then
+workspace `cpne3wuk5kqtpir5345`. The Hub row and external Computer ID remain.
+This full workspace reset also discards native refresh custody, so the standard
+browser OAuth handoff must recreate the owner workspace before the new image is
+running. Public `/readyz` is 200 and `/computer` returns 303 into that flow.
+No authenticated public UI or new sandbox readiness is yet proved. The coordinator
+requests that one normal sign-in and the builder watches native recreation.
+Mac Chrome inventory works, but acquiring the existing Computer tab is again
+explicitly refused by the browser tool's saved/managed origin policy; no alternate
+browser or CDP path is used.
+
+The user's click on `/computer` exposes an incomplete development reset: the
+old browser binding remains valid, so entry tries the deleted native sandbox and
+returns 503 instead of beginning OAuth. In one guarded development transaction,
+the builder removes only the exact old Computer row and its two browser-session
+rows; no refresh-family, identity or installation configuration row changes.
+The user then explicitly requests removal of the stale local browser denial.
+Read-only inspection finds the exact public origin in the current conversation's
+user-owned `origins.denied` list. Removing that one entry restores normal Chrome
+tool access; other denied origins remain unchanged. This establishes the local
+saved denial as the observed tool blocker, rather than a missing user grant.
+
+Using the existing Bioma Entra browser account, the coordinator performs
+normal sign-in. Hub creates Computer `01a156fc-c527-7231-8543-dd212f266e0c`, native
+workspace `c5wpyb4wedk4oclzduk`, sandbox
+`68213dc1-2917-47d9-bd01-f289e1363fc3`, running the Linux-built fixed OpenCode image.
+The callback still returns 503: at `01:46:09.351Z` the supervisor records a failed
+connection to `127.0.0.1:4096`, Hub reports native forwarding `Cancelled` at
+`01:46:09.352Z`, and OpenCode begins listening at `01:46:09.502Z`. These timestamps
+strongly support a listener-start race. The existing cold-start retry classifier
+admits Unavailable and DeadlineExceeded, but omits this observed Cancelled result.
+Hub commit `e564f60d024c2c9acfd0c37043589675bb76424f` includes Cancelled only in that
+existing bounded pre-HTTP readiness wait. It adds no warm-request retry and
+preserves authority, configuration and capacity refusals. The existing regression
+passes 1/1 and library compilation takes 14.41 seconds; formatting and diff checks
+pass. The actual Linux runtime build takes 136.4 seconds and produces image
+`sha256:198d134ed2a771e8ad59dde3c2c75c3bbf61a2c5e422d2f3fe45d5654f03e010`,
+with Hub executable SHA-256
+`ec6f0ca8f2a181bed3d6a3c85ac2c317012bd69a82e900edf0a97bf45843be05`.
+Native recreation retains `vv-control`, its control provider and configuration,
+then restores the exact HTTP exposure. Sandbox
+`81d885f6-29fd-4eff-9d8a-21d9bdb95092` is Ready; TLS-verified public readiness is
+200 in 0.173 seconds. A subsequent normal browser handoff completes and the Hub
+Computer row is ready. The user's MiMo replies render in the actual Mac Chrome
+Computer session; the UI records 6 seconds and 3 seconds for two replies. These
+are observed user calls, not an agent qualification run. A bare `lore` shell call
+prints native usage and exits 2 because no subcommand was supplied; that proves
+CLI execution, not authentication or private repository access.
+
+The coordinator's one Stop/Start recovery probe temporarily interrupts the user's
+next prompt with HTTP 503. The Computer subsequently resumes and its existing
+session remains visible. No further restart qualification should interrupt the
+active user; necessary development deployments remain authorized.
+
+Two remaining failures are isolated before further model calls. OpenCode's actual
+private file log records MCP connection failures to `veoveo.example.com`: the image
+copied the generic example URL rather than the selected installation resource.
+Installation `0192bb0b89b3f1fccc8dc3de108782642546a3b6` replaces that URL with
+`{env:COMPUTER_HUB_URL}`. Hub `bfde2f284111cda9cd625005e2dc6450e7b06b38`
+derives this environment field from the selected profile's typed protected resource
+when cloning each native Computer template. A read-only query of active control
+revision `gcp-01a156a8-2ca3-7bd0-a176-ba18fbe029ba` confirms the current value is
+`https://veoveo.bioma.ai/mcp/computer`; no installation origin is compiled into
+the generic image or Hub implementation.
+
+The native Lore CLI reaches Hub's expected device authorization page. A normal
+Chrome approval click receives HTTP 302 to the configured Microsoft authorization
+endpoint, but Chrome's Log/Audits events prove that the initiating page's
+`form-action 'self'` policy blocks that redirect. Re-clicking the consumed request
+does not establish a new token expiry. Hub `bfde2f2` resolves the stored request's
+current resource, public client and selected identity provider, and adds only that
+provider's authorization origin to the form policy. Manual code entry first uses
+a same-origin GET form, without placing the browser capability in its URL; actual
+approval retains the existing POST/browser binding. No Lore security or client
+protocol change is made. The existing browser-binding test passes 1/1 and Hub
+binary compilation passes in 21.78 seconds; formatting and diff checks pass.
+The existing native issuer HTTP fixture then passes 1/1 in 14.85 seconds and
+strict all-targets Clippy passes in 14.61 seconds. An initial attempt lacks the
+existing PostgreSQL 18 binaries on PATH and fails before any test executes;
+selecting the installed Homebrew keg resolves that fixture setup. These are Mac
+component checks. Linux runtime compilation, rollout, fresh browser approval and
+native CLI completion remain pending.
+
+The first candidate Computer rebuild accidentally reuses an older cached OpenCode
+package (`79f58e2e…74ddc3`) instead of the proven router-fix executable
+`6c4e6c85…241685`. Image `sha256:77f66144cec6136d93dfa7e48f69be319bf332a40a65166f87a620b24b6580f4`
+is rejected before template selection or deployment. The replacement must retain
+the exact router-fix binary from the verified current image and verify its full
+hash in the final image. This is a rejected build input, not a deployed regression.
+The corrected candidate is built on Linux and its actual embedded executable hash
+matches the required full `6c4e6c85…241685` identity and router-fix version. It is
+held unselected until the new Hub runtime is ready.
+
+Continuous development deployment is authorized. Subsequent image-only releases
+should retain the owner workspace and its provider instances and replace only
+the native cloned template and sandbox, avoiding a new user sign-in. The hosted
+Computer's durable storage requirement remains the product contract,
+independently of the authorized development reset. Isolated image HTTP checks
+serve the expected mounted shell; these do not replace a real router/browser
+navigation check.
+
+The user's Mac Chrome also displays a Safe Browsing `Dangerous site` interstitial
+on the public OAuth callback. This is a separate browser classification, not an
+HTTP 503 or certificate-error diagnosis. The precise classification trigger has
+not been obtained; neither compromise nor a false positive is established. The
+user explicitly authorizes Mac Chrome access, but the integration continues to
+reject the origin under its saved permission policy. This is a tooling refusal,
+not missing user authorization. No browser-policy bypass is used.
+The user then enables full CDP access in the desktop app. A fresh supported
+navigation still receives the same origin-policy refusal. Official OpenAI
+documentation identifies Settings → Computer Use → Chrome → Manage as the
+website allowlist/blocklist control, separately from full CDP developer mode.
+User and workspace Codex configuration contain no browser-deny entry. Inspection
+of the desktop app itself is also refused by Computer Use. App restart is the
+next documented troubleshooting step; no claim is made that it removes a real
+site-level or managed deny.
+
+A separate user report concerns the old Mac `tmp-client`, not the Linux Computer.
+Its launcher supplies a five-minute Keycloak service-account token through an
+environment variable and explicitly disables OpenCode OAuth. Both running local
+processes retain a token whose decoded, unverified expiry is
+`2026-10-18T04:25:41Z`. Local Hub readiness is 200. The same existing token flow
+issues a fresh 300-second token; correctly framed MCP discovery and tool listing
+then return 200 in 13 ms and 20 ms, with 19 tools. An initial diagnostic omitted
+the required MCP method header and returned protocol error `-32020`; correcting
+the request framing resolves that probe error without a server change. No model
+call or runtime mutation occurs. Native OpenCode supports OAuth refresh, but the
+local test realm has no public OpenCode client registered. The user explicitly
+selects the local Mac Hub for this client and confirms that Linux Computer work
+should continue in parallel. The Mac fix uses a native public PKCE client and
+OpenCode's existing demand-driven refresh, preserving the local endpoint; no
+custom credential refresh loop is selected. A native Keycloak user-property
+mapper supplies the actual user's immutable ID to the Hub's opaque principal and
+initiator claims, with explicit member/contributor admission in the selected
+existing context. Existing service identities and all Lore configuration remain
+unchanged. The local `/computer` endpoint currently returns 404 while readiness
+is 200; browser Computers have not been deployed on this Mac installation.
+
+Installation commit `5e4a5e99` adds the opt-in local public-client configuration;
+17 helper tests pass. Native Keycloak now has the `opencode-local` public client,
+with authorization-code PKCE and refresh, the exact loopback callback, and the
+existing user's native ID claims. The reviewed complete Hub candidate changes
+only OAuth clients, explicit member admission and context membership. Its
+SHA-256 is
+`916f90932ce47b5840515f9b11cfdb83355dbc4c30be29180a36651dbf653b81`.
+The old local Hub image lacks the native control-plane import command, so it is
+replaced with the already tested `67654f36` runtime rather than writing SQL.
+Native GetSandbox supplies the complete original spec; recreation retains its
+command, policy, `vv-hub-forwarder` attachment, config volume and named exposure.
+The imported active revision is `gcp-01a1568b-156a-7dc3-893c-cbfef72fe23b`,
+digest `sha256:740bebf3e5094b8ca7a97a6275a4b4962b31421cfcfe6c1bbd1dfb57238e4ac5`.
+The new local sandbox `4a530a3b-ea8b-4dba-aa04-9d44df586db3` is Ready on image
+`sha256:7fb7fdf1a6ec9cf8016134f4295b2eab4583c7130252cba2fe20654a8f961eac`;
+TLS-verified readiness and protected-resource metadata both return 200. The
+Hub-hosted issuer routes return 404; source review identifies the absence of a
+matching Hub-hosted issuer in this external-Keycloak profile as the expected
+branch. The advertised Keycloak issuer is the intended native OpenCode login path.
+The reviewed hosted-computer OpenCode binary is installed locally, with public
+CA trust configured for new shells. Its existing background service initially
+lacks that environment, so the first native authentication attempt fails TLS
+before opening a browser. The supported `opencode service set env` command
+configures `NODE_EXTRA_CA_CERTS` for the hosted-computer channel; the unrelated
+mcp-tasks service remains running. Project OAuth configuration is activated and
+native authentication reaches the real Keycloak login. The browser origin gate
+denies agent access, so the user completes the existing browser flow manually.
+The callback page shows authorization success and native CLI exits zero with
+`Connected to veoveo`. The obsolete `tmp-client/launch-opencode.py` is removed at
+the user's request; normal launch is `opencode` in the project directory.
+The actual native reconnect returns 204 in 53.56 ms and discovers 19 Hub tools
+under the approved human principal. The issued token lifetime is 300 seconds.
+At 19.41 seconds after its actual expiry, native reconnect returns 204 in
+103.94 ms and again discovers 19 tools. The same credential row still contains
+the expired access token immediately before the request; OpenCode replaces both
+access and refresh token hashes in place, retaining the expected human identity
+and a new 300-second lifetime. The native refresh-start log is observed at
+00:06:10.452 UTC on October 20. No direct token-endpoint probe, custom refresh loop
+or second browser authorization performs this renewal. This proves demand-driven
+renewal in the running native OpenCode service across a real expiry.
+
+The user's first prompt then fails locally with `missing API key`. The selected
+hosted-computer channel has a separate credential store, and migration omitted
+the existing DeepInfra provider key from the previous store. Native provider
+authentication imports that same key without changing the OAuth row or restarting
+the service: `POST /api/integration/deepinfra/connect/key` returns 204 in 14.42 ms.
+Private equality checking and the native available-model snapshot confirm the
+active key and `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` selection. This proves provider
+credential activation, not inference; no agent model call is made during repair.
+The local receipts are under `/tmp/computers-local-opencode-native-20261019/`
+(`baseline.json`, `post-expiry.json`, `model-credential-resolution.json` and `README.md`), without
+credential values. The missing key is an integration omission in the launcher
+replacement, separate from the successful Hub OAuth flow.
+
+The first frozen HLI1 source fingerprint was
+`b8f128504d57af70eb4bab558a815012faf254a0d93be822c0130e3fae1bf337`
+on Hub `9da92b3`. Core `433ed5f` and Hub migrations `0001`–`0003` applied to
+disposable PostgreSQL 18. Full SQLx preparation stopped after 22.8 seconds on a
+registry-builder return-type mistake, a stale revocation test field/reference and
+a callback catalog borrow. No tests ran. The builder stopped the scratch database
+and retained logs under `/tmp/computers-hub-hli1-validation-20261019/`; its seven
+partial new SQLx cache files are not a completed metadata generation. Source work
+resumed to fix those errors and implement the native flow. No live reset occurred.
+
+Independent read-only Linux custody observation at 2026-10-19 16:31:11Z:
+GPT-6 Luna builder queried native refresh status for
+`vv-control/vv-hub-native-control`, credential reference
+`HUB_NATIVE_CONTROL_REFERENCE`. The command exited 0 in 1.96 seconds. Native
+status reports `oauth2_client_credentials`, `refreshed`, last refresh 16:13:58Z,
+expiry 17:13:57Z and next refresh 17:10:57Z, with no failure. This records a
+replacement credential beyond the original 16:16:18Z expiry. A filtered gateway
+journal query returned no matching event, so this does not identify automatic
+scheduler versus explicit refresh origin. No authenticated control RPC after
+renewal was invoked or proved; no credential was exported or runtime changed.
+
+Use a hard cut for stored authorization bindings. Do not infer historical token
+authority from the latest catalog or add a compatibility decoder/backfill to retain
+disposable sessions. The user explicitly confirmed hyper-development mode on
+2026-10-19: only their use matters and sessions may be killed. This supersedes the
+earlier manual session-reset prerequisite. Migration `0003_oauth_resource.sql`
+directly discards disposable OAuth authorization requests/codes, refresh tokens/
+families, Computer browser sessions and pending Computer login state before
+changing the bindings. Require fresh sign-in and normal credential handoff;
+do not build session preservation, compatibility or reset-specific machinery.
+Preserve native working storage and unrelated Task/Artifact/reference data.
+The separate `vv-hub-native-control` service credential is unaffected. Routine
+persistence remains required after the final schema is deployed. No live reset
+has been performed yet.
+
+The source investigation ran no tests/builds or runtime mutations. The final
+pre-issuer Computer artifacts remain retained: installation `caf5d046`, Linux
+Factory `sha256:aae9b06e3f6890e2b57e8472dc0d0f96c4dc67dc3ef4d3c419bde7c33dd6193e`
+and Computer `sha256:c668229af4a278c6b40b4c0160a4fe8e16636881a9da2f4b21a8808d9d3d1d96`.
+The Computer's isolated no-network `/computer/api/info` returns 200; native
+Lore reports `0.10.2-nightly+local`. This is image startup evidence, not Hub/Lore
+login. The builder's receipt is
+`/tmp/computers-final-caf5-linux-20261019/receipt.txt`, SHA-256
+`73302ad3e713e721233d16b2f96c1db2b2c342dd233351ab61f41fb87951632f`.
+No shared gateway/Hub switch or new repository issuer has occurred.
+
+The canonical architecture, this goal extension, direct-IdP history notice and
+existing three-view diagram are updated together. Static JSON, JavaScript, SVG
+XML, unique-node and local-source-link checks pass. Browser review of these new
+guide bytes remains pending; the earlier guide's visual receipt does not cover
+this edit. Main-checkout documentation edits by the other team remain untouched.

@@ -6,6 +6,18 @@ The Desktop adapter, signer/manual-token helpers and Desktop-only ingress are
 retired. Historical signer results remain distinct from direct-issuer evidence.
 The execution record is [OPENSHELL_HARDCUT_PLAN.md](OPENSHELL_HARDCUT_PLAN.md).
 
+Current direction, accepted 2026-10-19: the hosted Computer goal now uses Hub as
+the issuer and repository-assignment authority, with Entra supplying human sign-in
+only. The [Hub-issued native Lore design](LORE_OPENSHELL_INTEGRATION.md#hub-issued-native-lore-credentials)
+and [HLI execution sequence](OPENSHELL_HARDCUT_PLAN.md#hub-issued-native-lore--accepted-goal-extension)
+supersede direct IdP issuance for that new workflow. The local factory receipts
+and recipes below remain historical evidence until their deliberate cutover.
+
+The maintained native client now includes the scoped refresh fix; statements below
+about missing upstream refresh describe the inspected upstream baseline. Real human
+login and renewal remain deployed acceptance work.
+
+### Historical Human Authentication Direction
 Human authentication was separately authorized on 2026-10-18. Updating Veoveo to
 current upstream Lore and removing superseded local work is now authorized. Human
 CLI access remains unqualified. The user clarified that this work must preserve
@@ -142,7 +154,33 @@ There is no running Veoveo token broker, refresh daemon, signing service or new
 secrets store in this path. Application MCP authorization and Task delegation are
 separate; this change does not remove those responsibilities from the MCP gateway.
 
+## Hosted Computer Native Lore Boundary
+
+The user withdrew the custom Lore authorization work on 2026-10-19. Hosted
+Computers consume Lore's existing authentication, repository permissions and branch
+behavior. Do not add a direct-role mapping mode, repository-creation admission
+rules, a parallel permission service or another source-access gate for this work.
+Do not replace the withdrawn changes with global grants or a standalone custom
+token issuer. The subsequently accepted Hub issuer integration uses Hub's existing
+authorization server and emits Lore's unchanged native grant format.
+
+The explicitly requested native refresh bug fix remains in scope, alongside the
+existing upstream and storage implementation. Computer integration owns installing
+the native CLI, private connectivity and persistent client state. Lore's security
+model remains Lore's responsibility. The prior direct-role proposal and its
+component-test receipts are withdrawn implementation history, not an active plan
+or accepted deployment requirement.
+
+The approved Hub extension changes issuance ownership, not Lore's authorization
+semantics. Hub stores explicit repository assignments and implements the device,
+refresh and public-client repository exchange already used by native Lore. No
+additional Lore source change is required. Record implementation and acceptance
+under HLI1–HLI7, separately from the withdrawn direct-role/creation-check work.
+
 ## Local IdP Configuration
+
+The following factory configuration remains the qualified Keycloak path. The
+separate hosted Computer decision above does not establish Entra acceptance.
 
 Implement trusted local provisioning in `veoveo-template-installation/identity/`,
 using the existing provisioning conventions. Keep Keycloak administration out of
