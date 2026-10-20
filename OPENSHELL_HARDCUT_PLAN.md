@@ -1197,6 +1197,28 @@ Consolidated receipt: `/tmp/core-task-deployment-20261020/receipt.json`, SHA-256
 These are component checks; SDK adoption, Hub routing and deployed Task retention
 remain pending.
 
+SDK adoption is now published as `cc23dc97bbe60f83e95d6e9d0c8fdcc35742d5a2`,
+with every Core dependency pinned to `1dd9994`. The SDK binds forwarded/delegated
+identity and Task projection to the exact deployment and provides persisted native
+RFC 7592 registration resume. Process shutdown no longer deregisters the deployment;
+retirement is explicit. An expired or refused saved registration requires a fresh
+deployment-scoped admission, with no fallback to namespace credentials. Offline
+typed metadata preparation reads the durable worker key without acquiring a grant
+or connecting to the database.
+
+Both required SDK Docker checks passed 245 Nextest tests with three skipped and
+clean dependency checks. Log-file birth-to-final-write spans were 177.844 seconds
+on Mac and 224.022 seconds on Linux; these are measured log spans, not an independent
+process timer. Focused execution tests passed 4/4, registration client 10/10 and
+wire 24/24, internal authorization 33/33, and contract dependency boundaries 3/3.
+The first focused registration invocation omitted its required `testing` feature;
+the corrected command passed without a source change. Receipt:
+`/tmp/sdk-core-affinity-20261020/receipt.json`, SHA-256
+`bc49167f9ccc0b4dc4b52fefec8bec8102d230cb94a0439fc9365adfa636830f`.
+Source implementation remains `coder` (GPT-6.1 Sol), validation/publication `builder`
+(GPT-6 Luna), with coordinator review. Hub and component adoption and Linux deployed
+environment qualification remain open; no deployment was changed for these gates.
+
 Hub's first E1 draft now passes Linux SQLx preparation, all-target/all-feature
 compilation in online and offline modes, and focused composition (3/3) and
 registration snapshot (2/2) tests. This is uncommitted source over `9b83c26`,
