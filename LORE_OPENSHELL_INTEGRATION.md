@@ -2102,6 +2102,26 @@ owner for the canonical main process; do not change its supervisor/security or a
 an external process controller. On recovery, reconcile desired/serving source and
 worker state before routing; do not replay non-idempotent mutations.
 
+Approved implementation contract, 2026-10-20: the single source-facing environment
+definition owns `components`, each with a typed source selector, `runtimeTemplate`
+reference and build/check/worker recipe. Commands are executable/argument arrays
+with typed relative paths, not a new interpolation language. Compiled workers and
+interpreted workers are distinct variants; both retain immutable worker inputs.
+The activation service supplies deployment identity, listener, endpoint and key
+directory consistently to offline registration description and serving. Repository
+definitions carry no registration credentials or native policy grants. Live trusted
+runtime admissions reference existing environment/component identities and approved
+storage bindings; current owner/tenant checks apply without adding another group ACL.
+
+Reserve desired generation and idempotency before source transfer or branch reads.
+Publication compares the accepted generation and updates the serving selection and
+control revision within the existing database transaction, using a typed activation
+guard. A process-local mutex alone does not prevent stale publication across replicas.
+Candidate failure retains the previous serving revision; withdrawal or supersession
+prevents late selection. Native placement uses the existing endpoint-to-workspace,
+sandbox and port binding plus ForwardTcp, with no per-worker browser exposure or
+new proxy. These decisions are approved for implementation, not deployed evidence.
+
 Implementation decision, 2026-10-20: use native
 [`s6-svscan`](https://skarnet.org/software/s6/s6-svscan.html) as that fixed main
 process in a separate reusable override runtime. Each build has a separate service

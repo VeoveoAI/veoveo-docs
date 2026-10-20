@@ -1329,10 +1329,24 @@ source paths and 61 metadata hashes. Receipt:
 `303b29ba560b15c79fc242bcb1f554f20bdfcf7ec04cb013d084f1863f1bdfa5`.
 No runtime deployment changed.
 
-E0 onboarding source is now frozen for its first builder validation, not qualified.
-The Hub freeze has 27 paths over `ea83968e`, manifest
-`/tmp/hub-e0-workspace-freeze-20261020/source-manifest.json`, SHA-256
-`74a6abb2e1ca2271eabed52ec7f5f74ceecf5b40e0394be6116f3cb66386dafd`.
+Media adoption is published as `fd3e31a7eb2f47eebe88d993aee15e2aa17bf493`,
+with Core `1dd9994`, SDK `cc23dc9` and Artifact `dbdccdb`. It uses required typed
+deployment identity, offline registration description, persisted registration resume
+and deployment-owned Tasks. Both Mac ARM64 and Linux x86_64 Docker checks passed
+73 tests with 11 skipped. Nextest took 12.870 and 16.723 seconds; final check stages
+took 93.3 and 108.7 seconds. Fresh SQLx preparation produced 164 query entries.
+Source: `coder` (GPT-6.1 Sol); validation/publication: `builder` (GPT-6 Luna);
+coordinator verified all 11 frozen source hashes, the exact metadata set and both
+test-log hashes. Receipt: `/tmp/media-deployment-adoption-20261020/receipt-v2.json`,
+SHA-256 `d3ad4af68d0e386826d0a390a99bb4f409c23b91fc77e907542c075d7986730d`.
+The source manifest's older pre-pin status string is stale; its recorded pins and
+verified files are final. No runtime deployment or real provider call occurred.
+These checks do not qualify callbacks or source activation in a selected environment.
+
+E0 onboarding source is frozen for builder validation, not qualified. The current
+Hub v3 freeze has 28 paths over `ea83968e`, manifest
+`/tmp/hub-e0-workspace-freeze-20261020/source-manifest-v3.json`, SHA-256
+`5c16cfa27b264b43a09feb43d5f40aa388a7b62ee4d20dd2b43887f21ff3e2fd`.
 The installation freeze has 11 paths over `02a960e`, manifest
 `/tmp/installation-e0-workspace-freeze-20261020/source-manifest.json`, SHA-256
 `d001d6d4d7da3e124f59b0e6accdecf7b6b4a1cc3506d1eed7cf90dd52057bf9`.
@@ -1345,9 +1359,17 @@ name/default-branch checks so mutable Lore labels do not replace stable identity
 current-client admission at publication, RFC Problem responses and interrupted-job
 status. Native Lore permissions are unchanged. Formatting, whitespace, helper
 syntax and JSON/YAML parsing passed; the Hub dependency graph excludes `lore-base`
-and `lore-io`. Fresh SQLx preparation, compilation, component tests and native
-deployed first use remain pending. The coder moves to Embedding SDK adoption while
-the builder owns these frozen trees.
+and `lore-io`. The first compiler diagnostic required a closed static Problem-code
+mapping instead of a formatted string. With that fix, fresh SQLx preparation
+produced 205 entries and the workspace all-target/all-feature check passed. The
+first focused Lore test run could not start two database fixtures because Homebrew
+PostgreSQL binaries were absent from PATH; the builder reports the corrected run
+passes. The first Docker gate then found missing standard protobuf include files;
+v3 adds `libprotobuf-dev` beside the existing compiler in the development image.
+This supplies headers for Lore's existing generated API without a protocol change.
+The full Mac/Linux component gates and native deployed first use remain pending.
+Embedding SDK adoption is separately frozen for validation; source activation is
+the next implementation slice after the builder releases Hub.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
