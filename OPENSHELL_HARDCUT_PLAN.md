@@ -1297,6 +1297,22 @@ reviewed the 12 frozen source paths and all 147 metadata hashes. Receipt:
 `b392e3ae08ccd3a7324020746ff18d35eb00c5fc8c4cd3cfcbb7ce57b94c3b36`.
 No Time runtime image or deployment changed; these are component checks only.
 
+The onboarding dependency review found that `lore-proto` unconditionally linked
+`lore-base`, which declares a process-wide allocator. Lore commit
+`ff40bb216a241a7d453a11892aab17fdce1a6198` makes only the native model conversions
+an optional dependency behind the default-enabled `native-conversions` feature.
+Hub selects `default-features = false` for the same generated messages/clients.
+Native callers retain their existing defaults; no protocol, authorization or
+service behavior changed. Mac and Linux each passed the wire-only all-target
+check, 22 default-feature tests and 22 wire-only tests. Dependency-tree checks
+confirmed native defaults retain `lore-base` and wire-only mode excludes it and
+`lore-io`; generated sources were unchanged. Source: `coder` (GPT-6.1 Sol);
+validation/publication: `builder` (GPT-6 Luna); coordinator reviewed the exact
+three-file patch. Receipt: `/tmp/lore-wire-feature-20261020/receipt.json`, SHA-256
+`964face6a5a9905c472ccc431dbf0c9d3112af6df1510acc2f04ae3b66fac216`.
+No Lore service image was built or deployed. Hub onboarding itself still awaits
+its component and deployed checks.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
