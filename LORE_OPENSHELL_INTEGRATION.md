@@ -1906,8 +1906,9 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ### Environment Overrides And Fast Source Activation
 
-**Proposed, not an executable schema or current API — 2026-10-20.** Use one narrow
-Lore-versioned definition, which may live in an existing registered repository;
+**Implemented in the E3 candidate; full gates and deployed qualification remain
+pending — 2026-10-20.** Use one narrow Lore-versioned definition, which may live in
+an existing registered repository;
 there is no requirement for one repository per environment. `components` is the
 single map of logical component IDs to **owned overrides**, not a competing second
 `overrides` field. Stable IDs carry identity; display labels and branch names have
@@ -1928,8 +1929,13 @@ components:
     runtimeTemplate: "<versioned-native-runtime-template-ref>"
 ```
 
-This Media example illustrates product selection, not an installed parser or Hub
-fixture. Base `follow` and exact `revision` are exclusive, as are source branch
+This YAML example illustrates product selection, not the JSON wire format. The
+candidate's source-facing contract is the single
+[`EnvironmentDefinition` DTO](../veoveo-hub/crates/veoveo-hub/src/bin/hub/activation/types.rs),
+shared by the owner HTTP API, Computer CLI and native definition-file reader.
+The [Hub usage example](../veoveo-hub/README.md#environment-source-activation)
+shows its JSON fields and typed build/worker recipe. Base `follow` and exact
+`revision` are exclusive, as are source branch
 following and source revision pinning. The base is optional and must be authorized
 and acyclic. A source push advances only definitions explicitly following that
 registered branch. Base updates change inherited selections only; owned overrides
@@ -2075,7 +2081,8 @@ read cannot overwrite newer local intent. Component branch followers remain
 independent selectors. Authoritative reads happen outside database transactions;
 publication compares current ownership, selector mode and generation under the
 existing control transaction. This adds no second manifest format or Lore permission
-model. The definition-follow adapter is approved and still being implemented.
+model. The definition-follow adapter is implemented in the candidate and awaits
+the full component and deployed checks.
 
 Definition reads must work before any component runtime exists and while the
 Computer is stopped. The approved executable adapter packages the existing native

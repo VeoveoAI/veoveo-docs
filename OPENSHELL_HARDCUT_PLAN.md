@@ -1638,6 +1638,41 @@ following changes. Full component gates, E3 publication and deployed acceptance
 remain pending. Separately, builder is building the already-published E0/E1/E2
 baseline images on Linux; building/pushing them is not rollout or qualification.
 
+Review of the subsequent coherent candidate identified two recovery corrections
+before its full gates. Native Lore's revision-tree path selects a directory, so
+the definition-file reader now lists the parent directory and matches the exact
+file under a deadline, without an arbitrary sibling-count cutoff. A local completion
+can also be accepted just before Hub stops, leaving its durable build in Preparing.
+The client must then resend completion for that same BuildId and already uploaded
+Artifact using current native authentication; polling alone cannot recover the
+ephemeral transfer input. The frozen client now resends that completion at a
+five-second cadence while the build is still current and Preparing, then stops
+after source readiness or supersession. Its regression is included but has not
+yet run. Neither source review nor a simulated restart regression substitutes for
+deployed interruption/reconnect acceptance.
+
+`coder` (GPT-6.1 Sol) froze the coherent Hub and installation candidate for `builder`
+(GPT-6 Luna): 95 Hub paths over `628e18d`, manifest
+`/tmp/e3-coherent-candidate-20261020/hub-source-manifest.json`, SHA-256
+`6da8e20399c38dfde8c5b917e3429015276a6864466aa76c5dc4286d35e0ddcb`;
+18 installation paths over `19f2e25`, manifest
+`/tmp/e3-coherent-candidate-20261020/installation-source-manifest.json`, SHA-256
+`e13a8342422bdb247dabcc75889d85c1d22ce94c44f71156c3ff5a05ef23d52b`.
+The coordinator matched all 113 source hashes and inspected both overlay archives
+for AppleDouble sidecars (none). The source set includes local watch reconnect,
+native component/definition following, current and retained worker recovery, and
+their focused regressions. Formatting and diff checks pass; SQLx regeneration,
+full Mac/Linux component gates, publication and deployed acceptance remain pending.
+
+Baseline rollout preparation now uses the current active control-plane document,
+after a parsed comparison rejected an older private capture. The candidate adds
+the execution fields already published in Hub `628e18d`; it does not depend on E3
+runtime-template admission. The published Hub's offline native validator accepts
+that candidate (`ok: 2 profile(s)`, exit 0). The final Embedding runtime image push
+is still running; no reset, live configuration publication or baseline rollout is
+claimed at this checkpoint. Trusted installation/identity inputs remain retained;
+application state will be reset for the incompatible deployment/Task contracts.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
