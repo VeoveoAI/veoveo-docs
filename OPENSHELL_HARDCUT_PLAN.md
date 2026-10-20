@@ -1,5 +1,17 @@
 # OpenShell Hard Cut Plan
 
+The proposed next infrastructure slice is the
+[full native OpenShell management plan](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan).
+It replaces installation Compose after adding native dependency/application-health
+contracts and issuer-independent gateway startup. This is a plan, not a deployed
+state: current gateway OIDC discovery/JWKS blocks listeners and persisted recovery,
+so moving Mac's sole Keycloak behind that recovery first would create a cold-boot
+cycle. Native trusted Operator bootstrap is available but must be explicitly
+configured; ordinary mTLS users do not acquire that authority. Hub must precede
+Lore/MCP startup because they fetch its issuer metadata or register before serving.
+Keep the gateway's own store/KEK independent of managed application PostgreSQL.
+
+
 Status: the local macOS hard cut and direct-IdP Lore authoring path pass focused
 acceptance. Clone/edit/push, the small branch hook, native credential renewal,
 source withdrawal, applied binding-removal/detach, termination and gateway recovery
@@ -5535,3 +5547,83 @@ existing three-view diagram are updated together. Static JSON, JavaScript, SVG
 XML, unique-node and local-source-link checks pass. Browser review of these new
 guide bytes remains pending; the earlier guide's visual receipt does not cover
 this edit. Main-checkout documentation edits by the other team remain untouched.
+
+## Computer Main Integration — 2026-10-19
+
+The coordinator integrates and publishes the Computer work on `origin/main`,
+then removes the task's worktrees and merged branches. Parallel multimodal SDK,
+runtime and architecture work is independently in progress and remains untouched.
+
+Source integration keeps both the existing Lore storage work and the Computer
+native refresh work. Lore `6b7a0e59` has exactly the same tree as the already-tested
+`7ce28b6c` parent; it does not restore the retired credential-pinning/QUIC patches.
+OpenCode `4bd4891` includes the prior `mcp-tasks` lineage. Hub `bfde2f2` and
+installation `d278778` include the generic Computer URL and device-CSP fixes;
+installation also preserves the embedding additions. The installation merge's
+redundant Lore `ports` key is removed, retaining one configurable loopback mapping;
+`docker compose config --no-interpolate --quiet` passes. This static check does not
+move any service or establish the proposed Compose-free architecture.
+
+Validation remains separated from deployment. GPT-6.1 Sol performs source merge
+fixes; GPT-6 Luna builds and runs the component checks. Hub's complete check target
+passes on Mac and actual Linux, each 226 tests passed and one skipped. The merged
+installation's existing identity suite passes 21/21. OpenCode's normal pinned-Bun
+pre-push hook passes 34/34 tasks in 3.515 seconds. Its primary checkout initially
+has stale workspace links and the default shell selects Bun 1.3.13; selecting pinned
+Bun 1.4.2 and `bun install --frozen-lockfile` restores the declared UI-to-util link
+without source or lock changes. The push hook is not bypassed. Runtime Embedding
+`017c897` passes pinned uv 0.13.1 frozen resolution, 12 unit tests and the model-free
+Docker check. This packaging check does not constitute multimodal inference.
+
+The OpenShell merge preserves the 62 upstream commits and native fresh generation
+on Start. Its all-targets server check passes in 1m11s; focused server filters pass
+8 persistent, 2 authenticated-start, 12 TCP-forwarding and 1 pending-limit tests.
+The first H2 compile exposes the newer request-preparation API. OpenShell
+`f66de383` supplies each request's UUID and captured observation context, preserving
+the stream backpressure fix. Seven H2 tests and strict network Clippy pass, the
+latter in 33.98s. SDK transport-error coverage passes 1/1. Docker-driver persistent
+workspace coverage passes 3 tests, with one existing live test ignored. The
+test-owned native Docker lifecycle E2E passes 1/1 in 16.40s: stop/start, runtime
+loss and gateway restart preserve the same 54-byte sentinel, SHA-256
+`e03081e39facfdb3ab091a973d52b0b257de954e8c0e221188f873cd1655a0c3`.
+The isolated test cleans its owned gateway/container/volume; the live gateway is
+untouched. Its first invocation stops before test execution because the standalone
+E2E lock is stale. OpenShell `846de5fa` removes ten obsolete transitive crates with
+no dependency upgrades, and the locked rerun passes on a clean tree. That source
+is published on `origin/main`; publication does not upgrade the live gateway.
+
+On Linux, Hub image `sha256:4da61e1054f9237ea94a02522b44d348664047c88be8fc825c78a12c108594b8`
+is Ready as native sandbox `97026721-3d3b-4886-8ba9-de8b49fe26a5`, with its original
+provider, configuration mount and HTTP exposure retained. The first recreation
+attempt rejects generated effective-policy entries; the original authored policy
+succeeds without an authorization change. Computer image
+`sha256:949de92ef20a2450e8c0ed4a1ed1b54b77717504f6a76ec03d257677f9170c21`
+retains the
+proven OpenCode executable SHA-256
+`6c4e6c85fd66e95fc82523bd0274545e36b6cda6a111b790fbda0b7c00241685`.
+Native replacement initially reuses a stale saved browser base path; correcting
+only the clone/sandbox environment restores the current owner route, preserving
+the workspace and both provider bindings. Sandbox
+`b9f2dc69-c6ae-426b-b679-e617f8af07cb` is Ready and serves the exact base
+`/computer/c/01a156fc-c527-7231-8543-dd212f266e0c/`. The default-model API returns
+DeepInfra MiMo-V2.6-Pro; scoped MCP connect followed by MCP status proves Hub
+connected. No agent inference call is made.
+
+A fresh native `lore auth login` on that Computer completes the ordinary Mac Chrome
+Hub device page, Entra account selection and approved callback. The CLI exits zero
+with `Authentication successful`. Its existing headless secure-storage fallback
+warning is retained as native Lore behavior; no extra Lore security rules or
+credential service is introduced. This proves user login and the CSP redirect fix,
+not repository exchange, publication, renewal, second-user denial or final bounded
+model acceptance. Those remain explicit gates before the infrastructure migration.
+
+The final read-only GitHub audit finds all 15 primary repositories on `main`, with
+each local `main` matching its actual remote `origin/main`. All six Computer task
+worktrees are removed; every primary repository has only its primary worktree.
+The contained Computer/typed-contract task branches are removed locally and the
+published Computer task branches are removed remotely. Unrelated upstream branches
+are retained. Lore and OpenCode now select `main` as their GitHub default branch.
+Ongoing multimodal changes in SDK, runtime and the same documentation files remain
+uncommitted by this coordinator; this closeout does not claim those trees are clean.
+The proposed full-management plan is recorded above and in the architecture guide;
+its dependency/readiness and issuer-independent startup changes are not implemented.
