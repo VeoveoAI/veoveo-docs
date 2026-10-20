@@ -1972,9 +1972,11 @@ never substituted for a native Lore family. Native CLI login, token storage and
 refresh remain unchanged: a small installation helper continues exact-ID checkout
 after native login succeeds, and admitted Computer entry retries with existing
 native authentication. Hub delivers only a public typed checkout descriptor through
-owner-bound native Exec. This requires the existing native `sandbox:exec` scope for
-Hub's provisioning identity; it adds no external Exec endpoint. These paths still
-require component and deployed qualification.
+owner-bound native Exec. OpenShell's `ExecSandbox` RPC requires its existing
+`sandbox:write` scope and workspace authorization. The Hub provider recipe already
+requests that scope; the selected sandbox policy must also admit that exact RPC.
+There is no separate `sandbox:exec` scope or new external Exec endpoint. These
+paths still require component and deployed qualification.
 
 The Computer checks out the authorized workspace for instructions/environment files;
 working checkouts, caches, scratch and session history remain private unless the

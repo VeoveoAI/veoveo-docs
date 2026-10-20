@@ -1278,6 +1278,25 @@ No Artifact runtime image or deployment was changed. This publication unblocks
 Media's final compatible dependency pin; it does not qualify source transfer or
 the environment workflow.
 
+Time adoption is published as `f5d3fb1d804acb215c9e8fac7248a3839196dd93`,
+with the same Core/SDK pins, typed deployment startup, offline registration
+description, persisted registration resume and deployment-owned Tasks. Both Mac
+ARM64 and Linux x86_64 Docker component checks passed 143 tests with ten skipped,
+including all four Task consumer/recovery tests. SQLx verification, strict Clippy,
+the feature matrix and dependency checks passed on both hosts. Fresh PostgreSQL
+18.6 preparation produced the same 147 query metadata files on each host. Three
+focused host test groups passed; the four host Task tests could not start their
+fixtures because PostgreSQL server programs were absent from the Mac's PATH.
+Their subsequent Docker runs passed with those programs available. An earlier
+compile required two newly mandatory fields in a signed-request test fixture;
+production behavior was unchanged by that correction. Mac Nextest took 9.133
+seconds, its final check stage 99.0 seconds and export 13.7 seconds. Source:
+`coder` (GPT-6.1 Sol); validation/publication: `builder` (GPT-6 Luna); coordinator
+reviewed the 12 frozen source paths and all 147 metadata hashes. Receipt:
+`/tmp/time-deployment-adoption-20261020/receipt-v3.json`, SHA-256
+`b392e3ae08ccd3a7324020746ff18d35eb00c5fc8c4cd3cfcbb7ce57b94c3b36`.
+No Time runtime image or deployment changed; these are component checks only.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
