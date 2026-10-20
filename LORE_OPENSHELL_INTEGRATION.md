@@ -1977,144 +1977,90 @@ gap, not whether to keep a duplicate Veoveo implementation by default.
 
 ## Full Native OpenShell Management Plan
 
-Proposed execution plan, reviewed 2026-10-19. Keep native OpenShell as the single
-manager for containerized platform workloads, including Lore, SeaweedFS and
-PostgreSQL, and retire Compose after the native replacements work. This is a runtime and startup
-change; Lore's authorization model, Hub-issued native grants and per-user identity
-remain unchanged. The following native capabilities are required work, not claims
-that OpenShell already implements them.
+Revised 2026-10-19: move PostgreSQL, shared SeaweedFS and Lore from Compose to
+existing native OpenShell workloads. Docker remains OpenShell's compute backend.
+Use the current lifecycle, named-volume mounts, providers, policies, exposures and
+restart policies. This placement change requires no new OpenShell dependency
+engine, health framework, SDK contracts or authentication startup behavior.
 
-1. **Finish and pin the working baseline.** Publish the integrated sources on
-   `main` and remove merged task worktrees/branches. Retain trusted installation,
-   identity and gateway configuration. Record the actual selected gateway database
-   backend without exporting credentials; committed examples select the default
-   host SQLite store unless operator configuration overrides it. Complete a native
-   Computer-to-Lore repository operation before changing Lore's runtime placement.
-   Its successful browser/device login alone does not prove repository exchange,
-   publication or renewal.
+Keycloak is the local development identity provider on any host operating system;
+it is not a Mac-specific component. It stays outside OpenShell, together with the
+existing dependencies required to start it. Local development bootstrap starts it
+before an OIDC-configured gateway. Entra remains the external identity provider for
+the current Linux reference. The gateway's own state and trusted installation
+configuration also stay outside its managed application PostgreSQL. Moving the
+local identity provider into OpenShell is not part of this migration.
 
-2. **Add native dependency and application-readiness contracts.** Extend the
-   existing OpenShell sandbox/template API, Rust/TypeScript SDKs and CLI with typed
-   workspace-scoped dependency references, `Ready`/`Succeeded` dependency conditions
-   and a closed health-probe contract. Use `Succeeded` for trusted initialization
-   jobs with `Never` restart policy; use `Ready` for long-running services. Reuse
-   existing lifecycle state, startup budgets, restart backoff and diagnostics.
-   Separate startup completion from ongoing application readiness. HTTP and native
-   exec probes must have bounded deadlines; a TCP listener check alone is not
-   application readiness. Admit a
-   dependency graph when its configuration is constructed/applied, refusing cycles
-   and unresolved references. Start independent workloads concurrently; start each
-   dependent when its own required services are healthy. Do not add numeric
-   priority sleeps, a Veoveo scheduling daemon or service names in gateway code.
-   A temporary dependency failure marks the declared dependency unavailable and
-   blocks a dependent's next start; ongoing consumer readiness follows that
-   consumer's own probe. Do not kill running consumers or cascade restarts merely
-   because a dependency failed. It does not delete their storage or force a
-   platform-wide restart.
-   Preserve explicit operator stop intent. Native status must explain which
-   dependency or probe blocks progress.
+1. **Pin the working baseline and reuse native workload definitions.** The Computer
+   sources are merged and published. Keep trusted installation and identity inputs;
+   use existing images and native APIs for PostgreSQL, SeaweedFS and Lore. Keep
+   their existing database/schema and bucket identities, including separate Lore
+   and Artifact storage identities on the shared SeaweedFS service. Lore's native
+   permissions and the Hub-issued token flow do not change.
 
-   Current OpenShell already persists running intent, restores workloads and
-   supports `Never`, `OnFailure` and `Always` restart policies. It has no dependency
-   DAG or application health-probe scheduler. Native `Ready` currently means
-   driver/supervisor/configuration readiness. The existing template startup SLO
-   fields do not supply these missing orchestration semantics.
+2. **Mount service data through existing volume support.** Give PostgreSQL and
+   SeaweedFS named data volumes with the required writable paths and UID ownership.
+   Keep canonical service data independent of disposable Computer working volumes.
+   Configure existing CPU/memory limits as appropriate. Do not introduce a new
+   storage manager or scheduling layer.
 
-3. **Remove the identity cold-boot cycle in OpenShell itself.** Keep the gateway's
-   own store, encryption-key input and trusted operator material on the host,
-   independent of its managed application PostgreSQL. Defer unavailable OIDC
-   discovery/JWKS initialization so native listeners and persisted internal recovery
-   can start. Bearer-authenticated operations remain unavailable until their
-   configured issuer can verify them; do not accept unverifiable tokens. For first
-   installation, explicitly configure OpenShell's existing trusted mTLS Operator
-   capability and certificate outside user workloads. Ordinary user certificates
-   are not a replacement for that authority. Current committed examples leave
-   Operator mode disabled, so provisioning it is an explicit installation change.
+3. **Use one bootstrap command for initial installation.** Extend the existing
+   installation bootstrap to create/configure native workloads and start PostgreSQL
+   and SeaweedFS. Wait for their actual service readiness with
+   bounded checks, then run the existing trusted schema/bucket setup. Start Hub
+   after its database is usable, then Lore after storage and Hub issuer metadata
+   are reachable. Start the MCP services after their required stores and Hub are
+   usable. Keep these as ordinary installation commands using the existing native
+   API/CLI, not a dependency graph engine or long-running reconciliation daemon.
+   On routine host boot, the OS starts Docker, external local Keycloak where used,
+   and the OpenShell gateway. The gateway reads persisted sandbox specifications
+   and phases from its own store, loops over eligible sandbox IDs and calls the
+   compute driver's StartSandbox operation. Explicitly stopped/terminal workloads
+   stay stopped, apart from specific recoverable runtime-loss states. The Docker
+   driver starts the existing runtime; missing backend resources are reported as
+   errors, not automatically recreated from an installation manifest.
 
-   This is new native startup work: today, configured gateway OIDC discovery and
-   initial JWKS retrieval must succeed before listeners and workload recovery.
-   Moving Mac's only Keycloak behind that recovery would otherwise deadlock a full
-   host boot. Linux's external Entra avoids that local placement cycle. Local
-   Keycloak and its database can move into OpenShell after this change; their
-   readiness then enables the ordinary OIDC control path without a Compose or
-   temporary unauthenticated bootstrap.
+   This restore loop has no service dependency order and does not wait for
+   PostgreSQL, S3 or Hub application health before starting a consumer. Its
+   iteration order is not a startup contract. Configure the existing Always restart
+   policy for these long-running services: a consumer that exits because its
+   dependency is unavailable can retry through native process restart/backoff.
+   This does not promise recovery from every infrastructure error. Initial
+   bootstrap ordering applies to installation, not later gateway restores. Qualify
+   cold boot with deliberately late dependencies before claiming this is sufficient;
+   do not add an orchestration framework in anticipation of an unobserved failure.
+   Manual OpenShell start/stop commands are maintenance operations, not the normal
+   startup procedure. No additional boot-time orchestrator is planned.
 
-4. **Declare the infrastructure and actual dependency graph as installation data.**
-   Use existing native images, policies, providers, workspaces, named-volume mounts
-   and service exposures. Keep pinned PostgreSQL extensions and separate component
-   database/schema identities; keep separate Lore/Artifact buckets and storage
-   identities on the shared SeaweedFS service. Canonical data uses independently
-   owned named volumes, rather than a sandbox-owned working volume deleted with
-   its sandbox. Declare exact writable mounts and image UID ownership. Apply
-   explicit CPU/memory budgets and measure host headroom so Computer sessions and
-   factory builds cannot consume the capacity required by the control plane and
-   storage. Limits are not resource reservations; do not claim scheduler guarantees
-   the current driver does not provide. Existing
-   native Docker support can mount these volumes without giving workloads Docker
-   access; it does not yet qualify these stateful images under native execution.
+4. **Switch recipients and verify the actual protocols.** Update existing native
+   exposures, policies and registered endpoints for PostgreSQL, S3 and Lore gRPC.
+   Verify private connectivity and TLS using the intended clients. Preserve the
+   public Hub and object origins and signed S3 host/path/query semantics. Computers
+   remain private user environments; factories build published revisions
+   independently. Neither workflow needs to manage the infrastructure.
 
-   The dependency order is consumer-specific:
+5. **Cut over Linux, then simplify local development.** Build Linux images on the
+   Linux host from published source pins and launch the native replacements there.
+   Development application data may be reset and reseeded; retain source and trusted
+   installation/identity configuration. Apply the same simple placement to local
+   development on any supported host. Keycloak remains an external prerequisite.
+   Remove obsolete Compose services and commands; retain a minimal direct startup
+   command for external local identity where needed, without creating a new
+   infrastructure manager. Keep the existing edge tunnel placement unless moving
+   it is directly needed to retire a Compose service.
 
-   - Host Docker and OpenShell start first, with the gateway's independent state.
-   - PostgreSQL and SeaweedFS can start concurrently and expose application health.
-   - Trusted, non-agent initialization jobs create the installation's database,
-     schema and bucket identities after their stores are ready. Dependents wait
-     for successful completion where those identities are required.
-   - Hub starts after its PostgreSQL database and native control/provider setup.
-   - Lore starts after PostgreSQL, SeaweedFS and Hub's issuer metadata/JWKS.
-   - Time, Artifact, Media and Embedding start after their declared database,
-     registration, storage and runtime dependencies. Hub registration precedes
-     serving in the current MCP implementations.
-   - Computer web access depends on Hub and its own runtime. Lore/model outages
-     affect those operations; they should not unnecessarily prevent private file
-     work. Factories remain independent jobs against published Lore revisions.
-   - On Mac, the native Keycloak database and Keycloak start through the restored
-     lifecycle/Operator path before ordinary local OIDC becomes available.
+6. **Verify the cutover and remove platform Compose.** Exercise real PostgreSQL,
+   signed S3 upload/download, native Lore repository operations and Computer Hub
+   access. Verify service restart, gateway restart, full host startup and retained
+   service data. Reuse existing component checks and deployed probes. Run any final
+   bounded MiMo acceptance only after deterministic and deployed checks pass.
+   Completion means PostgreSQL, SeaweedFS and Lore are OpenShell-managed, their
+   Compose definitions/launch paths are removed, and the existing bootstrap brings
+   up both the Linux reference and local development without manual sequencing.
 
-   Hub must precede Lore: native Lore fetches its configured issuer metadata and
-   keys before serving. Hub's native Lore contribution does not require a running
-   Lore server merely to start. Do not encode the reverse dependency.
-
-5. **Cut over Linux, then the complete Mac bootstrap.** Build Linux images on the
-   actual Linux host from published source pins; build Mac components on Mac.
-   Apply the native
-   infrastructure definitions on the actual Linux host, create the component
-   storage identities and schemas through trusted bootstrap, and start workloads
-   using the declared graph. Development application data may be reset and reseeded;
-   do not build history migration, compatibility or backups solely to retain these
-   fixtures. Retain trusted identity/configuration and the gateway's authority.
-   Update registered internal recipients/endpoints and TLS names through existing
-   installation and Hub data, without host-file edits or Lore protocol changes.
-   Declare private service discovery and TLS identities through native naming and
-   exposures, and verify actual PostgreSQL, S3 and gRPC traffic before switching
-   recipients. An OpenShell-managed placement alone does not establish a shared
-   network or working protocol route. Keep the public Hub and signed-object origins
-   stable, preserving S3 signature
-   host/path/query semantics and direct streaming of object bytes. Move the edge
-   tunnel into a native infrastructure workload once local recovery works; host
-   services retain Docker, the gateway and independent SSH/rescue access.
-   Repeat with local Keycloak and its database on Mac. No second execution stack
-   remains as a recovery fallback.
-
-6. **Prove recovery, then delete Compose.** Verify service readiness and actual
-   PostgreSQL/S3/Lore operations, then one full host cold boot with initially absent
-   issuer/dependencies, an individual service failure and a gateway restart. Show
-   dependency waits, recovery and retained source/object/database bytes. Verify
-   public signed uploads/downloads and a Computer Hub action plus native Lore
-   publication under the acting user. Keep deterministic component checks separate
-   from deployed checks; make any final bounded MiMo run only after those pass.
-   Remove installation Compose files, commands, services and operational references,
-   keeping one native installation/apply/status/recovery path and retaining clearly
-   labeled historical evidence. OpenShell owns live state; installation data
-   declares desired configuration and must not become a second runtime inventory.
-   Shutdown follows dependent-before-store ordering with bounded graceful stops.
-   Completion requires no running Compose-managed
-   platform container and successful recovery without manually sequencing services.
-
-The necessary OpenShell changes are generic dependency/health management and
-issuer-independent native startup. Workload placement, volumes, identities and
-endpoints then use the existing native interfaces. This plan does not add a second
-resource inventory, credential broker or Lore permission layer.
+This is a service-placement and installation cleanup plan. It supersedes the
+initial proposal to add native dependency/readiness contracts, deferred OIDC startup
+and OpenShell-managed Keycloak. No Lore authorization change is part of this work.
 
 ## Reviewed Source Baselines
 

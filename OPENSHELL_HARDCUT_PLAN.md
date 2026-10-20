@@ -1,16 +1,20 @@
 # OpenShell Hard Cut Plan
 
-The proposed next infrastructure slice is the
+The next infrastructure slice is the
 [full native OpenShell management plan](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan).
-It replaces installation Compose after adding native dependency/application-health
-contracts and issuer-independent gateway startup. This is a plan, not a deployed
-state: current gateway OIDC discovery/JWKS blocks listeners and persisted recovery,
-so moving Mac's sole Keycloak behind that recovery first would create a cold-boot
-cycle. Native trusted Operator bootstrap is available but must be explicitly
-configured; ordinary mTLS users do not acquire that authority. Hub must precede
-Lore/MCP startup because they fetch its issuer metadata or register before serving.
-Keep the gateway's own store/KEK independent of managed application PostgreSQL.
-
+Move PostgreSQL, shared SeaweedFS and Lore from Compose to existing OpenShell
+workloads, using native volumes, policies, providers, exposures and restart policies.
+Use the existing installation bootstrap for initial creation and ordered starts
+with bounded readiness waits. Routine host boot starts Docker, the external local
+identity provider where used, and the gateway; OpenShell restores workloads using
+its persisted specifications/phases and existing restart policies. Restoration
+has no service dependency order or application-health waits. Long-running services
+select Always so dependency-related process exits can retry with native backoff;
+actual cold-boot behavior remains a deployment gate. Manual service starts are
+maintenance, not normal operation. Keycloak is a local development dependency on any host OS
+and stays outside OpenShell, starting before the gateway when it supplies OIDC.
+No new dependency engine, health framework or gateway authentication startup change
+is required. Docker remains the compute backend. This is planned, not deployed.
 
 Status: the local macOS hard cut and direct-IdP Lore authoring path pass focused
 acceptance. Clone/edit/push, the small branch hook, native credential renewal,
@@ -5625,5 +5629,8 @@ published Computer task branches are removed remotely. Unrelated upstream branch
 are retained. Lore and OpenCode now select `main` as their GitHub default branch.
 Ongoing multimodal changes in SDK, runtime and the same documentation files remain
 uncommitted by this coordinator; this closeout does not claim those trees are clean.
-The proposed full-management plan is recorded above and in the architecture guide;
-its dependency/readiness and issuer-independent startup changes are not implemented.
+The initial full-management proposal included new dependency/readiness and
+issuer-independent startup capabilities. The subsequent placement review supersedes
+that proposal: use existing OpenShell capabilities and ordered installation
+bootstrap; keep the local development Keycloak outside OpenShell on any host OS.
+The revised plan is linked above and is not deployed.
