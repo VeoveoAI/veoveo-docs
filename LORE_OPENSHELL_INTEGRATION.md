@@ -2071,6 +2071,14 @@ The signed downstream context retains the admitted environment and immutable
 composition revision, while each hop separately names its target deployment.
 These are implementation decisions awaiting deployed qualification.
 
+The current OpenCode [MCP configuration plugin](../opencode/packages/core/src/config/plugin/mcp.ts)
+already observes `config.updated` and calls `mcp.reload()`, and its
+[configuration discovery](../opencode/packages/core/src/config/discovery.ts) includes
+ordinary project `opencode.json`/`opencode.jsonc` files. Use that native surface for
+the Computer client's environment selector; qualify two independent Locations and
+configuration reload rather than adding a separate picker or OpenCode protocol.
+This is source inspection, not a claim that the deployed selection loop works.
+
 **Source activation.** Hub's existing trusted process owns only thin desired-state
 reconciliation: notifications are hints, authoritative Lore reads plus periodic
 reconciliation determine current intent. OpenShell owns sandbox/PVC/execution and

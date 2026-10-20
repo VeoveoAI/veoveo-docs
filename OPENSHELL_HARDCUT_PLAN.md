@@ -1261,6 +1261,23 @@ No deployment changed for these checks. Component adoption, E0 onboarding and E3
 activation remain in progress; Linux environment routing and end-to-end acceptance
 remain unproved.
 
+Artifact adoption is published as `dbdccdba4da9d669e7cf221bb1f640ef93935118`.
+It uses the same Core/SDK pins, typed deployment startup, offline registration
+description, persisted registration resume and deployment-owned Task runtime.
+Both Mac ARM64 and Linux x86_64 `docker build --target check .` passed 114 Nextest
+tests with nine skipped, including the failed-upload regression. A fresh PostgreSQL
+18.6 preparation produced the 157 SQLx entries verified on both hosts. The first
+compile found a missing test-only `tempfile` declaration and a fixture that had not
+handled the SDK client's new deployment-admission `Result`; both were corrected
+before the complete checks. The dependency checker reported a nonfatal unmatched
+MPL-2.0 allowance. Source: `coder` (GPT-6.1 Sol); validation/publication: `builder`
+(GPT-6 Luna); coordinator reviewed source and metadata hashes. Receipt:
+`/tmp/artifact-deployment-adoption-20261020/receipt-v2.json`, SHA-256
+`7091b5130f6d9b32db579fcb6d1dd1f7241a9af3494e64141d0d42014c52b6ef`.
+No Artifact runtime image or deployment was changed. This publication unblocks
+Media's final compatible dependency pin; it does not qualify source transfer or
+the environment workflow.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
