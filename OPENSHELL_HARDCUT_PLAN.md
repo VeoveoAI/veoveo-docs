@@ -1343,8 +1343,8 @@ The source manifest's older pre-pin status string is stale; its recorded pins an
 verified files are final. No runtime deployment or real provider call occurred.
 These checks do not qualify callbacks or source activation in a selected environment.
 
-E0 onboarding is locally committed as
-`628e18d7af17d19d72107218650841745537a64c`, not yet pushed or qualified. Its v5
+E0 onboarding is published on main as
+`628e18d7af17d19d72107218650841745537a64c`; deployed first use is not yet qualified. Its v5
 freeze has 29 source paths over `ea83968e`, manifest
 `/tmp/hub-e0-workspace-freeze-20261020/source-manifest-v5.json`, SHA-256
 `016d6483667709b50663add36fa48b484c21095e20df14112b05e7ff49202282`.
@@ -1373,9 +1373,19 @@ passed 247 tests and failed one: the calls fixture never held native kernel
 Instances for two of its registered services, so normal orphan collection removed
 the caller before an expired-token assertion. V5 retains real issued-login
 Instances for both services; the five-second grace and authentication assertions
-remain unchanged. The full v5 Mac/Linux gates and deployed first use remain pending.
-Coordinator verified all 29 hashes and 205 tracked SQLx entries in the local commit.
-Validation now uses captured build inputs and plain temporary source exports,
+remain unchanged. Both full v5 Docker `--target check` gates exited zero: Mac
+Nextest passed 248 tests (one skipped) in 28.069 seconds; Linux passed the same
+248 tests (one skipped) in 45.547 seconds. Check stages took 152.1 and 209.3
+seconds respectively. The focused Linux caller-lifetime regression passed in
+12.17 seconds. Receipt
+`/tmp/hub-e0-workspace-freeze-20261020/receipt-v5.json`, SHA-256
+`44355ac4a139f2d4d2ad2615d7faf09377b8a28e0e086f5913134c828a4da1f7`,
+records the source, SQLx and log identities, diagnostic history and model-free
+validation. Its pre-publication status is historical: the builder subsequently
+pushed exactly `628e18d` and verified origin main, preserving newer E3 edits.
+Coordinator verified all 29 hashes and 205 tracked SQLx entries in that commit
+and independently checked both final gate logs against the receipt.
+Validation used captured build inputs and plain temporary source exports,
 allowing E3 implementation in the main checkout without changing the tested source.
 No new Git worktree remains. Embedding SDK adoption is separately frozen for
 validation; no runtime deployment has changed for this slice.
