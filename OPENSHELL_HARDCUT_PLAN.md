@@ -7,8 +7,8 @@ are qualified. The Desktop adapter/signer/ingress are retired and durable data i
 preserved. Complete low-level branch isolation is superseded, not claimed passed.
 The authorized reference Linux goal now passes: native deployment at
 `veoveo.bioma.ai`, real signed WaveSpeed webhook qualification and final bounded
-OpenCode MiMo acceptance. One real signed WaveSpeed Events callback now passes
-on Linux. Deterministic deployed-service, recovery and final Linux MiMo client gates now
+OpenCode MiMo acceptance. Qualification is in progress: native builds/deployments and focused identity/service
+gates are recorded in the dated Linux entries. One real signed WaveSpeed Events callback now passes on Linux. Deterministic deployed-service, recovery and final Linux MiMo client gates now
 pass; earlier bounded failures remain historical. GPU/CUDA remains separate.
 The Hub → Time and prepared-source factory milestone now also passes locally:
 deployed application qualification, exact Git/Lore correspondence, no-model
@@ -34,6 +34,348 @@ check; no browser security settings were changed.
 Use one native OpenShell Docker-driver path for factories, checks and managed
 services. No Kubernetes, Helm, Flux, OpenBao, alternate workload host or compatibility
 launcher. Preserve source and durable data independently of workload lifecycle.
+
+## Agent-Operated Platform Adoption Plan
+
+Accepted target, 2026-10-18. This checklist implements the consolidated
+[product architecture](LORE_OPENSHELL_INTEGRATION.md#product-workflow-and-full-platform-plan).
+All phases below are **pending**; adjacent Mac/Linux proofs do not complete them.
+The reference Linux, signed webhook and final MiMo work remains separate. The user
+authorized native human Lore access on 2026-10-18; that part of A is now active,
+following the [direct access decision](LORE_DIRECT_OIDC_PLAN.md#human-access-decision).
+Other phases remain planned. Each phase
+uses deterministic/component checks first, deployed probes second, and a bounded
+model-driven acceptance only after the expected behavior passes. Use the exact
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` for final OpenCode acceptance, no substitution
+or model calls during iteration. Record measured tool outcomes, inputs, versions,
+timings, identities, byte/hash evidence and limits separately for each layer.
+
+- [ ] **A — Hosted Computer and human Lore onboarding.** Qualify
+  the supported OpenCode build in each user's private OpenShell Computer,
+  connecting to Hub with interactive sign-in, renewal,
+  role-filtered discovery, normal Tasks and Artifact publication/retrieval. Qualify
+  Lore CLI direct authenticated clone/sync, stage/commit/push and login/refresh from
+  the hosted Computer over the private Lore route against native repository permissions. A local commit changes
+  no platform revision; a successful push publishes the exact expected revision.
+  Use users with different native Lore permissions. Both can sign in, inspect
+  permitted code and select accessible branches. Denial of a protected-branch push
+  must leave other permitted Lore operations available. Preserve each component's
+  existing grants; do not infer repository exclusion from platform usage or coding.
+  Exercise expired/revoked credentials and separate Lore/Hub audiences. Existing
+  supervised factory Lore renewal is not acceptance of this human path. Use
+  ordinary local agent file/shell tools.
+  Human login uses native OAuth device authorization, native encrypted credential
+  storage and automatic refresh, independently of repository selection. Qualify
+  native operation authorization, expiry/rotation/concurrent refresh and logout
+  separately from existing factory issuance. Hub supplies nonsecret setup; its
+  bearer is not a repository credential. The authorized upstream update selects
+  `ec6bdc2195753b50f70696d367788b4bc8d08964`, which implements native device login
+  and repository token exchange. It supersedes our unqualified OIDC prototype.
+  Native refresh remains `NotSupported` at that revision. Source adoption, local
+  factory regression and complete human onboarding remain separate gates.
+- [ ] **B — Deterministic factory and trusted publication.** Split future factory
+  templates from agent/Computer templates. A pushed immutable Lore revision runs
+  declared commands in a fresh native OpenShell sandbox without OpenCode/model.
+  Preserve historical model-build evidence, but do not use it as the job contract.
+  Qualify registered source selection, trusted independent checks, bounded resources,
+  failed-check diagnostics, exact source/workload/image provenance and retry by a
+  new user push. Resolve and qualify the general trusted image construction and
+  distribution path using existing native build/image contracts; Artifact content
+  storage is not an OCI registry. Prove author jobs lack Docker socket and
+  deployment/registry credentials. Define and qualify the user-facing build-status,
+  logs and result-link contract using existing native status/Hub surfaces before
+  choosing any new API. Prove push success, build success and deployment selection
+  remain separately observable. Preserve exact Git handoff while Cargo pins need it.
+- [ ] **C — Lore schema, reconciliation and environment routing.** Finalize the
+  narrow environment composition schema over native workload/templates, approved
+  bindings and lifecycle declarations. A thin module in the existing trusted Hub
+  process consumes notification hints, reads authoritative revisions and periodically
+  reconciles. Test missed/duplicate events, restart recovery and delayed results
+  after supersession/deletion. Only registered sources can deploy; the editing
+  branch cannot grant itself targets, providers, resources or quota. Verify readiness
+  by registration plus an application probe before selection.
+  Run one shared base and two private overrides, each replacing one service while
+  inheriting another. Verify independent user access and contexts, selected-version
+  discovery, delegation/downstream routing, concurrent Tasks, retained Task versions,
+  pinned and following bases, label rename and cycle rejection. An unhealthy override
+  must stay unavailable. Promote tested digests by destination config; source merge
+  alone must not redirect traffic. Delete one branch-bound environment during active
+  work; prove drain/cancel policy, owned cleanup, revocation and no resurrection,
+  while the other environment, shared resources, retained state and bootstrap survive.
+  Test route inheritance separately from data isolation and document migration limits.
+  The current newest-instance-per-slug route is not this acceptance.
+- [ ] **D — Hosted Computer persistence and lifecycle.** Provision a private persistent
+  native OpenShell Computer with OpenCode, Lore CLI, Hub connection and trusted-config
+  default `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. Qualify browser/session access, reconnect,
+  human Lore authentication, provider credential custody/renewal, storage persistence,
+  isolation, logout/revocation and explicit deletion/retention. No shared admin
+  identity or retired Desktop adapter. Model inference stays agent/provider-owned.
+  Repeat A's native-permission scenarios for separate users' hosted
+  Computers; compare authorized capabilities and publication identities. Private
+  scratch and unpublished commits must stay outside platform canonical source.
+  Stopping the Computer or deleting a factory job must leave the published project,
+  Artifacts and selected service deployment intact. This phase can be designed
+  alongside B/C once A's identity contracts are clear. It remains a separate
+  product qualification from the storage backend work below.
+- [ ] **E — Durable infrastructure and GPU adoption.** Qualify protected volumes,
+  PostgreSQL/storage protocol access, backups and actual restore before changing
+  existing durable placement. Preserve the IdP cold-start bootstrap. Separately
+  qualify native NVIDIA CDI and a tiny checked CUDA computation on the selected
+  Docker driver. Hardware inventory is not execution acceptance. Apply the same
+  admitted resource, ownership and retention contracts; do not introduce Kubernetes,
+  Flux, a parallel scheduler or a replacement runtime inventory.
+
+Initial scope uses native Lore CLI/protocol and existing Hub MCP tools. All platform users
+can use permitted capabilities; source, compute, billed actions, promotion and
+administration require independent grants. Computer, factory and deployed-service
+lifetimes remain independent.
+
+## Upstream Lore Adoption — 2026-10-18
+
+Authorized: update Veoveo to current upstream Lore and remove additions now
+implemented natively. The upstream-merge baseline is
+`8be7e6e69216c9c974f12027b35910ad1d3fd708`, merging upstream
+`ec6bdc2195753b50f70696d367788b4bc8d08964` (0.10.2-nightly) into the existing
+`native-openshell` history. Upstream `main` was resolved and pinned before the
+merge; this is a source build, not a claim that a new stable release was published.
+The subsequent native storage implementation is committed and published on
+`VeoveoAI/lore` branch `native-openshell` at
+`7785408e70ed302296a24383ae302c3a606e78c3`.
+It is now merged and pushed to `origin/main` at
+`9152e7fcb6c0be1c62ec05490f787d271a6d8d3f`. The merge preserves the exact
+`7785408e` source tree (`fe211dc9067e4fbb384ed528938001b83461e688`), so the
+installed image and existing tests still apply. Main's two older QUIC-token and
+setgid credential-loader patches were excluded because decision D44 had already
+retired them. No new runtime implementation was added by the merge.
+
+- Removed the entire unqualified local human OIDC prototype: custom repository-login
+  mode, extra protobuf/settings field, local OAuth dependency and token-store/refresh
+  orchestration. Native upstream owns device authorization and repository exchange.
+- Retained only the necessary factory integration: opaque access tokens with an
+  explicit local identity, supplied-bearer discovery, and the existing normal-push
+  assignment hook with fixture/tests/documentation. This merge baseline differs from the
+  selected upstream in 12 files, 561 additions and 31 deletions.
+- Native client/background-service IPC is now bitcode v2; upgrade matched binaries
+  and stop the old service using its matching CLI before replacement.
+- Upstream removed the `identity_claim` setting and resolves native identity claims
+  with `sub` fallback. Remove the obsolete default from installation configuration;
+  retain issuer, audience, resource grants and trusted factory assignments.
+- Component checks and pinned image builds pass; the new CLI and local server are
+  installed. Local storage restart/persistence checks pass. Native human
+  refresh still returns `NotSupported`; a source upgrade
+  does not complete human onboarding or customer-issuer qualification.
+
+Coordinator reviewed the residual source diff. Implementation is by `coder`
+(GPT-6.1 Sol); checks/builds/local deployment are assigned to `builder` (GPT-6 Luna).
+No model-driven acceptance is required to establish this deterministic source
+upgrade. Keep component and deployed evidence separate below as gates complete.
+
+Component checkpoint at frozen `8be7e6e6`: `cargo test --locked -p
+lore-credential --tests --quiet` passes 37 tests; `lore-transport` with the same
+flags passes one discovery integration test and 238 unit tests; `lore-server`
+passes 1,399 tests including the retained factory hook. Builder-reported elapsed
+times are approximately 3.7, 29 and 99 seconds respectively, including compilation;
+the server's test execution reports 7.54 seconds. The first three command outputs
+are retained in the tool execution trace, not standalone log files. These component
+fixtures do not prove live human IdP login or automatic refresh. The remaining
+component suites also pass: `lore` 370, `lore-revision` 1,491 (15 ignored),
+`lore-storage` 648 and `lore-io` 65, for **4,249 passing tests** across the seven
+packages. Builder-reported elapsed times for those four commands are approximately
+79, 131, 37 and 8 seconds, including compilation. Their logs and subsequent build
+receipts are collected under `/tmp/lore-upgrade-evidence/`.
+
+The user also requested SeaweedFS storage during this upgrade. Inspection of the
+exact candidate found that the native AWS immutable backend requires both S3 and
+DynamoDB: fragment associations and lifecycle state remain in DynamoDB even if the
+mutable branch store stays local. SeaweedFS alone is not a configuration-only
+replacement. The candidate does register the AWS plugin; the upstream configuration
+reference's statement that no plugins are registered is stale relative to the
+committed code. The user selected a native S3 + PostgreSQL storage plugin and
+explicitly required the same `veoveo` database. The accepted design is recorded in
+[Lore Storage Backend](LORE_OPENSHELL_INTEGRATION.md#lore-storage-backend): a
+separate crate within the Lore fork, dedicated `lore` schema/login and bucket,
+immutable index and mutable CAS in PostgreSQL, and native process-local resource
+locks. No DynamoDB service is being added. Native debug CLI/server builds of
+`8be7e6e6` passed, but these and the 4,249 component checks are the **baseline**;
+they do not qualify the new storage plugin. Shared-tree builds stopped before
+implementation began. No live Lore replacement or storage reset has occurred.
+
+Preparation checkpoint: the existing `veoveo` database now has dedicated
+`server_lore`/`lore` and `server_lore_test`/`lore_test` login/schema pairs; SeaweedFS
+has separate `lore` and `lore-test` buckets and credentials. Own-schema creation
+and 32-byte own-bucket Put/Get/Head/Delete succeed; unrelated application schema
+creation and Artifact bucket access are denied. Bucket listing is filtered to the
+authorized bucket. IAM administration refusal was not tested, and these
+preparation probes did not capture timings or body hashes. No new database,
+volume, live Lore switch or application reset occurred. Private environment files
+are outside source/build contexts. Receipt:
+`/tmp/lore-upgrade-evidence/storage-preparation.md`.
+
+The installation configuration slice passes `docker compose -f compose.yaml
+config --quiet` in 0.118 seconds, without starting or stopping services. Subsequent
+database probes reject an unrelated Artifact table read, database creation and
+role creation with SQLSTATE `42501`. An IAM `ListUsers` probe returns an unknown
+AWS CLI error without an HTTP status, so it does not prove an administration
+denial. The current documented source archive still selects the upstream baseline;
+it must move to the reviewed plugin commit before building. Receipt:
+`/tmp/lore-upgrade-evidence/installation-config-validation.md`.
+
+The plugin source is implemented and frozen for review and real-backend tests;
+focused compilation of the crate, server registration and operator seed fixture
+passes. This is not storage acceptance. Builder qualification is separate from
+the upstream baseline above.
+
+The first focused schema-identifier unit test passes (55.55 seconds including
+compilation). The server plugin test then fails after 103.961 seconds because its
+test fixture indexes a missing TOML key before invoking validation. Qualification
+stopped there; no real-backend pass is inferred. Coordinator review also identified
+a recursive-retirement race involving a later parent publication that reuses an
+existing child association. The source was returned to the coder for the test fix
+and a native-operation regression/correction before another freeze. Evidence:
+`/tmp/lore-upgrade-evidence/s3pg-unit-tests.log`.
+
+The subsequent native conformance run caught an exact-address query defect:
+partition-wide matching incorrectly reported an obliterated context as present
+when a sibling context survived. The implementation now uses exact native
+`MatchFull` semantics. The recursive-retirement correction renews exact child
+association generations when publishing a parent, including query-skipped reused
+children. The corrected real PostgreSQL/SeaweedFS integration passes in 5.084
+seconds overall, with 1.72 seconds inside its single scenario runner. Operator
+fixture compilation passes in 17.904 seconds. Fault barriers are synthetic controls
+around real backend operations; reopening a store instance is not a process crash
+or dependency restart. Receipt: `/tmp/lore-upgrade-evidence/query-fix-qualification.md`.
+
+Pinned release builds at `7785408e` pass: runtime/client image in 162.414 seconds,
+operator fixture in 120.335 seconds, macOS CLI in 143.102 seconds and factory image
+in 38.900 seconds. The runtime image is
+`sha256:fc0d7829b6f3a9433a0337ff4a888d73c7687ffdc6f782df4c8861db5f930003`.
+These Docker images are Linux ARM64, not qualification of the Linux x86-64
+reference host. Commands, image identities, binary bytes/hashes and smoke limits:
+`/tmp/lore-upgrade-evidence/pinned-builds-7785408.md`.
+
+**Installed local cutover:** the user's actual executable
+`/Users/rozgo/.local/bin/lore` now reports `lore 0.10.2-nightly+local` in a fresh
+login shell. Its 55,380,408 bytes have SHA-256
+`5d23c012fb73c3cb9b6d342a127b2ea242967417489ee08e6d28db5a3d71f455`.
+Native isolated background-service start/status/stop/status passes. The local
+`vv-lore` container now runs the pinned runtime above and reports
+`loreserver 0.10.2-nightly`; its internal health check returns HTTP 200.
+The address, TLS identity and retained old local volume are unchanged, and no host
+port is published. The selected backend is `s3_postgres` in the existing
+`veoveo` database and dedicated SeaweedFS `lore` bucket. Native stopped-server
+seeding created 13 live objects/payloads/associations and 15 mutable references;
+all 13 S3 objects were read back, totaling 1,383 bytes with per-object SHA-256
+evidence. Existing IdP client subjects/secrets and the Time assignment were
+preserved; only disposable fixture repository/branch bindings changed.
+Receipts: `/tmp/lore-upgrade-evidence/host-cli-install-final.md` and
+`/tmp/lore-upgrade-evidence/cutover-backend-readback.json`.
+
+Builds alone had previously left the installed CLI/server unchanged. The installed
+cutover above corrects that gap. Source publication is separately verified with
+`git ls-remote`; OpenShell `6589a918a` and OpenCode `7b12c605` were already published
+and received no new commits from this upgrade. Retained-source republication and
+storage dependency restart are separate deployed gates. Factory credential renewal,
+permission-denial transport and human onboarding are outside this storage effort.
+No model calls have been made for this upgrade.
+
+Retained Time source has now been republished through normal native commands,
+under the same repository, assigned branch and ordinary IdP identity. New Lore
+revision `c653516f6af29f811497f72854972a147567345e0e09d780ca785dfcde742e6c`
+on `factory-time` corresponds to Git `90eabf9d3a103075c2aff907f008cf63f341f822`.
+A fresh clone matches all 362 files and 29 directories, totaling 1,639,866 bytes,
+including file modes; no symlinks or missing/extra/hash mismatches were found.
+Main remains protected with no published head in this fresh backend. The old
+`8adc50f3...` revision below belongs to historical local-store qualification; it
+was not migrated. The trusted factory assignment is unchanged, and temporary
+publisher resources were removed. Receipt:
+`/tmp/lore-upgrade-evidence/time-native-published-tree-check-final.log`.
+
+The user explicitly stopped the unrelated factory-harness and OpenShell HTTP/2
+detour and requested only storage restart/persistence completion. The uncommitted
+OpenShell relay patch and Hub native-forwarding prototype worktrees/branches were
+removed. The four qualifier edits and added factory `BranchGet` policy rule were
+reverted; other agents' changes were preserved. No detour commit, push or deployment
+occurred. Failed diagnostic logs remain under `/tmp/lore-upgrade-evidence/` as
+historical evidence, not unfinished storage gates. Existing Time source is the
+durable byte fixture for the completed server and dependency restart checks.
+
+**Storage restart acceptance — 2026-10-19:** builder (GPT-6 Luna) used the existing
+private native Lore connection to read Time repository
+`280a718d5d3574271274bba5c8db344b`, branch
+`d0239a8b02de57a353218aa8ef36bb59`, at the published `c653516f...` revision above.
+Baseline and fresh clones after separate `vv-lore`, `vv-postgres` and
+`vv-seaweedfs` restarts all match the retained Git source: 362 files, 29 directories,
+1,639,866 bytes and no symlinks. The existing reader is `0.10.1-nightly+local`;
+the installed server is `0.10.2-nightly` from the pinned `7785408e` image. This
+records compatibility of that reader, not a claim that its image was upgraded.
+The mode-inclusive manifest over all four retained clone trees is identical:
+`c1c321e4ff110efa6ab3ab573af28afbe1e3509d73889543b613a9af835e66d0`.
+
+Independent PostgreSQL reads and actual S3 `GetObject` body reads eliminate client
+cache dependence from the persistence proof. The Time partition retains 6 mutable
+references, 373 live object keys and 444,781 stored bytes, with no unavailable
+payload associations. Reference digest
+`fb235d9a461bcd7d981b0269ef2c6798fa514f83b1bd02434baabe5c764c900f`
+and object-manifest digest
+`4a9a0f124fa40d5270acd6740518cc507449993fb323b34739db60b1a1566949`
+are identical at all four checkpoints. Post-restart full readbacks took 25.33,
+26.55 and 27.77 seconds respectively. Hub, Time and Artifact readiness return
+HTTP 200. Media's attempted `/readyz` returns 404 both before and after; its running
+process/supervisor state is separate from application readiness acceptance.
+
+These are controlled local container restarts with retained volumes, not power-loss,
+backup/restore, multiple-server or reference Linux acceptance. No model calls,
+gateway restart, new grants, factory replacement or transport deployment occurred.
+Receipts are `/tmp/lore-upgrade-evidence/storage-baseline-readback.json` and
+`storage-after-{lore,postgres,seaweedfs}-restart.json` in the same directory.
+The complete execution trace, exact commands, timings, serialization details,
+readiness limitations and owned-artifact cleanup are recorded in
+`/tmp/lore-upgrade-evidence/storage-restart-persistence-report.md`.
+The updated guide passed three-view visual inspection, details/navigation/zoom/fit,
+and all six SVG/PNG exports; final storage notes were rechecked after acceptance.
+Diagram receipt: `/tmp/lore-upgrade-evidence/diagram-cleanup-qa.json`.
+
+Storage acceptance, in order:
+
+- [x] Implement native immutable/mutable plugin and operator fixture configuration;
+  review publication, retirement, isolation and cancellation behavior.
+- [x] Provision dedicated Lore and test schema/bucket access in existing PostgreSQL
+  and SeaweedFS; own-storage access and unrelated application-data denials pass.
+  PostgreSQL database/role creation is denied. SeaweedFS IAM administration denial
+  remains unqualified, as recorded above; it is not a restart/persistence claim.
+- [x] Pass native immutable-store conformance and focused mutable CAS, concurrent
+  representation/copy/obliteration, missing-object and partial-failure tests.
+- [x] Pass fresh-process reopen and dependency restart checks with exact byte/hash
+  evidence; record orphan/reclamation limitations without claiming atomic S3/SQL.
+- [x] Build source-pinned server/CLI images, seed fresh development Lore
+  state from retained source/configuration and switch the local server.
+- [x] Verify published source survives fresh reads after each restart, with stored payload bytes in the
+  dedicated bucket and reference/index rows in `veoveo.lore`.
+
+The reference Linux deployment and human OIDC refresh remain separate. No model
+call is required to establish the backend's deterministic storage behavior.
+
+The earlier public native-Lore forwarding proposal was superseded by the user's
+per-user hosted Computer decision. It is not a storage acceptance gate. No public
+DNS, tunnel, Hub transport or OpenShell deployment change was made for this effort.
+Read-only ingress inspection remains recorded in
+`/tmp/lore-upgrade-evidence/bioma-ingress-inspection.json`.
+
+The updated visual guide passed desktop browser inspection of all three views,
+component details, tab/hash navigation, zoom/fit and six in-memory SVG/PNG exports.
+All SVGs parsed and PNGs decoded at the expected dimensions. Only the missing
+favicon returned HTTP 404; no JavaScript error was observed. This is diagram QA,
+not platform qualification. Temporary receipt:
+`/tmp/veoveo-lore-upgrade-diagram-qa.json`.
+
+The historical single-origin diagram revision was inspected in all three views at
+2026-10-19 05:15 UTC. The planned Computer → Hub → Lore path and Hub/Artifact
+details matched the contract at that checkpoint, before the hosted Computer
+decision superseded the public Lore forwarding path; qualified topology stays
+explicitly historical. Detail panels, tabs, zoom/fit and all six SVG/PNG export
+handlers pass; SVGs parse, PNGs decode and the console has no warnings/errors.
+Exports were checked in memory. Receipt with HTML digest:
+`/tmp/veoveo-lore-single-origin-diagram-qa.json`.
 
 ## Embedding Generation — 2026-10-19
 
@@ -337,9 +679,9 @@ identities map to operator-owned repository/branch assignments. Ordinary
 repository authorization, revision, storage, branch protection and merge behavior
 are unchanged; no new transport or authorization middleware is present.
 
-The factory image starts from a pinned Rust toolchain image, with OpenCode 2.0.29
+The historically qualified factory image starts from a pinned Rust toolchain image, with OpenCode 2.0.29
 and the patched Lore CLI. It no longer inherits an old Veoveo development image.
-The factory has no direct network, capabilities, Docker socket or bootstrap mounts.
+That historical factory has no direct network, capabilities, Docker socket or bootstrap mounts.
 Only OpenShell's channel volume is attached. The real Lore JWT stays in the trusted
 provider/supervisor; the workload receives its native opaque placeholder.
 
@@ -3044,11 +3386,13 @@ version per slug until composition/version routing is implemented.
 
 Further adoption remains open:
 
-- Give the factory model a real edit/test/commit task only in a separate effort
-  covering model quality and token cost. For later Lore-authored changes, publish
-  a verified source snapshot to a separate Git checkout and remote, with the Lore
-  revision in the Git commit message. Use one editing path per task; no automatic
-  bidirectional sync. Git remains a build input while Cargo uses Git revision pins.
+- Follow the [agent-operated adoption phases](#agent-operated-platform-adoption-plan):
+  user agents edit/test/commit on their Computers and push to Lore; future factories
+  execute deterministic jobs. Historical factory-model proofs remain historical.
+  For Lore-authored changes, publish a verified source snapshot to a separate Git
+  checkout and remote, with the Lore revision in the Git commit message. Use one
+  editing path per task; no automatic bidirectional sync. Git remains a build input
+  while Cargo uses Git revision pins.
 - Qualify other customer issuers and interactive human Lore login separately.
   Entra is selected for the active Linux reference goal above; the local
   direct-issuer authoring/credential lifecycle gates remain complete.

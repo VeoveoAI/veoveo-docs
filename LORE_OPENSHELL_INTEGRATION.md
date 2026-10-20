@@ -8,18 +8,21 @@ native Lore/private MCP path, Hub → Time integration, prepared Time factory
 build/deployment, private Artifact integration and the private fake-provider Media
 slice pass local acceptance, including the final bounded OpenCode MiMo client
 scenario. A separately authorized real WaveSpeed polling one-shot also passes,
-producing a decoded image through the same native path. One real Linux WaveSpeed
-signed Events callback now passes, with zero generation status checks, independently
-decoded bytes and matching per-Task USD 0.003 usage. Deterministic deployed-service and recovery gates now pass in the dated checklist.
+producing a decoded image through the same native path. Reference Linux
+qualification now passes the bounded native-service, recovery, signed-callback
+and final-client goal recorded in the dated execution checklist. Deterministic deployed-service and recovery gates now pass in the dated checklist.
 Final Linux OpenCode MiMo client acceptance now passes the full retained-Artifact
 and one-Time-Task scenario; earlier bounded failures remain historical.
-Other models, general composition and GPU/CUDA remain separate. See
+One real Linux WaveSpeed signed Events callback now passes, with zero generation
+status checks, independently decoded bytes and matching per-Task USD 0.003 usage. Other models, general composition and
+GPU/CUDA remain separate. See
 [execution status](OPENSHELL_HARDCUT_PLAN.md).
 
 The [platform visual guide](diagrams/veoveo-platform.html#platform) shows the current
 platform with Lore, OpenShell, Hub, Time, private Artifact and Media. Its other
-views explain the credential path and Media's qualified private workflow with
-those existing services. Update it alongside this document after every major architecture change;
+views explain the historical Mac credential path and the planned agent-operated
+workflow above the current Linux qualification snapshot. Update it alongside this
+document after every major architecture change;
 keep planned paths visibly distinct from qualified ones.
 
 Desktop is no longer an acceptance requirement. The locally qualified path uses
@@ -95,19 +98,208 @@ stopped-process `import-control-plane` command, followed by a same-image native
 restart. Preserve concurrent Computer configuration and all other fields; a
 mounted-file edit and restart alone do not publish a binding change.
 
-## Product Workflow
+<a id="product-workflow"></a>
 
-A user starts an authorized factory workspace on a Lore branch. OpenShell creates
-the sandbox from an approved native template; the agent edits, builds, tests and
-uses ordinary Lore commands. Pushing the branch starts checks of that exact
-revision in a fresh OpenShell sandbox. Successful checks produce immutable
-artifacts eligible for a private preview or promotion. Environment branches compose
-those artifacts and define resource ownership; deletion removes the preview's owned
-resources according to retention and active-Task policy.
+## Product Workflow And Full Platform Plan
 
-The normal user interface is Lore, OpenShell's existing connection and inspection
-tools, and Veoveo's Hub. Use existing logs and diagnostics. A custom factory
-console, logging service, runtime API or infrastructure language is not a prerequisite.
+Accepted product direction, revised 2026-10-19; the new user onboarding, automatic factories,
+composition and hosted Computer flows below are **planned, not qualified**. This
+section is the consolidated target; the execution checklist and historical evidence
+below retain their measured scope. The active reference Linux/webhook qualification
+remains separate. On 2026-10-18 the user separately authorized solving native human
+Lore access and updating Veoveo to current upstream Lore, removing superseded
+local additions. The selected upstream `ec6bdc219575` implements native OIDC device
+login and repository token exchange; refresh remains unimplemented at that
+revision. Adopt its native client path and qualify the remaining gaps. The local
+OIDC prototype is superseded. Other new product phases remain planned.
+
+Users operate Veoveo through their own agents. The initial product gives each user
+a hosted native OpenShell **Computer**:
+private persistent OpenCode, Lore CLI, a configured Hub connection and the explicit
+default `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`. The model/provider identity is selectable
+in trusted installation configuration. All users are platform users; coding is one
+permitted activity among using services, analyzing data and producing artifacts.
+
+A Computer is the agent's working environment. Its native file and shell tools work
+normally: working copies, experiments, scripts and scratch files may live there.
+The platform consumes explicitly published content. A **Lore push**, rather than a
+local commit, publishes repository changes. An **Artifact upload** publishes managed
+content.
+
+### User, Author, Build, Promote And Use
+
+1. **Connect and select work.** The user signs in with the configured identity
+   provider and connects OpenCode to the Hub. Hub discovery and actions expose the
+   capabilities permitted for that user and execution context. Users can use
+   services, artifacts and Lore according to each component's native permissions;
+   coding is not a prerequisite for Lore access.
+2. **Work on the Computer.** A permitted author uses the native Lore CLI to clone or
+   sync an authorized repository/branch. The agent reads project instructions,
+   edits with its normal tools, runs local checks and commits. Local commits and
+   scratch files remain on that Computer until explicitly published.
+3. **Publish source or content.** The author pushes to an authorized Lore branch.
+   Users upload inputs/outputs to Artifact when they want platform access to them.
+   Platform operations reference Lore revisions and Artifact identities; content
+   is not automatically duplicated between stores.
+4. **Build the published revision.** The thin trusted integration reads authoritative
+   Lore state after a notification or periodic reconciliation. It starts a bounded,
+   deterministic factory job from the exact immutable pushed revision in a fresh
+   OpenShell sandbox. The factory needs the declared toolchain and commands, with
+   no OpenCode or model required. Local agent checks do not replace this verification.
+5. **Verify and publish the result.** Trusted checks and a separate trusted publisher
+   bind the source, workload definitions, check evidence and runtime image digest.
+   Author-controlled jobs receive neither deployment/registry credentials nor a
+   Docker socket. A zero exit from an agent-edited check command alone is not an
+   independent verdict. A failed job returns diagnostics; the user's agent fixes
+   the working copy and pushes again. Success at push, build and deployment are
+   separate states.
+6. **Select and deploy.** An authorized environment configuration selects verified
+   artifacts and native workload definitions. The integration admits the requests,
+   calls OpenShell's SDK and waits for registration plus an application readiness
+   probe before Hub selection. Promotion changes the destination configuration to
+   select tested digests; a source merge alone does not redirect callers.
+7. **Use and retrieve.** Agents call services through the Hub under the user's
+   permissions and context, inspect Tasks/results and retrieve authorized Artifacts.
+   Build status, diagnostics and result links reuse native status and Hub surfaces;
+   the exact user-facing build-status contract remains to be designed and qualified.
+8. **Change or retire.** Later pushes repeat verification. Reject late results from
+   superseded or deleted generations. Existing Tasks retain their selected version
+   until drain or explicit cancellation permits retirement. Authoritative deletion
+   of a branch-bound environment removes owned resources according to policy;
+   shared resources, retained data and bootstrap survive.
+
+### Canonical State And Independent Lifetimes
+
+| Place or resource | Purpose and lifetime |
+|---|---|
+| Hosted Computer | Private persistent agent/session and working storage, managed through native OpenShell; closing it does not delete a project or service |
+| Lore | Canonical versioned project source, configuration, instructions and assets intentionally versioned; native revisions and authorization |
+| Artifact | Explicitly uploaded inputs, generated outputs, datasets and deliverables, governed by content access/retention |
+| Factory job | Bounded build/check execution from an immutable published revision; disposable working storage |
+| Service deployment | Independently running immutable application version selected by admitted environment configuration |
+
+Files must be pushed or uploaded before the platform can use them. Private agent
+history on the Computer is not canonical project state. Reference identities
+between Lore and Artifact; do not create an automatic second content store. Use
+existing authorized Artifact upload/download byte paths for bulk data, keeping it
+out of MCP/LLM payloads and Hub relays. Artifact is not an OCI image registry or
+builder. General trusted runtime-image construction/distribution remains an explicit
+qualification gate against the existing native build/image path.
+
+The user's agent receives permitted content and may send it to its model
+provider. Canonical remote storage does not establish zero client or model copies.
+
+### Interfaces, Identity And Component Ownership
+
+| Component | Target responsibility |
+|---|---|
+| User's OpenCode | Reason, edit, run normal local commands, call permitted platform tools and use the Lore CLI |
+| Hosted Computer | Provide that same user workflow with persistent private storage, OpenCode, Lore CLI, Hub setup and the configured MiMo default |
+| Lore | Native authenticated clone/sync/push, repository permissions, revision history and versioned desired configuration |
+| Artifact | Managed content metadata, access and authorized direct byte transfers |
+| Hub | Public installation/browser entry point, MCP discovery/actions, application permissions, execution context, delegation and Tasks; planned thin source/revision integration in the existing trusted process |
+| OpenShell | Hosted Computer and factory/service sandbox execution, native templates/SDK, credentials, policy, forwarding, lifecycle and diagnostics |
+| Trusted publisher | Independently accepted check evidence and immutable runtime-image provenance/publication |
+
+Platform MCP operations go through the Hub. Inside the hosted Computer, the native
+Lore CLI connects to the private Lore server over its admitted network. Lore owns
+authentication and repository permissions, with separate grants/audiences from the
+configured identity provider. This path requires no public native Lore forwarding.
+Model inference follows the agent/provider path; the
+Hub is not an LLM proxy.
+Hosted model credentials use native provider custody.
+
+Source read/write, compute, billed operations, environment selection/promotion and
+administration are independently permissioned. Enforce permissions in the Hub and
+native services, preserve the acting user/context, and narrow delegation. Hosted
+Computers must not share an administrative identity. Browser/Computer session
+access and human Lore login/refresh are separate pending qualifications; existing
+supervised factory credentials do not prove human Computer Lore access. The retired
+Desktop authentication adapter is not part of this product.
+
+Human Lore onboarding follows the [direct access decision](LORE_DIRECT_OIDC_PLAN.md#human-access-decision).
+Hub supplies trusted nonsecret setup for the Computer's private Lore connection
+and available repository IDs;
+the agent configures Lore and starts native device authorization. The user approves
+sign-in in the identity provider's browser flow. The target is for Lore to acquire
+and refresh its own credentials in its native encrypted store, obtaining repository
+authorization as operations require it. Issued claims must
+reflect native Lore rights; asking for a scope cannot grant access. A denied branch
+write must not block login, permitted inspection or branch selection. No separate
+platform author/non-author policy is introduced.
+The Hub session and Lore session have separate audiences and lifecycle. This design
+uses the hosted Computer; native client and browser/session acceptance remain
+distinct. The authorized upstream upgrade brings native device login and
+repository exchange from `ec6bdc219575`; refresh is still unimplemented there.
+Preserve native explicit-token semantics, while treating the old agent-in-factory
+qualification as historical. Human Computer credentials need separate acceptance.
+The rejected local OIDC prototype is superseded by upstream adoption.
+
+### One Installation Address
+
+The selected initial product uses one public Hub/browser entry point. Bioma's
+installation origin is `https://veoveo.bioma.ai`; another installation chooses its
+own origin. Each user's agent and native Lore CLI run in a private hosted OpenShell
+Computer with OpenCode, Lore and Hub already configured. Native Lore traffic stays
+on the admitted private network. Lore validates its own bearer and permissions;
+Hub provides platform access; the native Lore client owns repository operations
+over the private connection.
+
+Lore's PostgreSQL and SeaweedFS connections remain private server-side connections.
+The client receives no database or bucket signing credentials. Client-facing
+Artifact transfers must also use the installation origin with their signed
+authority and bytes preserved; the currently deployed separate Bioma object origin
+is historical configuration to replace after same-origin qualification.
+
+The superseded public-Lore investigation found that Cloudflare Tunnel
+public-hostname routing excludes native gRPC. Hosted Computers remove that public
+transport dependency from the initial product. No Hub native gRPC forwarding,
+public ingress replacement or DNS/tunnel change is prescribed. Source:
+[Cloudflare gRPC requirements and limitations](https://developers.cloudflare.com/network/grpc-connections/).
+
+Read-only Linux inspection at 2026-10-19 05:11 UTC confirmed the active tunnel's
+latest logged Hub route to the native gateway at `127.0.0.1:17670`. The host has
+private LAN IPv4, only link-local IPv6 and no listener on port 443. Public Hub
+readiness and OAuth discovery returned HTTP 200 over edge HTTP/2 in 0.167 and
+0.172 seconds; this does not prove native gRPC or origin HTTP/2. Router port
+forwarding, WAN addressing and ISP restrictions remain unknown. These observations
+are historical transport evidence, not an instruction to provision another public
+ingress. No remote configuration changed. Sanitized inspection receipt:
+`/tmp/lore-upgrade-evidence/bioma-ingress-inspection.json`.
+
+### Configuration Ownership And Infrastructure As Code
+
+Lore stores versioned desired configuration referencing native OpenShell templates
+and workload definitions plus one narrow composition schema. No new infrastructure
+language or Kubernetes/Flux layer is needed; native Docker is selected on Mac/Linux.
+
+| Owner | Versioned or trusted configuration |
+|---|---|
+| Service repository | Source, instructions, checks, build inputs, component schema and native workload definitions |
+| Environment repository | Stable environment identity/label, authorized acyclic base selection, owned overrides, exact source/artifact/native template digests, resources, approved policy/provider/data/identity references, access constraints and retention/deletion |
+| Installation/operator | Registered deployment sources, trusted admission/check/publication policy, allowed targets/quotas/providers/volumes, Computer templates, model defaults and credential references |
+| Native OpenShell | Validated execution schemas, admitted resources, runtime inventory, credential custody and lifecycle |
+
+Secret values stay outside Lore. A branch cannot expand its own privileges or
+replace trusted admission. Bases either pin a composition revision or explicitly
+follow admitted updates; only overrides allocate additional workloads. Names such
+as dev, stable or a personal experiment are labels. Hub context isolation, discovery,
+delegation and Task version retention still require implementation. An unhealthy
+override returns unavailable without silent fallback. Route inheritance does not
+isolate data: inherited services keep their configured state, and configuration
+rollback does not reverse database migrations.
+
+The integration remains thin in the existing trusted Hub process. Notifications
+are hints; authoritative revision reads and periodic reconciliation determine
+current intent. OpenShell owns scheduling/execution and runtime inventory. Preserve
+the exact Git source handoff while Cargo dependencies require Git revision pins;
+there is no automatic bidirectional Git/Lore synchronization.
+
+Persistent PostgreSQL/storage migration requires protocol, persistence and
+backup/restore qualification. Keep the identity cold-start bootstrap independent
+of its own OpenShell recovery. GPU/CDI execution is a later, separately qualified
+resource capability. Phases and concrete acceptance gates are recorded in the
+[execution checklist](OPENSHELL_HARDCUT_PLAN.md#agent-operated-platform-adoption-plan).
 
 ## Native Responsibilities
 
@@ -119,13 +311,13 @@ The accepted factory-only Helm/Flux split is superseded by this execution model.
 | Need | Reuse | Remaining integration |
 |---|---|---|
 | Source and immutable revisions | Lore repositories, grants, hooks and notifications | Approved source-to-workload bindings |
-| Authoring, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Exact source/artifact provenance and environment selection |
+| Hosted Computers, builds, checks and deployed services | OpenShell sandboxes, templates, commands, lifecycle and restarts | Human onboarding, exact source/artifact provenance and environment selection |
 | Service reachability | Authenticated native TCP forwarding to loopback services | MCP application authentication, catalog/route selection and health acceptance |
 | Runtime/GPU/storage attachment | Native Docker driver, resource fields and external-resource admission | Host configuration and approved resource references |
 | Credentials and model/API access | Native profiles, attachments, refresh and credential driver | Lore lifecycle, Hub application credentials, management renewal and factory access qualified locally; wider issuer adoption remains separate |
 | Policy changes and inspection | Native policies, advisor, prover, middleware/interceptors | Product-specific admission only; no duplicate approval engine |
 | Sessions, terminals and diagnostics | Native SDK/CLI/TUI and observation APIs | Links to source/check results, no replacement relay or logger |
-| Factory user access | Native OIDC and workspace membership | Mapping approved source authority to runtime access |
+| Hosted Computer and compute access | Native OIDC and workspace membership | Per-user ownership and mapping approved source authority to runtime access |
 | Human identity | Configured OAuth/OIDC provider | Application subject/permission mapping |
 | MCP application behavior | Existing Veoveo Hub and service contracts | Composition, discovery, narrowed delegation and Task authority |
 
@@ -153,7 +345,7 @@ or require access to its database. Agents continue to use the ordinary Lore CLI.
 | Veoveo to OpenShell | Official async `openshell-sdk`, with explicit workspace and HTTPS/OIDC configuration; generated Tonic clients through `raw_grpc_fresh()` for RPCs such as `ForwardTcp` |
 | Veoveo to Lore | Version-pinned Rust client surfaces: `lore` for high-level repository operations and `lore-proto` generated clients with native transport/authentication for remote RPCs |
 | Lore to revision integration | Native branch notifications as wakeups, followed by authoritative reads; periodic reconciliation repairs missed events |
-| Agent to Lore | Maintained Lore CLI with narrow opaque-token/local-identity authentication patches over the qualified supervisor-mediated path |
+| Agent to Lore | Native Lore CLI/protocol; supervised opaque-token path qualified locally, direct human device login/renewal still pending |
 | Veoveo Hub to deployed MCP service | Native authenticated OpenShell forwarding, carrying MCP requests with Veoveo's narrowed application token |
 
 OpenShell documents consuming its [Rust SDK](https://docs.nvidia.com/openshell/v0.1.4/sdk/rust)
@@ -173,28 +365,21 @@ Pin compatible versions and qualify the exact operations used. Prefer the high-l
 client where it owns required version-control semantics; do not reconstruct those
 semantics from raw storage RPCs or parse CLI output in the control plane.
 
-The end-to-end flow is:
+The native [Lore CLI command reference](../lore/docs/reference/lore-cli-commands.md)
+and [revision commands](../lore/lore-client/src/cli/commands/revision.rs) already
+provide working-copy staging, commits and synchronization; repository clone and
+branch push retain their native semantics. OpenShell
+[`create_sandbox`/`exec`](../openshell/crates/openshell-sdk/src/client.rs) provide
+the runtime operations. These existing primitives ground the plan; the automatic
+source-to-build contract and user onboarding are still pending.
 
-1. A user signs in through the installation's identity provider. OpenShell authorizes
-   factory access through native workspace membership; Veoveo authorizes application
-   context and service access. Tokens have separate intended audiences.
-2. OpenShell starts an author sandbox. The agent edits source/configuration and pushes
-   with Lore. Its supervisor mediates permitted egress and holds provider credentials
-   outside the workload. The local Lore gRPC path is qualified as recorded in the
-   execution checklist; other deployments require their own qualification.
-3. A Lore notification wakes the small revision integration. It reads the exact revision
-   and approved environment definition, then asks OpenShell to run fresh checks/builds.
-   Trusted publication records the resulting immutable image digest and check evidence.
-4. The integration requests a service sandbox through the same OpenShell SDK and Docker
-   driver. OpenShell owns startup, supervision and restarts. After application readiness,
-   Veoveo makes that immutable version available in the authorized composition.
-5. An MCP client calls the Veoveo Hub with its execution context. The Hub resolves
-   the selected service version, checks application permission and opens authenticated
-   OpenShell forwarding to that service. The service receives a narrowed application
-   token. Neither the user nor agent receives the Hub's OpenShell management token.
-6. Later pushes repeat the same path; promotion selects a tested artifact. Branch deletion
-   triggers an authoritative ownership check, Task drain/retention decisions and native
-   OpenShell deletion of owned workloads. Inherited services and bootstrap remain.
+The end-to-end target is the [product workflow above](#user-author-build-promote-and-use).
+Its user/agent entry point is a Computer, while factories run deterministic jobs.
+The previously qualified supervised author/factory identity path remains evidence
+for that specific configuration, not qualification of human device login or hosted
+Computer sessions. Hub-to-service calls continue to use authenticated native
+OpenShell forwarding and narrowed application tokens; users and agents do not
+receive the Hub's OpenShell management token.
 
 Only the source/revision-to-workload mapping and Veoveo application semantics are
 custom. Runtime state, credential custody, execution, forwarding, restarts, policy
@@ -253,12 +438,64 @@ The template and Bioma reference use the same
 The execution checklist records deployed qualification; Keycloak's separate
 PostgreSQL service is unchanged.
 
+## Lore Storage Backend
+
+Accepted on 2026-10-18; implementation is installed and local storage conformance
+and restart/persistence checks pass. Published Lore
+`7785408e70ed302296a24383ae302c3a606e78c3`, merged into `origin/main` at
+`9152e7fcb6c0be1c62ec05490f787d271a6d8d3f` with an identical source tree, uses the existing
+SeaweedFS service for immutable payloads and the **same
+`veoveo` PostgreSQL database** used by the platform for its storage indexes and
+mutable references. A dedicated `lore` schema and service login separate Lore's
+tables from application tables. A dedicated Lore bucket and signing identity
+separate its bytes from Artifact content. Separate Lore, PostgreSQL and SeaweedFS
+restarts preserve the exact Time source revision, bytes and native storage references.
+The old local volume is retained but inactive;
+old history was not migrated. Time source was republished into the fresh backend.
+This local proof does not establish power-loss recovery, backup/restore or Linux deployment.
+
+This is a generic S3 + PostgreSQL backend implemented as a separate Rust crate,
+`lore-s3-postgres`, inside the maintained Lore fork, with a small native server
+plugin registration. The exact Lore source revision pins both sides of the
+interface. The implementation is an upstream contribution candidate; independent
+repository/releases are unnecessary for the initial integration. Lore retains its
+native protocol, repository permissions, revisions and CLI. Hub has no new storage
+or credential-broker responsibility.
+
+Upstream's current AWS backend stores payloads in S3 but still requires DynamoDB
+for partition/context associations and payload lifecycle state. Keeping its mutable
+store local does not remove that dependency. The new backend therefore implements
+the immutable index as well as mutable compare-and-swap references in PostgreSQL.
+Native local resource locks remain scoped to one Lore process; this does not
+qualify a multiple-server deployment or high availability.
+
+PostgreSQL chooses the published representation and its associations atomically.
+S3 uploads use distinct immutable object keys so a late upload or deletion cannot
+overwrite a newer published representation. Upload completion alone does not
+publish a Lore object. Storage failure and cancellation tests must cover these
+two-resource boundaries, cross-partition access, shared references, copy,
+obliteration, competing reference updates and restart recovery. Native storage
+conformance and deployed clone/edit/push checks are separate gates. Unreachable
+objects left by canceled uploads require an explicit, documented reclamation
+policy; no background integration daemon or implicit transaction across S3 and
+PostgreSQL is assumed.
+
+The installation provisions the dedicated schema/login and bucket identity using
+native PostgreSQL and SeaweedFS administration. Credentials remain in trusted
+private installation state and never enter source, images or factories. During
+development, initialize fresh Lore application state and reseed from retained
+source and trusted identity/configuration inputs; do not add a legacy storage
+migration to preserve disposable fixtures. See the
+[execution record](OPENSHELL_HARDCUT_PLAN.md#upstream-lore-adoption--2026-10-18)
+for actual source, tests and cutover status.
+
 ## Workspaces And Runtime Placement
 
-A factory sandbox is one active authoring workspace or independently isolated job.
-It normally has one primary repository and can include additional explicitly
-authorized repositories. Build/check workers are separate from author sandboxes;
-verification starts from the recorded revision, not the author's mutable directory.
+A hosted Computer is the authoring workspace and uses a native OpenShell sandbox.
+A factory sandbox
+is an independently isolated deterministic build/check job, normally with one primary
+repository and any additional explicitly authorized dependencies. Verification starts
+from the recorded published revision, not the Computer's mutable directory.
 
 An OpenShell workspace is an access grouping containing sandboxes, providers and
 templates. A Veoveo execution context selects service versions. Map them explicitly:
@@ -471,7 +708,13 @@ that a Lore resource request cannot obtain a token from the Hub and that direct-
 Lore access remains configured. Use focused component regressions and the planned
 Hub/Time integration checks; record the actual checks in the execution checklist.
 
-### First Factory Task: Build Prepared Time Source
+<a id="first-factory-task-build-prepared-time-source"></a>
+
+### Historical First Factory Task: Build Prepared Time Source
+
+This completed acceptance recipe records the former agent-in-factory experiment.
+Preserve its commands and measured evidence; it does not define the future product
+workflow. New factories use deterministic commands, with the agent on a Computer.
 
 The main development session owns Hub/Time integration, source fixes, component
 checks and environment preparation. Complete those before invoking the factory's
@@ -1112,10 +1355,10 @@ qualification. Share browser SSO through the configured issuer, with separate
 resource audiences. Do not forward an OpenShell bearer as a Hub bearer or let
 an environment manifest add an unapproved issuer. Keep the product's permissions,
 context admission, narrowed actor/delegation tokens and Task authority in Veoveo;
-OpenShell roles describe factory access rather than permission to use arbitrary
+OpenShell roles describe hosted Computer/compute access rather than permission to use arbitrary
 MCP services or production data. Lore will validate the IdP's access tokens through
 its native OIDC/resource-grants authorizer. Desktop compatibility is withdrawn;
-retire its authentication adapter after the direct factory path qualifies. Do not
+its authentication adapter is retired. Do not
 extend that adapter with a machine-token endpoint or preserve its signer as a
 second trust authority. See [the cutover design](LORE_DIRECT_OIDC_PLAN.md).
 
@@ -1236,6 +1479,9 @@ of universal policy verification or automatic startup proving is made.
 
 ## Credentials And Repository Authority
 
+The service-credential path below records historical agent-in-factory evidence.
+It does not qualify human Computer login or prescribe resuming that old workflow.
+
 The intended path is: an authorized sandbox makes a Lore request, its trusted
 OpenShell supervisor resolves a repository-scoped credential, and Lore enforces
 that credential at the repository and operation boundary. The author process never
@@ -1292,6 +1538,11 @@ must end. Do not add a Lore stream-expiry contract to manufacture revocation
 acceptance. Never claim that hiding a token prevents abuse of its permissions.
 
 ## Qualified Native gRPC Mediation
+
+This section retains historical Mac transport evidence. The uncommitted
+early-response relay experiment was cancelled and removed; it is not an initial
+product acceptance task. User agents now belong in hosted Computers with private
+native Lore access, while deterministic factory jobs remain planned.
 
 The original OpenShell v0.1.4 source review found HTTP/1.1-only TLS mediation,
 which could not carry Lore's gRPC credential path. The maintained supervisor now

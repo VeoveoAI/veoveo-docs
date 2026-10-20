@@ -1,12 +1,118 @@
-# Direct Lore Credentials Through OpenShell
+# Direct Lore Credentials For Users And Workloads
 
-Status: implemented and locally qualified on 2026-10-17. Direct IdP issuance,
+Historical factory status: implemented and locally qualified on 2026-10-17. Direct IdP issuance,
 native OpenShell renewal/injection and native Lore authorization are deployed.
 The Desktop adapter, signer/manual-token helpers and Desktop-only ingress are
 retired. Historical signer results remain distinct from direct-issuer evidence.
 The execution record is [OPENSHELL_HARDCUT_PLAN.md](OPENSHELL_HARDCUT_PLAN.md).
 
-## Decision And Ownership
+Human authentication was separately authorized on 2026-10-18. Updating Veoveo to
+current upstream Lore and removing superseded local work is now authorized. Human
+CLI access remains unqualified. The user clarified that this work must preserve
+ordinary Lore access and its existing permissions; it does not authorize a new
+platform permission policy. The factory evidence does not qualify this path.
+
+## Human Access Decision
+
+The initial product gives each user a hosted native OpenShell Computer with
+OpenCode, Lore CLI and Hub configured. The public entry is the installation's
+Hub/browser origin. Hub supplies trusted, nonsecret onboarding information for the
+Computer's private Lore endpoint, available repository IDs/URLs and branches, and
+supported CLI setup instructions. The agent runs the native Lore CLI over the
+Computer's admitted private network; Hub does not forward the Lore protocol.
+Lore obtains its own credentials directly from the configured identity provider;
+the Hub bearer is never a Lore credential. The existing Hub onboarding/discovery
+surface still needs implementation and permission acceptance in adoption phase A.
+Here, direct credentials means IdP issuance and Lore validation. Public native
+gRPC ingress, Hub Lore forwarding and local Lore host-port publication are outside
+the selected initial product, as recorded in the
+[single-origin decision](LORE_OPENSHELL_INTEGRATION.md#one-installation-address).
+
+Use the standard OAuth device authorization grant for the first native human
+client. The CLI displays the identity provider's verification URI and user code;
+the user approves that request in their browser, including any required MFA. The
+flow works inside the hosted Computer without routing a browser callback to the
+agent's host. The agent never needs the user's password or a public-client
+secret. This follows Lore's approved OIDC proposal's interactive/headless grant
+choice; it replaces the earlier placeholder browser-code registration for this
+new human scope. Device codes, access tokens and refresh tokens are not diagnostics.
+
+Adopt upstream Lore `ec6bdc2195753b50f70696d367788b4bc8d08964`, whose native client
+implements OIDC discovery, device authorization, authentication-path selection and
+repository token exchange. Our previous `cb2c191f` baseline predates that client
+support. Remove the unqualified local OIDC prototype, including its per-repository
+login coupling and custom metadata field. Use upstream's native authentication
+interfaces and encrypted credential store. At the selected upstream revision,
+`OidcAuthentication::refresh_authentication` still returns `NotSupported`; native
+automatic refresh and a complete human credential lifecycle are open gates.
+The upstream interactive flow is device authorization. Browser authorization code
+with PKCE is a separate possible client improvement, not an implemented feature
+or a requirement added to this upgrade.
+
+Native identity login must be independent of repository selection. Obtain the
+authorization needed for a repository through Lore's native authorization model
+when an operation needs it. Do not require separate sign-in for each repository or
+restrict normal name lookup, inspection or branch selection to simplify credential
+integration. Keep factory `lore-repo-*` scopes and their native OpenShell providers
+intact. Native repository verification and branch protection remain authoritative.
+
+For hosted acceptance, configure the native Lore TLS endpoint privately and admit
+only the required network path from the user's Computer. No host-port publication
+or public native Lore endpoint is required.
+Preserve Lore's issuer-backed token-recipient checks for the actual service
+destination, including advertised endpoints and port overrides. Browser/Computer
+session access and native Lore authentication remain separate qualification gates.
+
+Authentication and authorization are distinct. Every user should be able to sign
+in to Lore and use the repositories, branches and operations that native Lore
+permits. A denied branch write must not remove permitted inspection, branch
+selection or other access. Do not infer Lore exclusion from a user's platform role,
+whether they code, or whether they can push to a particular branch.
+
+The configured native authorizer consumes repository claims issued by the IdP.
+Issuance must reflect the installation's intended native Lore rights, without a
+second Hub permission matrix or invented author/non-author categories. Human claim
+issuance and provider support for native repository exchange remain unqualified.
+The proposed author-only grant provisioner was withdrawn without being applied.
+On the qualified factory baseline, ordinary repository access includes unprotected writes; the empty
+`permission` array is not a read-only role. Preserve native branch protection and
+do not claim per-human branch isolation from the existing factory push hook.
+
+For complete human acceptance, keep identity credentials and repository authorization distinct in the native
+store, with the appropriate issuer, client, subject and resource bindings. Normal
+clone/sync/push must use and refresh those credentials as needed. Save access and
+replacement refresh material together under the native store lock;
+parallel CLI processes must not independently consume the same rotating token.
+Logout clears the scoped local session and requests provider revocation where
+supported. Failed or revoked refresh requires sign-in again. Role removal,
+refresh-session revocation and logout do not retroactively invalidate an already
+issued self-contained access token; report its measured expiry/leeway window.
+
+Hosted Computers use the same per-user grant contract and keep native credential
+state private and persistent. Their session access, storage isolation and credential
+lifecycle still need hosted qualification. A local Keycloak proof does not qualify
+Entra or another customer issuer; each must support and pass the same direct-grant
+and claim contract. Factory credentials remain independently owned and revocable.
+
+Acceptance requires normal users with native Lore rights: real browser-approved
+login; permitted inspection and branch selection despite a denied protected-branch
+push; denial only for repositories/operations native Lore denies; native
+clone/sync/commit/push with exact published revision and bytes; refresh
+after expiry; concurrent renewal; logout and revoked refresh; separate Hub/Lore
+audiences; and unchanged explicit-token factory behavior. Component fixtures,
+deployed issuer/server probes and any final agent acceptance are separate evidence.
+
+References: [Lore's approved OIDC proposal](../lore/docs/proposals/2026-08-20-oidc-oauth2-authentication.md),
+[pinned native OIDC implementation](https://github.com/EpicGames/lore/blob/ec6bdc2195753b50f70696d367788b4bc8d08964/lore-transport/src/auth/oidc/mod.rs),
+and [OAuth device authorization](https://www.rfc-editor.org/rfc/rfc8628).
+
+## Qualified Factory Decision And Ownership
+
+Historical component evidence only. The sections below retain the prior
+agent-in-factory procedure for interpreting its receipts; they are not the initial
+product rollout or instructions to resume that qualification. Hosted Computers
+own user-agent sessions. Future factories are planned deterministic build/check
+jobs with no OpenCode or model required.
 
 The user withdrew official Lore Desktop as an acceptance requirement. This
 supersedes D45/L8 and the former Desktop completion requirements in component
@@ -101,18 +207,18 @@ and [token manager](https://github.com/keycloak/keycloak/blob/26.8.1/services/sr
 define the header setting. Use ordinary [optional client scopes](https://www.keycloak.org/docs/latest/server_admin/index.html#_client_scopes),
 not UMA, a custom mapper, token exchange or a new authorization service.
 
-## Native Lore Configuration
+## Qualified Factory Configuration
 
-Keep the current pinned hook-only server source. Change installation configuration
-and CA packaging, not Lore authorization or transport code. The target local auth
-configuration is:
+The 2026-10-17 factory slice established direct issuer grants and native custody.
+The upstream upgrade retains those settings, removing only the obsolete
+`identity_claim = "sub"` line because native identity resolution now includes the
+`sub` fallback. The reviewed installation configuration is:
 
 ```toml
 [server.auth]
 jwt_issuer = "https://auth.localhost:8443/realms/veoveo"
 jwt_audience = ["lores://vv-lore.internal:41337"]
 jwt_typ = "at+jwt"
-identity_claim = "sub"
 resource_claim = "resources"
 resource_id_claim = "resource_id"
 permission_claim = "permission"
@@ -135,9 +241,11 @@ scopes configured above. Do not advertise another issuer
 for token exchange or build an interactive-login implementation to fill this
 metadata requirement. Factories use their own confidential client through the
 OpenShell provider; they never authenticate as `lore-cli` or request an exchange.
-This is deliberately a factory-only path. The pinned Lore CLI's native interactive
-OIDC/refresh path is not qualified; keep the already-qualified explicit-token CLI
-patches. A future human-login requirement needs its own native-client qualification.
+This is deliberately a factory-only configuration. The source upgrade preserves
+that registration, the advertised native scope template and the existing factory
+grants. Configuring and qualifying the public client for human device login and
+native repository exchange remains separate. Do not infer working human access
+from the factory's successful use of supplied access tokens.
 
 Remove adapter `auth_url`/`user_url`, `repository_catalog_url`, and the adapter
 `[server.auth.jwk]` override. Let Lore discover the IdP JWKS using the pinned issuer.
@@ -163,8 +271,9 @@ already-completed one-time macOS CLI CA trust setup; no per-shell export is adde
 The native contracts are in [Lore configuration](../lore/docs/reference/lore-server-config.md#authentication),
 [settings validation](../lore/lore-server/src/settings.rs),
 [resource grants](../lore/lore-server/src/authnz/resource_grants_authorizer.rs)
-and [JWT validation](../lore/lore-server/src/auth/jwt.rs), inspected at `cb2c191f`
-(v0.10.1 plus the existing CLI/hook changes).
+and [JWT validation](../lore/lore-server/src/auth/jwt.rs). The original factory
+qualification used `cb2c191f`; upgrade evidence for candidate `8be7e6e6` is kept
+separately in the [execution record](OPENSHELL_HARDCUT_PLAN.md#upstream-lore-adoption--2026-10-18).
 
 ## Native OpenShell Provider
 
@@ -234,6 +343,9 @@ The stock 0.1.4 gateway supplies refresh; retain the currently pinned supervisor
 HTTP/2 mediation patch. No new OpenShell core change is planned.
 
 ## Implementation Order And Acceptance
+
+This is the historical factory acceptance procedure, not the current work queue.
+Use the execution checklist for the hosted Computer work and storage restart gate.
 
 The execution checklist records the current status of the local gates below.
 Use disposable, owned test resources and the existing small fixture seeder.

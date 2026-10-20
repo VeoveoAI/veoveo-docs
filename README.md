@@ -6,12 +6,12 @@ component owns.
 
 | Document | Contents |
 |---|---|
-| [Platform Visual Guide](diagrams/veoveo-platform.html) | Interactive diagrams of the qualified Lore/OpenShell + Hub/Time/Artifact platform, credential path and planned Media integration, using the whitepaper palette. Open the HTML locally in a browser. |
+| [Platform Visual Guide](diagrams/veoveo-platform.html) | Three interactive views: historical qualified Mac platform, credential path, and current Linux reference plus the planned Computer → Lore → deterministic factory workflow, using the whitepaper palette. Open the HTML locally in a browser. |
 | [Repository Split Plan](REPOSITORY_SPLIT_PLAN.md) | The repository catalog, the contracts between repositories, server registration and authorization, component environments, and the decisions and tasks with their status |
 | [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) | Lore-managed environment definitions without fixed stages, service overrides, native OpenShell execution, identity delegation, CUDA and provider custody |
-| [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | Native Rust interfaces and component flow, OpenShell Docker-driver factory/service execution and MCP enforcement, Lore hooks, identity and credential boundaries, HTTP/2 and optional QUIC integration, extension/fork policy and qualification order |
-| [OpenShell Hard-Cut Plan](OPENSHELL_HARDCUT_PLAN.md) | Inventory, state preservation, removal of the old execution path, minimal replacement and focused acceptance after the cut |
-| [Direct Lore Credentials Through OpenShell](LORE_DIRECT_OIDC_PLAN.md) | IdP-issued native Lore grants, OpenShell renewal and termination, exact local configuration, acceptance steps and Desktop adapter retirement |
+| [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | Canonical full platform plan: user agents/Computers, Lore and Artifact publication, deterministic factories, configuration ownership and environments; native interfaces, trust boundaries and preserved qualification evidence |
+| [OpenShell Hard-Cut Plan](OPENSHELL_HARDCUT_PLAN.md) | Measured Mac/Linux execution status and evidence, active Linux/webhook gates, and pending phased adoption/acceptance for the agent-operated platform |
+| [Direct Lore Credentials For Users And Workloads](LORE_DIRECT_OIDC_PLAN.md) | Native user device login and scoped grants, qualified factory OpenShell renewal/termination, local configuration and separate acceptance evidence |
 
 Update the visual guide in the same change as every major architecture change,
 alongside the architecture document and execution checklist. Keep implemented and
