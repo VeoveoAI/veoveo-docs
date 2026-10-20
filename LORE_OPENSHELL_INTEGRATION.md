@@ -1942,7 +1942,7 @@ would not establish isolation.
 
 ### Accepted Personal Lore Workspace Default
 
-**Accepted planning direction, not implemented onboarding.** A personal Lore workspace
+**Implementation in progress; not yet qualified.** A personal Lore workspace
 repository is the default home for versioned user setup, not an automatic mirror of the Computer's home or a mandatory repository
 per environment. The user may choose another authorized location. Illustrative paths are `environments/my-work.yaml`,
 `environments/media-experiment.yaml`, root `AGENTS.md` and `projects/README.md`
@@ -1951,10 +1951,32 @@ discovery when the workspace checkout is the working directory; an optional
 `instructions/` directory can hold referenced documents. These are illustrative
 layout conventions, not a required schema or a new project registry protocol. Service source stays in its own repositories,
 referenced by stable IDs and branch/revision selectors; shared definitions may
-live in a team workspace repository. Hub can associate a user with a stable native
-repository ID under existing Lore permissions. Automatic repository creation,
-default association/onboarding and its user-facing surface remain to be designed
-and qualified; none is implemented by this plan. The Computer checks out the authorized workspace for instructions/environment files;
+live in a team workspace repository. Hub associates a tenant/principal with a stable
+native repository ID under existing Lore permissions. An optional live installation
+default selects an explicitly registered native deployment; no first-by-name or
+compiled repository choice is allowed. Reserve native repository/default-branch IDs
+before creation, verify the actual returned identity, then publish the actual
+repository and creator assignment through the existing control-revision CAS. Reuse
+of an existing repository requires the caller's current native grant and adds no
+Owner privilege. The association survives Computer recreation and is not replaced
+when installation defaults change. A reserved publication revision lets retry
+distinguish an unfinished publication from an already committed grant that was
+subsequently revoked.
+
+The integration remains inside the Hub executable's native contribution. A generic
+Computer onboarding hook runs after credential custody completes, outside its row
+lock. Optional workspace failure leaves Computer access usable with explicit
+pending/auth-needed/failed status. The initiating OAuth client's current registration
+must allow the selected native audience and scopes. A platform refresh family is
+never substituted for a native Lore family. Native CLI login, token storage and
+refresh remain unchanged: a small installation helper continues exact-ID checkout
+after native login succeeds, and admitted Computer entry retries with existing
+native authentication. Hub delivers only a public typed checkout descriptor through
+owner-bound native Exec. This requires the existing native `sandbox:exec` scope for
+Hub's provisioning identity; it adds no external Exec endpoint. These paths still
+require component and deployed qualification.
+
+The Computer checks out the authorized workspace for instructions/environment files;
 working checkouts, caches, scratch and session history remain private unless the
 user explicitly commits and pushes selected source/configuration. No automatic home
 synchronization or additional Lore permission scheme is introduced.
