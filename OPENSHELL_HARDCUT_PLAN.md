@@ -2068,6 +2068,126 @@ OpenShell or Hub TLS source change was needed. First Computer apply, E0 checkout
 independent overrides, source updates, failure/recovery and final model acceptance
 remain open.
 
+### Live Computer admission, first owner environment and refresh defect — 2026-10-21
+
+Astra published only `computers` and the two relevant OAuth client registrations
+through the existing live admin API. The Computer uses the published
+`computer-env-v1` template, the native control gateway, installed versioned policy,
+existing model/provider profiles and the quoted trusted `PUBLIC_BASE_PATH` command.
+Both `opencode` and `computer-browser` now admit the existing native Lore resource
+and `lore:login`/`offline_access` scopes alongside their original MCP admission.
+No repository grants or Lore rules were added. The single PUT took 209.824 ms,
+readback 289.724 ms, producing revision
+`gcp-01a15c28-1726-78e1-8a50-ea4062440ad6`. The Hub sandbox, workload Pod and
+main PID 87 were unchanged around publication. Receipt:
+`/tmp/e0-live-computer-config-review-20261021/publication-receipt.json`.
+
+The actual admin owner created environment
+`01a15c2a-d9ad-773e-8eca-b2aa33228c83`, display name `Rozgo environment A`,
+through normal owner PUT `/environments/local/{id}` with an empty component map
+and an explicit following base. Creation returned 202 in 306.161 ms; readback
+took 149.521 ms. Selected `server/discover` took 243.306 ms, `tools/list`
+646.102 ms and `time__resolve_time` 146.703 ms. All returned 200; the list's
+40 full descriptors exactly match the base, and the same UTC input returned
+the same measured Time instant. These direct HTTP calls prove owner creation
+and inheritance, not Computer-local apply or an activated override. Evidence:
+`/tmp/e4-environment-a-20261021/routing-receipt.json`.
+
+A separate live update admitted only environment A's Time component to
+`development-time-v1`, explicitly using existing Time `shared_logical_schema`
+storage. The PUT took 170.770 ms; current revision is
+`gcp-01a15c2c-107c-7dc2-800f-655b96ac021b`, SHA-256
+`1b352b5266060c63677f100bf092c5a27a8c0407676c5ad66e1f352adb1a8989`.
+No reusable runtime has yet been created by an apply, and the second owner's
+environment remains pending.
+
+Luna configured and initially rotated the independent QA admin/member families
+in native OpenShell custody at 01:51:03 UTC. Their subsequent renewals failed
+after the multi-resource client update. The existing native SDK role probe
+`each_role_lists_the_tools_it_may_call_and_the_member_is_refused_the_rest`
+exited 101 in 0.78 seconds: native credential mediation returned
+`credential_unavailable` before a Hub discovery request. No Artifact was created
+and no test-body behavior was proved. Log:
+`/tmp/hub-qa-sdk-roles-20261021.log`, SHA-256
+`1d9530f3e34e2cf5d0d9fd651ab1725b5910f839e812570300ab5b71e6721a21`.
+
+The user's fresh browser sign-in reproduced the same problem during initial
+Computer custody. Hub's authorization-code exchange returned 200 at
+01:58:58.817004 UTC, native refresh returned 400 at 01:58:59.080120, and
+`/computer/callback` returned 503 at 01:58:59.119940. Computer record
+`01a15c2e-e227-7372-81ee-c0af1d0b43dd` and native workspace
+`cejc5lva2y4bmy4lcvp` exist; no Computer sandbox was created. Its native provider
+reports `investigation_required` with `oauth_unrecognized_error`.
+Redacted receipt: `/tmp/computer-callback-503-diagnosis-20261021.json`, SHA-256
+`a3024b92111378d2a57e0fd1713ae01ab1776dab8efdf8b691e796afdbf920d6`.
+
+Sol traced the common cause: native OpenShell refresh sends client ID and refresh
+token without a `resource` parameter. Hub currently resolves a resource before
+reading the refresh family and requires an explicit parameter for multi-resource
+clients. The successful operator path sends that parameter. The approved narrow
+Hub fix uses the retained family resource when refresh omits the parameter, while
+preserving exact client/issuer binding, current resource/scope admission and the
+existing atomic rotation/replay rules. There is no default-resource guess, SQL
+schema change, Lore change or OpenShell change. The existing native families have
+not been reset or replaced.
+
+Sol implemented the four-file correction; Astra reviewed the production paths
+and targeted regression assertions, then verified the exact frozen source before
+publishing Hub `60fc3f99c55281e363bd565f47059ba7f368db5e` to `origin/main`.
+Luna ran the required `docker build --target check .` independently on Mac and
+Linux. Both exited 0 with 273 tests passed and one skipped. HTTP regressions cover
+multi-resource renewal, explicit wrong-resource rejection, duplicate delivery and
+current-resource withdrawal. State tests cover family expiry/revocation and
+client/issuer binding.
+Mac's final check stage took 170.0 seconds plus 30.4 seconds export; Linux's took
+204.2 seconds plus 35.5 seconds export. These are component gates, not deployed
+renewal or Computer acceptance. Frozen manifest:
+`/tmp/hub-refresh-resource-fix-20261021/source-manifest.json`, SHA-256
+`b84c1be1a801f3984f4a83614ca1b8acdd039e5eea451947bbf9dbc1449145d9`.
+The consolidated check receipt is in the same directory as `receipt.json`, SHA-256
+`a9945aea8b32ec4e50374451eacfa14e26f46cbb634c5e5ee76c7d48592b1a6a`.
+Luna built the runtime on Linux and published digest
+`sha256:a8936fc3229be0683d46c7d8519c1e1f53206acb1b8f45c1967dc4441d3af308`;
+the actual Hub ELF SHA-256 is
+`6c16c30eebfb3f8fcea32df5c8fe23361cacfeda38c24ec821285d87fb059475`.
+Only Hub was replaced. Native sandbox
+`8014fe12-90eb-4641-a615-6d8ae903f1fa`, Pod UID
+`f3ac8fa1-6903-499f-acfb-fa0005c98cd2`, became Ready with zero restarts;
+public readiness reported four servers and two profiles. Astra's authenticated
+control readback returned 200 in 156.796 ms with the exact prior revision and hash.
+
+Two deployment preparation failures were resolved without a source or policy
+change. An SSH disconnect canceled the first image export after release
+compilation; the exact cached build was rerun detached on Linux. An attempted
+create from an effective policy dump was rejected because that dump contains a
+reserved generated provider rule. The retained authored policy was then used
+unchanged: `hub-policy-e0-v11-policy.json`, SHA-256
+`0e6820f9bedab2ec5475a4b5fc83d17218ae570ba13f6bb3e7987b960773482e`.
+Future replacements must resolve authored create inputs before stopping a workload.
+
+At 02:27:01 UTC, one native rotation per retained QA family succeeded. Without
+another manual rotation, both renewed automatically at 02:29:06 UTC to expiry
+02:34:06 UTC; the paired token requests returned 200 in 12.30 and 8.18 ms.
+The role probe now passed authentication but stopped in 1.64 seconds because its
+retained acceptance binary sent the removed Artifact `sha256` property. The
+current published schema correctly refused that field. Member-denial assertions
+were not reached; a matching acceptance package is required before claiming that
+gate. The sanitized Linux receipt, copied to Mac, is
+`/tmp/hub-refresh-resource-fix-20261021/deployment-receipt.json`, SHA-256
+`c40e712996a0bebee336a3c6e78e4d32d9718ec62570befd04546ead07b2a38a`.
+
+Astra then opened `/computer` in Mac Chrome and selected the actual administrator
+account. A transient browser-control frame-tree timeout occurred while navigation
+continued; the next observation showed the rendered OpenCode home for Computer
+`01a15c2e-e227-7372-81ee-c0af1d0b43dd`, with Projects, Settings and New session.
+Screenshot: `/tmp/hub-refresh-resource-fix-20261021/computer-recovered.jpg`.
+The browser receipt is `computer-browser-receipt.json` in the same directory,
+SHA-256 `ad6954a290491b07147547a1feb80fbe50849df1219b280b14b4b02ca00f0aca`.
+No model call was made. No red browser warning appeared in this retry; this does
+not establish that Google's site classification changed. The separately read
+authenticated `/computer/onboarding` currently returns `"unavailable"`; native
+checkout and source-activation qualification remain open.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.

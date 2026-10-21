@@ -412,6 +412,22 @@ prerequisites, not qualification of the personal source-update workflow. The
 execution plan records source gates, package probes and routed calls separately
 from the still-pending end-to-end deployed qualification.
 
+The first actual owner environment now follows that base and passes selected
+discovery and a Time call. Computer configuration and runtime eligibility were
+published through the live control API. First-use Computer setup encountered a
+measured OAuth refresh defect: the native client omits `resource`,
+and Hub rejects that omission after its client registration gains both MCP and
+Lore resources. The browser authorization-code exchange succeeded. The approved
+Hub correction resolves an omitted refresh resource from the token family's
+existing exact resource binding, retaining current admission and rotation checks.
+It changes neither Lore authorization nor OpenShell's native refresh protocol.
+The correction is published and deployed as Hub `60fc3f9`, with full Mac/Linux
+component gates passing. Both native QA credentials rotated and subsequently
+renewed automatically; a fresh administrator sign-in in Mac Chrome rendered
+OpenCode. This qualifies the reported login/refresh recovery, not the remaining
+personal Lore checkout or source activation. The current Computer onboarding
+status is `unavailable` and is being investigated separately.
+
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
 and build cache. Template/toolchain changes and general trusted image publication
