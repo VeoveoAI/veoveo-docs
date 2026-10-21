@@ -1804,6 +1804,30 @@ and requested inspection of the active target directory and clean scope before
 the existing full offline gate. No partial metadata was imported into primary
 source.
 
+Inspection of the installed SQLx 0.9 implementation identified the missing scope:
+`prepare --workspace` touches workspace packages, while `--all` also recompiles
+query users in pinned dependencies outside the workspace. The failed completeness
+assumption was visible in the log: only ten artifacts removed and only Hub
+rechecked. The v11 correction adds `--all` to the existing Docker check and README
+preparation command; it changes neither Rust/SQL nor migrations. The coordinator
+reviewed the two-file delta and independently matched all 100 candidate hashes,
+manifest SHA-256
+`511770f6f6cf48d617e7a9eda82a5669bc6fd21da71731b346241629447b715f`.
+Luna then completed preparation plus independent `--all --check` in the
+verified disposable Linux export, reusing its dependency target: both exited 0,
+with compiler timings 20.27 and 10.00 seconds. The complete set contains 243
+files; log SHA-256 is
+`e40f814f0c6415b11b0023f29d7aa3df0fe92f6c00f2386da3c7cc50e15cf79c`.
+The coordinator verified the archive, all file-manifest hashes and each JSON's
+query-content hash/filename, then imported that exact complete set into primary
+source. Archive SHA-256 is
+`0880366b7591e86abe60b63d84429537b91334ed23c0fd57f76dfbea0831aa4d`;
+manifest SHA-256 is
+`97989c0a3ec09cf9e2c9b6e298688593c91b6b5750e515448280722d5c9a3002`.
+The same v10 Rust/SQL source passed a warm offline all-target/all-feature check
+in 0.29 seconds; this is not a clean-build receipt. Required v11 full component
+gates remain pending.
+
 Baseline image preparation exposed avoidable packaging overhead. The built
 Embedding image contained both a 5.6 GiB installed environment and a 5.6 GiB uv
 package cache. `coder` replaced the two dependency-installation RUNs with standard
@@ -1860,6 +1884,47 @@ five approved application schemas dropped (46 app-owned objects). Postcheck
 retained audit, identity, kernel, lore, tasks and usage; the independent OpenShell
 gateway database was untouched. Ready-image recreation and new control seed are
 the next rollout steps; service readiness and Computer acceptance remain unproved.
+
+Initial native recreation exposed two installation-input issues, not new runtime
+requirements. Effective `sandbox get --policy-only` output includes reserved
+provider-composed policies; use native `policy get --base` for round-trippable
+input and attach the existing providers normally. The five remaining saved bases
+matched native base-policy output. Hub then reached PostgreSQL but exited with
+`selected deployment has not been admitted`: the v3 seed preselected four new
+deployment IDs before any service registered them. Sol read the actual `agent`
+container log; native supervisor logs alone had shown only canonical exit 1.
+The uploaded seed was readable by UID 10001, so its path and permissions were not
+the current failure. The approved correction keeps the same explicit default
+environment and clears only its component selections for bootstrap. Register the
+base services, then publish their admitted deployment IDs through the existing
+control-plane flow. This requires no integrity bypass, fabricated deployment
+rows, Hub source change or new orchestration.
+
+The corrected v4 seed passed the published Hub's offline validator. Its SHA-256 is
+`c5b42060a8e344f1c09665c729c5a0f331478dbbec92052327a3941632a3f896`.
+The failed main's restart-loop phase rejects native uploads, so the repair used
+the existing trusted config-PVC bootstrap Job pattern to atomically replace only
+`hub.json`. The Job needed the existing operator registry-pull credential's normal
+namespace-local copy; no credential rotation or new issuer was involved. Its copy
+and comparison succeeded, and the completed Job/input Secret were removed.
+One native recreate restored the original documented main command with no
+upload-wait or `/sandbox` config override. New Hub sandbox
+`e5ef9b31-4097-41d3-ad39-04bd13990b2c` is Ready with restart count 0 on the same
+published `628e18d` image; its mounted config hash matches v4. Active control
+revision is `gcp-01a15c00-45f8-7462-a64a-586d51c13aa7`.
+The Linux local `/readyz` probe returned HTTP 200 in 5.3 ms with ready status,
+zero servers and two profiles. The coordinator separately opened public
+`https://veoveo.bioma.ai/readyz` in Mac Chrome and observed the same response
+without an interstitial; browser latency was not measured. MCP registration and
+the new Computer/environment workflow remain unqualified. Full v11 Docker gates
+are now running on both hosts from identical verified source and the 243-file
+metadata set.
+
+Installation documentation records the empty-map bootstrap and native base-policy
+export in its v2 candidate. Only `kubernetes/WORKLOADS.md` changed; all image inputs
+remain unchanged. The coordinator reviewed the delta and matched all 18 hashes,
+manifest SHA-256
+`b72f1b255b992f034e382e0af338cd17e745644bb2bfbf579d08f67de25b4eb9`.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
