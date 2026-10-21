@@ -2188,6 +2188,131 @@ not establish that Google's site classification changed. The separately read
 authenticated `/computer/onboarding` currently returns `"unavailable"`; native
 checkout and source-activation qualification remain open.
 
+The matching Artifact role probe subsequently passed. Luna rebuilt the existing
+acceptance target from published Artifact `b53d15e9` on Linux with `server client`
+features in 55.03 seconds. The resulting 586,089,296-byte executable has SHA-256
+`3e6b3fcf48d9873cce5626b107fdac83dd6822e6dba10a8300bba8f9492e53bc`.
+It replaced only the disposable QA binary; native Stop/Start admitted its new
+executable identity in generation `639c354f-528c-4b32-82f1-61150de952a0` without
+changing application workloads or native credential custody. The exact ignored
+role test passed 1/1 in 2.20 seconds. It checked the member's eight permitted
+Artifact tools against the administrator's fifteen, uploaded a 1,024-byte fixture
+as admin, refused the member's grant/delete/share-link/limit-change calls, then
+deleted the fixture as admin. This also exercised the retained native credentials
+after their initial expiry; it does not qualify the remaining Artifact suite.
+Receipt: `/tmp/artifact-acceptance-b53d15e9/receipt.json`, SHA-256
+`c0ac9dcf2e2fdf44d39490588ca643480df5dd2774f4445297ad5da080fdadaf`.
+
+The separate onboarding failure was localized before any native Lore RPC. Hub
+logged `invalid native TLS endpoint` at 02:27:23.895661 UTC; the association remained
+`reserved`, and the Computer had no workspace descriptor. Both the workspace
+client and source-activation adapter attempted `Url::set_scheme("https")` on a
+validated `grpcs` URL. The URL library rejects crossing from a non-special scheme
+to a special scheme. Sol prepared one shared typed endpoint conversion, retaining
+the existing native endpoint validation, authority/port, native TLS roots and
+timeouts. This changes Hub integration only, not Lore permissions or OpenShell
+policy. Its two call sites and focused DNS/IPv6/invalid-input regression are frozen
+for validation in `/tmp/hub-native-tls-endpoint-fix-20261021/`, manifest SHA-256
+`508c1edc5f4712b632148a4725c571e3c9d9f0150bfc113ef65c01fc99577550`.
+Both canonical component gates passed: 274 tests and one skipped on each host.
+Mac nextest took 35.255 seconds (check stage 152.5 seconds); Linux nextest took
+37.575 seconds (check stage 198.5 seconds). A shell wrapper incorrectly assigned
+zsh's reserved `status` variable after the successful builds; an unchanged cached
+invocation captured exit 0 on each host. No source change or new test iteration
+was required. Check receipt: `gates/receipt.json` in the same directory, SHA-256
+`10ac5f48cbc040e232dcb6fb92e3efac27330a84885ed50218d515a4f2821da0`.
+Astra verified all four frozen file hashes and published Hub
+`8e62346b0171d176c7d5d748bb316e685f0b6391` to main. Luna built that source on Linux
+and deployed manifest
+`sha256:2431eec0536ce29936456300f96a1a3ed202ec242ab411698d22b3021f38a724`;
+the Hub executable has SHA-256
+`2186cd17706b85622b6adf35481e1ed6da9707021c5b1cf90a55ce40ad5631b1`.
+Native sandbox `65c5c4e6-9350-4df9-8ac1-99ff58a8159f` is Ready, workload Pod UID
+`3e75597b-e28a-42f1-8d4f-8bb5d9137105`, restart count zero. Its original provider,
+authored policy, configuration and CA claims remain. The CLI's unnamed exposure
+initially returned 404; restoring the existing named `http` service at
+`127.0.0.1:8080` with `bearer_passthrough` restored public readiness to HTTP 200,
+four servers and two profiles. No source or authorization change was needed for
+that exposure correction. A historical create-input snapshot was initially
+mistaken for the live sandbox identity; native Get and Kubernetes workload metadata
+established the actual old/new IDs before replacement. Deployment receipt:
+`/tmp/hub-native-tls-endpoint-fix-20261021/deployment-receipt.json`, SHA-256
+`021194c892c7258abaa00368af15da7915495cf3e58d22799b2e49fce498ef51`.
+
+The full control document stayed unchanged across replacement (SHA-256
+`1b352b5266060c63677f100bf092c5a27a8c0407676c5ad66e1f352adb1a8989`).
+Ordinary `/computer` entry then completed personal repository provisioning and
+changed only the live `lore` contribution, without another Hub restart. Revision
+`gcp-01a15c48-e672-7531-b364-e4ebfcb601d3` has control SHA-256
+`f8a3fc183bae021a759085fcf2b36d2a368d3eed39aea1c27a6b5a7a6a288ef6`.
+The existing Computer remained Ready, with the same workload Pod and no restart.
+Its 238-byte mode-0600 descriptor contains native repository
+`01a15c48e6727531b364e4c7ac13babe` and branch
+`01a15c48e6727531b364e4de635b025d`. Mac Chrome rendered OpenCode and onboarding
+reported `authentication_required`.
+
+Astra approved the ordinary `lore-computer` device sign-in as `rozgo@bioma.ai` in
+Mac Chrome; the callback visibly reported success. The identity is present in
+the helper's configured native Lore auth store. The helper then exited 88, and
+its documented `--retry` also returned 88: native `RevisionNotFound`, not an auth
+refusal. Source and deployed diagnostics agree that unconditional `--branch ID`
+becomes `ID@latest`, while this new repository has no revision yet. Lore's ordinary
+clone already supports an empty default branch. Sol is correcting the installation
+helper's selection and pre-publication identity check; no Lore change, fabricated
+revision or additional login is needed. Personal checkout remains unqualified.
+The initial auth-store diagnostic omitted `LORE_AUTH_PATH` and inspected the wrong
+store; repeating with the helper's actual environment found the successful grant.
+
+The two-file helper correction is published as installation
+`5fe9b6db9faf7e3df17a4f8f80b9a605a15ed3cb`. Its manifest SHA-256 is
+`544cf805f460281ca124054f0e7c8a15a0f8ef8c78a987023a585d014b0b1fd8`
+in `/tmp/computer-workspace-empty-branch-fix-20261021/`. The native default branch
+ID selects ordinary clone only when it matches the retained descriptor; otherwise
+the explicit retained branch is used. Native repository, remote and branch are
+verified in staging before publication and on existing checkouts. Mac and Linux
+shell syntax checks and six isolated helper fixtures pass (Linux 0.780 seconds),
+covering empty defaults, changed defaults, staged identity mismatch, existing
+checkout identity and preserved native auth refusals. These are fake-CLI composition
+tests; actual native clone qualification awaits the cached Linux Computer rebuild.
+Lore source confirms the empty clone retains a branch anchor and local branch info
+can read it without resolving a nonexistent revision.
+
+Native credentials continued to renew: the Computer provider was refreshed at
+03:06:06 UTC with expiry 03:21:06; QA admin/member were refreshed at 03:03:06 with
+expiry 03:08:06. The QA families had first needed a single native rotation after
+the temporary issuer-route 404. No stale grant files or replacement credential
+store were used. No model call occurred.
+
+The first Time override preflight requires no additional storage seed in the
+current installation: `time.active_authority` has zero rows, so ordinary Time
+resolution uses packaged zoneinfo, tzdata and leap-second input. Empty private
+acquisition/release directories are created by Time itself. This is not a general
+shared-file-storage proof: the current `SharedLogicalSchema` binding shares
+database access only, and later acquired releases reference absolute file paths
+that must be available to each selected worker. `/readyz` checks the clock, so
+the actual selected tool call remains required. No cache-copy workaround or
+additional runtime mount was added for this preflight.
+The exact published development image `b940627a…17f445ca` also passed an isolated,
+network-disabled package probe as UID/GID 10001: executable `/usr/sbin/zic`,
+111,358-byte `tzdata.zi`, 5,065-byte `leap-seconds.list`, and the UTC zoneinfo file.
+This proves packaged inputs, not a running Time override.
+
+The first actual Computer-local apply used published Time `f5d3fb1d`, definition
+SHA-256 `f12b3731237f3c693650b3f3debeaf30ec31f6694aada923461941cf7d757ac6`,
+and the native Computer's own Hub reference. Its 1,920,512-byte source snapshot
+uploaded in 1,081 ms with SHA-256
+`f58fca51d4b31c9f397d01f7e913bbd065efb68a5dcf233ca5a852dd11054fc2`.
+Apply allocated BuildId `01a15c6d-f110-70e3-bf3d-7bf7b17c01d6` and deployment
+`01a15c6d-f110-70e3-bf3d-7c0b809d5a91`, then failed during source materialization,
+before compilation. The exact underlying stage is under investigation; no policy
+change or retry is yet recorded. Independent coordinator wire probes at 03:08 UTC
+still list 40 base tools and resolve the fixed Time input successfully (222.118 ms).
+Selected A lists 19 tools with no Time tool and refuses an explicit Time call with
+`unknown server time`, consistent with an owned override that has never served.
+The CLI's generic previous-serving message does not prove an earlier A worker.
+Receipts are `/tmp/e4-base-before-20261021/receipt.json` and
+`/tmp/e4-a-first-failure-20261021/receipt.json`. First-source activation remains open.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.

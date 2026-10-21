@@ -425,8 +425,18 @@ The correction is published and deployed as Hub `60fc3f9`, with full Mac/Linux
 component gates passing. Both native QA credentials rotated and subsequently
 renewed automatically; a fresh administrator sign-in in Mac Chrome rendered
 OpenCode. This qualifies the reported login/refresh recovery, not the remaining
-personal Lore checkout or source activation. The current Computer onboarding
-status is `unavailable` and is being investigated separately.
+personal Lore checkout or source activation. The separate `unavailable`
+onboarding status was traced to Hub's invalid `grpcs` → HTTPS URL scheme mutation
+before any Lore RPC. Shared authority-preserving conversion is published and
+deployed as `8e62346`, with both platform checks passing. First-use provisioning
+now creates the personal repository and publishes its actual native IDs through
+the live control plane. Native device sign-in succeeds and stores the user's
+grant. Checkout exposed a separate installation-helper error: explicitly asking
+for `<branch-id>@latest` cannot clone a newly empty branch. The helper correction
+uses Lore's supported default-branch clone path when it matches the retained ID,
+and verifies the resulting checkout before publishing it. That correction and
+checkout qualification are in progress. Lore's native permissions and OpenShell
+policy are unchanged.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
