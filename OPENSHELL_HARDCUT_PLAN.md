@@ -2794,6 +2794,38 @@ Consolidated receipt:
 `7feaa7f668aad926120a887a873b641ca88909738ee0da5aced183efce001c9c`.
 Selected-call evidence is `/tmp/e4-a-lore-marker-20261021/receipt.json`.
 
+The nested definition subsequently passed through the same native path. Luna
+published `e4-definition-qualification/envs/zz-environment-a.json` and 40 ordinary
+sibling files at personal-repository revision
+`280787648923c7240d1725b59593057aa80f6239d9bd44b859c8881389796189`.
+Two initial selection requests returned 503 in 5.33/4.59 ms because the operator
+command supplied the Time execution deployment UUID to `--deployment`, which
+expects the Lore deployment name. A read-only database query confirmed the normal
+client, scope, repository and owner admission, and that `primary` exists while
+the supplied UUID does not. The corrected command used `--deployment primary`
+and was accepted at 06:05:10 UTC; no authorization, policy or source change was
+needed. The coordinator observed selector generation 12, that exact revision and
+the nested definition's display name. The same component Build, selected
+deployment, source bytes and output remained Serving. This proves nested-file
+reconciliation and a definition-only label update without a component rebuild;
+the sibling count alone does not establish the target's native stream ordinal.
+Receipt: `/tmp/e4-lore-follow-20261021/nested-definition-observed.json`.
+
+Shared Computer guidance is implemented and published in Hub `0493f95`, with
+the installation package still under validation. Sol added optional plain
+`computers.handbook` Markdown delivery through the existing per-owner entry job;
+failure does not block Computer entry or require login/checkout. Handbook-only
+control updates reuse native provisioning. The configured private instruction
+file is atomically replaced on the next admitted Computer entry; native OpenCode
+watching supplies subsequent prompt steps. There is no fleet-wide push or new
+authorization layer. Both exact-source full Hub gates passed: Mac and Linux each
+276 tests passed, one skipped, Nextest 34.344/36.236 seconds. The first Linux
+attempt failed because the transfer archive contained AppleDouble files that
+SQLx treated as migrations; a clean source context passed without a code change.
+Gate evidence and frozen manifests are under
+`/tmp/computer-managed-handbook-20261021/`. This is source/check evidence only;
+image packaging, live delivery and browser/model qualification remain pending.
+
 The coordinator separately qualified route removal during a working read-only
 Time Task through the existing authenticated HTTP client. B's Task
 `gtr_hDWHTZAWqDvJb3_pYMjdtaYU8d05qlFQ2c_-ezDdNvI` was created at
@@ -2865,14 +2897,14 @@ and evidence above remain separate from this mechanism-only checkpoint.
   environment file in an existing registered Lore repository. Omitted means inherit;
   explicit unhealthy override means unavailable; removal resumes the base or becomes
   unavailable if absent there. Labels carry no semantics. Separate authenticated
-  environment selection from business WorkContext/data ACL. Current
-  deployed behavior predates this work; the new source keys `RegistrationSnapshot`
-  by deployment. Qualify multiple live instances without a newer registration
+  environment selection from business WorkContext/data ACL. The deployed source
+  keys `RegistrationSnapshot` by deployment; the A/B/base receipts above establish
+  multiple live instances. Qualify them without a newer registration
   taking another environment's route.
 - [ ] **E2 — Session-context routing and complete composition capture.** Bind an
   authenticated Hub MCP connection/session to selection using qualified native
   client/SDK contracts; the route remains `/mcp/{profile}`, with the typed selection
-  header implemented in source and awaiting deployed qualification. Verify OpenCode's actual configuration/context surface;
+  header exercised by the deployed A/B/base probes above. Verify OpenCode's actual configuration/context surface;
   no assumed picker. Two simultaneous sessions retain different maps while using
   normal logical tool names. Scope discovery/schemas, cache keys, paging, downstream
   delegation and Task lookup to resolved composition plus deployment revision.
