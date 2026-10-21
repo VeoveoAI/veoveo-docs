@@ -398,8 +398,11 @@ gates in the execution plan. The native investigation evidence is retained under
 Accepted next-slice direction, revised 2026-10-20: **environment selection,
 owned component overrides and fast source activation**. Implementation authorized
 and started on 2026-10-20, including Computer-local apply/watch and native Lore
-subscriptions as inputs to one activation contract. None of this new workflow is
-yet deployed-qualified. The Linux K3s foundation,
+subscriptions as inputs to one activation contract. Deployed evidence now covers
+Computer-local apply/watch, automatic native Lore component-branch updates,
+failed-build retention, and active Time Task recovery across runtime stop/start.
+Configuration-file following, Computer-stop independence and final model-driven
+acceptance remain open. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
 multi-instance routing source is published; the source-update implementation is
@@ -408,9 +411,8 @@ Installation packaging is published as `9272738`; the matching Linux Computer,
 Hub and reusable-runtime images are built and published. Native runtime package
 and CA-mount probes pass, and the shared base has all four MCPs enrolled through
 the live control API with selected discovery and a Time call verified. These are
-prerequisites, not qualification of the personal source-update workflow. The
-execution plan records source gates, package probes and routed calls separately
-from the still-pending end-to-end deployed qualification.
+prerequisites; the execution plan separately records the subsequent source-update
+and recovery evidence, exact revisions, timings and remaining end-to-end cases.
 
 The first actual owner environment now follows that base and passes selected
 discovery and a Time call. Computer configuration and runtime eligibility were
@@ -2099,8 +2101,11 @@ the refresh trigger still needs implementation and qualification.
 
 ### Computer-Local Apply And Lore Reconciliation
 
-**Implementation in progress, 2026-10-20; initial local-path compilation and focused
-checks pass, with deployed qualification pending.** A Computer-local environment
+**Implemented; deployed qualification in progress, 2026-10-21.** Computer-local
+apply/watch and native component-branch following pass on Linux. Failed builds
+retain the previous serving version; native runtime stop/start recovered an active
+Time Task with its 64 exact expected results. These are deterministic deployed
+probes, not model acceptance or a stopped-Computer proof. A Computer-local environment
 file and source directories drive an explicit apply through Hub that snapshots the selected inputs into the separate
 private override runtime. An opt-in watch repeats that apply. The personal Lore
 checkout can hold these ordinary working files; Lore commit/push publishes
@@ -2141,10 +2146,12 @@ generation so a superseded fetch/build cannot activate after a newer apply.
 
 The composition, routing, independent runtime and retention rules remain:
 a stopped Computer leaves its override on the last successfully applied snapshot,
-not a live mount into a disappearing home directory. Snapshot identity/provenance,
-local transfer/watch, admission and reconnect semantics require completion and
-qualification. The owner HTTP apply endpoint and explicit CLI watch are implemented
-in the checked source snapshot; neither is deployed or qualified end to end yet.
+not a live mount into a disappearing home directory. Snapshot transfer, explicit
+watch, failed-build retention and independent worker lifetime after the watch
+client disconnects have deployed evidence. Computer-stop independence and the
+remaining selector/reconnect cases still require qualification. The owner HTTP
+apply endpoint and explicit CLI watch are deployed and exercised through the
+existing Computer's own native Hub connection.
 
 Definition following is distinct from each component's source selection. An
 executable-owned typed record selects either local definition input or one registered
@@ -2155,8 +2162,12 @@ read cannot overwrite newer local intent. Component branch followers remain
 independent selectors. Authoritative reads happen outside database transactions;
 publication compares current ownership, selector mode and generation under the
 existing control transaction. This adds no second manifest format or Lore permission
-model. The definition-follow adapter is implemented in the candidate and awaits
-the full component and deployed checks.
+model. The definition-follow adapter is deployed, but its first native root-file
+probe found a Hub invocation defect: `lore --repository` does not change process
+cwd, and native file extraction resolves its relative path against that cwd. A
+one-line correction runs extraction from the selected temporary checkout; its
+full component checks and Linux rollout are pending. This changes no Lore behavior
+or authorization.
 
 Definition reads must work before any component runtime exists and while the
 Computer is stopped. The approved executable adapter packages the existing native

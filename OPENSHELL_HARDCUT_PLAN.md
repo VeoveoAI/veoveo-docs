@@ -2726,8 +2726,57 @@ receipts are `/tmp/e4-a-after-native-restart-20261021/receipt.json`,
 `/tmp/e4-base-after-a-native-restart-20261021/receipt.json`.
 This proves a nonterminal read-only temporal Task recovering across native runtime
 stop/start and retained result routing; it is not a paid-provider mutation-replay
-test or a nonterminal route-publication test. Computer stop and Lore-follow
-reconciliation remain pending.
+test or a nonterminal route-publication test. Computer stop remains pending;
+the subsequent native source-follow result is recorded below.
+
+The next deployed slice used native Lore publication from the existing Computer,
+with no model call. Luna created the explicitly chosen Time source repository
+`53c7379e9c1d4c83adf1923083bb139b`; its native main branch is
+`e726318bbc3fd75ac8733a7e030cc35b`. The coordinator registered that actual repository
+with the existing human owner through the live control API. The first native push
+published revision `06e85ba5c894a274435317689f6f527faf07973946883fd7408ae7e3e8f65bd3`,
+from published Time `f5d3fb1d`. An explicit owner apply selected that branch for A,
+without `--local`, and Build `01a15ce1-c1e0-7163-bc08-68b204776740` served after
+206 ms dependency checking and 84,326 ms compilation. Selected A/B calls passed
+in 184.061/150.052 ms with the original Time schema.
+
+A native commit/push then changed only the existing uncertainty field's schema
+description, publishing revision
+`03775a90f002047c7ad7d18c7e3b75af439224b417347b1b7ba5ea75ec8302c0`.
+No second apply or watch command was issued. Hub automatically built
+`01a15ce4-8bb0-7160-a075-ac0732b93a9b` and selected deployment
+`01a15ce4-8bb0-7160-a075-ac15f3c96a4b`; dependency checking/compilation measured
+183/87,240 ms. At 05:19:26 UTC, A listed 40 tools with descriptor SHA-256
+`2cf1760624470b1959a9f89ef5ca586ef1ff4d927a2610275c846d51c793d946`,
+and the normal fixed UTC call passed in 239.467 ms. The source snapshot was
+1,924,608 bytes, SHA-256
+`d3bf6891d2b375198dba74a1ca028de4fd686ed6b5f95d64b3b7cd9e76ea343c`;
+output SHA-256 was
+`7c0af0afcee78905c9dc6ca3d94af040d46841134affe30bdf9e5af7e5e2e695`.
+No image publication, runtime/Pod replacement or Hub restart was used for either
+source activation. This proves native component branch following; it does not yet
+prove configuration-file following, a stopped Computer or reconnect recovery.
+
+Configuration-file follow exposed a separate Hub invocation defect. Luna
+explicitly published the 1,506-byte root file `e4-environment-a.json` through the
+existing human's native profile in the
+personal repository at revision
+`0b4093f15c0167bfd29e81a35867a4cd4d77d9f1c49d060a148c986f9b7a3e06`.
+Generation 8 accepted following that file, but did not observe it; the prior
+serving deployment remained selected. Native reproduction succeeded in cloning
+that exact revision. The same `lore --repository ... file write --path ...`
+command exited 4 from outside the checkout and exited 0 from its directory,
+reconstructing the exact expected SHA-256
+`b7815883c7e313d7ddebb94aa7549396b17ae520c8147d8662f09707bd364876`.
+Lore's repository option selects the repository without changing process cwd.
+Sol's one-line Hub fix sets that cwd; validation and rollout are pending.
+No Lore behavior, grants, policy or additional rejection was added. Early operator
+commands also omitted the Computer's declared Lore/XDG paths; repeating them with
+the existing profile succeeded without new login or credential changes.
+Consolidated receipt:
+`/tmp/e4-lore-follow-20261021/builder-consolidated-receipt-v3.json`, SHA-256
+`7feaa7f668aad926120a887a873b641ca88909738ee0da5aced183efce001c9c`.
+Selected-call evidence is `/tmp/e4-a-lore-marker-20261021/receipt.json`.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
