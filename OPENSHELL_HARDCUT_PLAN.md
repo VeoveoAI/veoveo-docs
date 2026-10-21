@@ -1920,6 +1920,41 @@ the new Computer/environment workflow remain unqualified. Full v11 Docker gates
 are now running on both hosts from identical verified source and the 243-file
 metadata set.
 
+Both full v11 `docker build --target check .` gates subsequently exited 0:
+273 tests passed and one skipped on each host. Nextest took 40.027 seconds on
+Mac-hosted Linux ARM64 and 39.002 seconds on the actual Linux AMD64 host. The
+Docker check stages took 286.2 and 206.9 seconds respectively; each image export
+took a further approximately 37 seconds. These gates include formatting, complete
+SQLx metadata checking, strict Clippy, dependency policy and feature checks. Mac
+log `/tmp/hub-e3-v11-check-context-20261020/mac-check.log` has SHA-256
+`cbf105009fa5a9b8aa56b268f8cf88989d2bc59b431202856008dfc56f43c894`;
+Linux log
+`/home/rozgo/.config/veoveo/k3s/evidence/hub-e3-v11-20261020/linux-check.log`
+has SHA-256
+`d5eb0244b9d7a53354cf53bea02d5f422de4b783f1593d9b1d2430381bef317a`.
+The coordinator verified the exact 100-file source manifest and complete 243-file
+SQLx set against the primary checkout, checked that no unrelated paths were
+staged, and published `985108ece6c90959245649a73a0a6ddc6e8467e7` to Hub's
+`origin/main`. The checkout is clean. These are component gates; the check images
+are not deployment images and do not establish the live environment workflow.
+Corresponding Hub/helper deployment artifacts are to be built on Linux.
+
+Baseline service recreation recovered the authoritative five native sandbox
+specifications from the gateway's existing sandbox records. Sol queried only
+sandbox objects and verified that their Kubernetes driver configurations matched
+the preserved files; credential objects were not queried. The old launch inputs
+needed the newly required MCP deployment identity. An initial Time invocation
+exited 2 before registration; inspection confirmed that all four current MCPs
+support `VEOVEO_DEPLOYMENT_ID`, so their normal environment-based configuration
+remains valid. Luna recreated Time with the reviewed identity and observed Ready
+with restart count 0. Artifact and Media also reached Ready from their preserved
+commands, providers and claims with the reviewed new images/identities. Hub
+readiness now reports three registered servers and two profiles. Embedding's
+runtime has been scheduled with its original 4 CPU, 8 GiB and one-GPU request and
+is pulling the reviewed image; neither its dependent MCP nor inference is yet
+qualified. Environment enrollment remains a subsequent live control-plane CAS,
+without a Hub restart.
+
 Installation documentation records the empty-map bootstrap and native base-policy
 export in its v2 candidate. Only `kubernetes/WORKLOADS.md` changed; all image inputs
 remain unchanged. The coordinator reviewed the delta and matched all 18 hashes,

@@ -403,7 +403,8 @@ yet deployed-qualified. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
 multi-instance routing source is published; the source-update implementation is
-under component validation. The execution plan records those source gates
+also published as Hub `985108e`, with full Mac/Linux component gates passing.
+The execution plan records those source gates
 separately from the still-pending deployed workflow qualification.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
@@ -1892,10 +1893,11 @@ Artifact or implement general composition.
 The next planned integration is the [environment override and source activation
 contract](#environment-overrides-and-fast-source-activation), in the existing trusted
 Hub process. It reuses admitted runtimes for source changes; general trusted image
-publishing is separate. Deployed registration still predates this slice. Hub source
+publishing is separate. Baseline MCP rollout now uses the new deployment identity;
+parallel environment routing is not yet deployed-qualified. Hub source
 now implements parallel deployment selection, composition-scoped discovery and
 delegation, and retained Task routing; component gates pass, while deployed
-qualification and source activation remain pending.
+qualification of the complete source-activation workflow remains pending.
 
 Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs),
 [forwarded identity](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs),
@@ -1908,8 +1910,8 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ### Environment Overrides And Fast Source Activation
 
-**Implemented in the E3 candidate; full gates and deployed qualification remain
-pending — 2026-10-20.** Use one narrow Lore-versioned definition, which may live in
+**Implemented and published; full Mac/Linux component gates pass, while deployed
+qualification remains pending — 2026-10-21.** Use one narrow Lore-versioned definition, which may live in
 an existing registered repository;
 there is no requirement for one repository per environment. `components` is the
 single map of logical component IDs to **owned overrides**, not a competing second
