@@ -1673,6 +1673,108 @@ is still running; no reset, live configuration publication or baseline rollout i
 claimed at this checkpoint. Trusted installation/identity inputs remain retained;
 application state will be reset for the incompatible deployment/Task contracts.
 
+The coherent candidate's focused groups subsequently passed 19 tests: four library
+activation, one scoped-admission, two executable activation and twelve environment
+client/helper tests. The completion-retry fixture initially serialized an invalid
+raw digest; using the existing typed `Sha256Digest` constructor corrected that
+fixture. Both full Docker gates then rejected incomplete SQLx metadata: the
+warm-target preparation produced 158 files and passed an immediate warm check,
+but each clean image check reported missing queries. These are failed component
+gates, not successful qualification. Earlier incremental preparation counts above
+do not establish a complete clean-build metadata set.
+
+Review also found a retained-worker recovery race: a previously serving worker
+could enter Registering, then be superseded by a new apply and disappear from the
+historical recovery scan despite an unexpired canonical Task route. The candidate
+now includes Registering and transient NativeUnavailable worker failures with
+their exact source/output. Current owner, template, storage and native-placement
+eligibility still apply; deterministic failures are excluded. The regression uses
+the actual recovery transition followed by a competing reservation.
+
+`coder` (GPT-6.1 Sol) combined that correction with the synthetic E4 composition
+scenario in a frozen 98-path candidate. Its manifest is
+`/tmp/e3-coherent-candidate-20261020/hub-source-manifest-v4.json`, SHA-256
+`c53f582e7bd27357f1e6eb0455586aab6424aae0bac414ba9af19babcd01a42a`;
+the coordinator independently matched all 98 checkout hashes and reviewed the
+six-file delta from v3. The E4 scenario uses distinct typed input/output schemas,
+simultaneous selected connections, inherited delegation and retained Tasks across
+selection changes and Hub restart. It uses synthetic fixture identities, not two
+independent deployed users. `builder` (GPT-6 Luna) is regenerating metadata with
+an empty compilation target and validating this combined candidate. Full gates,
+publication and deployed E3/E4 acceptance remain pending.
+
+The clean-target preparation then succeeded and produced 242 metadata files. The
+coordinator verified their query-content hashes and the exported archive, SHA-256
+`98871f81bb3009b36ef35caf73897057e4b427990ae436aa77b93af39d519e63`.
+The per-file manifest at
+`/tmp/e3-coherent-macos-v4-20261020/sqlx-files.sha256` has SHA-256
+`f6e1fcc3435294237f538f0f5980627e9d9ac7a37832f9da6486b22e6c2ba730`.
+Focused v4 checks passed 4 activation, 1 scoped-admission, 7 executable activation
+and 12 environment tests; the existing calls integration passed in 11.08 seconds.
+The new composition scenario stopped at delegation: its full Relay fixture
+declared write/seal dependencies absent from the deliberately read-only Ledger
+revisions. Production correctly rejected that target. A fixture-only correction
+will use an actual typed inspection-only consumer and derive its declaration from
+its routes; production authorization is unchanged. The scenario and full gates
+must pass before publication.
+
+The next scenario iteration distinguished Hub routing from the pinned native
+client's private catalog cache. `Peer::list_tools` returned its cached revision A
+before sending a request, within the advertised 5,000 ms TTL. The revised scenario
+uses typed wire requests for immediate authoritative catalog assertions and also
+primes and checks ordinary client refresh within that TTL plus a scheduling margin.
+No production cache policy or assertion was weakened. The current 98-path v7
+manifest has SHA-256
+`e32ada1dd13f7f71304cd7b5987cab00c8014be4dfdf7368eb798ce47248afd4`;
+the coordinator matched every source hash. A missing fixture trait import was
+corrected before execution. Startup/readiness timing now ends before publication
+timing begins, preventing overlap in the deployed measurements.
+
+The Linux v7 synthetic composition scenario passed in 33.154 seconds. Ordinary
+client catalog refresh took 4,994 ms against its 5,000 ms TTL, while typed wire
+catalog assertions observed the published selection immediately. It exercised
+distinct schemas, simultaneous selections, inherited delegation, explicit
+unavailability/removal and a retained Task through selection changes and Hub
+restart. The captured composition was
+`sha256:f2e57cbb6c6907cdaea5617eee39b3acd55ea3ec9a16f6f566e5042f95e5e4fb`;
+Task `gtr_AjYvCs66mD648X5uonruZ8A8ZxwIjhWsItEd2P0s-b4` was observed Working before
+the boundary and Completed afterward. The existing calls integration also passed
+in 11.01 seconds. These remain synthetic, component-level results. The focused log
+is `/tmp/e3-coherent-macos-v4-20261020/e3-v7-focused.log`, SHA-256
+`7b4e4054d82a4d5a374b7dcf554e5f7054e2a3c3881a96f5255cb0fb513fd61a`.
+Both full Docker gates then passed SQLx's clean check and stopped at strict Clippy
+diagnostics in the new source. The Linux log `/tmp/e3-v7-linux-check.log` has
+SHA-256 `41970e9cc62ac9388a002cb0bf333477af95510a91e51d4455868871afe73d17`;
+the Mac log has SHA-256
+`96435e5002c2cdb177a0ebb08947397c0edbfae3a01f74e75642e922a24251b8`.
+Later checks in those full gates did not run.
+
+`coder` corrected the reported lints in seven Rust files: a named fixture state
+alias, test-module placement, a boxed private definition-follow payload, a small
+typed path error converted at the HTTP boundary, and equivalent collapsed
+conditions. No SQL, wire contract or authorization behavior changed and no lint
+was suppressed. The coordinator reviewed the full delta and matched all 98 hashes
+in `hub-source-manifest-v8.json`, SHA-256
+`a038fab86e19716a63ceb749a6281ad1f22b90aa59df18ba1acc1c14929b93a5`.
+Formatting and diff checks passed; v8 full gates, publication and deployed E3/E4
+acceptance remain open. The independently published baseline rollout does not
+depend on these E3 candidate gates.
+
+Baseline image preparation exposed avoidable packaging overhead. The built
+Embedding image contained both a 5.6 GiB installed environment and a 5.6 GiB uv
+package cache. `coder` replaced the two dependency-installation RUNs with standard
+BuildKit cache mounts, published as `109304d859563135a5b854c20acda31deb91ade9`;
+dependency pins, lock and runtime code are unchanged. Both Docker check targets
+passed 25 tests (0.974 seconds on Mac, 1.041 seconds on Linux); a shell-wrapper
+error was corrected and cached reruns captured exit 0. `builder` measured the
+Linux runtime image at 6,473,333,253 bytes versus 12,335,867,634 previously, with
+the package cache absent and the same 72-distribution inventory. The final local
+image is `sha256:e853ce88db88a4417b58f3c8b0d8b52794fa2efa2c395b6a1084c2e2b2e93fb3`,
+labelled with the published revision. Its registry push is in progress; this is
+not rollout or inference acceptance. The previous oversized upload was explicitly
+cancelled after this measured defect, rather than treated as a completed or failed
+deployment.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
