@@ -402,16 +402,22 @@ subscriptions as inputs to one activation contract. Deployed evidence now covers
 Computer-local apply/watch, automatic native Lore component-branch updates,
 failed-build retention, and active Time Task recovery across runtime stop/start.
 Root configuration-file following, retained Task completion during route removal,
-and base pin/follow/owned-override cases also pass. Nested configuration following,
-the remaining source-selector transitions, Computer-stop independence and final
-model-driven acceptance remain open. The Linux K3s foundation,
+base pin/follow/owned-override cases, nested configuration following, failed-start
+retention and selected-worker unavailability without fallback also pass. The
+remaining source-selector transitions, Computer-stop independence, injected-guide
+consumption and final model-driven acceptance remain open. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
-multi-instance routing source is published; the source-update implementation is
-also published as Hub `985108e`, with full Mac/Linux component gates passing.
-Installation packaging is published as `9272738`; the matching Linux Computer,
-Hub and reusable-runtime images are built and published. Native runtime package
-and CA-mount probes pass, and the shared base has all four MCPs enrolled through
+multi-instance routing source is published; the source-update implementation was
+originally published as Hub `985108e`, with subsequent checked corrections now
+deployed as Hub `0493f95`. Current Computer packaging uses installation `d089f94`,
+OpenCode `c5fb626` and the matching `0493f95` environment CLI; README-only
+`7f2b4ed` records the OpenCode pin. The earlier installed `985108e` CLI replayed an
+old apply receipt instead of changing desired intent; that observation was not a
+successful source transition. The corrected client has now served an exact R2 pin
+as generation 8, Build `01a15d46-7b0e-7e92-aeab-403adf3691f8`, with check/build
+times of 184/89,471 ms. The full pin/local/follow sequence remains pending.
+Native runtime package and CA-mount probes pass, and the shared base has all four MCPs enrolled through
 the live control API with selected discovery and a Time call verified. These are
 prerequisites; the execution plan separately records the subsequent source-update
 and recovery evidence, exact revisions, timings and remaining end-to-end cases.
@@ -448,10 +454,12 @@ does not assert login or checkout. The retained branch association is provisioni
 metadata, not an ongoing checkout constraint. Hub source is published as `aff11f8`
 after both full platform gates pass; installation removal/handbook is published as
 `8466e56`, refined by handbook-only `4b44cc0`, and its Linux image package checks
-pass. Hub is now deployed: Mac Chrome
-Computer entry renders successfully and optional onboarding reports ready. The
-current Computer retains its existing image/session; final handbook image rollout
-is pending. Lore's native permissions and OpenShell policy are unchanged.
+pass. Subsequent Hub `0493f95` and corrected Computer v4 packaging are deployed.
+Fresh Computer `01a15d38-2a1e-7920-9823-1ddf5014c5bb` renders Home, Settings and
+New session in Mac Chrome. Its chosen personal and Time source native checkouts
+succeed after ordinary user device approval. Managed guide delivery replaces the
+configured file without changing OpenCode PID 58; injected model consumption is
+still pending. Lore's native permissions and OpenShell policy are unchanged.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
@@ -1956,8 +1964,9 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ### Environment Overrides And Fast Source Activation
 
-**Implemented and published; full Mac/Linux component gates pass, while deployed
-qualification remains pending — 2026-10-21.** Use one narrow Lore-versioned definition, which may live in
+**Implemented and published; full Mac/Linux component gates and the recorded Linux
+routing/source probes pass, with remaining E4/E5 qualification pending — 2026-10-21.**
+Use one narrow Lore-versioned definition, which may live in
 an existing registered repository;
 there is no requirement for one repository per environment. `components` is the
 single map of logical component IDs to **owned overrides**, not a competing second
@@ -1980,7 +1989,7 @@ components:
 ```
 
 This YAML example illustrates product selection, not the JSON wire format. The
-candidate's source-facing contract is the single
+published source-facing contract is the single
 [`EnvironmentDefinition` DTO](../veoveo-hub/crates/veoveo-hub/src/bin/hub/activation/types.rs),
 shared by the owner HTTP API, Computer CLI and native definition-file reader.
 The [Hub usage example](../veoveo-hub/README.md#environment-source-activation)
@@ -2030,7 +2039,9 @@ would not establish isolation.
 
 ### Accepted Personal Lore Workspace Default
 
-**Implementation in progress; not yet qualified.** A personal Lore workspace
+**Implemented, with actual personal repository preparation, chosen native access
+and fresh Computer entry qualified on Linux; full E0–E5 acceptance remains open.**
+A personal Lore workspace
 repository is the default home for versioned user setup, not an automatic mirror of the Computer's home or a mandatory repository
 per environment. The user may choose another authorized location. Illustrative paths are `environments/my-work.yaml`,
 `environments/media-experiment.yaml`, root `AGENTS.md` and `projects/README.md`
@@ -2058,8 +2069,8 @@ pending/auth-needed/failed status. The initiating OAuth client's current registr
 must allow the selected native audience and scopes. A platform refresh family is
 never substituted for a native Lore family. Native CLI login, token storage and
 refresh remain unchanged. Computer entry never requires or starts native login or
-checkout. Hub delivers only a public typed repository descriptor through
-owner-bound native Exec; ready means the optional default and descriptor are
+checkout. The workspace contribution delivers a public typed repository descriptor
+through owner-bound native Exec; ready means the optional default and descriptor are
 prepared. The user or agent chooses the repository, branch and destination for
 ordinary native operations. OpenShell's `ExecSandbox` RPC requires its existing
 `sandbox:write` scope and workspace authorization. The Hub provider recipe already
@@ -2067,9 +2078,12 @@ requests that scope; the selected sandbox policy must also admit that exact RPC.
 There is no separate `sandbox:exec` scope or new external Exec endpoint. The Hub
 original onboarding source was published as `628e18d`; the checkout-removal
 correction is now `aff11f8`, with combined Mac/Linux gates each reporting 276
-passed and one skipped. Existing-Computer entry and descriptor-ready status pass
-on the deployed correction. Fresh first-use and user-chosen native checkout remain
-separate qualification; component checks do not establish them.
+passed and one skipped. Subsequent deployed receipts establish actual repository
+preparation, descriptor delivery, association retention through explicit dev
+Computer recreation and user-chosen native checkout/commit/push. The current fresh
+Computer also passes chosen personal/Time source checkouts after native device
+approval. These are separate deployed observations, not inferred from component
+checks or a prepared onboarding status.
 
 A Computer without a checkout uses the Hub profile's configured default environment
 unless its MCP connection explicitly selects another admitted environment. Checkout
@@ -2089,17 +2103,24 @@ instruction files and refreshes subsequent model steps; it does not change an
 already running model request or continuously refresh remote instruction URLs.
 No skill-installation tutorial or duplicate OpenCode guidance is added.
 
-Hub-managed replacement of the handbook text is not yet wired: the published
-Computer loads `/etc/computer/instructions.md`, a root-owned file on its read-only
-system filesystem. The proposed small follow-up is a dedicated public managed
-Markdown file under `/sandbox/home/.config/computer`, created before OpenCode's
-initial instruction discovery and configured once as an instruction source. Hub's
-existing admitted delivery can atomically replace that file with shared guidance
-and current nonsecret values. User-owned `AGENTS.md` files remain user-owned.
-This needs initial configuration wiring, not a new template service or authorization
-layer. Current Location environment selection and live grants must not be copied
-into a global handbook. A local-file watcher alone does not deliver Hub updates;
-the refresh trigger still needs implementation and qualification.
+Hub-managed replacement is published in Hub `0493f95` and installation `d089f94`.
+The image seeds `/sandbox/home/.config/computer/instructions.md` before OpenCode
+discovery, and the native config loads that writable public guidance file.
+Optional plain `computers.handbook` Markdown is read from the current live catalog
+on the next admitted Computer entry/callback and atomically delivered through the
+existing best-effort per-owner job, independently of repository preparation.
+An omitted/null handbook leaves managed text unchanged; an empty string clears it.
+Handbook-only changes do not change native provisioning, require login/checkout
+or block Computer entry. No template engine, fleet fanout or copied grant/environment
+map is introduced; user-owned `AGENTS.md` files remain user-owned.
+
+Live entry-triggered delivery now passes: the 4,783-byte guide has SHA-256
+`a151dd8610dc6c734e01d175574c5ba919fbd351125f70de17ca6c0338ffa235`
+with the same OpenCode PID 58, after A/B Locations had already loaded. Receipts
+are under `/tmp/e4-managed-handbook-rollout-20261021/`. This establishes delivery,
+not injected model consumption. Native instruction watching reloads subsequent
+steps; its debug rescan is not a public instruction-content API. Consumption of
+the latest guide remains part of the final bounded model qualification.
 
 ### Computer-Local Apply And Lore Reconciliation
 
@@ -2170,9 +2191,14 @@ cwd, and native file extraction resolves its relative path against that cwd. A
 one-line correction runs extraction from the selected temporary checkout. It is
 published and deployed as Hub `0f988b6` after both full component gates passed.
 The existing pending root-file follower recovered without resubmission, adopted
-the label and retained the exact component Build/deployment/output. This changes
-no Lore behavior or authorization. Nested-file following and subsequent selector
-transitions remain separate deployed cases.
+the label and retained the exact component Build/deployment/output. Nested-file
+following also observed revision
+`280787648923c7240d1725b59593057aa80f6239d9bd44b859c8881389796189`
+at selector generation 12, changing only the definition label without a component
+rebuild. The corrected operator command used the native deployment name `primary`,
+not an execution deployment UUID. This changes no Lore behavior or authorization.
+Subsequent source-selector transitions and Computer-offline behavior remain
+separate pending cases.
 
 Definition reads must work before any component runtime exists and while the
 Computer is stopped. The approved executable adapter packages the existing native
@@ -2183,7 +2209,7 @@ cleanup; current native scoped grants authorize the read. The adapter bounds the
 returned definition bytes, while Lore's parallel-I/O limits are not described as
 total repository download limits. This adds neither a materialization service nor
 a Lore protocol or authorization change. Exact-revision native extraction and
-root-file following now have deployed evidence; the remaining follow/reconnect
+root/nested-file following now have deployed evidence; the remaining selector/offline
 cases are tracked in the execution plan.
 
 For published inputs, use native Lore repository subscriptions rather than adding
@@ -2196,12 +2222,22 @@ stream remains connected. Watch registered repository/branch IDs and environment
 paths dynamically; no repository name is compiled into Hub and no Lore behavior or
 permission change is required. Native subscriptions do not observe local file saves.
 
+Authoritative recovery has deployed evidence without resubmitting intent: the
+already published root revision was still unobserved at 05:22:25 UTC, before the
+new Hub process/subscription, and was observed at 05:47:42 after rollout. See
+`/tmp/e4-lore-follow-20261021/root-definition-observation.json` and
+`after-cwd-rollout-root-definition.json` in the same directory. Exact hint delivery
+and wake reason were not instrumented; no native loss/duplication injection is
+claimed. Repeated branch-read coalescing, rewind identity and stale publication
+are covered by existing component/DB tests. This is authoritative reconciliation,
+not notification replay.
+
 ### Environment Selection, Source Activation And Retention
 
 **Selection and routing.** Selection belongs to an authenticated Hub execution/MCP
-context, separate from business `WorkContext` and data authorization. Two sessions
-of one user can select different maps while calling the same logical tools, such
-as `media__run`; composition resolves the logical component to its deployment,
+context, separate from business `WorkContext` and data authorization. Two OpenCode
+projects/Locations of one user can select different maps while calling the same
+logical tools, such as `media__run`; composition resolves the logical component to its deployment,
 revision and endpoint. Multiple live registrations must coexist without the newest
 registration stealing another environment's route. The published Hub implementation
 now keys the
@@ -2210,36 +2246,42 @@ by deployment, and
 [registration selection](../veoveo-hub/crates/veoveo-hub/src/registration/watch.rs#L96)
 retains the newest process registration of each deployment. Unscoped logical-slug
 lookup refuses ambiguity; an admitted composition selects the exact deployment.
-This source implementation does not establish deployed environment acceptance.
+Live A/B/base probes now establish independently keyed deployments without route
+takeover; A/B belong to the same human, not two separately qualified human owners.
 
 The public MCP route remains `/mcp/{profile}`. Hub's selected-environment HTTP
-binding is implemented in source and passes component checks; no OpenCode
-environment picker is assumed. Qualify a normal client configuration binding its authenticated Hub
-MCP connection/session to an environment; verify the actual OpenCode context surface
-before designing its ergonomics. Discovery/tool schemas, caches, pagination,
-downstream delegation and Task lookup must all use the resolved composition and
+binding passes component checks and Linux selected wire probes. Native OpenCode
+project-local configuration now supplies distinct A/B headers through the same
+configured Hub URL and opaque authentication. Discovery/tool schemas, caches,
+pagination, downstream delegation and Task lookup must all use the resolved composition and
 deployment revision. A shared service preserves each call's selection, rather than
 changing global downstream configuration. Native SDK/Core/domain types should own
 these contracts in their existing layers; do not add a parallel conformance system.
 
 Source inspection confirms OpenCode already passes configured MCP connection
 headers, but owns those connections per Location rather than per chat session.
-The first client surface will use a typed `veoveo-environment` HTTP selector on
+The client surface uses a typed `veoveo-environment` HTTP selector on
 separately configured connections/Locations, leaving the OAuth resource URL
 unchanged. Hub must authenticate and admit that selection; the header itself is
 not authority. OpenCode's current `ai.opencode/sessionID` tool-call metadata does
 not cover discovery and cannot provide a separate environment per chat by itself.
 The signed downstream context retains the admitted environment and immutable
 composition revision, while each hop separately names its target deployment.
-These are implementation decisions awaiting deployed qualification.
+Separate chats in the same Location share its MCP connection and do not select
+environments independently. Final model-driven use remains pending.
 
 The current OpenCode [MCP configuration plugin](../opencode/packages/core/src/config/plugin/mcp.ts)
 already observes `config.updated` and calls `mcp.reload()`, and its
 [configuration discovery](../opencode/packages/core/src/config/discovery.ts) includes
-ordinary project `opencode.json`/`opencode.jsonc` files. Use that native surface for
-the Computer client's environment selector; qualify two independent Locations and
-configuration reload rather than adding a separate picker or OpenCode protocol.
-This is source inspection, not a claim that the deployed selection loop works.
+ordinary project `opencode.json`/`opencode.jsonc` files. The current Computer's
+`e4-selected-a` and `e4-selected-b` Locations both report native Hub connections
+connected, with distinct selectors verified through safe configuration readback.
+Native connect includes tool discovery; its status response does not return tool
+schemas, and there is no public tool-schema endpoint. Exact schema differences
+remain the separate selected Hub wire receipts. Each project supplies the full
+Hub server block referencing existing environment variables: server entries replace
+earlier entries rather than merging a headers-only override. No picker or new
+OpenCode protocol is added; the final selected-agent scenario remains pending.
 
 **Source activation.** Hub's existing trusted process owns only thin desired-state
 reconciliation: notifications are hints, authoritative Lore reads plus periodic
@@ -2254,11 +2296,11 @@ route **and catalog** for new operations. No ordinary edit requires OCI publicat
 sandbox/Pod replacement or Hub restart; template/toolchain changes are a separate
 workload lifecycle operation.
 
-A small in-runtime process-ownership contract still needs implementation and
-qualification, preferably using the language's existing runner and a stable template
-entrypoint owning child workers. Native scoped Exec can build/probe; it is not proof
-that a daemon survives its caller or disconnect. OpenShell remains the recovery
-owner for the canonical main process; do not change its supervisor/security or add
+The implemented in-runtime process-ownership contract uses a stable `s6-svscan`
+entrypoint with one service directory per Build. Real Time workers survive the
+watch client's disconnect and recover after native runtime Stop/Start. Native
+scoped Exec builds/probes; it is not the daemon-lifetime mechanism. OpenShell remains
+the recovery owner for the canonical main process; do not change its supervisor/security or add
 an external process controller. On recovery, reconcile desired/serving source and
 worker state before routing; do not replay non-idempotent mutations.
 
@@ -2306,7 +2348,9 @@ guard. A process-local mutex alone does not prevent stale publication across rep
 Candidate failure retains the previous serving revision; withdrawal or supersession
 prevents late selection. Native placement uses the existing endpoint-to-workspace,
 sandbox and port binding plus ForwardTcp, with no per-worker browser exposure or
-new proxy. These decisions are approved for implementation, not deployed evidence.
+new proxy. These paths are implemented and exercised by the recorded real Time
+activation/failure/recovery probes; generation and connection-loss races retain
+their separate component/DB evidence.
 
 Implementation decision, 2026-10-20: use native
 [`s6-svscan`](https://skarnet.org/software/s6/s6-svscan.html) as that fixed main
@@ -2315,7 +2359,8 @@ directory and worker; scoped Exec prepares files and invokes s6's control comman
 OpenShell still owns sandbox lifecycle and named service exposure. s6 owns only
 child-process supervision inside the sandbox; its readiness does not establish MCP
 readiness. The selected Debian trixie toolchain base offers `s6` `2.13.1.0-1` on both
-architectures. This package/API inspection is not deployed qualification. Native
+architectures. Package inspection alone is not deployed qualification; the
+mechanism and actual Time receipts below establish their recorded scope. Native
 Exec cancellation terminates its registered child, so an orphaned Exec process is
 not the service-lifetime mechanism.
 
@@ -2325,8 +2370,9 @@ replacement without Pod replacement, and worker recovery after native Stop/Start
 from the automatic workspace PVC. Native Create must explicitly select
 `/usr/bin/s6-svscan /sandbox/services`; an omitted command selects the CLI's shell
 default. The [execution receipt](OPENSHELL_HARDCUT_PLAN.md#next-slice--environment-overrides-and-fast-source-activation)
-records its image and boundaries. Hub source activation, MCP readiness and retained
-operations remain separate implementation and qualification work.
+records its image and boundaries. The subsequent real Time source activation,
+MCP readiness/calls and retained Task receipts in that execution record qualify
+those distinct paths; the mechanism-only HTTP fixture does not establish them.
 
 Rust builds use **unique build-specific actual executable paths**, for example
 `/sandbox/builds/<build-id>/service`, under a narrowly admitted path pattern. Record
@@ -2336,7 +2382,8 @@ the same source must not reuse a pinned path with different bytes. Native
 rejects different bytes at a pinned path; this plan neither disables nor resets it.
 Interpreted code also uses separate source directories/child workers when retaining
 operations: never mutate imported files beneath an old worker. A reusable sandbox
-is not a single reusable process. Current MCPs do not already provide this workflow.
+is not a single reusable process. The new activation path uses the published MCP
+describe/resume/deployment contract; it does not claim arbitrary in-process reload.
 
 **Activation and retention.** In-flight operations and long Tasks capture their exact
 deployment and resolved composition. Keep the old worker/source/runtime bindings
