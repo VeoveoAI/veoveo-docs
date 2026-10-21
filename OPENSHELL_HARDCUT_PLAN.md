@@ -113,9 +113,11 @@ detection or Lore-backed snapshots are planned.
     not independently proven.
   - oxlint is clean; changed hunks are prettier-clean.
 - Next:
-  1. Build the Linux OpenCode package from `a320bc0` and roll the Computer image.
-     Update the OpenCode source pin in `computer/README.md`, which still names
-     `ed62aad`.
+  1. Build the Linux OpenCode package from `main` (`c5fb626`, same code as
+     `a320bc0`) and roll the Computer image. Update the OpenCode source pin in
+     `computer/README.md`, which still names `ed62aad`. Pushing or building the fork
+     needs the Bun version pinned in its `package.json` (1.4.2); the Mac default is
+     1.3.13. See "Toolchain" in `opencode/VEOVEO_FORK.md`.
   2. Run a deployed check, with no model calls: the review panel shows "No tracked
      changes" without a button, and `/undo`, `/redo` and Revert are absent.
 - Boundary: git code paths remaining in OpenCode core stay dormant only while no
