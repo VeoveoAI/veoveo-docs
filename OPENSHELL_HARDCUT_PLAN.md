@@ -1760,6 +1760,32 @@ Formatting and diff checks passed; v8 full gates, publication and deployed E3/E4
 acceptance remain open. The independently published baseline rollout does not
 depend on these E3 candidate gates.
 
+Both v8 full gates subsequently passed formatting, strict Clippy, dependency and
+feature checks, then ran 272 tests: 271 passed, one failed and one was skipped on
+each host. The sole failure was the existing database-conformance test, reporting
+13 findings across missing tenant predicates, unbounded queries, index use and
+retention comments. Mac log `macos-check-v8.log` in the context above has SHA-256
+`108593ea33135ad7bb58403c51a0c3174560adcaf7e06c77df12baec33394516`;
+Linux `/tmp/e3-v8-linux-check.log` has SHA-256
+`70e309a58b1cb8fe3027ce7a1cffe2a86ce290b01669b21da16cb3a0561c8de6`.
+These are failed full gates despite the successful behavior tests.
+
+The reviewed v9 correction enumerates current admitted environments and uses
+tenant/owner/environment-scoped keyset queries, walking every page before watcher
+pruning. Omitted component heads are withdrawn by exact keys within publication's
+transaction. Historical retained workers remain independent of current selection.
+Task-route tenant scoping follows the existing invariant: environment readers,
+WorkContext authority and delegated calls retain the environment owner's tenant;
+the caller tenant is not inferred from a service name. New indexes support the
+scoped walks and Task-existence checks. Retention comments explicitly state that
+automatic worker reclamation is not implemented. A 65-component/two-owner fixture
+covers page boundaries and late-page withdrawal. No conformance exemption or
+assertion was weakened. The coordinator reviewed the full delta and matched all
+100 source hashes in `hub-source-manifest-v9.json`, SHA-256
+`30a9ea7c515d936135a85a941a21127fbebbe50ba5425be0df79fd8aec77106d`.
+Clean SQLx generation including new migration 0013, focused checks and full gates
+are pending; this source is not deployed.
+
 Baseline image preparation exposed avoidable packaging overhead. The built
 Embedding image contained both a 5.6 GiB installed environment and a 5.6 GiB uv
 package cache. `coder` replaced the two dependency-installation RUNs with standard
@@ -1770,10 +1796,42 @@ error was corrected and cached reruns captured exit 0. `builder` measured the
 Linux runtime image at 6,473,333,253 bytes versus 12,335,867,634 previously, with
 the package cache absent and the same 72-distribution inventory. The final local
 image is `sha256:e853ce88db88a4417b58f3c8b0d8b52794fa2efa2c395b6a1084c2e2b2e93fb3`,
-labelled with the published revision. Its registry push is in progress; this is
-not rollout or inference acceptance. The previous oversized upload was explicitly
+labelled with the published revision. The Linux registry push completed as
+`veoveo-runtime-embedding:109304d-k3s`, digest
+`sha256:c4afbc57478aaacc59aa9c0cd9a223323d8a5b152e76ed0cf1cdf4bf98b34fda`,
+independently inspected by the coordinator. This is not rollout or inference
+acceptance. The previous oversized upload was explicitly
 cancelled after this measured defect, rather than treated as a completed or failed
 deployment.
+
+The coordinator approved a staged baseline rollout of the six published Hub/MCP/
+Embedding-runtime images in `/tmp/e0-baseline-ready-20261020.json` on Mac, SHA-256
+`b3648903273b66a4283a4879523e70e8ad89a77ee9389ded9bd510a1ec2157e8`.
+Computers remain unavailable until the complete workspace/environment helper
+image is checked and published. The old packaging smoke image was inspected and
+must not be selected as accepted E0; its registry tag does not establish helper
+availability. Candidate v3 omits the existing optional top-level `computers`
+configuration and passes the published Hub's offline validator (`ok: 2 profile(s)`,
+exit 0). Its private-file SHA-256 is
+`00fa75d0779a5abba78f5087f2927d27a9bdabf4c43174052cd72dc96b84b817`.
+The authorized reset clears only the five reviewed Task tables and the
+hub/time/artifact/media/embedding schemas, preserving trusted identity, Lore,
+foundation and installation inputs. This checkpoint records rollout authorization
+and validation, not completed reset, service readiness or browser acceptance.
+
+The first stop sequence used the wrong operator context: Mac's `openshell` gateway
+at `https://localhost:17670`, rather than Linux's `k3s-native-operator` at
+`https://localhost:18443` under the dedicated Linux `XDG_CONFIG_HOME`. Four Mac
+service sandboxes (Time, Artifact, Media and Embedding) were stopped. The missing
+Computer workspaces exposed the mismatch; Linux's gateway database and native
+Kubernetes records still contained both Computers and all Linux workloads remained
+running. No Hub/Computer stop or database reset had occurred. Builder restarted
+exactly those four Mac records through their original native gateway; the
+coordinator independently verified all four Ready. Coder confirmed that gateway
+display IDs are not globally unique and that workspace lookup reads the connected
+gateway's store. No orphan cleanup or infrastructure patch was needed. Further
+rollout commands use SSH plus the explicit Linux configuration directory and
+`-g k3s-native-operator`; the remaining baseline authorization is unchanged.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
