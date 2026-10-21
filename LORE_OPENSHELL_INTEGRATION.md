@@ -404,8 +404,12 @@ failed-build retention, and active Time Task recovery across runtime stop/start.
 Root configuration-file following, retained Task completion during route removal,
 base pin/follow/owned-override cases, nested configuration following, failed-start
 retention and selected-worker unavailability without fallback also pass. The
-remaining source-selector transitions, Computer-stop independence, injected-guide
-consumption and final model-driven acceptance remain open. The Linux K3s foundation,
+explicit pin/local/follow transitions and native-follow activation completion while
+the Computer is Stopped now also pass. The final exact-MiMo session now verifies
+latest injected guidance, native Lore reads and selected Time results. Actual
+Task correlation and completed-session UI also pass. E0–E5 are qualified at their
+recorded scope. The updated existing three-view diagram passes manual browser
+and all-view SVG/PNG export review. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
 multi-instance routing source is published; the source-update implementation was
@@ -416,7 +420,11 @@ OpenCode `c5fb626` and the matching `0493f95` environment CLI; README-only
 old apply receipt instead of changing desired intent; that observation was not a
 successful source transition. The corrected client has now served an exact R2 pin
 as generation 8, Build `01a15d46-7b0e-7e92-aeab-403adf3691f8`, with check/build
-times of 184/89,471 ms. The full pin/local/follow sequence remains pending.
+times of 184/89,471 ms. Publishing R3 did not advance that pin; explicit local apply
+then selected a local snapshot with local definition ownership, and later
+Time/configuration publications did not overwrite it. Explicitly restoring following selected the
+published definition again and completed the replacement's activation while the
+Computer was Stopped. The execution plan records the exact generations and receipts.
 Native runtime package and CA-mount probes pass, and the shared base has all four MCPs enrolled through
 the live control API with selected discovery and a Time call verified. These are
 prerequisites; the execution plan separately records the subsequent source-update
@@ -458,8 +466,8 @@ pass. Subsequent Hub `0493f95` and corrected Computer v4 packaging are deployed.
 Fresh Computer `01a15d38-2a1e-7920-9823-1ddf5014c5bb` renders Home, Settings and
 New session in Mac Chrome. Its chosen personal and Time source native checkouts
 succeed after ordinary user device approval. Managed guide delivery replaces the
-configured file without changing OpenCode PID 58; injected model consumption is
-still pending. Lore's native permissions and OpenShell policy are unchanged.
+configured file without changing OpenCode PID 58; the final bounded exact-MiMo
+session subsequently returned the out-of-band guide marker without a tool read. Lore's native permissions and OpenShell policy are unchanged.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
@@ -467,8 +475,8 @@ and build cache. Template/toolchain changes and general trusted image publicatio
 are separate workload changes. This supersedes earlier mandatory
 push → fresh factory → image publication → new service sandbox instructions for
 this source-backed loop; historical recipes and receipts retain their original
-scope. The existing diagram is deliberately unchanged until this workflow is
-implemented and proved, per the user's direction; it does not yet depict this plan.
+scope. The existing three-view diagram now depicts this measured source-backed workflow,
+separately from general trusted image publication and historical receipts.
 
 Users operate Veoveo through their own agents. The initial product gives each user
 a hosted native OpenShell **Computer**:
@@ -1948,10 +1956,10 @@ The next planned integration is the [environment override and source activation
 contract](#environment-overrides-and-fast-source-activation), in the existing trusted
 Hub process. It reuses admitted runtimes for source changes; general trusted image
 publishing is separate. Baseline MCP rollout now uses the new deployment identity;
-parallel environment routing is not yet deployed-qualified. Hub source
-now implements parallel deployment selection, composition-scoped discovery and
-delegation, and retained Task routing; component gates pass, while deployed
-qualification of the complete source-activation workflow remains pending.
+parallel environment routing and source-backed activation now have the scoped
+Linux A/B/base evidence recorded below. Hub implements deployment selection,
+composition-scoped discovery/delegation and retained Task routing; source/component
+proofs and actual deployed/model observations remain separate.
 
 Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_http.rs),
 [forwarded identity](../veoveo-hub/crates/veoveo-hub/src/mcp/upstream_authorized_http.rs),
@@ -1965,7 +1973,8 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 ### Environment Overrides And Fast Source Activation
 
 **Implemented and published; full Mac/Linux component gates and the recorded Linux
-routing/source probes pass, with remaining E4/E5 qualification pending — 2026-10-21.**
+routing/source probes, final exact-MiMo workflow and Task correlation pass at the
+recorded scope — 2026-10-21.**
 Use one narrow Lore-versioned definition, which may live in
 an existing registered repository;
 there is no requirement for one repository per environment. `components` is the
@@ -2037,10 +2046,54 @@ global registration secret. Isolated copies of application data are outside this
 slice: current component SQL explicitly names its schema, so changing `search_path`
 would not establish isolation.
 
+### Final Workflow Evidence And Capacity Boundary — 2026-10-21
+
+The execution plan records one fresh native OpenCode `c5fb626` session in selected
+A Location `/sandbox/projects/e4-selected-a`, using exactly
+`deepinfra/XiaomiMiMo/MiMo-V2.6-Pro`, build agent/eight-step bound. One prompt
+completed successfully in 197.285 seconds and four assistant steps, cost USD
+0.0241220924. Actual tools returned native Lore repository/local revision (exit
+zero), two resolved UTC instants and one settled temporal schedule containing the
+expected single 09:00–10:00 UTC occurrence, `truncated:false`. The latest injected
+guide marker was returned without supplying its value or reading the guide through
+a tool. Recorded wrapper times were shell 472 ms, search 22 ms, resolve 366 ms
+and expansion 389 ms; individual nested-call latency is not claimed.
+
+Native CLI serving defaults durable event payload retention off. The attempted
+session log captured sequence watermarks, not execution payloads; authoritative
+session/message projections provide the model/tool evidence. The fixed deadline
+interrupt returned false after success, and the session was inactive. No second
+prompt/model run or event-retention change was made. Raw capture and reviewed
+receipt are under `/tmp/e4-final-opencode-20261021/`; the execution plan retains
+full model/source/byte identities and the separate UI observations. Read-only
+correlation identifies native Time Task `01a15d71-8deb-7813-98c5-5f7d8fbeed56`,
+succeeded in 20.480 ms, with selected A
+composition/deployment matching current generation 10 and the exact one-occurrence
+result. The ID comes from stored Hub/Core routes, not model output. Restored
+shared guide bytes and unchanged Computer/Hub identities were read back. The
+coordinator accepts E0–E5 as complete at these boundaries. Manual review of all
+three existing diagram views, component details and navigation passes; six actual
+SVG/PNG exports pass XML/magic/dimension validation, and the full next-workflow
+PNG was visually inspected. Evidence:
+`/tmp/e4-final-opencode-20261021/diagram-review/exports.json`.
+
+Post-restart browser asset failures exposed an installation connection budget,
+not a new proxy/authentication requirement. Confirmed gateway pool timeout and
+PostgreSQL `53300` rejections preceded native CNPG's live increase from 100 to
+512 connections (installation `b39015e`). The estimated configured process-pool budget is
+184 before operator/reserved/rollout headroom, including ten live Time processes
+with retained revisions. Worker retention must be counted alongside base services;
+512 is capacity, not a new workload admission rule or an automatic retirement
+scheduler. A/B/base runtime identities remained unchanged through PostgreSQL's
+operator restart; subsequent browser reload had no HTTP errors. Residual browser
+resource waiting outside measured 16–18 ms Hub/gateway handling remains
+unlocalized, so no latency/SLA or zero-downtime claim follows. Detailed receipts:
+`/tmp/e4-postgres-capacity-20261021/`.
+
 ### Accepted Personal Lore Workspace Default
 
 **Implemented, with actual personal repository preparation, chosen native access
-and fresh Computer entry qualified on Linux; full E0–E5 acceptance remains open.**
+and fresh Computer entry qualified on Linux; E0–E5 scope/evidence mapped below.**
 A personal Lore workspace
 repository is the default home for versioned user setup, not an automatic mirror of the Computer's home or a mandatory repository
 per environment. The user may choose another authorized location. Illustrative paths are `environments/my-work.yaml`,
@@ -2083,7 +2136,10 @@ preparation, descriptor delivery, association retention through explicit dev
 Computer recreation and user-chosen native checkout/commit/push. The current fresh
 Computer also passes chosen personal/Time source checkouts after native device
 approval. These are separate deployed observations, not inferred from component
-checks or a prepared onboarding status.
+checks or a prepared onboarding status. Native Computer Stop/Start also retained
+both chosen checkouts, their revisions, project configuration and the delivered
+guide; native repository/branch reads succeeded after Start. The runtime main/Pods
+were replaced, so a repeated numeric OpenCode PID is not process continuity.
 
 A Computer without a checkout uses the Hub profile's configured default environment
 unless its MCP connection explicitly selects another admitted environment. Checkout
@@ -2118,17 +2174,19 @@ Live entry-triggered delivery now passes: the 4,783-byte guide has SHA-256
 `a151dd8610dc6c734e01d175574c5ba919fbd351125f70de17ca6c0338ffa235`
 with the same OpenCode PID 58, after A/B Locations had already loaded. Receipts
 are under `/tmp/e4-managed-handbook-rollout-20261021/`. This establishes delivery,
-not injected model consumption. Native instruction watching reloads subsequent
-steps; its debug rescan is not a public instruction-content API. Consumption of
-the latest guide remains part of the final bounded model qualification.
+not by itself injected model consumption. The later final exact-MiMo session
+returned the out-of-band guide marker without that marker in the prompt or any
+tool read, establishing consumption after delivery. Native instruction watching
+reloads subsequent steps; its debug rescan is not a public instruction-content API.
 
 ### Computer-Local Apply And Lore Reconciliation
 
-**Implemented; deployed qualification in progress, 2026-10-21.** Computer-local
+**Implemented and scoped-qualified on Linux, 2026-10-21.** Computer-local
 apply/watch and native component-branch following pass on Linux. Failed builds
 retain the previous serving version; native runtime stop/start recovered an active
 Time Task with its 64 exact expected results. These are deterministic deployed
-probes, not model acceptance or a stopped-Computer proof. A Computer-local environment
+probes; later receipts separately establish source-selector transitions, activation
+completion with the Computer Stopped and final exact-MiMo acceptance. A Computer-local environment
 file and source directories drive an explicit apply through Hub that snapshots the selected inputs into the separate
 private override runtime. An opt-in watch repeats that apply. The personal Lore
 checkout can hold these ordinary working files; Lore commit/push publishes
@@ -2171,8 +2229,10 @@ The composition, routing, independent runtime and retention rules remain:
 a stopped Computer leaves its override on the last successfully applied snapshot,
 not a live mount into a disappearing home directory. Snapshot transfer, explicit
 watch, failed-build retention and independent worker lifetime after the watch
-client disconnects have deployed evidence. Computer-stop independence and the
-remaining selector/reconnect cases still require qualification. The owner HTTP
+client disconnects have deployed evidence. Explicit pin/local/follow transitions
+and serving/activation completion while the Computer is Stopped now also pass.
+The observed replacement had finished compilation before the stop; no compilation
+or new source fetch during that stop is claimed. The owner HTTP
 apply endpoint and explicit CLI watch are deployed and exercised through the
 existing Computer's own native Hub connection.
 
@@ -2197,8 +2257,10 @@ following also observed revision
 at selector generation 12, changing only the definition label without a component
 rebuild. The corrected operator command used the native deployment name `primary`,
 not an execution deployment UUID. This changes no Lore behavior or authorization.
-Subsequent source-selector transitions and Computer-offline behavior remain
-separate pending cases.
+Subsequent explicit source-selector transitions also pass: R2 stayed pinned after
+R3 publication; a local snapshot remained selected after both a Time source push
+and a definition push; explicit follow restoration adopted the published definition
+and activated its Time replacement independently of Computer lifetime.
 
 Definition reads must work before any component runtime exists and while the
 Computer is stopped. The approved executable adapter packages the existing native
@@ -2209,8 +2271,10 @@ cleanup; current native scoped grants authorize the read. The adapter bounds the
 returned definition bytes, while Lore's parallel-I/O limits are not described as
 total repository download limits. This adds neither a materialization service nor
 a Lore protocol or authorization change. Exact-revision native extraction and
-root/nested-file following now have deployed evidence; the remaining selector/offline
-cases are tracked in the execution plan.
+root/nested-file following now have deployed evidence. The recorded Computer-stop
+case establishes retained serving and activation completion, not a new definition
+read or source fetch initiated during the stop. Exact observations and the
+subsequent successful final-agent qualification are tracked in the execution plan.
 
 For published inputs, use native Lore repository subscriptions rather than adding
 per-environment compiled hooks. Branch create/push/delete notifications wake a
@@ -2248,6 +2312,11 @@ retains the newest process registration of each deployment. Unscoped logical-slu
 lookup refuses ambiguity; an admitted composition selects the exact deployment.
 Live A/B/base probes now establish independently keyed deployments without route
 takeover; A/B belong to the same human, not two separately qualified human owners.
+The selected-A synthetic Media Task's retained composition and its private Artifact
+provenance also correlate in stored rows, and the same human read its exact bytes
+through B. A/B inherit the same Media/Artifact deployments; distinct downstream
+target selection retains its separate deterministic fixture proof. The associated
+audit query returned no rows, so no additional downstream audit claim is made.
 
 The public MCP route remains `/mcp/{profile}`. Hub's selected-environment HTTP
 binding passes component checks and Linux selected wire probes. Native OpenCode
@@ -2268,7 +2337,8 @@ not cover discovery and cannot provide a separate environment per chat by itself
 The signed downstream context retains the admitted environment and immutable
 composition revision, while each hop separately names its target deployment.
 Separate chats in the same Location share its MCP connection and do not select
-environments independently. Final model-driven use remains pending.
+environments independently. The final exact-MiMo session exercised selected A;
+native B connection and exact A/B schemas retain their separate deterministic proof.
 
 The current OpenCode [MCP configuration plugin](../opencode/packages/core/src/config/plugin/mcp.ts)
 already observes `config.updated` and calls `mcp.reload()`, and its
@@ -2281,7 +2351,8 @@ schemas, and there is no public tool-schema endpoint. Exact schema differences
 remain the separate selected Hub wire receipts. Each project supplies the full
 Hub server block referencing existing environment variables: server entries replace
 earlier entries rather than merging a headers-only override. No picker or new
-OpenCode protocol is added; the final selected-agent scenario remains pending.
+OpenCode protocol is added; the final selected-A agent scenario now passes within
+the recorded eight-step/240-second bound.
 
 **Source activation.** Hub's existing trusted process owns only thin desired-state
 reconciliation: notifications are hints, authoritative Lore reads plus periodic

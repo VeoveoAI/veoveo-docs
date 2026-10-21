@@ -1,12 +1,20 @@
 # OpenShell Hard Cut Plan
 
-**Active implementation:** [personal Lore workspaces, environment overrides and fast
+**Completed and qualified, 2026-10-21:** [personal Lore workspaces, environment overrides and fast
 source activation](#next-slice--environment-overrides-and-fast-source-activation).
 The foundation and Computer receipts below remain qualified. Implementation of
 this new workflow was authorized and started on 2026-10-20. Full component gates
-and the recorded Linux source-activation/routing probes pass; remaining source
-selector, Computer-offline, managed-guidance consumption and final exact-model
-qualification remain pending as of 2026-10-21. E0–E5 are not yet complete.
+and the recorded Linux source-activation/routing probes pass, including selector
+transitions and activation completion while the Computer is Stopped.
+The single final exact-MiMo session now succeeds with verified native Lore and
+selected Time results plus the latest injected guidance. Post-restart browser
+asset failures were traced to PostgreSQL connection capacity and corrected through
+native CNPG configuration. Read-only Task correlation and completed-session UI
+assertions also pass. E0–E5
+are qualified at the explicit source/component, Linux deployed and single-model
+boundaries below. The existing three-view diagram also passes manual browser and
+SVG/PNG export review. The evidence below records the qualified scope and remaining
+performance limits.
 
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
@@ -84,7 +92,7 @@ restriction; those receipts do not establish Kubernetes acceptance.
 ## OpenCode without Git, undo or snapshots — 2026-10-21
 
 **Implemented, component-checked on Mac, published and packaged/deployed on Linux;
-per-message Revert/review-panel runtime assertions remain pending.**
+completed-session web UI assertions pass.**
 User decision: OpenCode does no version control. The agent uses the native Lore
 CLI, and Lore owns source history and undo. No Lore VCS provider, `.lore`
 detection or Lore-backed snapshots are planned.
@@ -125,9 +133,12 @@ detection or Lore-backed snapshots are planned.
 - Native slash-menu observations did not show `/undo` (other fuzzy matches
   appeared); `/redo` returned "No matching items". Unsent input was cleared.
   Evidence: `no-undo-ax.txt` and `no-redo-ax.txt` in that receipt directory.
-- Next: complete the separate per-message Revert and review-panel assertions.
-  Home/navigation, slash-menu and disabled configuration readback do not prove
-  those runtime UI cases.
+- On the completed final model conversation, Mac Chrome showed only Copy message
+  in the original message actions, with no Revert. Toggle review showed Review /
+  No tracked changes, without Create Git repository. Evidence:
+  `/tmp/e4-final-opencode-20261021/message-actions-ax.txt`,
+  `review-panel-ax.txt` and `computer-qualification-ui.png`. These are actual web
+  UI observations; TUI behavior retains its separate component evidence.
 - Boundary: git code paths remaining in OpenCode core stay dormant only while no
   `.git` exists at or above a Computer workspace. `VEOVEO_FORK.md` lists them.
 
@@ -2876,9 +2887,237 @@ delivery without a process restart, not model consumption. Native Lore device
 approval and the chosen personal/Time source checkouts subsequently succeeded;
 the Time branch `e726318bbc3fd75ac8733a7e030cc35b` had local and remote R2 head
 `03775a90f002047c7ad7d18c7e3b75af439224b417347b1b7ba5ea75ec8302c0`.
-Managed handbook injected-consumption, source pin/local/follow transitions,
-Computer-offline qualification and final MiMo remain pending. These observations
+Managed handbook injected-consumption and final MiMo remain pending. These observations
 do not establish the separate runtime no-Revert UI assertions or complete E0–E5.
+
+The corrected installed client then completed the explicit source-selector sequence.
+At 07:06:38 UTC, exact Time R2 pin
+`03775a90f002047c7ad7d18c7e3b75af439224b417347b1b7ba5ea75ec8302c0`
+was Serving as component generation 8, Build
+`01a15d46-7b0e-7e92-aeab-403adf3691f8`, deployment
+`01a15d46-7b0e-7e92-aeab-404f74112bad`; check/build measured 184/89,471 ms.
+After native Time push R3
+`e234c7fa8c7639852c2c011e17adfc1fbefebdb371963b255536edd8ac3771db`,
+the 07:08:30 observation retained that exact R2 pin, Build, deployment and output
+`7c0af0afcee78905c9dc6ca3d94af040d46841134affe30bdf9e5af7e5e2e695`.
+Receipts: `pin-r2-serving.json` and `pin-stable-after-r3.json` under
+`/tmp/e4-managed-handbook-rollout-20261021/`.
+
+Explicit local apply was then accepted as component generation 9, Build
+`01a15d4b-22fb-7b92-8244-52dc3c0eed66`, deployment
+`01a15d4b-22fb-7b92-8244-52e53b889408`; definition mode became Local at generation
+15. The 1,921,024-byte snapshot has SHA-256
+`4c726dffb43c817fbc245e04ca213b8d93dc0a7e731f5bb193f5855ecf04c51e`.
+It was Serving at 07:11:30 after check/build 191/88,757 ms, with output
+`53224de0cb6c687a74b7091d873fbb6bee2ed150a65f3783e573272a6634f1c1`
+and selected Time schema digest
+`60fee4b3ee8d1bf7867b877c13c3e7a55c1d8d186804b5476fdf319a1fe5ed25`.
+Later Time R4 `42d8be9aa3954c38c2467fdd6a76aa109e804056fd0424190932cdb6b4b93b6d`
+and personal definition revision
+`e37e4878589fa34f53d33cfa065c4c1d01d9ac65dc0541bab8a42b32b7f55056`
+did not replace local intent: the 07:13:35 observation retained Local generation
+15 and component generation 9 with the exact same source/Build/deployment/output.
+The normal selected call passed in 161.650 ms with the local schema unchanged.
+Receipts: `local-apply-accepted.json`, `local-apply-serving.json`,
+`local-stable-after-publications.json` and `local-after-publications/receipt.json`.
+
+Explicitly restoring definition following observed that published personal
+revision at definition generation 17 by 07:14:25 and restored component branch
+following. New component generation 10 allocated Build
+`01a15d4f-4378-7521-a764-3ee2550a16ab`, deployment
+`01a15d4f-4378-7521-a764-3efafad6bc62`. At 07:15:42 it was Registering, with the
+prior local Build still serving. Luna then stopped only the Computer through
+native OpenShell (sandbox `fc754186-814d-4aa2-bb05-13378da8acc9`, workspace
+`c5dkmo7gsjpwgxdvm4w`, stopped readback resource version 130). At 07:16:37 it
+remained Registering while the Computer was Stopped;
+ordinary selected calls still used the prior local worker. At 07:17:35 the same
+new Build/deployment was Serving without an apply, retry or intervention. Its
+1,924,608-byte source has digest
+`d68bea63c87a00f6042fc993f3722a551d528ad32f2cfdca8692b5ff29841f75`
+and output `7c0af0afcee78905c9dc6ca3d94af040d46841134affe30bdf9e5af7e5e2e695`.
+Compilation had already completed before Computer Stop (check/build 183/90,153 ms).
+This proves activation completion and serving independence while the Computer is
+Stopped; it does not prove compilation or a newly initiated source fetch during
+that stop. The observed Registering duration alone does not identify a failure or
+its awaited operation. Receipts: `restored-follow.json`, `follow-before-stop.json`,
+`follow-computer-stopped.json` and `follow-stopped-observation-2.json`.
+
+At 07:18:06–08, with the Computer still Stopped, A/B/base each listed 40 tools and
+passed normal calls in 150.991/164.299/159.492 ms. A exposed the Lore schema digest
+`2cf1760624470b1959a9f89ef5ca586ef1ff4d927a2610275c846d51c793d946`,
+while B/base retained `72a21694caca70af5116faaf18d9d2e94d98598e584da2d8d9c6a57b41e2e2bf`.
+Receipts: `offline-follow-a/receipt.json`, `offline-follow-b/receipt.json` and
+`offline-follow-base/receipt.json` in the same directory. Native Stop and Start
+both exited zero. Start recovered that same Computer sandbox/PVC as Ready with
+new main instance `d7642c04-1b5d-46db-be48-295fd0475a74` and workload Pod
+`0ea39b94-434f-4c99-90c7-d73163285aca`, replacing pre-stop main
+`3a8caa31-b52e-4b59-9812-32ebf7f36556` and Pod
+`87cfb6a1-8131-4014-a79a-ca2e32986dce`. Native repository/branch reads returned
+exit zero for both chosen checkouts; their revisions, project configurations and
+guide SHA survived. The new container again reports numeric OpenCode PID 58;
+that is not process continuity across Stop/Start. Native receipt:
+`native-stop-start-receipt.json`, SHA-256
+`80e0b8e1161579bd4066f0b99d1ed7035d754d1cd60eef80eb14f2ae24fa11f3`.
+These complete the named selector/Computer-offline observations; E0–E4 evidence can
+now be mapped to the checklist. Overall E0–E5 completion remains unchecked pending final audit,
+injected-guide/exact-MiMo acceptance and the diagram/documentation closeout.
+
+Post-restart browser qualification exposed a separate failure before any model
+call. Two ordinary Mac Chrome page loads left the page blank: some JavaScript
+assets returned Hub `503` after approximately 5 seconds, and others returned
+`500` after approximately 30 seconds. In the second load at 07:24:18 UTC, four
+assets returned `503` in 5.23–5.35 seconds and one returned `500` in 30.349 seconds;
+the other assets succeeded. Individual retries of two earlier failed assets
+returned JavaScript with `200` in approximately 341 ms. Existing Hub logs contain
+the five-second `503` responses, but no corresponding `500` response. These
+observations do not yet identify the failing transport or database operation.
+Receipts: `/tmp/e4-final-opencode-20261021/restart-second-load.json`,
+`restart-second-response-meta.json` and `hub-asset-failures.tsv`.
+The same Computer main/Pod and OpenCode PID 58 remain running; native Lore remote
+repository and local revision commands succeed for both checkouts. The delivered
+4,784-byte guide SHA is
+`4f100fc5973ecd35f7d76be7e7b4b9d2f51c1f3cc9b6644b8bb9a1a1e20f6afd`.
+Receipt: `/tmp/e4-managed-handbook-rollout-20261021/final-mimoproof-preflight.json`.
+The final model run remained unstarted at this checkpoint. It ran once after
+the capacity correction and deterministic browser recovery below.
+
+### PostgreSQL Capacity And Final Computer Qualification — 2026-10-21
+
+The browser failure was a measured installation capacity issue. Native ingress
+logged a pool acquisition timeout for the exact failed asset; PostgreSQL logged
+645 SQLSTATE `53300` connection rejections in the failure window. The observed 33-byte `500` and matching native-ingress error are consistent
+with its source-defined `Service endpoint is not available` persistence-error
+response; the browser did not capture that response body, so exact body
+attribution is a supported inference. Hub's approximately five-second `503`s
+overlapped confirmed PostgreSQL exhaustion and match its admission deadline, but
+each refusal's underlying cause was not logged. The native SQLx acquisition
+budget is 30 seconds. No proxy deadline, authorization rule,
+transport fallback or application source was changed.
+
+Installation `b39015e` configures native CNPG
+`spec.postgresql.parameters.max_connections: "512"`. Builder parsed all three
+YAML documents, passed server dry-run and applied only that setting at 07:40:10
+UTC. CNPG restarted PostgreSQL in place, effective start 07:43:11, and the Cluster
+was Ready by 07:43:30. The estimated configured pool budget is 184 connections before
+operator/reserved/rollout headroom: ten Time processes (eight retained A workers,
+one B and base) at 11 each, four other Core processes at 11, Lore at 16 and
+OpenShell data/lock pools at 10+4. This is capacity for retained workers, not a new
+workload admission limit or automatic worker-retirement policy. A/B/base runtime
+identities remained unchanged; readiness returned 13 registrations/two profiles.
+Receipts: `/tmp/e4-postgres-capacity-20261021/receipt.json` and the published
+installation's PostgreSQL manifest/README.
+
+The subsequent browser reload fetched 130 resources with no HTTP errors; native
+A/B/base discovery and normal calls passed. Three assets still had approximately
+20-second browser resource durations despite measured Hub/gateway handling of
+16–18 ms and no new PostgreSQL `53300`/gateway pool errors. That residual browser
+wait is unlocalized and is not attributed to PostgreSQL or presented as a latency
+SLA. Evidence: `browser-reload-complete.json`, `browser-latency-followup.json` and
+A/B/base receipts in that directory.
+
+Only then did the coordinator submit the one final model prompt through the
+existing Mac Chrome Computer session. Native OpenCode
+`c5fb62662c9c6fcb5064ef191956ca0da14e1af9`, build agent configured for eight steps,
+used exactly `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` (default variant). Session
+`ses_ea29099f4ffe6XztrB6Fo4SAhe` in Location
+`/sandbox/projects/e4-selected-a` accepted one prompt at 07:49:04.310 and was idle
+with `succeeded` outcome at 07:52:21.595: **197.285 seconds, four assistant model
+steps**, within the 240-second wall deadline. Cost was USD `0.0241220924`; recorded
+tokens were 50,537 input, 2,068 output, 568 reasoning and 27,184 cache-read.
+
+Actual tool outcomes, checked in projected messages rather than model prose:
+
+- Native shell completed in 472 ms with exit 0. Remote repository metadata gave
+  personal repository `01a15c48e6727531b364e4c7ac13babe`; the separate local
+  revision read gave
+  `e37e4878589fa34f53d33cfa065c4c1d01d9ac65dc0541bab8a42b32b7f55056`.
+  Native secure-storage fallback warnings were present, but both commands
+  succeeded; no login, clone, push or integration veto occurred.
+- Code Mode search completed in a 22 ms wrapper. Two ordinary
+  `hub.time__resolve_time` calls completed in one 366 ms wrapper for
+  `2026-10-22T00:00:00Z` and `2026-10-23T00:00:00Z`. Their complete returned
+  instant objects were passed unchanged to one `hub.time__expand_schedule` call.
+- The expansion wrapper completed in 389 ms, returning exactly one labelled
+  09:00–10:00 UTC occurrence on October 22 and `truncated:false`, with actual
+  bootstrap leap/tzdb authority IDs. These are wrapper timings, not separately
+  measured nested-call latencies. Native Task settlement exposed no model-facing
+  Task ID; the separate read-only database correlation below establishes its
+  actual canonical/native IDs.
+- The final assistant output contained the exact out-of-band guide-revision
+  marker, absent from the prompt and not read through a tool. This establishes
+  consumption of the latest Hub-delivered instructions after the Location had
+  already loaded; it does not invent a public watcher event.
+
+The capture's durable log assumption was wrong: ordinary native CLI serving
+leaves `events.persist` unset, and Bus defaults it to false. It still projects
+messages and advances sequence numbers, but does not retain EventTable payloads;
+therefore the log returned only `log.synced` watermarks 0, 34 and 49. A stream
+network error at 07:51:09 was captured; reconnect did not submit another prompt.
+The deadline interrupt returned `interrupted:false` after the already completed
+run, and active-session readback omitted this ID. Execution was not stalled.
+No payload-retention configuration change or second model run was made. Step/tool
+facts above come from final session/messages, not nonexistent durable event rows.
+
+Private raw evidence:
+`/tmp/e4-final-opencode-20261021/final-run-capture.json`, **70,818 bytes**, SHA-256
+`9d99e4acf8202f2f45658ba477726d0ee515b9b78d2f16c2ffe33a3fdd264aa5`;
+reviewed extraction: `reviewed-model-receipt.json`. The completed conversation's
+actual web message actions and review panel pass the no-Revert/no-Git-init cases
+recorded above. The coordinator restored shared guide text through live control
+and normal Computer entry; final byte readback confirmed the restored 4,706-byte
+guide, SHA-256
+`eec4498b9487dc99d9651cce1be30d118ddcc5daf5cca0e363c06afacea1865d`,
+with the same Computer/Hub sandbox, main and Pod identities. No further model run
+is authorized or required for this qualification.
+
+Read-only Core/Hub correlation establishes canonical route
+`gtr_iYse_yVV3OAfXevOYxofF7SEFdCQwPMwV_t-TBGxNJA` → native Time Task
+`01a15d71-8deb-7813-98c5-5f7d8fbeed56`. It was created at
+07:51:25.421992 and succeeded at 07:51:25.442472 UTC (**20.480 ms**). The retained
+route captures selected A and composition
+`sha256:074134d60bda652a1d6ddbb66232d54240ca8eb0f883f3a80f8038909d37f33a`,
+with deployment `01a15d4f-4378-7521-a764-3efafad6bc62`, matching current generation
+10 Build `01a15d4f-4378-7521-a764-3ee2550a16ab`. The stored request/result equals
+the one model-facing occurrence; canonical structured result SHA-256 is
+`b2f847d9793c833cc9910193476add2d2ee08b2855837cc52d4110e3f0932bcf`.
+These IDs come from the actual route/Task join, not invented model output.
+No operation/event/step rows were present, so none is claimed. Evidence:
+`/tmp/e4-final-opencode-20261021/task-correlation-and-repo-audit.json`, SHA-256
+`f40a2f9c3cf0236016d313ff8684f5f115909c681275ef07353df9f2cd8ff3cd`.
+
+The same audit fetched each affected published repository's origin/main and
+confirmed clean main equal to origin for Hub, Core, SDK, Lore, OpenShell, OpenCode, MCPs,
+embedding runtime and installation. Docs retained the three closeout edits.
+`veoveo-service-lore` has no remote and lies outside that published-stack claim.
+No reset, checkout, cleanup or additional source mutation was used for the audit.
+
+The coordinator reviewed this final mapping and accepted E0–E5 at the recorded
+scope; the checklist below is now checked. Final manual review of the existing
+three-view HTML also passes: Platform now, Credential path and Next integration;
+Hub, User Lore and Environment details; navigation; and current descriptions,
+date, labels and local-snapshot path. Six actual exports (SVG/PNG for all three
+views) were downloaded, with XML, PNG magic and dimensions validated. The full
+Next integration PNG was also visually inspected. The reviewed HTML has SHA-256
+`6b26a9d7d006c13ec8f8396bee6454db62ea783cc56b949861f1f514346e6e40`;
+evidence is `/tmp/e4-final-opencode-20261021/diagram-review/exports.json`.
+Component/source evidence, coordinator browser review and export validation are
+distinct; no new model call or runtime change was made for diagram review.
+**E0–E5 are complete at this qualified scope.**
+
+| Gate | Strongest evidence and boundary |
+| --- | --- |
+| E0 | Actual same-human personal repository association survives explicit Computer recreation; optional chosen native login/checkout/push and final read succeed. Current live handbook delivery and injected consumption pass. No startup clone/login gate. |
+| E1 | Typed IDs and independent A/B/base deployment registration, explicit unavailable/absent/base pin/follow/label cases pass. Cycle, foreign-owner and immutable-admission cases retain component/DB proof. |
+| E2 | Actual A/B native Locations connect with distinct headers; selected wire schema isolation, downstream synthetic Media/Artifact provenance, exact Working/terminal Task routes across removal/update/restart pass. Different downstream target enforcement and paging/ACL cases retain deterministic fixture/component proof. |
+| E3 | Real Time local apply/watch, schema metadata update, compiler failure/repair, native component/root/nested definition follow, pin/local/follow transitions, unique output capture and readiness/registration selection pass without per-edit image/Pod/Hub replacement. |
+| E4 | Failed-start retention, stopped selected override without fallback, base cases, retained Tasks, native runtime recovery and activation completion while Computer Stopped pass. Compilation finished before that stop. Unseen desired-head recovery after Hub rollout proves authoritative reconciliation; duplicate-read/ABA/stale/deletion behavior is component/DB proof, not injected native loss/duplication. |
+| E5 | Exact revisions, worker/runtime identities, byte digests, phase timings and one bounded exact-MiMo run with actual tool/Task correlation are recorded separately. Completed-session web UI passes; component tests, deterministic deployed probes and model evidence are not conflated. |
+
+Same-human A/B, shared application data, identical inherited downstream targets,
+synthetic Media bytes and component-only race/ACL/cursor proofs remain explicit
+limits. No arbitrary-language hot reload, data cloning, automatic GC, general
+image publisher, arbitrary Media callback routing or zero-downtime claim is
+introduced. Separate embedding qualification is not closed by this workflow.
 
 The coordinator separately qualified route removal during a working read-only
 Time Task through the existing authenticated HTTP client. B's Task
@@ -2957,7 +3196,14 @@ Media/Artifact deployments, so this is live delegation/provenance and shared-dat
 evidence, not an independent measurement of two different downstream targets.
 The existing full-gate Hub Relay/Ledger scenario and SDK target-token tests cover
 that latter invariant deterministically. Receipts are under
-`/tmp/e4-delegation-20261021/`; route/audit correlation remains in progress.
+`/tmp/e4-delegation-20261021/`. Read-only database evidence at
+`/tmp/e4-downstream-selected-20261021/read-only-evidence-output.txt` independently
+records that exact Media Task's A environment and composition
+`sha256:e5bcdfaebd0cf7c92352fedd026148bacd47060825bef7d5b5363135c28d2dbd`,
+including its selected Media/Artifact/Time deployment IDs, and the matching private
+Artifact owner/WorkContext/Media Task provenance. The bounded audit query returned
+zero rows: no downstream audit record or additional Artifact-side execution-context
+claim is credited.
 
 The earlier E3 runtime mechanism passed a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
@@ -2981,7 +3227,7 @@ independent replacement and PVC recovery, not Hub activation, MCP context, sourc
 watching, Task retention or model acceptance. The subsequent end-to-end timings
 and evidence above remain separate from this mechanism-only checkpoint.
 
-- [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
+- [x] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
   authorized repository provisioning or reuse and stable user → actual repository
   ID binding, plus a public descriptor available to the Computer. First checkout
   and native login are optional user/agent choices, never startup requirements.
@@ -2991,7 +3237,7 @@ and evidence above remain separate from this mechanism-only checkpoint.
   use the same contract; no repository per environment is mandated. Do not autosync
   home, scratch, caches or session history, invent a project registry format, or add
   Lore permission semantics. Explicit native commit/push remains publication.
-- [ ] **E1 — Typed identity, selection and multi-instance registration.** Define
+- [x] **E1 — Typed identity, selection and multi-instance registration.** Define
   stable environment/component/deployment/revision IDs, optional authorized acyclic
   base pin-or-explicit-follow and a component map of owned overrides. Permit the
   environment file in an existing registered Lore repository. Omitted means inherit;
@@ -3001,7 +3247,7 @@ and evidence above remain separate from this mechanism-only checkpoint.
   keys `RegistrationSnapshot` by deployment; the A/B/base receipts above establish
   multiple live instances. Qualify them without a newer registration
   taking another environment's route.
-- [ ] **E2 — Session-context routing and complete composition capture.** Bind an
+- [x] **E2 — Session-context routing and complete composition capture.** Bind an
   authenticated Hub MCP connection/session to selection using qualified native
   client/SDK contracts; the route remains `/mcp/{profile}`, with the typed selection
   header exercised by the deployed A/B/base probes above. Verify OpenCode's actual configuration/context surface;
@@ -3012,7 +3258,7 @@ and evidence above remain separate from this mechanism-only checkpoint.
   before route replacement and retain old worker/source while canonical Task routes
   and results remain readable, including terminal results until expiry or explicit
   retirement. Use existing typed SDK/Core/domain boundaries and tests.
-- [ ] **E3 — Reusable-runtime source activation.** Implement Computer-local apply and
+- [x] **E3 — Reusable-runtime source activation.** Implement Computer-local apply and
   opt-in watch with identified source snapshots, plus a dynamic native Lore
   subscription set in the existing trusted Hub process. Subscribe before reading;
   reconcile authoritative branch/revision state after notification hints, reconnects
@@ -3031,7 +3277,7 @@ and evidence above remain separate from this mechanism-only checkpoint.
   replacement or Hub restart; template/toolchain changes remain explicit workload
   changes. Keep desired/serving failures visible and the last serving revision
   during failed candidate preparation; never silently fall back to the base.
-- [ ] **E4 — Deterministic and Linux deployed scenario.** First use the existing SDK
+- [x] **E4 — Deterministic and Linux deployed scenario.** First use the existing SDK
   fixture and one real Rust MCP; add a small interpreted example only if needed to
   prove the reload distinction. Run one base and two independently owned overrides
   of one logical component. Select them in simultaneous sessions; update only one
@@ -3046,7 +3292,7 @@ and evidence above remain separate from this mechanism-only checkpoint.
   inherited-only base updates, owned override retention, cycles and label rename.
   Route separation does not prove cloned data: check explicit bindings/current ACLs.
   Reject late activation after supersession/deletion; do not replay mutations.
-- [ ] **E5 — Measured acceptance and honest boundaries.** Record exact desired,
+- [x] **E5 — Measured acceptance and honest boundaries.** Record exact desired,
   serving and resolved composition/source revision IDs; app worker PID/identity,
   sandbox/runtime/Pod and Hub process identities before/after each change. Measure
   source-fetch, incremental build/check, child start/readiness and route/catalog
