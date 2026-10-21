@@ -401,8 +401,10 @@ and started on 2026-10-20, including Computer-local apply/watch and native Lore
 subscriptions as inputs to one activation contract. Deployed evidence now covers
 Computer-local apply/watch, automatic native Lore component-branch updates,
 failed-build retention, and active Time Task recovery across runtime stop/start.
-Configuration-file following, Computer-stop independence and final model-driven
-acceptance remain open. The Linux K3s foundation,
+Root configuration-file following, retained Task completion during route removal,
+and base pin/follow/owned-override cases also pass. Nested configuration following,
+the remaining source-selector transitions, Computer-stop independence and final
+model-driven acceptance remain open. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
 multi-instance routing source is published; the source-update implementation is
@@ -2165,9 +2167,12 @@ existing control transaction. This adds no second manifest format or Lore permis
 model. The definition-follow adapter is deployed, but its first native root-file
 probe found a Hub invocation defect: `lore --repository` does not change process
 cwd, and native file extraction resolves its relative path against that cwd. A
-one-line correction runs extraction from the selected temporary checkout; its
-full component checks and Linux rollout are pending. This changes no Lore behavior
-or authorization.
+one-line correction runs extraction from the selected temporary checkout. It is
+published and deployed as Hub `0f988b6` after both full component gates passed.
+The existing pending root-file follower recovered without resubmission, adopted
+the label and retained the exact component Build/deployment/output. This changes
+no Lore behavior or authorization. Nested-file following and subsequent selector
+transitions remain separate deployed cases.
 
 Definition reads must work before any component runtime exists and while the
 Computer is stopped. The approved executable adapter packages the existing native
@@ -2177,8 +2182,9 @@ content reconstruction. Hub owns the foreground child's timeout, cancellation an
 cleanup; current native scoped grants authorize the read. The adapter bounds the
 returned definition bytes, while Lore's parallel-I/O limits are not described as
 total repository download limits. This adds neither a materialization service nor
-a Lore protocol or authorization change. Native CLI execution and the complete
-follow path still require deployed qualification.
+a Lore protocol or authorization change. Exact-revision native extraction and
+root-file following now have deployed evidence; the remaining follow/reconnect
+cases are tracked in the execution plan.
 
 For published inputs, use native Lore repository subscriptions rather than adding
 per-environment compiled hooks. Branch create/push/delete notifications wake a

@@ -2769,7 +2769,23 @@ command exited 4 from outside the checkout and exited 0 from its directory,
 reconstructing the exact expected SHA-256
 `b7815883c7e313d7ddebb94aa7549396b17ae520c8147d8662f09707bd364876`.
 Lore's repository option selects the repository without changing process cwd.
-Sol's one-line Hub fix sets that cwd; validation and rollout are pending.
+Sol's one-line Hub fix sets that cwd. It is published as `0f988b6` after both
+canonical `docker build --target check .` gates exited zero: Mac and Linux each
+passed 276 tests with one skipped (Nextest 34.267/37.708 seconds).
+Luna built the runtime on Linux from that exact commit, with release compilation
+taking 2m23s, and deployed image
+`sha256:59dc74d0a1753e743cf6680ec5cc45c02c56476c93ad8001a9c5cc8d0ea8a92b`.
+The new native Hub sandbox is `972045b8-fb37-4a64-8bfd-e087074a9093`, main instance
+`d2c3206b-14e2-43a4-a242-7814166b739a`, Pod
+`dcccc27d-94e8-421f-aea8-573c33142ac5`; public readiness passed with ten registered
+deployments and two profiles. This is a Hub code rollout, not a source-edit restart.
+At 05:47:42 UTC the existing definition follower had automatically observed the
+published revision and adopted its root label, with selector generation 9.
+No follow request was resubmitted. Component Build `01a15ce4…3a9b`, deployment
+`01a15ce4…6a4b`, source identity and output digest remained exactly unchanged.
+Receipt: `/tmp/e4-lore-follow-20261021/after-cwd-rollout-root-definition.json`.
+Build/deploy receipt: `/tmp/hub-definition-cwd-fix-20261021/deployment-receipt.json`,
+SHA-256 `4f7f4a413ca49ec7010f92695e07a175392b8652851058d96e9a0d9267938741`.
 No Lore behavior, grants, policy or additional rejection was added. Early operator
 commands also omitted the Computer's declared Lore/XDG paths; repeating them with
 the existing profile succeeded without new login or credential changes.
@@ -2778,7 +2794,40 @@ Consolidated receipt:
 `7feaa7f668aad926120a887a873b641ca88909738ee0da5aced183efce001c9c`.
 Selected-call evidence is `/tmp/e4-a-lore-marker-20261021/receipt.json`.
 
-The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
+The coordinator separately qualified route removal during a working read-only
+Time Task through the existing authenticated HTTP client. B's Task
+`gtr_hDWHTZAWqDvJb3_pYMjdtaYU8d05qlFQ2c_-ezDdNvI` was created at
+05:38:28.846203 UTC and observed Working before its `components.time` mapping was
+removed through the live admin control API at 05:38:36.123. It was still Working
+after removal and completed at 05:38:51.088816 while the mapping remained absent,
+with all 64 expected results and SHA-256
+`055713ab63239b3044d04cd7871393106f768e708fe70d7840adbb3a4b400e4c`.
+B's ordinary calls passed during removal (291.983 ms) and after restoration
+(155.057 ms), listing 40 tools with the baseline schema. The configured base
+remained selected during the absence; discovery does not directly expose the
+resolved deployment. B's exact original mapping was restored at 05:39:15.400.
+This changed routing only: no owner source withdrawal, new Build or native lifecycle
+operation. Evidence is under `/tmp/e4-retained-task-b-route-removal-20261021/`,
+with selected receipts under `/tmp/e4-b-during-route-removal-20261021/` and
+`/tmp/e4-b-after-route-restoration-20261021/`.
+
+Deployed base-composition cases passed at 05:48:33–43 UTC. Three temporary owned
+selections used B as their base: one pinned its retained composition
+`sha256:d6d883c43480bb502944537b39429405b1ad3bfb55948e36e5d15ca7a8e109f2`,
+one followed, and one followed with its own Time override. After changing B's
+Time mapping to A's existing marker deployment, the pin and owned override retained
+the baseline schema, while the follower exposed the exact marker schema. Their
+normal calls passed in 147.285/157.093/165.117 ms. An explicitly unavailable Time
+entry excluded Time (19 other tools); removing the base and entry yielded zero
+tools. Both normal Time calls returned HTTP 400 / `-32602`, unknown server, rather
+than reaching a fallback. Restoring inheritance returned all 40 tools and the
+marker schema, with a passing call in 146.131 ms. B was restored and all three
+temporary selections removed through fresh control publications. No source,
+runtime or image changed. Receipt:
+`/tmp/e4-base-composition-20261021/receipt.json`, SHA-256
+`9984d31b84e93f639d908412a6184be41c07eecdf9831a7f5a8b746b04dcacf2`.
+
+The earlier E3 runtime mechanism passed a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
 Rust/Cargo 1.99.0 built a dependency-free HTTP fixture offline as UID/GID 10001.
@@ -2797,8 +2846,8 @@ an OpenShell change. Sanitized receipt: `/tmp/e3-s6-runtime-probe-20261020.json`
 on Mac. The UUIDv4 build-directory labels in this mechanism probe are not Core's
 UUIDv7 `BuildId` contract. These synthetic HTTP markers prove process ownership,
 independent replacement and PVC recovery, not Hub activation, MCP context, source
-watching, Task retention or model acceptance. End-to-end activation timings remain
-unmeasured; E3 and E4 remain open.
+watching, Task retention or model acceptance. The subsequent end-to-end timings
+and evidence above remain separate from this mechanism-only checkpoint.
 
 - [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
   authorized repository provisioning or reuse and stable user → actual repository
