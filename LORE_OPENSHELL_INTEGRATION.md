@@ -432,11 +432,22 @@ deployed as `8e62346`, with both platform checks passing. First-use provisioning
 now creates the personal repository and publishes its actual native IDs through
 the live control plane. Native device sign-in succeeds and stores the user's
 grant. Checkout exposed a separate installation-helper error: explicitly asking
-for `<branch-id>@latest` cannot clone a newly empty branch. The helper correction
-uses Lore's supported default-branch clone path when it matches the retained ID,
-and verifies the resulting checkout before publishing it. That correction and
-checkout qualification are in progress. Lore's native permissions and OpenShell
-policy are unchanged.
+for `<branch-id>@latest` cannot clone a newly empty branch. Ordinary native clone
+succeeded, but our subsequent human-readable metadata parser falsely rejected
+the checkout when a native warning preceded the repository identity. That parser
+was an integration addition, not a Lore authorization requirement. The user then
+clarified that first checkout must be optional. The correction removes
+the installation helper and its automatic invocation entirely. Hub prepares only
+the optional repository association and delivers public coordinates; the user or
+agent chooses when and where to perform native login and clone. A prepared status
+does not assert login or checkout. The retained branch association is provisioning
+metadata, not an ongoing checkout constraint. Hub source is published as `aff11f8`
+after both full platform gates pass; installation removal/handbook is published as
+`8466e56`, refined by handbook-only `4b44cc0`, and its Linux image package checks
+pass. Hub is now deployed: Mac Chrome
+Computer entry renders successfully and optional onboarding reports ready. The
+current Computer retains its existing image/session; final handbook image rollout
+is pending. Lore's native permissions and OpenShell policy are unchanged.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
@@ -2042,21 +2053,49 @@ lock. Optional workspace failure leaves Computer access usable with explicit
 pending/auth-needed/failed status. The initiating OAuth client's current registration
 must allow the selected native audience and scopes. A platform refresh family is
 never substituted for a native Lore family. Native CLI login, token storage and
-refresh remain unchanged: a small installation helper continues exact-ID checkout
-after native login succeeds, and admitted Computer entry retries with existing
-native authentication. Hub delivers only a public typed checkout descriptor through
-owner-bound native Exec. OpenShell's `ExecSandbox` RPC requires its existing
+refresh remain unchanged. Computer entry never requires or starts native login or
+checkout. Hub delivers only a public typed repository descriptor through
+owner-bound native Exec; ready means the optional default and descriptor are
+prepared. The user or agent chooses the repository, branch and destination for
+ordinary native operations. OpenShell's `ExecSandbox` RPC requires its existing
 `sandbox:write` scope and workspace authorization. The Hub provider recipe already
 requests that scope; the selected sandbox policy must also admit that exact RPC.
 There is no separate `sandbox:exec` scope or new external Exec endpoint. The Hub
-onboarding source is published as `628e18d`; its full Mac/Linux component gates each
-passed 248 tests. Installation packaging and deployed first-use qualification remain
-pending; those component checks do not establish native login/checkout acceptance.
+original onboarding source was published as `628e18d`; the checkout-removal
+correction is now `aff11f8`, with combined Mac/Linux gates each reporting 276
+passed and one skipped. Existing-Computer entry and descriptor-ready status pass
+on the deployed correction. Fresh first-use and user-chosen native checkout remain
+separate qualification; component checks do not establish them.
 
-The Computer checks out the authorized workspace for instructions/environment files;
-working checkouts, caches, scratch and session history remain private unless the
-user explicitly commits and pushes selected source/configuration. No automatic home
-synchronization or additional Lore permission scheme is introduced.
+A Computer without a checkout uses the Hub profile's configured default environment
+unless its MCP connection explicitly selects another admitted environment. Checkout
+never selects or applies an environment. Working checkouts, caches, scratch and
+session history remain private unless the user explicitly publishes selected files.
+No automatic home synchronization or additional Lore permission scheme is introduced.
+
+The packaged Computer handbook covers only Computer-specific organization, native
+Lore/Hub use, environment selection/apply/watch and publication. It references current
+runtime configuration and the public descriptor rather than hardcoding an origin,
+repository or active environment. Hub supplies connection/descriptor values through
+existing native configuration and delivery; credentials never enter instruction
+text. Different OpenCode projects/Locations may select different environments, so a
+Computer-wide copied environment snapshot would be incorrect. The current handbook
+is shared Markdown, not a Hub template engine. Pinned OpenCode watches loaded local
+instruction files and refreshes subsequent model steps; it does not change an
+already running model request or continuously refresh remote instruction URLs.
+No skill-installation tutorial or duplicate OpenCode guidance is added.
+
+Hub-managed replacement of the handbook text is not yet wired: the published
+Computer loads `/etc/computer/instructions.md`, a root-owned file on its read-only
+system filesystem. The proposed small follow-up is a dedicated public managed
+Markdown file under `/sandbox/home/.config/computer`, created before OpenCode's
+initial instruction discovery and configured once as an instruction source. Hub's
+existing admitted delivery can atomically replace that file with shared guidance
+and current nonsecret values. User-owned `AGENTS.md` files remain user-owned.
+This needs initial configuration wiring, not a new template service or authorization
+layer. Current Location environment selection and live grants must not be copied
+into a global handbook. A local-file watcher alone does not deliver Hub updates;
+the refresh trigger still needs implementation and qualification.
 
 ### Computer-Local Apply And Lore Reconciliation
 

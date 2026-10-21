@@ -2319,6 +2319,91 @@ tests; actual native clone qualification awaits the cached Linux Computer rebuil
 Lore source confirms the empty clone retains a branch anchor and local branch info
 can read it without resolving a nonexistent revision.
 
+The corrected Computer image is published as
+`sha256:73b006e66aa9d16cf4abc61f2c21850dddf54ae5c43385b27472845d096bf4f1`.
+Existing Computers retain their original provisioning snapshot; there is no
+existing image-upgrade API. Under the user's explicit disposable-development reset
+authorization, Astra selected `installation/computer-env-v2` through the live control
+API (197.223 ms), changed only `computers`, and signed out the old Computer through
+its same-origin endpoint (204). The browser had no pending Computer login cookie.
+Luna used native Delete for the old sandbox and executed the reviewed exact-owner
+Computer-row reset; browser sessions cascaded. Personal Lore association,
+environments, control/configuration and QA/operator grants remained. This is a dev
+reset, not a production upgrade or a PVC-retention claim. No Hub restart occurred.
+Fresh Mac Chrome sign-in as `rozgo@bioma.ai` rendered OpenCode at new Computer
+`01a15c7f-7060-7460-bf19-2b4857474c77`; onboarding reports
+`authentication_required`. A browser observation timeout during navigation was
+followed by inspection of the same tab, not a repeated sign-in. The home screenshot
+is `/tmp/computer-helper-rollout-20261021/computer-v2-home.jpg`. Native checkout
+qualification remains pending its ordinary login.
+
+That ordinary device login subsequently succeeded. Native Lore also cloned the
+empty default branch successfully, but the helper's added metadata parser returned
+73: a native secure-storage warning appeared before the repository header it
+expected on the first line. This was our integration failure, not a Lore access
+refusal. A temporary candidate suppressing informational metadata output completed
+checkout on the same Computer before the coordinator's stop message arrived; it
+was not installed or built into an image. The user explicitly rejected the added
+post-clone rejection gate. The replacement removes metadata parsing, remote
+reauthorization and staged verification entirely. Native login and ordinary clone
+own first use; existing workspaces use native offline repository detection without
+comparing branches or remote grants. The user's working branch is not constrained
+by the retained provisioning branch ID. Sol froze the two-file replacement under
+`/tmp/computer-workspace-native-thin-20261021/`, manifest SHA-256
+`06a0e83a3a3b4fa4019e0911465a45ec41fe3d0bd1a34d4da910afcabeba7312`.
+Six fake-CLI composition fixtures and shell syntax passed on Mac. This candidate
+was superseded before publication; the temporary successful checkout does not
+establish that the installed helper or Hub onboarding status is corrected.
+
+The subsequent accepted correction removes automatic login/checkout altogether.
+The user chooses the first clone. Hub's optional repository association remains,
+but onboarding delivers only its public descriptor and ready means that preparation
+completed. The helper and its fixtures are removed from Computer packaging. No
+checkout means the configured profile default unless an MCP connection explicitly
+selects another environment; checkout never selects/applies an environment.
+Sol's pending Hub descriptor/service changes and installation handbook/removal are
+frozen under `/tmp/computer-optional-checkout-removal-v3-20261021/`.
+The installation manifest SHA-256 is
+`177d6867ff010f09f8b122e1b1e760dd4cd8fd686b251e3ab0bf3035280e4471`.
+The handbook is shared Computer-specific guidance referencing runtime values and
+the public descriptor. There is no new template engine or copied active-environment
+snapshot. Pinned OpenCode's local instruction watcher refreshes subsequent model
+steps; current Location MCP configuration and Hub resolve environment state.
+Installation source is published as `8466e56`. Luna verified the exact five changed
+file hashes and two deletions on both hosts, then built the Computer image on Linux
+amd64. A disposable offline run as UID/GID 10001 confirmed the helper absent,
+native Lore/OpenCode/environment CLIs present, and installed handbook SHA-256
+`9e48c70d3ef956692cca5c3dca30f16efae0f5176a7d3621975d4879e9ce0587`.
+The first smoke invocation used a read-only rootfs and OpenCode could not create
+its XDG log directory; the corrected writable disposable home passed. There was no
+model call, login or live Computer mutation. Build/image receipt:
+`/tmp/computer-optional-checkout-removal-v3-20261021/receipt.json`, SHA-256
+`a3b15c37893a378fb32ddfaf9540ac3265d32c5831744c098eef05f47ca6b4ee`.
+The image is built but its new template/default rollout remains pending. Hub
+checkout-removal source is published as `aff11f8` after the combined platform
+checks below; these package probes do not establish onboarding or source activation.
+Handbook-only follow-up `4b44cc0` adds two lines directing agents to the public
+repository coordinates and distinguishing an empty native catalog from access to
+a known assigned repository. Pinned Lore separates catalog search from native
+repository authorization; checked installation configuration selects its baseline
+denied catalog, which returns an empty list. A user conversation reporting zero
+entries was a symptom, not an authenticated probe, and the live catalog setting
+was not independently read in this investigation. No permission or native behavior
+changed. Final handbook SHA-256 is
+`eec4498b9487dc99d9651cce1be30d118ddcc5daf5cca0e363c06afacea1865d`;
+the final Computer image was subsequently built on Linux and pushed as
+`sha256:a63d063464be9e374c45947ca0e487a68867d371f590713d3ec1fd75751a3fcf`.
+Its offline UID/GID 10001 smoke verified the helper absent, native CLIs present,
+writable private paths and read-only instructions. BuildKit completed and the
+image was inspected, but the surrounding zsh command then exited one because it
+assigned the reserved variable `status`; this is not a captured build exit zero.
+Push exited zero. Native template `installation/computer-env-v3`, ID
+`07af841b-4907-4ec4-bca7-1c33d00d61bb`, RV1, selects that exact image. It has not
+replaced the current Computer or installation default. Combined Hub/Computer
+receipt: `/tmp/e4-current-hub-computer-20261021/receipt.json`, SHA-256
+`fa289e2b6ba0a2b8527d9ae4fdcb50c5c739ca3f2b41b598f1ed651288dd74e8`
+(completed with both Serving observations).
+
 Native credentials continued to renew: the Computer provider was refreshed at
 03:06:06 UTC with expiry 03:21:06; QA admin/member were refreshed at 03:03:06 with
 expiry 03:08:06. The QA families had first needed a single native rotation after
@@ -2346,14 +2431,270 @@ uploaded in 1,081 ms with SHA-256
 `f58fca51d4b31c9f397d01f7e913bbd065efb68a5dcf233ca5a852dd11054fc2`.
 Apply allocated BuildId `01a15c6d-f110-70e3-bf3d-7bf7b17c01d6` and deployment
 `01a15c6d-f110-70e3-bf3d-7c0b809d5a91`, then failed during source materialization,
-before compilation. The exact underlying stage is under investigation; no policy
-change or retry is yet recorded. Independent coordinator wire probes at 03:08 UTC
+before compilation. Retained gateway logs subsequently localized the failure:
+GetSandboxTemplate succeeded at 03:07:52.793913 UTC; CreateSandbox at
+03:07:52.802678 returned gRPC `InvalidArgument` in 2 ms. No native sandbox or
+`hub.activation_runtime` row was created, so Artifact download authorization and
+helper Exec were never reached. Source comparison found Hub's 44-character
+`environment-` plus hex name exceeds OpenShell's 19-character routable-name limit.
+Sol's one-file correction uses the existing Computer naming pattern: a prefix and
+18 lowercase base32 characters (90 digest bits), keeping the full hash and native
+request ID unchanged. It is frozen for Mac/Linux checks in
+`/tmp/hub-runtime-name-fix-20261021/`, manifest SHA-256
+`cfd495a31cd52ef57994e13d8c834dfa2f50d90a0b7807634dfa1e9d0ac4a04f`.
+The correction is published on Hub main as `d8724c4`. Both exact-source full
+Docker checks passed 275 tests with one skipped: Linux Nextest 38.003 seconds,
+Mac 34.001 seconds. The first Mac attempt failed the unrelated usage-ledger test
+with `record_check`; that unchanged test passed in the PostgreSQL 18 container
+and the unchanged full rerun passed. No root cause for the transient failure is
+asserted. Linux built and deployed image
+`sha256:d20d0cef7110a3ce91ad10d46777393926952e21a75a760b6c187b5301d9f6af`;
+Hub native ID `621c6de9-1221-4038-a33e-4d885f1a195f` and Pod UID
+`aab55e58-2da7-4b3d-a584-4bfb2b46e363` report Ready, zero restarts, and public
+readiness reports four servers/two profiles. The existing named `http` service,
+bearer passthrough and policy were preserved. Receipt:
+`/tmp/hub-runtime-name-fix-20261021/deployment-receipt.json`, SHA-256
+`54eab2d0f285b82f696e017851266e75bce79a61b0b567fdd860cd79567012be`.
+Independent coordinator
+wire probes at 03:08 UTC
 still list 40 base tools and resolve the fixed Time input successfully (222.118 ms).
 Selected A lists 19 tools with no Time tool and refuses an explicit Time call with
 `unknown server time`, consistent with an owned override that has never served.
 The CLI's generic previous-serving message does not prove an earlier A worker.
 Receipts are `/tmp/e4-base-before-20261021/receipt.json` and
 `/tmp/e4-a-first-failure-20261021/receipt.json`. First-source activation remains open.
+
+After deploying `d8724c4`, Astra retried the same original Build/Artifact without
+reuploading. Owner retry returned 202 in 161.919 ms and complete-local returned 202
+in 192.898 ms. Native CreateSandbox at 03:54:06.886 UTC returned
+`FAILED_PRECONDITION` before any runtime/Pod or compile. Read-only gateway evidence
+found the earlier 03:07:52.801 admission in current workspace `vv-environments`
+(`40edb210-3af8-40ac-92ea-ba336ddf8ffd`) with no recorded success. The older workspace
+ID supplied during investigation was stale. Hub had changed the emitted name but
+retained its prior deterministic request ID; native mutation admission rejects that
+changed-payload reuse. The exact status message was not exposed, so the cause is a
+source-supported inference rather than a recorded server reason. The pending small
+Hub correction includes the emitted name alongside the full runtime digest in the
+UUIDv5 input, retaining identity across source/build changes. No OpenShell patch,
+admission deletion or retry fallback is introduced. Combined source freeze:
+`/tmp/hub-native-create-identity-fix-20261021/manifest.json`, SHA-256
+`b3d9e7cb5dce53dc1b36399afd4f3a635d5095496c8f879ba6452d82f49cc1cf`.
+The correction is published as `fb029d5` followed by checkout-removal `aff11f8`.
+Both exact-source full gates reported 276 passed, one skipped: Mac Nextest 34.226 s
+and check stage 161.7 s; Linux Nextest 41.200 s and check stage 200.6 s. Mac exited
+zero. Linux's SSH wrapper disconnected while its original build remained active;
+the builder observed the same build through final successful image export
+`b304c99839aff45bcbd2964611d724bff3d52b2dc7e06fdf7274f6babcc61a10` in 36.9 s.
+Its shell numeric exit code was not captured. This is a recording limitation,
+not a second run or a claimed captured exit zero. Mac log SHA-256:
+`eedbb2bd41917dde74b683af44c228f4c5da9d84049cc0d8ae30f28b1916767f`;
+Linux log SHA-256:
+`5a66a1cbb0d7d2514a39d0412a0e1450cd026257bb7c388edebc6283908ae275`.
+An earlier Linux attempt failed because the builder's Mac tar included AppleDouble
+metadata, causing SQLx to parse `._0002_computers.sql` as a migration. Repackaging
+with Python tarfile fixed only the transfer; the 690 source-file paths/hashes
+matched the Mac export exactly and no source changed. The failed log is retained.
+Linux then built and published Hub image
+`sha256:331a932d022e3652ba86101ade9844cf6ec8a8c94a48f7efa89f2137e97be9d7`
+from `aff11f8` (Hub ELF SHA-256
+`71f1803b0d7aa3a6f8cbf0c97aed665b985a022228b7fa8c71482baa098b08b5`).
+Native replacement retained the authored policy, provider, driver/mounts and named
+`http` exposure with bearer passthrough. New Hub native ID is
+`b12c6c6e-c54b-44e1-87fc-7d2af3471896`, main instance
+`b7156cf8-45dc-4a9a-ad83-cb5a5e5dd4c8`, workload Pod UID
+`bebb83ca-88c2-4f39-adb8-7d0e09d50c1d`; it is Ready with zero restarts and public
+readiness reports four servers/two profiles. Mac Chrome `/computer` rendered the
+same existing Computer and `/computer/onboarding` reports ready without a new
+login prompt. Screenshot:
+`/tmp/hub-native-create-identity-fix-20261021/computer-entry.png`. No model call or
+Computer reset occurred; this does not yet qualify a fresh unauthenticated Computer.
+
+The exact original owner Build/Artifact retry at 04:28:11.952 UTC returned 202 in
+150.257 ms; complete-local returned 202 in 138.643 ms, with no upload. It created
+runtime `ebautdpm4ric5s376kj`, native ID `1f874429-b070-470b-9a85-0341402da2cc`,
+main instance `dfa1aa77-954f-46f0-82ba-007eaf027268` and workload Pod UID
+`1c5c9833-c444-4684-bf14-440f640fabcb`. Source materialization succeeded with the
+original 1,920,512-byte snapshot digest, and the owner API reached Building.
+Native Exec independently observed Cargo/rustc compiling Time with a growing
+private target cache. This unblocks native creation without an OpenShell change
+or deletion of the previous mutation admission. Serving and registration remain
+unproved at this point. The new retry receipt is under
+`/tmp/e4-original-retry-20261021/attempt-1792556891458/`.
+
+The second owner environment B (`01a15c94-e4b8-75cd-a0a3-8cc0d8887a4e`) was then
+created through the same human's ordinary owner API with an empty component map
+and a following base, in 160.690 ms. The operator added only its Time eligibility
+entry through fresh full-document control publication in 183.682 ms. No source
+override was submitted. B's selected discovery and 40-tool catalog match the base,
+and `time__resolve_time` returned the fixed `2026-10-21T09:00:00Z` input in
+163.124 ms; Time schema SHA-256 is
+`72a21694caca70af5116faaf18d9d2e94d98598e584da2d8d9c6a57b41e2e2bf`.
+Receipt: `/tmp/e4-b-inherited-before-20261021/receipt.json`. This proves admitted
+base inheritance for B, not a second running source override or separate human
+identity. Only control/owner API changes were made.
+The subsequent native readback before Hub rollout retained sandbox ID
+`621c6de9-1221-4038-a33e-4d885f1a195f`, main instance
+`a9a83d08-df40-4940-a064-46bed68aa2b8`, workload Pod UID
+`aab55e58-2da7-4b3d-a584-4bfb2b46e363` and restart count zero. This confirms B's
+creation/admission did not replace or restart Hub.
+
+B's own override was submitted at 04:30:08.390 UTC using the same authorized
+immutable snapshot Artifact, not a second upload. Owner acceptance took 191.582 ms
+and completion 148.693 ms. It allocated Build
+`01a15cb9-4515-74e0-ae48-37c05547a0c6` and deployment
+`01a15cb9-4515-74e0-ae48-37d888111151`. Runtime `elskghxstjwf73rplc6`, native ID
+`e2e79763-6386-435b-b12f-58458ed7b7d4`, main instance
+`38244407-e2b5-4c16-86cc-fc39c3cbd42e` and workload Pod UID
+`a9eed533-2326-4561-b1e7-d174d44e4084` are distinct from A. Both use the existing
+reviewed development image/template with independent source directories and Cargo
+caches. B also reached Building and native Exec observed its compilation. No
+per-environment image was built or published. While both compiled, the base still
+listed 40 tools with the unchanged Time schema and resolved the fixed Time input
+in 144.090 ms. Receipt: `/tmp/e4-base-during-builds-20261021/receipt.json`.
+These are materialization/build-progress and base-availability observations, not
+yet two serving overrides or successful source/schema reloads.
+
+At 04:38:39 UTC the owner API first observed A Serving from its original build,
+with captured executable `builds/01a15c6d-f110-70e3-bf3d-7bf7b17c01d6/service`
+and SHA-256 `9e2ffec9fbbd4f215e0109e08cd1f6cd2dc4eebdbe042ec9e3ac5d14bc7fe456`.
+The selected wire probe at 04:39:04.770 UTC discovered/listed 40 tools, retained
+the expected original Time schema and returned the exact fixed UTC input in
+163.676 ms with `isError=false`. Receipt:
+`/tmp/e4-a-serving-before-20261021/receipt.json`. B was still Building at that
+observation; source/schema replacement and simultaneous serving remain separate
+pending gates. No model call occurred.
+
+The retained structured A events measure source materialization at 902 ms,
+dependency fetch at 8,490 ms, cold release compilation at 586,842 ms,
+start/registration/readiness at 1,284 ms and selected publication at 17 ms.
+Selection completed at 04:38:16.967 UTC, before the first owner observation.
+Source timing starts after native ensure/readiness and excludes initial upload;
+it is not an end-to-end total. Log receipt:
+`/tmp/e4-current-hub-computer-20261021/activation-timings-a.jsonl`, SHA-256
+`09da32d2c7585816d0b901ea1b5115902b2ba488c336d6d76877bbc30ef0c01d`.
+Native inspection found supervised worker PID 9126 on port 30000 and matching
+captured binary hash; the persistent sandbox main remains `s6-svscan`.
+
+B was observed Serving at 04:40:01 UTC from its own build/deployment and unique
+captured executable path, with the same output hash for the identical source.
+Its selected probe at 04:40:13.618 UTC listed 40 tools with the same original
+Time schema and resolved the exact fixed UTC input in 178.952 ms without a tool
+error. Receipt: `/tmp/e4-b-serving-before-20261021/receipt.json`. A and B now both
+serve independent deployments; source/schema updates, failure retention and
+Computer independence remain unproved.
+
+B's structured events measure source/fetch/build/start/publication at
+836/8,447/562,344/1,006/18 ms, with selection at 04:39:48.515 UTC. Its captured
+binary is 42,573,104 bytes and native s6 worker PID is 9096. The two runtime Pod
+UIDs and main instances, and Hub's native/Pod identity, remained unchanged across
+these initial activations. B event receipt:
+`/tmp/e4-current-hub-computer-20261021/activation-timings-b.jsonl`, SHA-256
+`7079dca278180166442224f18e5fad3aca4ee98fc78689cfc269733e78ddd1e2`.
+The cold compilations establish neither incremental latency nor a latency target.
+
+The first watch launch failed before any apply because its previously recorded
+source/definition paths did not exist in the current Computer. A saved prior
+invocation did not prove current filesystem state. Luna then explicitly placed
+the already-published Time source fixture in new `/sandbox/projects/time-a` and
+the existing definition in `/sandbox/projects/environment-a.json`, preserving the
+user's `temp` and `workspace` directories. Archive SHA-256
+`d83668c93c606c37aaab2858ddbd19e87f29057d84c31196cc5a6566991f8d41` and definition
+digest matched before the unchanged watch started. It reused the original Serving
+Build without an upload. This is explicit test-fixture setup, not Computer startup
+or an automatic Lore clone. Evidence:
+`/tmp/e4-local-watch-commands-20261021/source-placement-watch-initial-20261021.json`,
+SHA-256 `182fc7414a25762cb73f60ba50c13569f8742b8189c9ed27981b70a234cca78e`;
+the separate initial missing-input receipt is retained.
+
+Through selected A, Astra created the existing Time acceptance workload: 64 daily
+recurrences beginning in year 1026 and a one-day 2026-10-23 horizon, with all four
+horizon/result instants resolved through A's ordinary `resolve_time`. Canonical
+Task `gtr__gBwAZfk-Sb5h88fridW0wJPcg180gQREd7HkZzfUEQ` was created at
+04:44:12.643704 UTC, observed Working at 04:44:18, and completed at
+04:44:32.913183 (20.269479 s). A→B→A requests returned the same retained Task.
+All 64 sequence/window/label results match the independently constructed expected
+result; structured JSON SHA-256 is
+`055713ab63239b3044d04cd7871393106f768e708fe70d7840adbb3a4b400e4c`.
+Requests/results are under `/tmp/e4-retained-task-20261021/`. This workload uses
+local temporal calculation and Task storage, not inference or a provider call.
+
+The connected watch then observed a source-only schema documentation edit and
+uploaded a new 1,921,024-byte snapshot in 824 ms (SHA-256
+`b1732ced2da0b920b114bb45dd55b19fe41e4dab3397498e6a8135a2d99e0e70`).
+New Build `01a15cc6-aa0d-7843-97c3-23ecacaa2a08`, deployment
+`01a15cc6-aa0d-7843-97c3-23f95ee3a168`, reached Serving with output hash
+`5d3a8fa9558cdcdb0c85b75fdb7bcae2148f791e623e654c5b083c7328e448b1`.
+At 04:47:34–36, selected A exposed the exact new description with descriptor hash
+`b3bd73bb0bd903a406cc76426849adc08c0c11ce54fd9556c9bd34b5ed6992c3`;
+B and the base retained the original `72a21694…e2e2bf`. All three listed 40 tools
+and returned the fixed UTC value in 172.255/168.915/187.983 ms respectively.
+Receipts: `/tmp/e4-a-schema-selected-20261021/receipt.json`,
+`/tmp/e4-b-after-a-schema-20261021/receipt.json`, and
+`/tmp/e4-base-after-a-schema-20261021/receipt.json`.
+The old Task still returned the exact expected result after A changed. It had
+completed before route publication, so this proves retained terminal-result routing,
+not a nonterminal Task surviving that publication. No image publication or model
+call occurred during this edit/watch cycle.
+
+The schema-update events bracket source-ready at 04:44:47.812 and output capture
+at 04:46:12.696 UTC, but the captured event reports `check_ms=0` and `build_ms=0`.
+This is a timing-instrumentation discrepancy under investigation; the approximately
+85-second wall interval is not a measured zero-cost incremental compile. Recorded
+source/start/publication values are 738/981/26 ms, with selection at
+04:46:13.816. The source runtime ID is unchanged. The new worker is PID 9732;
+its captured executable is 42,573,136 bytes. The earlier worker remains separately
+retained for its canonical Task route.
+
+The same connected watch then uploaded the deliberate compiler-error source in
+770 ms, creating Build `01a15cca-194b-7a52-b7dc-84775f8a95e7`, deployment
+`01a15cca-194b-7a52-b7dc-848d7910df65`, snapshot digest
+`dd82751600971e9a70a6106d64dd0e708a07a1abbb81ced10d36bd3f67691227`.
+At 04:49:21 UTC the owner API reported stage/code Build failure; bounded diagnostics
+contained the exact intentional compiler-error marker, exit 101 and
+`truncated=false`. Dependency fetch took 184 ms and the failed build 3,224 ms.
+The selected serving Build remained `01a15cc6…2a08`, not the broken candidate or
+the base. A fresh discovery/list/call retained the marker schema, listed 40 tools
+and returned the correct UTC value in 146.576 ms. Receipt:
+`/tmp/e4-a-during-build-failure-20261021/receipt.json`; owner status and diagnostics
+are retained under `/tmp/e4-original-retry-20261021/failed-*-179255816*.json`.
+Reversing only the compiler-error patch through the same watch uploaded the repaired
+snapshot in 690 ms and allocated a new Build
+`01a15ccb-13d0-7d32-aa51-dc78b226269b` and deployment
+`01a15ccb-13d0-7d32-aa51-dc8def0be748`. It returned to the exact schema-marker
+source and output hashes. Source/fetch/build/start/publication measured
+747/183/86,445/989/15 ms; selection completed at 04:51:04.665 UTC. Current repaired
+worker PID 10451 and prior schema worker PID 9732 both have the same verified
+42,573,136-byte output, while the original Task worker PID 9126 retains its original
+binary. The runtime ID remains unchanged. At 04:51:37–40, selected A/B/base calls
+all passed (158.367/162.916/145.038 ms); A retained its marker, B/base their original
+schemas, and the old Task retained all 64 exact results. Receipts are
+`/tmp/e4-a-repaired-20261021/receipt.json`,
+`/tmp/e4-b-after-a-repair-20261021/receipt.json`, and
+`/tmp/e4-base-after-a-repair-20261021/receipt.json`.
+
+Source audit identifies the earlier zero metrics as the helper's completed-output
+resume branch: it verifies the same BuildRequest and captured output hash, then
+returns zeros and replaces the existing diagnostics record. The original measured
+times are not retained in `input.json`/`output.json`. This is a real instrumentation
+gap; the specific first-attempt interruption is not established. The per-build
+cache lock prevents duplicate capture, and Hub uses a session advisory lock rather
+than a timed lease. No native lease expiry or duplicate-compilation cause is
+asserted. The independent repaired build supplies the measured warm compile above.
+No source patch to timing or native retry behavior has been made.
+
+The completed watch slice receipt is
+`/tmp/e4-local-watch-commands-20261021/schema-failure-repair-final-receipt.json`,
+SHA-256 `6e8bddbaa27aee5bbc9a77c786b578c4b87203145645bd94831fa36d67647ffb`.
+It records unchanged A/B/Hub native and Pod identities with new build-specific
+worker identities. Luna then stopped only the chosen watch client (Ctrl-C, client
+exit 255); no watch process remained and all three retained/current A workers
+were still up. Receipt:
+`/tmp/e4-local-watch-commands-20261021/watch-stop-receipt.json`, SHA-256
+`b1ad5c9530043469ad9f4129243464f8983fbdd750bd09af604502d8b014104d`.
+This establishes worker lifetime beyond that client session; Computer stop/restart,
+nonterminal publication/recovery and Lore-follow reconciliation remain separate
+pending acceptance. No primary source repository or model invocation was used for
+the fixture edits.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
@@ -2379,8 +2720,10 @@ unmeasured; E3 and E4 remain open.
 
 - [ ] **E0 — Personal Lore workspace default.** Implement/qualify first-use native
   authorized repository provisioning or reuse and stable user → actual repository
-  ID binding, plus the Computer's workspace checkout. Version instructions and
-  environment definitions there by default; path/display naming is convention only,
+  ID binding, plus a public descriptor available to the Computer. First checkout
+  and native login are optional user/agent choices, never startup requirements.
+  Qualify chosen native checkout separately. Version instructions and environment
+  definitions there when chosen; path/display naming is convention only,
   and users may choose other authorized repositories. Team workspace repositories
   use the same contract; no repository per environment is mandated. Do not autosync
   home, scratch, caches or session history, invent a project registry format, or add
