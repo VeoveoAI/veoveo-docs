@@ -401,8 +401,10 @@ and started on 2026-10-20, including Computer-local apply/watch and native Lore
 subscriptions as inputs to one activation contract. None of this new workflow is
 yet deployed-qualified. The Linux K3s foundation,
 hosted Computers, native Lore access and isolated deterministic factory fixture
-have their separate qualified receipts. Environment composition, multiple routed
-instances per logical service and the source-update loop below are not implemented.
+have their separate qualified receipts. The environment composition and
+multi-instance routing source is published; the source-update implementation is
+under component validation. The execution plan records those source gates
+separately from the still-pending deployed workflow qualification.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source

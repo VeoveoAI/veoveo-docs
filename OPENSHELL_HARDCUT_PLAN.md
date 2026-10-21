@@ -1786,6 +1786,24 @@ assertion was weakened. The coordinator reviewed the full delta and matched all
 Clean SQLx generation including new migration 0013, focused checks and full gates
 are pending; this source is not deployed.
 
+Clean v9 SQLx preparation then failed at compilation: activation owners use a
+control-plane text tenant key, whereas canonical Task routes store Core's database
+tenant UUID. Migration 0013 did not change that existing representation. The v10
+correction uses Core's `deterministic_tenant_id`, exactly as existing Task-route
+writes and lookups do, with the typed database `TenantId` binding. Retained-build
+queries bind the control text key and database UUID separately; the existing
+positive/foreign-tenant checks use the same projections. The coordinator reviewed
+the five-file delta and matched all 100 hashes in `hub-source-manifest-v10.json`,
+SHA-256 `f79bc06ebfbc45f131c078bc85422fe36f7860cb1924be5abe8bef51d2533c31`.
+SQL queries changed; schema/migration definitions did not. Isolated preparation
+against the disposable fixture DB exited successfully at 00:44:08 UTC on
+2026-10-21, with Cargo reporting 14.82 seconds and 159 query files. That count is
+not accepted as complete: earlier warm preparation omitted queries, whereas the
+clean v4 preparation generated 242 files. The coordinator held metadata import
+and requested inspection of the active target directory and clean scope before
+the existing full offline gate. No partial metadata was imported into primary
+source.
+
 Baseline image preparation exposed avoidable packaging overhead. The built
 Embedding image contained both a 5.6 GiB installed environment and a 5.6 GiB uv
 package cache. `coder` replaced the two dependency-installation RUNs with standard
@@ -1832,6 +1850,16 @@ display IDs are not globally unique and that workspace lookup reads the connecte
 gateway's store. No orphan cleanup or infrastructure patch was needed. Further
 rollout commands use SSH plus the explicit Linux configuration directory and
 `-g k3s-native-operator`; the remaining baseline authorization is unchanged.
+
+The correct Linux native inventory subsequently showed Hub, Time, Artifact, Media,
+Embedding MCP/runtime and both old Computers Stopped; the synthetic provider and
+QA workloads were preserved. Builder completed the authorized transaction in the
+application `veoveo` database. Pre-reset Task-table counts were task 22, step 16,
+input 0, operation 14 and event 25. Only those five tables were truncated and the
+five approved application schemas dropped (46 app-owned objects). Postcheck
+retained audit, identity, kernel, lore, tasks and usage; the independent OpenShell
+gateway database was untouched. Ready-image recreation and new control seed are
+the next rollout steps; service readiness and Computer acceptance remain unproved.
 
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
