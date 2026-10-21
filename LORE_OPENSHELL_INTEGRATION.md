@@ -533,7 +533,7 @@ provider. Canonical remote storage does not establish zero client or model copie
 
 | Component | Target responsibility |
 |---|---|
-| User's OpenCode | Reason, edit, run normal local commands, call permitted platform tools and use the Lore CLI |
+| User's OpenCode | Reason, edit, run normal local commands, call permitted platform tools and use the Lore CLI; OpenCode's Git providers, snapshots and undo are disabled or removed, so Lore owns source history and undo |
 | Hosted Computer | Provide that same user workflow with persistent private storage, OpenCode, Lore CLI, Hub setup and the configured MiMo default |
 | Lore | Native authenticated clone/sync/push, repository permissions, revision history and versioned desired configuration |
 | Artifact | Managed content metadata, access and authorized direct byte transfers |
@@ -2601,7 +2601,8 @@ bypass endpoint ownership, broaden repository grants or rely on setuid/setgid to
 loaders. QUIC follows the same rules.
 
 Every integration build records upstream version/SHA, patch revisions and image
-digests. Run the same relevant upstream and Veoveo contract tests against the
+digests. The OpenCode fork records its carried and removed changes, and how to
+reapply them on an upstream update, in its `VEOVEO_FORK.md`. Run the same relevant upstream and Veoveo contract tests against the
 upstream baseline and the modified build; keep results distinct and never weaken
 probes to accept a patch. Track upstream security updates and retire local patches
 when equivalent upstream support is qualified. Never deploy an unreviewed source

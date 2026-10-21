@@ -79,6 +79,48 @@ Historical Docker-only direction: the preceding Mac/Linux receipts used the nati
 Docker driver. The accepted Kubernetes target below supersedes that placement
 restriction; those receipts do not establish Kubernetes acceptance.
 
+## OpenCode without Git, undo or snapshots — 2026-10-20
+
+**Implemented, component-checked on Mac and published to main; build and
+deployment pending.**
+User decision: OpenCode does no version control. The agent uses the native Lore
+CLI, and Lore owns source history and undo. No Lore VCS provider, `.lore`
+detection or Lore-backed snapshots are planned.
+
+- Configuration, published in installation `269b801`
+  (`veoveo-template-installation/computer/opencode.json`):
+  `"plugins": ["-opencode.vcs.git", "-opencode.vcs.hg"]` and `"snapshots": false`.
+  Both survive OpenCode's own normalize/decode path. That loader ignores unknown
+  keys, so a renamed key or plugin ID would silently stop applying. This works with
+  the current `ed62aad` build.
+- Fork changes on OpenCode `main`: `2e77aea` (removals) and `a320bc0` (fork
+  record), pushed with the pinned Bun 1.4.2 pre-push hook (34/34 tasks):
+  - web: removed `/undo`, `/redo` and the per-message Revert action;
+  - TUI: removed the undo/redo commands, keybinds, revert banner and message-dialog
+    Revert;
+  - review panel: removed "Create Git repository" and its init call.
+
+  The server revert API remains.
+- Upstream-update guide: the new `opencode/VEOVEO_FORK.md` lists every carried and
+  removed fork change, what to keep, what stays removed and how to check each. The
+  fork's `AGENTS.md` points to it.
+- Evidence (Mac source checks only):
+  - Forced `tsc -b` passes for app, gui-extensions, tui and session-ui.
+  - Unit tests: tui 1485 pass / 7 fail; app 762 pass / 1 fail. The same 8 failures
+    reproduce on unmodified `ed62aad`. gui-extensions 174 pass; session-ui 251 pass.
+  - Playwright `session-header.spec.ts` "revert" block: 2 pass. The new no-Revert
+    button assertion fails against the original code; its slash-suggestion half is
+    not independently proven.
+  - oxlint is clean; changed hunks are prettier-clean.
+- Next:
+  1. Build the Linux OpenCode package from `a320bc0` and roll the Computer image.
+     Update the OpenCode source pin in `computer/README.md`, which still names
+     `ed62aad`.
+  2. Run a deployed check, with no model calls: the review panel shows "No tracked
+     changes" without a button, and `/undo`, `/redo` and Revert are absent.
+- Boundary: git code paths remaining in OpenCode core stay dormant only while no
+  `.git` exists at or above a Computer workspace. `VEOVEO_FORK.md` lists them.
+
 ## Artifact content-hash removal — 2026-10-20
 
 **Implemented, component-checked and published to main; deployment pending.**
