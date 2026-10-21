@@ -1961,6 +1961,113 @@ remain unchanged. The coordinator reviewed the delta and matched all 18 hashes,
 manifest SHA-256
 `b72f1b255b992f034e382e0af338cd17e745644bb2bfbf579d08f67de25b4eb9`.
 
+### Published installation and initial live environment inputs — 2026-10-21
+
+The coordinator published installation `9272738329f85a4b527ccc2d458e71c9704a3d8a`
+to `origin/main`, after verifying all 19 staged paths against the v4 source
+manifest, SHA-256
+`a2ba090bc2c4477c28f195d9c35293d89e7b5ce7f0c9b3644f46357c6f668fe1`.
+The v3 inputs passed Mac/Linux shell and JSON/YAML checks, the actual pinned
+OpenCode configuration parser, and native provider-profile lint. V4 changes only
+README instructions to reflect the measured native namespace/CA bootstrap order;
+image inputs did not change. The installation packages the workspace helper and
+the same checked environment helper in Computers and development runtimes, plus
+the explicit native Exec environment, CA-only mount and narrow source-transfer
+policies. Native policies render installation origins/profile paths; they do not
+inject a service credential in place of the initiating user's Artifact authority.
+
+Luna built and pushed all Linux AMD64 images on the Linux machine. Registry
+digests under `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f` are:
+
+| Image | Registry digest |
+| --- | --- |
+| `veoveo-hub:985108e-k3s` | `sha256:4cbda4cfb5f6d04491ec15c85d313516785a571d536e51542965023096e5ecf8` |
+| `veoveo-environment:985108e-k3s` | `sha256:bf61265ad402e4f8c6ff9b57b054faa6ab99e7f630326dfeeb0695aa8c043604` |
+| `veoveo-factory:install-v3-7618ec3` | `sha256:8dad0d15745459ae06213192eba0680a68cbb02e71757d16a739f3f9e34c71b4` |
+| `veoveo-development` | `sha256:b940627a832a156c8a87f1ce459c59a32fc61b53374599597285540717f445ca` |
+| `veoveo-computer` | `sha256:836036adc1b1bf0281851aa7f689a37b702c60fa03e710366f284d10cb7bfac7` |
+
+The environment ELF SHA-256 is
+`3afc702af11c071233ccc350d092773ea52fe095d7a0764c68903b1a41dcf9cd`;
+actual Computer/development containers ran its help successfully as UID 10001.
+The Computer reuses the previously built Linux OpenCode `ed62aad` package, ELF
+SHA-256 `f7bf8ee942fc2d8d0963f4d2005b8946ef691f2af6fcfdbb39af15fe5b26929e`.
+Its workspace paths are writable and trusted `/etc/computer` is not. Factory
+package checks also passed for the SDK CLI and native Lore. Native Lore CLI bytes
+are retained from the reviewed existing image: the later Lore change only makes
+the protocol crate's conversion dependency optional, preserving default native
+CLI behavior. No per-edit application image is required by this packaging step.
+Linux Hub/helper build and push logs are under
+`/home/rozgo/.config/veoveo/k3s/evidence/hub-e3-v11-20261020/`.
+
+The development package passed native OpenShell execution in workspace
+`vv-environments`. A logical workspace/template alone does not create a Kubernetes
+namespace: the initial native package-probe sandbox created
+`openshell-openshell-vv-environments`, workspace UID
+`c1edcc5e-236e-4fb2-8115-b30f4c27b642`. It verified Rust/Cargo 1.99.0,
+environment-helper help, `zic`, tzdata and s6 PID 57 without a database CA mount.
+The existing one-shot public-CA seed Job then populated the CA-only PVC, using
+pinned public Debian rather than a private copy image. A second sandbox from the
+final `development-time-v1` template
+(`026feb57-090c-43e4-bd80-ba97e989a4e5`) reached Ready and verified all three
+PostgreSQL/storage/Lore certificate hashes against their trusted sources, mode
+0444 and read-only access as UID 10001. Both disposable sandboxes and the temporary
+probe template were removed through native APIs; the final template and CA claim
+remain. This proves package/native mount prerequisites, not source activation.
+
+Embedding runtime and MCP subsequently reached Ready on the published new images.
+At 01:34:16 UTC the live Hub reported all four MCP deployments healthy. Root
+obtained fresh independent admin/member application grants through Mac Chrome,
+verified their signatures and exact principals, and kept operator and QA refresh
+families separate. Token exchange/verification timings were 415.065 ms for the
+operator admin, 394.208 ms for QA admin and 440.049 ms for QA member. This proves
+fresh human grants; native renewal custody and expiry acceptance remain separate.
+
+Using the actual operator grant, the coordinator read the live control document
+and changed only the default environment's component map. Shared base
+`01a15bb1-661a-7f30-9199-f80a5b780d2b` now selects Time
+`01a15bb1-661a-7d6b-a77e-138140d0f892`, Artifact
+`01a15bb1-661a-7cbd-94b5-4b006df62b83`, Media
+`01a15bb1-661a-76bc-8cc1-943de3c33aba` and Embedding
+`01a15bb1-661a-74ab-a8c3-fc3d4e23003c`. The normal admin PUT returned 200 in
+162.744 ms and readback took 195.727 ms; active revision became
+`gcp-01a15c19-3f71-7412-b290-49bd781f1422`, control SHA-256
+`4c1962086072e3692e77199ecdee7edede7f2211ab5612603916860f43d3c77f`.
+No stopped-process import was used. Hub identity was not bracketed around this
+update, so this receipt alone is not the final unchanged-process proof.
+
+Direct operator HTTP MCP calls with that explicit environment selector passed
+`server/discover` (158.182 ms), `tools/list` (315.015 ms), and
+`time__resolve_time` (340.842 ms, `isError:false`). The exact input
+`2026-10-21T09:00:00Z` returned Unix 1792573200 and TAI seconds 1792573237
+with the registered Time authority. Evidence is in
+`/tmp/e3-live-enrollment-20261021/` on Mac, including
+`enrollment-receipt.json`, `server-health.json` and the three MCP responses.
+These are actual routed operator requests, not native QA-runner or two-override
+acceptance.
+
+Luna then replaced Hub through native lifecycle with the published `985108e`
+runtime. New sandbox `d15c4eb4-40ab-4d0c-9d69-f118b4d58842` reached Ready;
+root independently observed the actual workload Pod
+`2b28096c-1f78-42c4-aa88-0499f1bc9c66` running the exact registry digest above
+with zero restarts. The initial public 404 came from a missing exposed service on
+the replacement native sandbox. Restoring the original native `http` service,
+port 8080 and `bearer_passthrough` authorization restored public `/readyz` to
+200 and unauthenticated admin access to the expected 401. Root verified
+`{"status":"ready","servers":4,"profiles":2}` in Mac Chrome; Sol's fresh
+authenticated admin GET confirmed the same enrolled control revision and four
+selections survived. Policy version 2 contains the exact existing `/mcp/local`
+and `/mcp/computer` Artifact-download rules, native `ExecSandbox`, and private
+Lore access. This was initial binary rollout, not a per-source-update restart.
+
+Sol's read-only trust audit found the current Lore root in the Hub main process's
+native injected `SSL_CERT_FILE` bundle; the actual Lore leaf verifies against it.
+Inspecting only `SSL_CERT_DIR` had initially missed that native injection. Both
+Hub tonic and inherited native Lore CLI use file plus directory roots. No Lore,
+OpenShell or Hub TLS source change was needed. First Computer apply, E0 checkout,
+independent overrides, source updates, failure/recovery and final model acceptance
+remain open.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.

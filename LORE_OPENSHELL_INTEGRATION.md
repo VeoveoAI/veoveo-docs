@@ -404,8 +404,13 @@ hosted Computers, native Lore access and isolated deterministic factory fixture
 have their separate qualified receipts. The environment composition and
 multi-instance routing source is published; the source-update implementation is
 also published as Hub `985108e`, with full Mac/Linux component gates passing.
-The execution plan records those source gates
-separately from the still-pending deployed workflow qualification.
+Installation packaging is published as `9272738`; the matching Linux Computer,
+Hub and reusable-runtime images are built and published. Native runtime package
+and CA-mount probes pass, and the shared base has all four MCPs enrolled through
+the live control API with selected discovery and a Time call verified. These are
+prerequisites, not qualification of the personal source-update workflow. The
+execution plan records source gates, package probes and routed calls separately
+from the still-pending end-to-end deployed qualification.
 
 For this slice, ordinary source edits do **not** require a new OCI image, Pod or
 sandbox. Reuse an admitted interpreter/toolchain runtime and its persistent source
