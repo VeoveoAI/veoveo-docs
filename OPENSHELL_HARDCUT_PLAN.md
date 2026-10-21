@@ -3,8 +3,10 @@
 **Active implementation:** [personal Lore workspaces, environment overrides and fast
 source activation](#next-slice--environment-overrides-and-fast-source-activation).
 The foundation and Computer receipts below remain qualified. Implementation of
-this new workflow was authorized and started on 2026-10-20; its deployed
-qualification is pending.
+this new workflow was authorized and started on 2026-10-20. Full component gates
+and the recorded Linux source-activation/routing probes pass; remaining source
+selector, Computer-offline, managed-guidance consumption and final exact-model
+qualification remain pending as of 2026-10-21. E0–E5 are not yet complete.
 
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
@@ -79,10 +81,10 @@ Historical Docker-only direction: the preceding Mac/Linux receipts used the nati
 Docker driver. The accepted Kubernetes target below supersedes that placement
 restriction; those receipts do not establish Kubernetes acceptance.
 
-## OpenCode without Git, undo or snapshots — 2026-10-20
+## OpenCode without Git, undo or snapshots — 2026-10-21
 
-**Implemented, component-checked on Mac and published to main; build and
-deployment pending.**
+**Implemented, component-checked on Mac, published and packaged/deployed on Linux;
+per-message Revert/review-panel runtime assertions remain pending.**
 User decision: OpenCode does no version control. The agent uses the native Lore
 CLI, and Lore owns source history and undo. No Lore VCS provider, `.lore`
 detection or Lore-backed snapshots are planned.
@@ -91,8 +93,8 @@ detection or Lore-backed snapshots are planned.
   (`veoveo-template-installation/computer/opencode.json`):
   `"plugins": ["-opencode.vcs.git", "-opencode.vcs.hg"]` and `"snapshots": false`.
   Both survive OpenCode's own normalize/decode path. That loader ignores unknown
-  keys, so a renamed key or plugin ID would silently stop applying. This works with
-  the current `ed62aad` build.
+  keys, so a renamed key or plugin ID would silently stop applying. The new
+  Computer's native configuration readback confirms both settings with `c5fb626`.
 - Fork changes on OpenCode `main`: `2e77aea` (removals) and `a320bc0` (fork
   record), pushed with the pinned Bun 1.4.2 pre-push hook (34/34 tasks):
   - web: removed `/undo`, `/redo` and the per-message Revert action;
@@ -112,14 +114,20 @@ detection or Lore-backed snapshots are planned.
     button assertion fails against the original code; its slash-suggestion half is
     not independently proven.
   - oxlint is clean; changed hunks are prettier-clean.
-- Next:
-  1. Build the Linux OpenCode package from `main` (`c5fb626`, same code as
-     `a320bc0`) and roll the Computer image. Update the OpenCode source pin in
-     `computer/README.md`, which still names `ed62aad`. Pushing or building the fork
-     needs the Bun version pinned in its `package.json` (1.4.2); the Mac default is
-     1.3.13. See "Toolchain" in `opencode/VEOVEO_FORK.md`.
-  2. Run a deployed check, with no model calls: the review panel shows "No tracked
-     changes" without a button, and `/undo`, `/redo` and Revert are absent.
+- Linux built the exact `c5fb62662c9c6fcb5064ef191956ca0da14e1af9` package
+  (same code as `a320bc0`) using pinned Bun 1.4.2. Installation README-only
+  `7f2b4ed` records the matching source pin. The corrected Computer v4 package
+  includes that binary and Hub `0493f95`'s environment CLI, not the superseded
+  `985108e` helper. Fresh Mac Chrome observations show Home, Settings and New
+  session, with `/sandbox/projects/e4-selected-a` chosen. Native A/B Location
+  connection/configuration receipts are under
+  `/tmp/e4-managed-handbook-rollout-20261021/`; no model call was made.
+- Native slash-menu observations did not show `/undo` (other fuzzy matches
+  appeared); `/redo` returned "No matching items". Unsent input was cleared.
+  Evidence: `no-undo-ax.txt` and `no-redo-ax.txt` in that receipt directory.
+- Next: complete the separate per-message Revert and review-panel assertions.
+  Home/navigation, slash-menu and disabled configuration readback do not prove
+  those runtime UI cases.
 - Boundary: git code paths remaining in OpenCode core stay dormant only while no
   `.git` exists at or above a Computer workspace. `VEOVEO_FORK.md` lists them.
 
@@ -1237,7 +1245,7 @@ Source-test this change on Mac, then prove it on the Linux deployment.
 
 ### Next Slice — Environment Overrides And Fast Source Activation
 
-**Implementation authorized and started, 2026-10-20; not yet deployed-qualified.**
+**Implementation published; Linux qualification in progress, 2026-10-21.**
 The active goal includes personal workspace defaults, environment composition,
 Computer-local apply/watch and Lore-driven updates through one activation contract.
 The qualified Linux
@@ -2812,7 +2820,8 @@ the sibling count alone does not establish the target's native stream ordinal.
 Receipt: `/tmp/e4-lore-follow-20261021/nested-definition-observed.json`.
 
 Shared Computer guidance is implemented and published in Hub `0493f95` and
-installation `d089f94`, with rollout still pending. Sol added optional plain
+installation `d089f94`; the corrected Linux packages are now deployed. Sol added
+optional plain
 `computers.handbook` Markdown delivery through the existing per-owner entry job;
 failure does not block Computer entry or require login/checkout. Handbook-only
 control updates reuse native provisioning. The configured private instruction
@@ -2823,8 +2832,9 @@ authorization layer. Both exact-source full Hub gates passed: Mac and Linux each
 attempt failed because the transfer archive contained AppleDouble files that
 SQLx treated as migrations; a clean source context passed without a code change.
 Gate evidence and frozen manifests are under
-`/tmp/computer-managed-handbook-20261021/`. This is source/check evidence only;
-image packaging, live delivery and browser/model qualification remain pending.
+`/tmp/computer-managed-handbook-20261021/`. Those gates are source/check evidence;
+the following rollout observations remain separate from injected-guidance
+consumption and final model qualification.
 
 Linux subsequently built and published Hub `0493f95` as
 `sha256:f0e6a222eb5ec7e702012672c08aa9e29d13c5f0e8f2df5a57dfd42240b01d66`.
@@ -2843,9 +2853,32 @@ identity; this is an outdated installed client, not a new authorization refusal.
 The exact `0493f95` environment-artifact target has now built successfully on
 Linux, CLI SHA-256
 `0726c0d37794b05a91ea2cf6e1d21fbb693741138d58b44188b262bc6837f44f`.
-Corrected Computer packaging and coordinated rollout precede the remaining source
-mode-switching, Computer-offline and final OpenCode checks. No definition edits
-were used to disguise the stale-client replay and no model call occurred.
+No definition edits were used to disguise the stale-client replay and no model
+call occurred. The corrected Computer v4 image
+`sha256:65afc040deb4320ef954e7cc427f05c17d37b725f40bb11b37658c526bc9806d` now uses installation
+`d089f94`, the exact `c5fb626` OpenCode package and that current `0493f95` CLI.
+Fresh Linux Hub `0493f95` uses the full `f0e6a222…01d66` digest recorded above.
+Computer `01a15d38-2a1e-7920-9823-1ddf5014c5bb` renders Home, Settings and New
+session in Mac Chrome, with `/sandbox/projects/e4-selected-a` chosen; screenshot:
+`/tmp/e4-managed-handbook-rollout-20261021/computer-v4-new-session.jpg`.
+Native OpenCode reports PID 58, and A/B Location MCP connections both returned
+connected at 06:53:23 UTC. Safe configuration readback confirms their distinct
+`veoveo-environment` selectors, unchanged configured Hub URL/opaque authorization,
+managed instruction path and disabled Git/Hg plugins/snapshots. Evidence:
+`native-info.json`, `native-mcp-connections.json`, `native-config-safe.json` and
+`locations-before.json` in that same directory. There is no public OpenCode
+tool-schema endpoint; connected status follows native discovery but does not
+return schemas. After entry, the managed handbook readback contained 4,783 bytes,
+SHA-256 `a151dd8610dc6c734e01d175574c5ba919fbd351125f70de17ca6c0338ffa235`,
+with the same OpenCode PID 58. `live-handbook-control.json` records the live
+publication, and native Locations were loaded before the update. This proves
+delivery without a process restart, not model consumption. Native Lore device
+approval and the chosen personal/Time source checkouts subsequently succeeded;
+the Time branch `e726318bbc3fd75ac8733a7e030cc35b` had local and remote R2 head
+`03775a90f002047c7ad7d18c7e3b75af439224b417347b1b7ba5ea75ec8302c0`.
+Managed handbook injected-consumption, source pin/local/follow transitions,
+Computer-offline qualification and final MiMo remain pending. These observations
+do not establish the separate runtime no-Revert UI assertions or complete E0–E5.
 
 The coordinator separately qualified route removal during a working read-only
 Time Task through the existing authenticated HTTP client. B's Task
