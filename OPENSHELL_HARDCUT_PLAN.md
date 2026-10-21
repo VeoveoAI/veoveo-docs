@@ -2811,8 +2811,8 @@ reconciliation and a definition-only label update without a component rebuild;
 the sibling count alone does not establish the target's native stream ordinal.
 Receipt: `/tmp/e4-lore-follow-20261021/nested-definition-observed.json`.
 
-Shared Computer guidance is implemented and published in Hub `0493f95`, with
-the installation package still under validation. Sol added optional plain
+Shared Computer guidance is implemented and published in Hub `0493f95` and
+installation `d089f94`, with rollout still pending. Sol added optional plain
 `computers.handbook` Markdown delivery through the existing per-owner entry job;
 failure does not block Computer entry or require login/checkout. Handbook-only
 control updates reuse native provisioning. The configured private instruction
@@ -2825,6 +2825,27 @@ SQLx treated as migrations; a clean source context passed without a code change.
 Gate evidence and frozen manifests are under
 `/tmp/computer-managed-handbook-20261021/`. This is source/check evidence only;
 image packaging, live delivery and browser/model qualification remain pending.
+
+Linux subsequently built and published Hub `0493f95` as
+`sha256:f0e6a222eb5ec7e702012672c08aa9e29d13c5f0e8f2df5a57dfd42240b01d66`.
+Its first runtime build omitted the Dockerfile's required named Lore context;
+supplying the reviewed digest-pinned context completed the build and offline help
+smoke without a source change. Linux also built the exact OpenCode `c5fb626`
+package with its pinned Bun 1.4.2. Installation README-only `7f2b4ed` records that
+source pin. The first Computer package passed the instruction-file/UID/config
+smoke and was published as `f268764f…c35c7`, but is superseded before rollout:
+its named environment-helper input still selected old `985108e`, with CLI SHA-256
+`3afc702af11c071233ccc350d092773ea52fe095d7a0764c68903b1a41dcf9cd`.
+The same stale CLI in the existing Computer replayed an earlier content-derived
+apply key: a normal R2 apply exited zero without changing the failed-start desired
+recipe. No new Build was observed. Current source uses a fresh explicit request
+identity; this is an outdated installed client, not a new authorization refusal.
+The exact `0493f95` environment-artifact target has now built successfully on
+Linux, CLI SHA-256
+`0726c0d37794b05a91ea2cf6e1d21fbb693741138d58b44188b262bc6837f44f`.
+Corrected Computer packaging and coordinated rollout precede the remaining source
+mode-switching, Computer-offline and final OpenCode checks. No definition edits
+were used to disguise the stale-client replay and no model call occurred.
 
 The coordinator separately qualified route removal during a working read-only
 Time Task through the existing authenticated HTTP client. B's Task
@@ -2858,6 +2879,52 @@ temporary selections removed through fresh control publications. No source,
 runtime or image changed. Receipt:
 `/tmp/e4-base-composition-20261021/receipt.json`, SHA-256
 `9984d31b84e93f639d908412a6184be41c07eecdf9831a7f5a8b746b04dcacf2`.
+
+The live unavailable-worker case is separate from the explicit unavailable map
+entry. Luna stopped only A through native OpenShell. With its source and selected
+route unchanged, a fixed `time__resolve_time` request failed in 363.704 ms with
+MCP `-32603`, identifying A's selected worker endpoint. B and the shared base
+returned the expected result in 154.653/171.331 ms. A did not fall back to either.
+Native Start restored the same sandbox with a new main instance
+`94286ac3-f1e0-4017-bf60-fec5c2d3cf1c` and runtime generation
+`aa660d62-dcca-4c5f-868c-bda0c790a3a0`. At 06:19:32 UTC, discovery returned 40
+tools, A retained schema digest `2cf17606…d946`, and its normal call passed in
+194.940 ms. No source/control change or repeated long-Task run was required.
+Receipts: `/tmp/e4-unhealthy-selected-20261021/stopped-calls.json` and
+`/tmp/e4-unhealthy-selected-recovered-20261021/receipt.json`.
+
+A separate failed-start candidate also retained the serving revision. Luna applied
+the same pinned R2 source with Time's existing `--bootstrap-leap-seconds-file`
+argument pointing to an absent file. Build
+`01a15d22-098b-7f30-860b-60596e36a162` completed its check/build in
+524/86,839 ms and produced executable digest `7c0af0af…e695`, then failed worker
+readiness. The owner API reports the existing typed representation
+`phase=failed`, `failure.stage=worker`, `failure.code=readiness`; there is no
+separate wire enum named `FailedStart`. It still identifies prior Build
+`01a15ce4-8bb0-7160-a075-ac0732b93a9b` as serving. Independent coordinator probes
+at 06:31 UTC returned 40 tools and successful calls for A, B and the shared base;
+A kept schema digest `2cf17606…d946`, while B/base kept `72a21694…e2bf`.
+Receipts: `/tmp/e4-failed-start-20261021/`. This establishes candidate-start
+failure retention; the deliberate missing file is not an authorization failure.
+
+An additional selected-A Media run exercises the installed synthetic provider.
+The ordinary catalog returned `fake/text-to-image`; input was
+`{"prompt":"native deterministic qualification"}`. Task
+`gtr_opjGlynucSNiglyae4rLc9gexZG4yLGl3DQsUm-0vNA` was created at
+06:14:50.209632 UTC and completed at 06:15:00.509720 through configured checks.
+Native Task `01a15d19-205a-7a73-8f9b-d677a1c1d0df` and prediction
+`01a15d1920f87101b1cbcf588038e23c` produced Artifact
+`01a15d19-32f6-7df3-aba9-0276d20e4d6b`. The same human read its private record
+and downloaded it through selected B: all 65,536 bytes match the fixture formula,
+SHA-256 `c6ee57f09dbd4b0e5c6072ec59f2bbce2decf3ef9b1c695af802f26ae28931ce`.
+Artifact provenance retains that Media Task, acting server, human owner and
+`reference-work` context. The USD 0.04 usage is synthetic fixture cost; these bytes
+do not establish valid PNG encoding or real model inference. A/B inherit the same
+Media/Artifact deployments, so this is live delegation/provenance and shared-data
+evidence, not an independent measurement of two different downstream targets.
+The existing full-gate Hub Relay/Ledger scenario and SDK target-token tests cover
+that latter invariant deterministically. Receipts are under
+`/tmp/e4-delegation-20261021/`; route/audit correlation remains in progress.
 
 The earlier E3 runtime mechanism passed a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
