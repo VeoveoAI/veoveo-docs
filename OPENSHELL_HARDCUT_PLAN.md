@@ -3312,6 +3312,45 @@ published data survive the author's Computer stopping. Infrastructure remains th
 qualified K3s foundation with native OpenShell ownership; this slice does not
 reopen placement or add data cloning, migrations or new authorization semantics.
 
+### Stale Computer Browser Recovery — 2026-10-21
+
+Refreshing a saved chat under Computer `01a15c7f-7060-7460-bf19-2b4857474c77`
+returned a raw `computer-authorization-required` 401. Read-only Hub and native
+Kubernetes/OpenShell inventory confirmed that this Computer and its live workspace
+storage had been removed by the earlier disposable-development reset. The browser
+still had valid authority for current Computer
+`01a15d38-2a1e-7920-9823-1ddf5014c5bb`: ordinary `/computer` entry recovered it
+without another sign-in. The 401 did not independently establish chat deletion.
+
+Sol's Hub `7c6240d759c5068e62589673fe29b630f51506fa` changes only initial
+authorization-refusal presentation for document navigation: private/no-store
+`303 Location: /computer`. Entry selects the current Computer or starts ordinary
+sign-in. API/fetch/WebSocket behavior stays 401, malformed routes stay 404 and
+operational failures stay 503; no stale return URL, new auth rule or storage reset
+is introduced. Luna ran the full canonical Docker check on Mac and actual Linux:
+both exited zero with 278 tests passing and one skipped (nextest 34.300/35.664 s).
+
+The runtime was built on Linux and published at
+`sha256:8fb1dfe243ea11bbcc08acf251d19893c613a9d6b458d27ddb9173035ffb31cb`.
+The registry rejected the saved temporary login and initially prevented push; the
+existing Wrangler operator login supplied native temporary credentials and push
+succeeded. The first native Hub replacement reported a Pod/Sandbox ownership
+mismatch. Subsequent inventory found no remaining Hub Pod or Sandbox, and the
+same native create succeeded on retry. No OpenShell source or policy changed.
+New Hub `801109af-5423-4377-9a1b-9e0040e57a8d` is Ready.
+The current Computer's native sandbox, main process and Pod identities remained
+unchanged throughout the Hub update.
+
+Public deployed probes measured document redirect 161.9 ms, fetch 401 without
+Location 156.1 ms, and ready/13 servers/two profiles 186.4 ms. Astra then opened
+the user's exact old deep link in Mac Chrome: it automatically reached the
+current Computer home without sign-in and rendered the existing current chat,
+Projects, New session and Settings. Navigation observation timed out at ten
+seconds while assets loaded; subsequent UI inspection passed. This does not
+claim that the separately recorded cold-load delay is fixed. No model call ran.
+Evidence: `/tmp/computer-browser-recovery-20261021/`, including gate receipt and
+`automatic-recovery-home.png`.
+
 ## Upstream Lore Adoption — 2026-10-18
 
 Authorized: update Veoveo to current upstream Lore and remove additions now
