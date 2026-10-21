@@ -2698,6 +2698,37 @@ nonterminal publication/recovery and Lore-follow reconciliation remain separate
 pending acceptance. No primary source repository or model invocation was used for
 the fixture edits.
 
+The next native recovery probe created a new selected-A 64-window Task,
+`gtr_XcQBLvesI7XbW1IDJxVtup1_UaXXxgP3xsG5gaCG6uA`, at
+04:56:56.470627 UTC and observed Working/expanding at 04:56:57.081. Luna stopped
+only A's existing sandbox; stop exited zero at 04:57:07.636 and Stopped was
+confirmed at 04:57:10.034. A single native start completed at 04:57:18.570.
+The same native sandbox ID and workspace PVC survived; main instance became
+`4a90b989-16eb-4ca3-9f00-c012887253b4` and workload/supervisor Pods were replaced.
+All three current/retained workers recovered with their pre-stop hashes, and all
+four Build source directories remained under `/sandbox/sources`. A mistaken check
+for the Computer's `/sandbox/projects/time-a` inside A was corrected without any
+upload or restoration. B and Hub kept their native/Pod identities.
+
+The interrupted Task completed at 04:57:39.873546, after restart, with all 64 exact
+expected occurrences. Its result was also readable with selected B. The earlier
+terminal Task remained byte-equivalent. At 04:58:01 selected A exposed its marker
+and answered the fixed UTC request in 169.315 ms; at 04:59:40–41 B and the base
+retained their original schemas and answered in 153.051/145.686 ms. All three
+catalogs contained 40 tools. The raw loopback readiness probe returned HTTP 421
+and was not counted as application success; the normal authenticated routes passed.
+Lifecycle receipt:
+`/tmp/e4-local-watch-commands-20261021/a-runtime-stop-start-receipt.json`, SHA-256
+`aabede8e6f34983550c8ac482a310aac3fa936ce64b2a5729524ee82aa20d1c6`.
+Task evidence is under `/tmp/e4-retained-task-runtime-restart-20261021/`; selected
+receipts are `/tmp/e4-a-after-native-restart-20261021/receipt.json`,
+`/tmp/e4-b-after-a-native-restart-20261021/receipt.json`, and
+`/tmp/e4-base-after-a-native-restart-20261021/receipt.json`.
+This proves a nonterminal read-only temporal Task recovering across native runtime
+stop/start and retained result routing; it is not a paid-provider mutation-replay
+test or a nonterminal route-publication test. Computer stop and Lore-follow
+reconciliation remain pending.
+
 The E3 runtime mechanism now passes a separate Linux native OpenShell probe.
 `builder` (GPT-6 Luna) built and published the reusable runtime image
 `registry.cloudflare.com/cd9522254303bfb3d2322a0d9b82764f/veoveo-development@sha256:42433ee5ee4a7aeebdd5e1e58b54cfe8ec1aebe5d8a6584fc3e49af7aeee0aad`.
