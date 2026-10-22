@@ -2376,6 +2376,14 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
 
 - Hub's Lore tokens carry the Hub principal ID as their `identity` claim, so
   `BranchPushed.user_id` maps directly to a Hub principal.
+- Registration: Hub mints one registration token per instance, places it in the
+  sandbox's provider, and passes the instance's `VEOVEO_DEPLOYMENT_ID` as a plain
+  environment variable. The server registers once with that token; Hub records its
+  key and metadata on that first use and refuses a different key or contract for
+  the same instance later. Later starts resume from the registration saved on the
+  persistent disk; a new sandbox gets a new token. There is no pre-approved metadata
+  and no `--describe-registration` step: that gate belonged to the superseded
+  runtime, and here Lore's permissions decide the code (decided 2026-10-22).
 - Hub keeps authentication, routing, registrations, selection state and the
   factory reconciler: create, restart, delete and watch. It already creates
   OpenShell sandboxes for Computers through `openshell-sdk`
