@@ -1332,6 +1332,7 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Lore through an OpenShell provider | Placeholder-only sandbox cloned a repository in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call |
 | Time build in a factory sandbox | Cold 156.5 s with dependency fetch; one-line change 32.3 s; no change 0.3 s; after stop/start (5.2 s) the cache held: no change 0.3 s, one-line change 32.0 s |
 | Local registry (B7) | `registry:3` with a volume; BuildKit pushed under the Service name (29.8 MB, 3.0 s; same content re-tagged under 0.1 s, same digest). Node pull needed a `registries.yaml` mirror to the ClusterIP and a K3s restart: API back in 6.6 s, no container restarted. A sandbox then pulled in 549 ms and was Ready in 6.9 s on the pushed digest; tags survived a registry restart. Entry removed again (second restart, 6.5 s) |
+| Node restart (`k3s-killall.sh`, then start) | API 7.3 s, PostgreSQL 35.7 s, gateway 41.2 s, Lore 124 s after four restarts waiting for S3. OpenShell restored every `always` sandbox by about 64 s; `never` sandboxes stayed down as `Error` (no exit code) or `Completed` (exit 0). Proposed: factory sandboxes use `always` and Hub drops reboot reconciliation |
 | Data-environment databases | Schema-only template 1.2 s; clone 0.23–0.25 s; drop about 0.17 s; Hub's role lacks `createdb` |
 | Data environments as Hub's role | With `CREATEDB` granted for the probe, `veoveo_owner` cloned the 84-table template in 62–80 ms, set `CONNECT` and dropped its clones; without it, permission denied. CNPG cannot reconcile that role: it keeps trying to revoke the admin memberships PostgreSQL gives Hub's role on roles it creates (`dependent privileges exist`). Decision: replace CNPG (B1) |
 | Cluster pod to a server in a sandbox, current gateway | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
@@ -1350,7 +1351,7 @@ Still to confirm, in order of risk to executing the plan:
 | 6 | A refreshing Lore provider | Only a static token proven | OpenShell refresh through Hub's token endpoint | Open decision on whose grant |
 | 7 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
 | 8 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
-| 9 | Reboot recovery, superseding pushes, deletion | Not tested | Reboot the node; push during a build; delete or disable a branch | B8 |
+| 9 | Reboot recovery, superseding pushes, deletion | Node restart measured: OpenShell restores `always` sandboxes itself, `never` ones stay down | Decide the restart policy (architecture open decision 10); push during a build; delete or disable a branch | B8 |
 | 10 | Per-chat selection | Not tested | Two chats in one directory | B9, B11 |
 | 11 | Lore stream closing on lag | Not tested | Gap tests | B3 |
 | 12 | Delegated administrative access | Not tested | Component test | B0 |
