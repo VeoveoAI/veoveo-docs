@@ -2149,25 +2149,31 @@ untouched.
 #### Lore Access In A Factory Sandbox
 
 The sandbox uses the same Lore model as everyone else: it reads the repository as
-the branch's latest pusher (decided 2026-10-22). On each push Hub mints one
-long-lived, revocable credential for the instance, meaning "the latest pusher,
-reading this repository, for this instance", and stores it in the sandbox's
-OpenShell provider; it revokes it when the sandbox is deleted or the next push
-replaces it. The credential is a refresh token for the pusher with Lore's audience
-and the repository's scope. The gateway's own refresh (`oauth2-refresh-token`)
-trades it at Hub's `/oauth/token` for short-lived Lore tokens, writes them into the
-provider behind a stable placeholder, and stores rotated refresh tokens itself
-(`openshell/crates/openshell-server/src/provider_refresh.rs:1175-1245,1664-1690`).
-The installation already refreshes a provider against Hub this way
-(`vv-hub-forwarder`, `veoveo-template-installation/openshell/HUB_TIME.md:86-94`).
-OpenShell's profile `token_exchange` grant is not used: it authenticates to the
-token service with the gateway's and the supervisor's SPIFFE identities
+the branch's latest pusher (decided 2026-10-22). Hub registers one OAuth client per
+instance (`client_secret_post`) and records the latest pusher on it. Its
+client-credentials grant issues a Lore token for that recorded person, not for a
+service identity of its own, scoped to the repository: Hub's client-credentials
+handler already issues repository-scoped Lore tokens
+(`veoveo-hub/crates/veoveo-hub/src/bin/hub/oauth_client_credentials.rs:519-538`), and
+the Lore profile checks the person's current assignment on every issue
+(`src/bin/hub/contributions/lore/mod.rs:351-360`). The change is that an instance
+client issues for its recorded pusher. The client has no repository assignment of
+its own. On each push Hub records the new pusher and rotates the provider
+credential; on deletion it removes the client. A pusher who loses access stops the
+branch's next sync with a clear error until someone with access pushes.
+
+The gateway keeps the client secret in its refresh custody and refreshes with its
+`oauth2-client-credentials` strategy, writing short-lived tokens into the provider
+behind a stable placeholder; the secret never enters the sandbox. That strategy runs
+against Hub on the node today (`vv-hub-native-control`, refreshed hourly) and is the
+one `vv-lore-time` documents for Lore (`veoveo-template-installation/computer/LORE_HUB.md:165-204`,
+there with a separate factory identity). Two other paths do not work: a refresh grant
+always issues a login token without repository rights
+(`src/bin/hub/oauth_grants/refresh.rs:250`), and OpenShell's profile `token_exchange`
+grant authenticates with the gateway's and the supervisor's SPIFFE identities
 (`openshell/docs/how-it-works/providers/profiles.mdx:611-616`), which Hub does not
-trust. Hub's refresh re-runs the person's current admission and copies no rights
-(`veoveo-hub/crates/veoveo-hub/DESIGN.md:773-783`), so a pusher who loses access
-stops the branch's next sync with a clear error until someone with access pushes.
-The credential never enters the sandbox. The per-instance credential follows the
-same pattern as the first registration credential.
+trust. The per-instance credential follows the same pattern as the first
+registration credential.
 The start command passes the placeholder to `lore --access-token`, with `--identity`
 for an opaque placeholder; OpenShell substitutes the real token into Lore's gRPC
 request headers on a `protocol: rest`, `enforcement: enforce` endpoint, the
