@@ -1297,6 +1297,7 @@ Landed on `main` and pushed, 2026-10-22:
 | Rust template `.loreignore` | template `24ae53e` | Without it `lore sync --reset` deleted the build cache; Linux check 16 passed |
 | Hub step 3, data environments | Hub `49e7e18`, `55499e0`, `b1fa402`, `975b2f4`; Core `d473011`; SDK `d72ef99`; installation `ecdb5b5` | Each instance records its database; Hub creates and migrates it as its own role, runs `ensure_server` there and names it in the grant; the running-Task check reads the deployment's database; admin cancel is forwarded to the instance; `DROP … WITH (FORCE)` after the last instance, with the owner in `pg_signal_backend`. Registration refusals removed: an RFC 7592 update may change metadata, and a namespace re-registration replaces its deployment under the pinned key. Core's fixture owner now has `CREATEDB` |
 | Hub step 4, per-user selection | Hub `434a639`…`39e2506` | `hub.selection`; a server with instances routes to the user's selected branch, else `execution.baseBranch`, else unavailable with its cause; `PUT`/`DELETE /selection/{profile}/{server}`; only that user's sessions get the tool-list notice; a Task keeps its instance. Linux, steps 3 and 4 merged: 267 passed |
+| Hub step 5b, image builder | Hub `c2164ef`, `29192ea`, `d6c166e` | `factory::image::ImageBuilder::build(context, name)` runs `buildctl` against BuildKit and returns `registry/factory/<name>@sha256:…`; failures carry BuildKit's last 8 KiB; `buildctl` from `moby/buildkit:v0.34.1` in Hub's image. Linux gate: 272 passed. Deployed, disposable namespace: Time's `openshell/image/` built cold in 141.1 s, unchanged in 164.6 ms with the identical digest; a broken Dockerfile failed in 35.2 ms with BuildKit's message |
 | B5 base policy and profiles | installation `7f73ce1` | Linux: both profiles lint; the gateway accepted the policy; the open rule coexists with Hub's inspected endpoint |
 | B5 removal | installation `c502ba5` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
 | SDK resume | SDK `6c881e0` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
@@ -1347,6 +1348,20 @@ so a push that changes a server's tools would stop it from starting. The SDK
 instead registers again with the same token and replaces its saved state. Time then
 needs only an SDK re-pin. The serving revision is Hub's last applied revision once
 the server registers or resumes after the restart; servers report none.
+
+Reinstall inputs found while building: the Lore CLI image that factory builds use
+as their `lore` context must be published where BuildKit pulls without
+credentials, the local registry, and pinned by digest in the factory
+configuration; Hub's own policy needs an endpoint for BuildKit on port 1234.
+
+Box hygiene: each Linux `docker build --target check .` left about 30 GB of untagged
+images. On 2026-10-22 they filled the disk to 96%; Kubernetes tainted the node for
+disk pressure at 21:12:56Z and evicted pods. Sandboxes with restart policy `always`
+returned by themselves; `time-live-qa` (`never`) was started again, and Embedding,
+whose registration Hub's housekeeping had removed while it was down, could not
+resume with the old SDK until its saved registration was moved aside. Every check
+script now ends with `docker image prune -f` and `docker builder prune -f
+--max-used-space 200gb`; the disk went from 96% to 57%.
 
 Stage 1 proof: two Time branches in two data environments; a user switching
 between them with `select`, every chat following; push-driven updates; a push that fails to
