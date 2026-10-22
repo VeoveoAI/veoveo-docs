@@ -2026,8 +2026,8 @@ If adopted, this direction supersedes for the branch workflow:
   inside.
 - Each push interrupts that instance for its restart, fetch, incremental build and
   startup. This is accepted in exchange for the simpler model.
-- A failed build or a crash leaves the instance down without retrying. The agent
-  reads the logs, then pushes a fix or asks for a restart.
+- A failed build or a crash is retried by OpenShell with backoff (restart policy
+  `always`, at most every 3 minutes). The agent reads the logs, then pushes a fix.
 - Complete logs come from container output, collected by Vector into VictoriaLogs.
   Agents read them through Hub's management tools.
 - One BuildKit daemon and one plain local OCI registry serve the whole installation.
