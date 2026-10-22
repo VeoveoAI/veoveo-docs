@@ -1283,6 +1283,15 @@ and the instance owner.
 
 Stage 1 proves the whole loop with Time.
 
+Landed on branches, not pushed, 2026-10-22:
+
+| Piece | Commit | Evidence |
+|---|---|---|
+| B1 PostgreSQL StatefulSet | installation `6d45dd9` on `postgres-statefulset` | Linux, disposable namespace: Ready in 10 s; roles, databases, `lore` schema, extensions and `max_connections = 512` from first start; TLS `verify-full` as Hub's role; no TLS refused; `CREATE DATABASE` as Hub's role in 224 ms and reachable; `ALTER SYSTEM` reload; restart in 2 s without rerunning init |
+| B3 Lore part | Lore `e2f04c90` on `notification-close-on-lag` | Component test fails without the change and passes with it |
+| B4 Time | Time `16853a0` on `factory-openshell` | Linux: image built in 14 s with the real Lore CLI; cold release build 80 s; the server started; 417 MB crates and 1.3 GB build output on the persistent disk |
+| SDK resume | SDK `6c881e0` on `resume-registers-again` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
+
 | # | Component | Work | Done when |
 |---|---|---|---|
 | B1 | Core, installation | PostgreSQL as a plain StatefulSet replacing CloudNativePG, with a data reset: same extension image, one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, a server certificate from the installation CA; first start creates only `veoveo_owner` (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their databases. Lore's NetworkPolicy selector and the CA copy job stop referring to CNPG. `pg_hba.conf` admits `all` databases. Data-environment databases: `CREATE DATABASE` owned by Hub's role, then kernel migrations | Tests on a fresh cluster with two environment databases |
