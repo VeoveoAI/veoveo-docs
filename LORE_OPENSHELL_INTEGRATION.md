@@ -2401,7 +2401,10 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   The token is the only check: it is not single-use, does not expire, pins no key
   and needs no pre-approved metadata or `--describe-registration` step. Those gates
   belonged to the superseded runtime; here Lore's permissions decide the code
-  (decided 2026-10-22).
+  (decided 2026-10-22). The SDK does the same on its side: when its saved
+  registration no longer matches the server's declarations, or Hub no longer knows
+  it, it registers again with the instance token instead of refusing to start
+  (today `veoveo-hub-sdk/crates/veoveo-hub-sdk/src/registration/client.rs:332-348,379-389`).
 - Hub keeps authentication, routing, registrations, selection state and the
   factory reconciler: create, restart, delete and watch. It already creates
   OpenShell sandboxes for Computers through `openshell-sdk`

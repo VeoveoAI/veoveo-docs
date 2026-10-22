@@ -1297,6 +1297,39 @@ Stage 1 proves the whole loop with Time.
 | B10 | Hub, new repository | Hub MCP server version 1 (`status` with `wait`, `logs`, `select`, `watch`) through Hub's calls between servers; Hub's user APIs behind it | A fixture caller uses each tool on a user's behalf |
 | B11 | Installation | The Computers' MCP connection named `veoveo`; OpenCode itself unchanged | A Computer lists the Hub MCP server's and application tools on one connection |
 
+Hub order, mapped 2026-10-22 against Hub `7c6240d`, SDK `cc23dc97` and OpenShell
+`9724fb18`; each step lands with its own component test:
+
+1. Remove the superseded runtime: `bin/hub/activation` (4087 lines),
+   `src/activation` (1560), `bin/environment` (2133), deployment admission (about
+   950) and `execution.runtimeTemplates`. Keep and move the Lore adapters
+   (`activation/lore.rs:43-172`, `lore_file.rs:14-180`) and the subscribe loop
+   (`follow.rs`).
+2. Instance registration (B8a): `hub.instance`; an `Instance` registration authority
+   found by token digest whose one check is that the registration names the
+   instance's deployment; each registration replaces the deployment's previous one;
+   housekeeping skips instances. Removes for this path: expiry, single use,
+   pre-supplied metadata, deployment immutability, the per-slug key pin and the
+   RFC 7592 refusal of changed metadata.
+3. Data environments (B2), as designed.
+4. Selection (B9): `hub.selection` (principal, slug, branch) replaces the
+   `veoveo-environment` header's resolver; the existing composition machinery
+   (`execution/selection.rs`, `catalog.rs:213-222`) narrows each request to one
+   deployment per slug; a tool-list change signal per user.
+5. Reconciler (B8b), reusing `computers/provisioning.rs` (workspace, provider,
+   refresh, create with restart `Always`, start, status); adds delete, provider
+   update and policy update; image and CPU/memory per create.
+6. Lore (B8c): watch, re-check on resubscribe, read as the pusher, per-instance
+   client.
+
+SDK, before Time serves pushes: `resume_or_register` refuses a saved registration
+whose declarations differ and turns 401/404 into `FreshAdmissionRequired`
+(`veoveo-hub-sdk/crates/veoveo-hub-sdk/src/registration/client.rs:332-348,379-389`),
+so a push that changes a server's tools would stop it from starting. The SDK
+instead registers again with the same token and replaces its saved state. It also
+reads the serving revision from the environment as the software version, which
+Time today takes from `CARGO_PKG_VERSION`. Time then needs only an SDK re-pin.
+
 Stage 1 proof: two Time branches in two data environments; a user switching
 between them with `select`, every chat following; push-driven updates; a push that fails to
 build and a push whose server crashes at startup, each diagnosed by the coding agent
