@@ -1979,8 +1979,7 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ### Factory Sandboxes And Dynamic Selection
 
-Status: design agreed with the user on 2026-10-22, except data environments, which
-are under review. Implementation has not started; no source, deployment or diagram
+Status: design agreed with the user on 2026-10-22. Implementation has not started; no source, deployment or diagram
 change has been made for it. Execution order and evidence gates are in the
 [agreed slice](OPENSHELL_HARDCUT_PLAN.md#agreed-slice--factory-sandboxes-and-dynamic-selection).
 Review baseline: Hub `7c6240d`, SDK `52084ec`, Core `1dd9994`, OpenCode `c5fb626`,
@@ -2011,7 +2010,7 @@ This direction supersedes for the branch workflow:
 |---|---|
 | Instance | A repository's server running from one branch |
 | Factory sandbox | The one OpenShell sandbox of an instance. Its main program fetches that branch, builds it and serves it. It is reused by every push to the branch and never shared with another server, branch or version |
-| Data environment | The PostgreSQL database of a branch name. It needs its own type name: `EnvironmentId` already identifies a routing composition |
+| Data environment | The PostgreSQL database of a branch name, with the shared object store. It needs its own type name: `EnvironmentId` already identifies a routing composition |
 | Selection | Which instance of each server a chat uses; session state, not pushed |
 | Base branch | The installation's default branch for servers a selection does not name, for example `dev` |
 
@@ -2281,19 +2280,59 @@ Agents receive no Kubernetes, OpenShell or log-store credentials.
 
 #### Data Environments
 
-Under review. Decided so far:
+Settled 2026-10-22 by a source review (Core `1dd9994`, Hub `7c6240d`, SDK `52084ec`,
+Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
 
 - One database per branch name. Same-named branches in different repositories
   deliberately share it. It is created with the first instance of that branch name
-  and removed with `DROP DATABASE … WITH (FORCE)` after the last.
+  and removed after the last: the sandboxes are deleted first, then
+  `DROP DATABASE … WITH (FORCE)`. The base branch's instances use the installation
+  database `veoveo`.
 - Branches cannot share a database: Core runs each server's migrations with sqlx's
   default migrator (`veoveo-core/platform/store/src/servers.rs:61-76`), which
   refuses a database holding migrations it does not know.
-- Hub creates the database with `CREATE DATABASE` and Core's kernel migrations
-  (`PlatformStore::migrate`); each server runs its own migrations on start
-  (`migrate_server`). No template database.
-- Each server login receives `CONNECT` on its database. PostgreSQL roles are
-  cluster-wide.
+- Hub's own state stays in `veoveo`. No separate control database: the `hub`
+  schema's foreign keys and change triggers need only the database Hub already uses
+  (`veoveo-hub/crates/veoveo-hub/migrations/0001_hub.sql:223,232-234`).
+- Bringing up an environment: Hub creates the database as its own role, which must
+  own it, and runs Core's kernel migrations (`PlatformStore::migrate`). When a server
+  registers into it, Hub runs `ensure_server` there before its registration
+  transaction (today both share one transaction,
+  `src/registration/store.rs:146-278`), and the registration grant carries that
+  database's URL instead of the one installation URL
+  (`src/registration/service.rs:269-279`). The server runs its own migrations on
+  start. No template database: create plus migrations took about 0.6 s.
+- No copying of users: a server writes the identity rows a Task needs when it
+  creates the Task (`veoveo-core/platform/task/src/create.rs:85-97`, granted to
+  `veoveo_server` in `0200_identity.sql:137,209-211`).
+- No permanent connections or `LISTEN` in environments: Hub forwards Task get,
+  cancel and subscriptions to the instance (`src/mcp/tasks.rs:29-37,86-94`,
+  `src/mcp/subscriptions.rs:359-363`) and listens only on `hub` and `audit` in its
+  own database. Two Hub operations read Task state directly: the check that a Task
+  still runs before it may act for its caller (`src/delegation.rs:583`), which
+  queries the deployment's database when needed, and administrative Task cancel
+  (`src/bin/hub/admin/tasks.rs:66-127`), which is forwarded to the instance as
+  MCP `tasks/cancel`.
+- Registration housekeeping must skip provisioned deployments: liveness only sees
+  locks in the current database (`0100_kernel.sql:198-214`), so after its 60 s
+  grace Hub would deregister every server in an environment.
+- No `CONNECT` grants: a new database admits `PUBLIC` by default, each login
+  receives only its own database's URL, and a grant would block `DROP ROLE` in
+  `drop_server_login`. `pg_hba.conf` admits `all` databases so runtime databases
+  work.
+- Audit records written in an environment stay unsealed, do not appear in Hub's
+  console and go with the database; usage rows land in the default partition
+  (`0600_usage.sql:70`). Acceptable for disposable development data.
+- One shared `artifacts` bucket. Object keys are `tenants/{tenant}/artifacts/{UUIDv7}`
+  (`veoveo-mcp-artifact/crates/veoveo-mcp-artifact/src/storage/mod.rs:114-115`), and
+  the sweep deletes only keys from its own rows, so environments cannot collide.
+  Objects of a dropped environment stay behind until cleanup. Every Artifact
+  instance rewrites the bucket's CORS rule from its own `--storage-cors-origin`
+  (`src/storage/bucket.rs:34-58`), so all branches keep the installation's one
+  origin.
+- Text that assumes one database is updated with the code:
+  `veoveo-core/docs/DATABASE.md:3,25`, `veoveo-core/platform/store/DESIGN.md:14`,
+  `veoveo-hub-sdk/crates/veoveo-hub-sdk/src/registration/oauth.rs:368-379`.
 - PostgreSQL runs as a plain Kubernetes StatefulSet with the same extension image,
   one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, and a
   server certificate from the installation CA. It replaces CloudNativePG (decided
@@ -2309,11 +2348,6 @@ Under review. Decided so far:
   blocking every other change to that role. Its replicas, failover and backups were
   unused with one instance and disposable data. An operator returns with a scalable
   design that leaves Hub-owned roles to Hub.
-
-Under review: which of Hub's state must move to a separate control database, how a
-new environment database receives the identity rows it needs, how Hub works
-across several databases, and whether object storage needs a bucket per
-environment.
 
 #### Identity And The Hub MCP Server
 
@@ -2462,8 +2496,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 
 #### Open Decisions
 
-Data environments are under review (above). The earlier open decisions were closed
-on 2026-10-22:
+None for Stage 1. Closed on 2026-10-22:
 
 - A data environment is created with the first instance of a branch name and
   removed after the last.

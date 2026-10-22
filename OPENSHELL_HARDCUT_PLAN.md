@@ -16,7 +16,7 @@ boundaries below. The existing three-view diagram also passes manual browser and
 SVG/PNG export review. The evidence below records the qualified scope and remaining
 performance limits.
 
-**Next slice, agreed with the user on 2026-10-22 except data environments:**
+**Next slice, agreed with the user on 2026-10-22:**
 [factory sandboxes and dynamic selection](#agreed-slice--factory-sandboxes-and-dynamic-selection).
 Implementation has not started; no source, deployment or diagram change has been made for it.
 
@@ -1260,8 +1260,7 @@ Source-test this change on Mac, then prove it on the Linux deployment.
 
 ### Agreed Slice — Factory Sandboxes And Dynamic Selection
 
-Status: design agreed with the user on 2026-10-22, except data environments, which
-are under review; implementation has not started. No source, deployment or diagram
+Status: design agreed with the user on 2026-10-22; implementation has not started. No source, deployment or diagram
 change has been made for it. Architecture, recorded decisions and verification:
 [factory sandboxes and dynamic selection](LORE_OPENSHELL_INTEGRATION.md#factory-sandboxes-and-dynamic-selection).
 
@@ -1286,8 +1285,8 @@ Stage 1 proves the whole loop with Time.
 
 | # | Component | Work | Done when |
 |---|---|---|---|
-| B1 | Core, installation | PostgreSQL as a plain StatefulSet replacing CloudNativePG, with a data reset: same extension image, one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, a server certificate from the installation CA; first start creates only `veoveo_owner` (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their databases. Lore's NetworkPolicy selector and the CA copy job stop referring to CNPG. Data-environment databases: `CREATE DATABASE`, kernel migrations, `CONNECT` per login | Tests on a fresh cluster with two environment databases |
-| B2 | Hub | Working across several databases. Scope set by the data-environment review | One server serving two environments |
+| B1 | Core, installation | PostgreSQL as a plain StatefulSet replacing CloudNativePG, with a data reset: same extension image, one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, a server certificate from the installation CA; first start creates only `veoveo_owner` (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their databases. Lore's NetworkPolicy selector and the CA copy job stop referring to CNPG. `pg_hba.conf` admits `all` databases. Data-environment databases: `CREATE DATABASE` owned by Hub's role, then kernel migrations | Tests on a fresh cluster with two environment databases |
+| B2 | Hub, Core, SDK | Per environment: `ensure_server` on its database before the registration transaction; that database's URL in the registration grant; the running-Task check of a delegated exchange queries the deployment's database; administrative Task cancel forwarded as MCP `tasks/cancel`; housekeeping skips provisioned deployments; drop after the sandboxes are deleted. No control database, user copying, permanent connections or `CONNECT` grants. Core and SDK texts that assume one database updated | One server serving two environments; a Task in each completes through Hub; a Task that ended can no longer act for its caller |
 | B3 | Lore, Hub | Stream closes on lag. Hub watches each repository as the person who turned it on and re-checks every branch on (re)subscription | Gap tests; a watcher who loses access shows in `status`; no periodic reads |
 | B4 | Repositories | `openshell/` contract: `image/`, `policy.yaml`, `run`; Time and the Rust template | Time serves from its `openshell/run`; installation copies of Time policy removed |
 | B5 | Installation | Base policy; default factory sandbox size; base branch; soft caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
@@ -1358,14 +1357,14 @@ Still to validate, in order of risk to executing the plan:
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
 | 1 | Per-chat selection in OpenCode | Source read: connection, tool list and registry are per Location; `tools/call` already carries the session ID, `tools/list` does not | OpenCode sends the root chat ID on `tools/list` and keeps one tool list per chat; then two chats in one directory with different tool lists | B9, B11; approval to depart from OpenCode's one-transform-per-Location rule |
-| 2 | Data environments | Cloning as Hub's role proven; design under review | Two environments with Tasks and listeners on separate databases | B1, B2 |
+| 2 | Data environments | Design settled by source review; empty database ready in about 0.6 s | Two environments with Tasks through Hub, on the built B1 and B2 | B1, B2 |
 | 3 | A refreshing Lore provider | Decided: the latest pusher's grant through OpenShell's native token exchange; only a static token proven so far | Hub mints a per-instance credential for the pusher; OpenShell exchanges it at Hub for Lore tokens across a restart and after the credential is replaced on push | B8 |
 | 4 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
 | 5 | Watching as a person | Not tested | Subscription as the watcher; a watcher who loses access shows in `status` | B3 |
 | 6 | Lore stream closing on lag | Not tested | Gap tests | B3 |
 | 7 | Superseding pushes and deletion | Node restart measured | A push during a build; a deleted branch removes its sandbox | B8 |
 | 8 | Creating and migrating an empty environment database | Measured: create, kernel migrations and Time's migration in about 0.6 s | Done | — |
-| 9 | Object keys across environments | Not checked | Read Artifact's and Media's key scheme: one shared bucket or one per environment | Data-environment review |
+| 9 | Object keys across environments | Source read: random keys per artifact, sweep deletes only its own rows; one shared bucket | Done | — |
 | 10 | What a user sees when the node is full | Measured: accepted, waits in `Provisioning`, OpenShell's conditions carry `Insufficient cpu`; starts when capacity frees | Done | — |
 | 11 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
 | 12 | Collector as installation infrastructure | Settings known | Persistent volume, retention, queries from the Hub MCP server | B6 |
