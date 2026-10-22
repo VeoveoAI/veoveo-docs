@@ -2195,8 +2195,11 @@ Kubernetes, OpenShell or log-store credentials.
   monorepo ran `registry:3` behind k3d. No signing, admission or retention rules
   beyond cleanup deleting unused tags. On plain K3s the node's container
   runtime is pointed at it once through `/etc/rancher/k3s/registries.yaml` followed
-  by a K3s restart; k3d wrote that configuration itself. The node has no
-  `registries.yaml` today.
+  by a K3s restart; k3d wrote that configuration itself. Images are named by the
+  registry's in-cluster Service name, which BuildKit resolves and marks `http = true`.
+  The node's entry maps that name to the Service's ClusterIP over HTTP, so the
+  Service keeps a fixed ClusterIP. A K3s restart took the API away for about 6.5 s
+  and restarted no container (`KillMode=process`).
 - One BuildKit daemon and one registry serve every repository and branch in the
   installation; identical image keys share one image.
 - Image key: the content hash of `openshell/image/` plus the `lore` context and the
@@ -2353,7 +2356,8 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Current external dependencies | All 31 Veoveo platform pods pull from `registry.cloudflare.com` with a pull-only secret, and `public-tunnel` runs Cloudflare's tunnel image | An on-premises-only installation would also move these images to the local registry; outside this slice |
 | Existing log collection | None running | Collector is new installation work |
 | Logs after a pod is gone (probe) | Vector `0.60.0` and VictoriaLogs `v1.53.0`: a pod's 40 stdout lines and 1 stderr line (exit 3), and a one-line crash (exit 1), stayed queryable after pod deletion, with pod, namespace and OpenShell labels | Collector design confirmed, with the settings above |
-| Environment image build (probe) | User-namespace BuildKit worked; Time's `dev` stage 364.9 s cold, 0.2 s warm | Builder design confirmed; push and pull not yet tested |
+| Environment image build (probe) | User-namespace BuildKit worked; Time's `dev` stage 364.9 s cold, 0.2 s warm | Builder design confirmed |
+| Local registry push and pull (probe) | `registry:3` on a 20 GiB volume. BuildKit pushed a 29.8 MB image under the Service name in 3.0 s; the same content under a second tag took under 0.1 s with the same digest. Without a node entry the pull failed to resolve the name. With a `registries.yaml` mirror to the ClusterIP and a K3s restart (API back in 6.6 s, no container restarted), a sandbox pulled the image in 549 ms and was Ready in 6.9 s, running the pushed digest. Tags survived a registry restart, with about 1 s unavailable. Removing the entry took a second restart (API back in 6.5 s, no container restarted) | Registry design confirmed; the registry Service keeps a fixed ClusterIP. Not measured: a multi-gigabyte environment image |
 | Factory sandbox lifecycle (probe through the gateway) | Create to Ready 6.7 s; stop to Stopped 2.4 s; start to Ready 2.5 s and server output 4.6 s after start; the disk survived (no recompilation); a failing server under restart policy `never` showed Error, exit code 3, restart count 0; every pod's output reached the log store | About 7 s of restart per push before fetch and build |
 | Time build in a factory sandbox (probe, 8 CPU, 16 GiB) | Cold release build including dependency fetch 156.5 s; one-line change 32.3 s; no change 0.3 s; after a native stop/start (5.2 s) no change 0.3 s and one-line change 32.0 s; caches 1.3 GB target, 417 MB Cargo | A Time push costs about 40 s with a release build: restart plus 32 s compile plus startup. Commands run through `sandbox exec` lack the image's environment, so builds belong in the main program, as designed |
 | Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |

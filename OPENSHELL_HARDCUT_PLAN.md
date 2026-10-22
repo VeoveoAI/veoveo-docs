@@ -1331,6 +1331,7 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Factory sandbox through the gateway | Create to Ready 6.7 s; stop 2.4 s; start to Ready 2.5 s, server output after 4.6 s; disk kept; failing server: Error, exit 3, restart count 0 under `never`; all output in the log store |
 | Lore through an OpenShell provider | Placeholder-only sandbox cloned a repository in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call |
 | Time build in a factory sandbox | Cold 156.5 s with dependency fetch; one-line change 32.3 s; no change 0.3 s; after stop/start (5.2 s) the cache held: no change 0.3 s, one-line change 32.0 s |
+| Local registry (B7) | `registry:3` with a volume; BuildKit pushed under the Service name (29.8 MB, 3.0 s; same content re-tagged under 0.1 s, same digest). Node pull needed a `registries.yaml` mirror to the ClusterIP and a K3s restart: API back in 6.6 s, no container restarted. A sandbox then pulled in 549 ms and was Ready in 6.9 s on the pushed digest; tags survived a registry restart. Entry removed again (second restart, 6.5 s) |
 | Data-environment databases | Schema-only template 1.2 s; clone 0.23–0.25 s; drop about 0.17 s; Hub's role lacks `createdb` |
 | Cluster pod to a server in a sandbox, current gateway | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
 | Inbound gRPC with the OpenShell change (B3a) | Test gateway rolled out in 2.8 s, back in 2.9 s. Reflection, `Health/Check` and the `Health/Watch` stream reached the sandbox; HTTP routes and the gateway CLI unchanged. lore-server's `auth_service` catalog, pointed at a `UrcAuthApi` server in a sandbox, listed exactly its two repositories, about 75 ms per call; with `bearer-passthrough` the caller's token arrived (1840 bytes), with `strip` it did not. Lore's NetworkPolicy first blocked the gateway (50 s deadline) |
@@ -1347,14 +1348,13 @@ Still to confirm, in order of risk to executing the plan:
 | 5 | Sleep without lost wakes | Rules decided | A call, a webhook and a due schedule each wake an instance or prevent its sleep | B14 |
 | 6 | A refreshing Lore provider | Only a static token proven | OpenShell refresh through Hub's token endpoint | Open decision on whose grant |
 | 7 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
-| 8 | Local registry push and pull | Not tested | `registry:3`, a node `registries.yaml` entry, push and sandbox pull | A K3s restart |
-| 9 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
-| 10 | Reboot recovery, superseding pushes, deletion | Not tested | Reboot the node; push during a build; delete or disable a branch | B8 |
-| 11 | Per-chat selection | Not tested | Two chats in one directory | B9, B11 |
-| 12 | Lore stream closing on lag | Not tested | Gap tests | B3 |
-| 13 | Delegated administrative access | Not tested | Component test | B0 |
-| 14 | Collector as installation infrastructure | Settings known | Persistent volume, retention, Hub queries | B6 |
-| 15 | Shared GPU service through `uses` | Not tested | Relay throughput; GPU released on stop | Stage 2 |
+| 8 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
+| 9 | Reboot recovery, superseding pushes, deletion | Not tested | Reboot the node; push during a build; delete or disable a branch | B8 |
+| 10 | Per-chat selection | Not tested | Two chats in one directory | B9, B11 |
+| 11 | Lore stream closing on lag | Not tested | Gap tests | B3 |
+| 12 | Delegated administrative access | Not tested | Component test | B0 |
+| 13 | Collector as installation infrastructure | Settings known | Persistent volume, retention, Hub queries | B6 |
+| 14 | Shared GPU service through `uses` | Not tested | Relay throughput; GPU released on stop | Stage 2 |
 
 Test access to the gateway uses an Entra device login through the existing public
 CLI registration, as an account holding `openshell-admin` and `openshell:all`, in a
