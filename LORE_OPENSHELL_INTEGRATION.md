@@ -395,6 +395,12 @@ gates in the execution plan. The native investigation evidence is retained under
 
 ## Product Workflow And Full Platform Plan
 
+Proposed successor direction, 2026-10-21, under discussion and not authorized:
+[factory sandboxes and dynamic selection](#factory-sandboxes-and-dynamic-selection).
+For the branch workflow it would replace the reusable override runtime, runtime
+eligibility and shared logical-schema bindings. The accepted direction below
+remains implemented and qualified.
+
 Accepted next-slice direction, revised 2026-10-20: **environment selection,
 owned component overrides and fast source activation**. Implementation authorized
 and started on 2026-10-20, including Computer-local apply/watch and native Lore
@@ -1970,6 +1976,360 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ## Data-Driven Environment Definitions
 
+### Factory Sandboxes And Dynamic Selection
+
+Status: proposed 2026-10-21 and under discussion with the user; not authorized. No
+source, deployment or diagram change has been made for it. Execution order and
+evidence gates are in the
+[proposed slice](OPENSHELL_HARDCUT_PLAN.md#proposed-slice--factory-sandboxes-and-dynamic-selection).
+Review baseline: Hub `7c6240d`, SDK `52084ec`, Core `1dd9994`, OpenCode `c5fb626`,
+Lore `ff40bb21`, OpenShell `53e366581`, installation `b39015e`, Time `f5d3fb1`,
+Rust template `c249ef4`. Source and documentation were read, and the Linux K3s node
+was inspected read-only; nothing was built, deployed or created.
+
+If adopted, this direction supersedes for the branch workflow:
+
+- the 2026-10-20 reusable override runtime: `s6-svscan` as main process, several
+  revision workers in one sandbox, the `veoveo-environment` helper, the development
+  image (`veoveo-template-installation/development/Dockerfile`) and the
+  `development-time-v1` template;
+- `execution.runtimeTemplates` with its eligibility and storage-binding admission;
+- Computer-local snapshots, environment definition documents and their apply/follow
+  routes, and periodic Lore reads;
+- Hub's registration-liveness housekeeping for workloads Hub provisions;
+- the earlier meaning of "factory" as a disposable, agent-free build/check job.
+
+#### Terms
+
+| Term | Meaning |
+|---|---|
+| Workload | What a repository provides: `mcp` (registers with Hub and has tools) or `service` (called directly by other workloads, such as the embedding GPU runtime) |
+| Instance | A workload running from one branch |
+| Factory sandbox | The one OpenShell sandbox of an instance. Its main program fetches that branch, builds it and serves it. It is reused by every push to the branch and never shared with another server, branch or version |
+| Data environment | One PostgreSQL database plus one SeaweedFS bucket. It needs its own type name: `EnvironmentId` already identifies a routing composition |
+| Selection | Which MCP instances a chat uses; session state, not pushed |
+| `uses` | Which service instances an instance calls; pushed in the caller's branch |
+| Base path | The installation's default fallback, for example `[dev, stage]` |
+
+#### Decisions Recorded With The User
+
+- No approval layer and no access rules beyond Lore's own. Lore's security model,
+  through the grants Hub already issues, is the authority to provision and select.
+- A Lore push changes desired state. Hub restores that state after startup,
+  reconnection and infrastructure restarts. Local edits and local commits trigger
+  nothing.
+- Each repository owns its development environment and OpenShell requirements; the
+  installation owns one base.
+- One factory sandbox per instance. Its main program fetches, builds and then
+  replaces itself with the server. OpenShell starts and stops it; nothing supervises
+  inside.
+- Each push interrupts that instance for its restart, fetch, incremental build and
+  startup. This is accepted in exchange for the simpler model.
+- A failed build or a crash leaves the instance down without retrying. The agent
+  reads the logs, then pushes a fix or asks for a restart.
+- Complete logs come from container output, collected by Vector into VictoriaLogs.
+  Agents read them through Hub's management tools.
+- One BuildKit daemon and one plain local OCI registry serve the whole installation.
+- Lore lists repositories per user through its own catalog contract: Hub answers
+  `LookupUserPermissions` from its grants. Lore keeps enforcing access.
+- MCP servers and services share one model. Shared instances are the default; a
+  branch gets its own instance by provisioning it.
+- One database and one bucket per data environment. Any combination of instances
+  can be selected; failures are shown, not prevented.
+- Per-user caps, plus management tools for cleanup.
+
+#### Ownership
+
+Test: a value that would differ in a second installation belongs to the
+installation; a value that can change together with code belongs to the repository.
+
+| Repository, versioned per branch | Installation |
+|---|---|
+| `openshell/image/`: the development environment (`Dockerfile` and the files it copies) | Base policy: Hub, Lore, object storage and PostgreSQL with their real hostnames |
+| `openshell/policy.yaml`: build egress and serving rules in OpenShell's own format | What placement, mount and provider names mean on this cluster |
+| `openshell/provisioning.yaml`: workloads, resources, placement, mounts, providers, build and run commands, `environment`, `uses` | Base path and per-user caps |
+| Root `Dockerfile` for release and CI builds, unchanged | Image builder, registry, log collector and the pinned `lore` build context |
+| | Platform components: Hub, Lore, PostgreSQL, SeaweedFS, OpenShell gateway, Computers |
+
+```yaml
+# veoveo-mcp-time/openshell/provisioning.yaml
+provision: true
+workloads:
+  time:
+    kind: mcp
+    environment: own                       # this branch's data environment
+    resources: { cpu: "2", memory: 4Gi }
+    placement: default
+    build: [cargo, build, --locked, --release, --bin, veoveo-mcp-time]
+    run: [target/release/veoveo-mcp-time]
+```
+
+The environment image copies the Lore CLI from an installation-supplied named build
+context (`COPY --from=lore /usr/local/bin/lore /usr/local/bin/lore`), the pattern
+already used by `veoveo-template-installation/factory/Dockerfile`. Repositories do
+not name a registry. The provisioning file is merged like code, so its defaults are
+merge-safe: `provision: true`, `environment: own`, no branch names. Archiving the
+branch is the normal way to stop its instances.
+
+#### Push To Serving
+
+1. Lore emits `BranchPushed` with repository, branch ID, revision, revision number
+   and pusher. Hub reads `openshell/provisioning.yaml` at that revision.
+2. When the registry has no environment image for the image key, the
+   [image builder](#image-builder) builds it. This happens only when
+   `openshell/image/` or the installation's builder inputs change.
+3. On the first push of a branch, Hub creates its factory sandbox from that image
+   with the declared resources, placement, mounts and providers, the installation
+   base policy plus the repository policy, and restart policy `never`.
+4. The sandbox's fixed start command, composed from the provisioning file, runs
+   once: `lore sync <branch>@LATEST`, then the repository's `build` command on the
+   warm caches of the persistent disk, then `exec` of the `run` command, so the
+   server becomes the main program. The synced revision is passed to the server as
+   its software version, which its SDK registration already reports to Hub. Output
+   of every step is ordinary container output.
+5. On every later push Hub stops and starts the sandbox. Native start mounts the
+   same persistent volume under the same sandbox name, works from any phase and
+   resets OpenShell's restart count. A push during a build restarts it again; the
+   latest revision wins.
+6. The server resumes the instance's saved registration (Time: "process stop does
+   not retire it", `veoveo-mcp-time/README.md:46`), runs its migrations and reports
+   `/readyz`. Core moves unfinished Tasks of the stopped process to the new one.
+7. A failed fetch, build or startup exits the main program and leaves the instance
+   down, with its output in the log store. The next push or the management `restart`
+   tool starts it again.
+
+| Change | Result |
+|---|---|
+| Code | Restart; the sandbox fetches, builds and serves the new revision |
+| Network rules only | Live policy reload; no restart |
+| Resources, placement, mounts, environment variables, providers or image | New factory sandbox; its disk cache starts empty |
+| `provision: false`, file removed, or branch deleted or archived | Sandbox deleted after its Tasks finish |
+| Crash or failed build | Down until the next push or `restart` |
+| Infrastructure restart (node reboot, eviction) | Restart policy `never` does not recover it; Hub's startup reconciliation starts sandboxes that should be serving and did not stop through a main-program failure |
+| Sleep and wake | Native stop and start, which also releases a GPU |
+
+Native stop deletes the sandbox's pods; start creates new pods. The only K3s
+measurements are 3.01 s for a native start and 13 s from Starting to Ready after a
+supervisor kill (`OPENSHELL_HARDCUT_PLAN.md:946-953`); fresh create, stop-to-Ready and
+an incremental Time build have not been measured.
+
+Only one version of an instance runs at a time. A GPU instance never needs a second
+GPU for its next version, and a new version's migrations cannot break an old version
+that is still serving. Serving a previous revision after a breaking schema change
+requires resetting that data environment, consistent with disposable development
+data.
+
+#### Lore Access In A Factory Sandbox
+
+The sandbox uses the same Lore model as everyone else. Hub issues a Lore token
+through its existing `lore.assignments`; an OpenShell provider attached to the
+sandbox holds it, and the gateway refreshes it while keeping a stable placeholder.
+The start command passes the placeholder to `lore --access-token`, with `--identity`
+for an opaque placeholder; OpenShell substitutes the real token into Lore's gRPC
+request headers on a `protocol: rest`, `enforcement: enforce` endpoint, the
+mechanism `factory-time.yaml` already uses with `vv-lore-time`. The proxy must trust
+Lore's server CA. Lore decides what the token permits. The same mechanism removes
+the Computer's separate Lore device login. A probe on the node confirmed it: the
+sandbox held only a placeholder and the clone succeeded.
+
+#### Failures And Logs
+
+Everything the main program writes — Lore, the build tool and the server — is
+ordinary standard output and error of the sandbox's workload container (container
+`agent`). Kubernetes keeps that output only while the pod exists, and every native
+restart replaces the pod, so the installation runs a cluster log collector that
+ships all container output, including the supervisor pods' OpenShell events, to a
+log store. OpenShell's documentation directs durable retention to exactly this
+(`openshell/docs/observability/accessing-logs.mdx:38-57`).
+
+Chosen: Vector as a DaemonSet reading container logs with pod metadata, sending to
+single-node VictoriaLogs on a persistent volume. Both are single binaries; the
+store is searchable by text and by labels and has an HTTP query API Hub can call. A
+workload pod is named after its sandbox and shares an `openshell.ai/boundary-pair`
+label with its supervisor pod, so one query can return a sandbox's own output and
+OpenShell's network denials for it. `openshell logs` remains the live view of
+OpenShell's own events.
+
+Collector settings found necessary on the node: file discovery every second
+(`glob_minimum_cooldown_ms: 1000`), because with Vector's default interval pods
+deleted within about 15 seconds were not captured; and a persistent Vector data
+directory, because a Vector restart without its checkpoints re-reads every pod log
+from the beginning and was killed at a 512 MiB limit.
+
+Agents follow a push through the management MCP on their existing `veoveo`
+connection:
+
+1. After `lore push`, `wait(workload, branch)` — an MCP Task — returns when that
+   revision serves or fails. Hub derives the state from OpenShell's sandbox status
+   (Ready, or the main program's exit code) and from the server registering with
+   that revision as its software version.
+2. On failure, `logs(workload, branch, since)` returns the instance's complete
+   output from the log store — Lore sync, build and server, with standard output and
+   error marked — together with OpenShell's network denials from its supervisor pod.
+3. The agent pushes a fix, or calls `restart`.
+
+`status` reports pushed and serving revision, phase, exit code and the last lines;
+`exec` inside a factory sandbox of a branch the caller can write remains optional.
+Hub queries the log store only for instances the caller can see. Agents receive no
+Kubernetes, OpenShell or log-store credentials.
+
+#### Image Builder
+
+- An installation-owned BuildKit daemon runs as a Kubernetes workload with a
+  persistent cache volume and explicit garbage-collection limits. The node meets
+  the requirements for BuildKit's user-namespace variant (Kubernetes 1.36, kernel
+  6.8, containerd 2.3.4, runc 1.4.2). In-container rootless mode would instead need
+  `kernel.apparmor_restrict_unprivileged_userns=0` on this Ubuntu 24.04 host.
+- Hub checks out `openshell/image/` at the pushed revision into a temporary
+  directory and runs `buildctl build --local context=… --local dockerfile=…`, the
+  standard client flow; BuildKit reads the files through its session. The Lore CLI
+  comes from `--opt context:lore=docker-image://…@sha256:…`, and Hub reads the
+  pushed digest from `--metadata-file`. `docker buildx` with BuildKit's remote driver
+  is the equivalent client used in the probe.
+- Probe on the node: BuildKit `v0.34.1` in a pod with `hostUsers: false` and
+  `privileged: true` started with the overlayfs snapshotter, ran `RUN` steps and
+  resolved a `docker-image://` named context. Time's `dev` stage built cold in
+  364.9 s and warm in 0.2 s, leaving a 4.57 GB cache.
+- Images are pushed to the installation's own local OCI registry: a plain CNCF
+  Distribution registry with a persistent volume and deletion enabled, as the former
+  monorepo ran `registry:3` behind k3d. No signing, admission or retention rules
+  beyond cleanup deleting unused tags. On plain K3s the node's container
+  runtime is pointed at it once through `/etc/rancher/k3s/registries.yaml` followed
+  by a K3s restart; k3d wrote that configuration itself. The node has no
+  `registries.yaml` today.
+- One BuildKit daemon and one registry serve every repository and branch in the
+  installation; identical image keys share one image.
+- Image key: the content hash of `openshell/image/` plus the `lore` context and the
+  builder version. Each image is tagged with its key, and an existing key is not
+  rebuilt. A `Dockerfile` that uses a moving tag is rebuilt only when its directory
+  changes.
+
+#### Resolution
+
+- Selection: an ordered path plus per-workload entries, for example
+  `path: [dev/jose/x, dev, stage]` and `media: dev/maria/fix`. Resolution moves down
+  the path only when a branch has no instance; a failing instance is shown as down.
+  Hub holds the selection and sends tool-list changes only to affected connections.
+- `uses`: the same rule, resolved per instance from its own branch and identical for
+  everyone using that instance. A branch's own service instance is used when it
+  exists. Inspection shows the exact instances each dependency resolved to.
+- Across repositories, "the same branch" means the same branch name. Exact IDs are
+  captured at resolution.
+- Stateless services declare `environment: none` and can serve every data
+  environment.
+- A caller reaches a service instance through OpenShell's named-service routing,
+  which already crosses workspaces through the gateway's relay (Artifact in
+  `vv-services` calls Hub in `vv-control`). Only the caller's network policy and
+  the service's own authentication apply; Hub adds the resolved host to the caller's
+  policy.
+
+#### Data Environments
+
+- Hub creates a data environment with `CREATE DATABASE … TEMPLATE` from an idle
+  template database containing the full Core kernel and the bound servers' schemas.
+  A live environment cannot be a template while it has connections.
+- Hub's own state (OAuth, registrations, control plane, compositions and the master
+  identity directory) lives in a separate control database.
+- Hub's SQL is unchanged: each query runs on the database that holds its rows. Task
+  routes keep their original deployment and database. The one cross-schema query,
+  registration liveness, is removed for provisioned workloads.
+- Users created after the clone are copied into an environment before their first
+  Task there. PostgreSQL roles are cluster-wide; each server login receives
+  `CONNECT` on its database. Hub listens only on active environments.
+- `own` names the environment after the branch; same-named branches in different
+  repositories deliberately share it. It lives while any instance is bound to it and
+  is removed with `DROP DATABASE … WITH (FORCE)` plus its bucket.
+
+#### Identity
+
+- Hub's Lore tokens carry the Hub principal ID as their `identity` claim, so
+  `BranchPushed.user_id` maps directly to a Hub principal.
+- An instance's owner, for caps, is the branch creator Lore records.
+- Lore lists repositories per user through its own catalog contract: Lore forwards
+  the caller's token to `UrcAuthApi.LookupUserPermissions`, which Hub answers from
+  `lore.assignments` with the caller's repository resource IDs and permissions. Lore
+  sets `repository_catalog = "auth_service"` and `repository_catalog_url` to Hub's
+  endpoint. Lore calls it over gRPC, while OpenShell's named-service routing
+  relays HTTP/1.1 only to a sandbox (`openshell/crates/openshell-server/src/service_routing.rs:579,655`),
+  so the network path from Lore to Hub's catalog endpoint is still to be confirmed.
+  This reverses the earlier choice in
+  [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service,
+  because people need to see their own repositories.
+- Before any delegated management call: administrative authorization evaluates the
+  original principal without the delegation ceiling
+  (`veoveo-hub/crates/veoveo-hub/src/http/action_audit.rs:38`). The fix authorizes
+  against repository assignments, not Hub administrator roles.
+
+#### Hub, Management MCP And OpenCode
+
+- Hub keeps authentication, routing, resolution and the factory-sandbox reconciler:
+  create, stop/start, delete and watch. It runs no commands inside sandboxes.
+- The management MCP is a separate repository using typed, delegated Hub APIs, with a
+  slug other than `hub`. Version 1 provides `status`, `wait`, `logs`, `restart` and
+  `select`; later versions add repository creation and sharing, and cleanup.
+- Users connect to one MCP connection named `veoveo`, which carries the management
+  MCP and every application MCP.
+- OpenCode keeps a selection per chat; a management tool alone cannot change headers
+  of its Location-scoped connections.
+
+#### Lore Change Events
+
+Lore's subscription stream silently drops events for a lagging subscriber
+(`lore/lore-server/src/grpc/notification_service.rs:103`). It should close the
+stream instead. On every subscription and resubscription Hub reconciles the complete
+branch inventory, including deletions. No periodic reads, client hooks or new event
+types are needed. Notifications are live signals; Lore revisions remain the durable
+history.
+
+#### Capacity And Cleanup
+
+Per-user caps; native stop and start for sleep and wake; a connection pooler for
+query traffic while Core's session locks and listeners keep dedicated connections;
+cleanup of sandboxes, images, data environments, logins and compositions by age,
+staleness or agent proposal.
+
+#### Verification, 2026-10-21
+
+Read-only source investigations covered OpenShell `53e366581`, Lore `ff40bb21`, Hub
+`7c6240d`, the installation and upstream BuildKit documentation. The K3s node
+`rozgo-sim-pc` was inspected over the RustDesk SSH endpoint, and disposable probes
+ran there through `kubectl` in a `veoveo-probe` namespace that was then deleted.
+They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
+
+| Question | Finding | Effect |
+|---|---|---|
+| Where a sandbox program's output goes | Container stdout/stderr of the workload pod; confirmed on the node for `artifact` (container `agent`). `openshell logs` holds only OpenShell's events, 2000 lines in gateway memory | Cluster log collector |
+| Running commands in a sandbox | Exec requires Ready; a crash-looping main program never is | Hub runs no commands inside; the main program fetches and builds |
+| Stop and start | Stop deletes the pods; start creates new pods on the same volume and name | Builds and caches survive restarts |
+| Program-identity pinning | Kept in supervisor memory, new on every start | A rebuilt binary runs normally after restart |
+| Cross-workspace service calls | Supported through the gateway relay; already used | No new mechanism |
+| Credentials in Lore's gRPC headers | Substituted on inspected `rest` endpoints; providers refresh with a stable placeholder | Lore access through a provider |
+| Mapping a pusher to Hub | `BranchPushed.user_id` is the Hub principal ID | Direct |
+| Image builds | `buildctl --local` is the standard flow; node has kernel 6.8, containerd 2.3.4, runc 1.4.2, K3s 1.36.5; AppArmor restricts unprivileged user namespaces; no `registries.yaml` | User-namespace BuildKit; local OCI registry with one node registry entry |
+| Current external dependencies | All 31 Veoveo platform pods pull from `registry.cloudflare.com` with a pull-only secret, and `public-tunnel` runs Cloudflare's tunnel image | An on-premises-only installation would also move these images to the local registry; outside this slice |
+| Existing log collection | None running | Collector is new installation work |
+| Logs after a pod is gone (probe) | Vector `0.60.0` and VictoriaLogs `v1.53.0`: a pod's 40 stdout lines and 1 stderr line (exit 3), and a one-line crash (exit 1), stayed queryable after pod deletion, with pod, namespace and OpenShell labels | Collector design confirmed, with the settings above |
+| Environment image build (probe) | User-namespace BuildKit worked; Time's `dev` stage 364.9 s cold, 0.2 s warm | Builder design confirmed; push and pull not yet tested |
+| Factory sandbox lifecycle (probe through the gateway) | Create to Ready 6.7 s; stop to Stopped 2.4 s; start to Ready 2.5 s and server output 4.6 s after start; the disk survived (no recompilation); a failing server under restart policy `never` showed Error, exit code 3, restart count 0; every pod's output reached the log store | About 7 s of restart per push before fetch and build |
+| Time build in a factory sandbox (probe, 8 CPU, 16 GiB) | Cold release build including dependency fetch 156.5 s; one-line change 32.3 s; no change 0.3 s; after a native stop/start (5.2 s) no change 0.3 s and one-line change 32.0 s; caches 1.3 GB target, 417 MB Cargo | A Time push costs about 40 s with a release build: restart plus 32 s compile plus startup. Commands run through `sandbox exec` lack the image's environment, so builds belong in the main program, as designed |
+| Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |
+| Lore repository listing | `lore repository list` returns nothing. The installation sets `repository_catalog = "baseline"` with `baseline_access = "denied"` (`veoveo-template-installation/kubernetes/lore.toml:15-16`). lore-server lists per caller only through the service holding the grants (`UrcAuthApi.LookupUserPermissions`, `lore/lore-server/src/authnz/repository_catalog.rs:38-41`); here the grants are Hub's `lore.assignments`, and Hub does not implement it | Decided: Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`, and Lore uses `repository_catalog = "auth_service"`. Lore's own listing is then per user, while access stays enforced by Lore's token grants |
+| Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
+
+#### Open Decisions
+
+1. When an `own` data environment is created and removed.
+2. Whose Lore grant a factory sandbox uses: the branch owner's, or Hub's own
+   principal with an assignment on managed repositories.
+3. Builder outbound access.
+4. A new instance's first registration credential, delivered through a provider
+   because Hub runs no commands inside the sandbox.
+5. Whether a push also runs the repository's checks.
+6. Sleep thresholds.
+7. Management MCP name, API and the home of its contract types.
+8. Installation-wide usage and audit totals.
+9. Whether agents may `exec` into a factory sandbox of a branch they can write.
+
 ### Environment Overrides And Fast Source Activation
 
 **Implemented and published; full Mac/Linux component gates and the recorded Linux
@@ -2423,6 +2783,8 @@ new proxy. These paths are implemented and exercised by the recorded real Time
 activation/failure/recovery probes; generation and connection-loss races retain
 their separate component/DB evidence.
 
+Proposed for removal by
+[factory sandboxes](#factory-sandboxes-and-dynamic-selection), under discussion.
 Implementation decision, 2026-10-20: use native
 [`s6-svscan`](https://skarnet.org/software/s6/s6-svscan.html) as that fixed main
 process in a separate reusable override runtime. Each build has a separate service

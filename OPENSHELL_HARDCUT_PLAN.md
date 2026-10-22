@@ -16,6 +16,10 @@ boundaries below. The existing three-view diagram also passes manual browser and
 SVG/PNG export review. The evidence below records the qualified scope and remaining
 performance limits.
 
+**Proposed next slice, 2026-10-21 — under discussion, not authorized:**
+[factory sandboxes and dynamic selection](#proposed-slice--factory-sandboxes-and-dynamic-selection).
+No source, deployment or diagram change has been made for it.
+
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
 revised 2026-10-19. **Implementation authorized and started on 2026-10-19.** K3s deployment/acceptance is Linux x86_64 only. Mac remains ordinary source
@@ -1253,6 +1257,110 @@ Source-test this change on Mac, then prove it on the Linux deployment.
   not satisfy a Kubernetes gate by adjacency.
 
 ## Agent-Operated Platform Adoption Plan
+
+### Proposed Slice — Factory Sandboxes And Dynamic Selection
+
+Status: proposed 2026-10-21 and under discussion with the user; not authorized. No
+source, deployment or diagram change has been made for it. Architecture, recorded
+decisions, verification and open decisions:
+[factory sandboxes and dynamic selection](LORE_OPENSHELL_INTEGRATION.md#factory-sandboxes-and-dynamic-selection).
+
+Review method: Claude Opus 5.5 as coordinator, with read-only exploration subagents
+for source questions and one research subagent for BuildKit documentation. The K3s
+node `rozgo-sim-pc` was reached over the RustDesk SSH endpoint `127.0.0.1:2222`;
+disposable test-only probes ran there through `kubectl` in a `veoveo-probe`
+namespace, deleted afterwards. That access is for testing the plan, not the
+operator or product path. No OpenShell sandbox, product build or model call was
+made.
+
+#### Work
+
+Stage 1 proves the whole loop with Time.
+
+| # | Component | Work | Done when |
+|---|---|---|---|
+| B0 | Hub | Delegated subjects on administrative routes authorize against repository assignments with the delegation ceiling | Component test of refusal or narrowing |
+| B1 | Core | Data-environment databases: template clone, identity copied on demand, `CONNECT` per login | Tests on a fresh cluster with two environment databases |
+| B2 | Hub | Control database; pool and listener per active environment; Task queries on the owning database | One server serving two environments |
+| B3 | Lore, Hub | Stream closes on lag; Hub subscribes to every assigned repository and reconciles the full branch inventory on (re)subscription | Gap tests; no periodic reads |
+| B3b | Hub, installation | Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`; Lore uses `repository_catalog = "auth_service"` with Hub's endpoint | `lore repository list` shows exactly a caller's granted repositories; a caller with none sees none |
+| B4 | Repositories | `openshell/` contract (`provisioning.yaml`, `policy.yaml`, `image/`); Time and the Rust template | Contract validation; installation copies of Time policy removed |
+| B5 | Installation | Base policy; placement, mount and provider maps; base path; caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
+| B6 | Installation | Log collector (Vector, 1 s file discovery, persistent checkpoints) and log store (VictoriaLogs) for all container output | A sandbox's build and server output survive its restart and are queryable by sandbox |
+| B7 | Installation, Hub | BuildKit (user-namespace variant) with persistent cache and GC limits; Hub runs `buildctl --local` on a checkout of `openshell/image/`; local OCI registry (Distribution, persistent volume) with the node's `registries.yaml` entry; image key | An environment change builds once; a code push builds no image; identical environments share one digest |
+| B8 | Hub | Factory-sandbox reconciler: create with the fixed start command, Lore provider and registration provider; stop/start on push; delete; restart policy `never`; restore desired state after infrastructure restarts; serving revision from the registered software version; owner from the Lore branch creator; network-only live reload. Remove the helper and registration housekeeping | Three branches of Time serving at once; disable and branch deletion remove their sandboxes; a node reboot returns them |
+| B9 | Hub | Selection and `uses` resolution; tool-list changes only for affected connections | Mixed-selection probe |
+| B10 | Hub, SDK, new repository | Delegated management API and management MCP version 1 (`status`, `wait`, `logs`, `restart`, `select`) | A fixture caller uses each tool on a user's behalf |
+| B11 | OpenCode | Per-chat selection; connection named `veoveo` | Two chats in one directory with different selections |
+
+Stage 1 proof: two Time branches in two data environments; two chats in one
+directory; push-driven updates; a push that fails to build and a push whose server
+crashes at startup, each diagnosed by the coding agent using only the management
+tools and fixed by a following push; recovery after a Hub restart, a Lore reconnect
+and a node reboot. Record the interruption per push: stop, start, fetch,
+incremental build and server startup.
+
+Stage 2 — B12: Embedding MCP and its GPU runtime through `uses`, including
+cross-workspace routing throughput and GPU release on stop.
+
+Stage 3 — B13: management version 2 (repository creation and sharing, cleanup).
+B14: caps, sleep and wake. B15: Computers use the Stage 1 Lore provider mechanism
+instead of a separate device login.
+
+B16: final acceptance after deterministic, component, integration and deployed
+probes pass, then one `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` scenario.
+
+#### Verified And Remaining
+
+Verified by source reading or node inspection: container output carries the
+server's output; Exec needs a Ready sandbox; stop and start keep the volume and
+name; program-identity pinning resets on start; cross-workspace service routing
+works; credential substitution reaches gRPC headers; the pusher maps to a Hub
+principal; the node meets BuildKit's user-namespace requirements; the node has no
+registry configuration yet; no log collector runs.
+
+Measured by disposable `kubectl` probes, 2026-10-21/22:
+
+| Probe | Result |
+|---|---|
+| Vector `0.60.0` → VictoriaLogs `v1.53.0` | A pod's 41 lines (40 stdout, 1 stderr, exit 3) and a one-line crash (exit 1) were stored within seconds and remained after pod deletion. Needed: 1 s file discovery and a persistent Vector data directory; an empty checkpoint re-read about 64 MB of existing pod logs and Vector was killed at 512 MiB |
+| BuildKit `v0.34.1`, `hostUsers: false` | Ran with overlayfs; `RUN` and a `docker-image://` named context worked; Time `dev` stage 364.9 s cold, 0.2 s warm, 4.57 GB cache |
+| Factory sandbox through the gateway | Create to Ready 6.7 s; stop 2.4 s; start to Ready 2.5 s, server output after 4.6 s; disk kept; failing server: Error, exit 3, restart count 0 under `never`; all output in the log store |
+| Lore through an OpenShell provider | Placeholder-only sandbox cloned a repository in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call |
+| Time build in a factory sandbox | Cold 156.5 s with dependency fetch; one-line change 32.3 s; no change 0.3 s; after stop/start (5.2 s) the cache held: no change 0.3 s, one-line change 32.0 s |
+| Existing sandbox pods (read-only) | Workload pods Ready 2–18 s after creation, GPU runtime 267 s, supervisors 3–18 s; pod level only |
+
+Still to confirm, in order of risk to executing the plan:
+
+| # | Question | Why it matters | How |
+|---|---|---|---|
+| 1 | Can Lore reach a gRPC endpoint on Hub? | OpenShell's named-service routing relays HTTP/1.1 only to a sandbox; `LookupUserPermissions` is gRPC | An HTTP/2 test server in a sandbox, called from a cluster pod by service route and directly |
+| 2 | Do data-environment databases fit the PostgreSQL cluster? | B1 and B2 rest on it | Template clone time, the role's `CREATEDB`, and the connection budget against per-environment pools, locks and listeners |
+| 3 | Does a refreshing Lore provider hold for a long-lived sandbox? | Only a static test token was proven | OpenShell refresh through Hub's token endpoint, after choosing whose grant |
+| 4 | Can a new instance register through a provider? | Hub runs no commands inside the sandbox | A deployment-scoped admission as a provider placeholder on the first registration |
+| 5 | Local registry push and pull | Environment images | `registry:3`, the node's `registries.yaml` entry and a K3s restart |
+| 6 | End-to-end push latency | The user-visible interruption | A real Lore sync, build, migrations, registration and readiness (Stage 1) |
+| 7 | Reboot recovery, superseding pushes, deletion | Reconciler behaviour | B8 |
+| 8 | Per-chat selection | OpenCode's MCP clients are per Location with fixed headers | B11 |
+| 9 | Lore stream closing on lag | Event completeness | B3 |
+| 10 | Delegated administrative access | Security boundary | B0 |
+| 11 | Gateway relay throughput | Shared GPU service | Stage 2 |
+
+Test access to the gateway uses an Entra device login through the existing public
+CLI registration, as an account holding `openshell-admin` and `openshell:all`, in a
+separate CLI home on the node (`~/.config/veoveo/k3s/user-cli-home`). The Lore
+probe used a Lore device login inside a disposable sandbox. Both are test access,
+not the product path, where Hub uses its own native-control identity.
+
+Found by the probes: `lore repository list` is empty for every caller because the
+installation uses Lore's server-side catalog with `baseline_access = "denied"`.
+Lore's permission system governs access to each repository, not listing; lore-server
+lists per caller only through the `auth_service` catalog. B3b adds that: Hub answers
+`LookupUserPermissions` from its grants. This reverses the factory-era choice in
+[LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service.
+
+The three-view diagram stays unchanged until this workflow is implemented and
+qualified.
 
 ### Next Slice — Environment Overrides And Fast Source Activation
 
