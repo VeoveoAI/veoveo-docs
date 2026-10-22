@@ -2450,10 +2450,16 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
 - For logs, Hub's status API returns the sandbox of an instance the caller can see,
   and the Hub MCP server queries the log store for that sandbox. Hub stays the one
   place that decides access.
-- Hub's administrative routes do not narrow a delegated caller: their policy
-  request carries only the principal (`src/policy/evaluation.rs:16-22`, called at
-  `src/http/action_audit.rs:38`). This matters only once a Hub MCP tool calls an
-  administrative route, such as sharing later; the fix belongs with that tool.
+- Hub's administrative routes refuse a delegated caller (Hub `e76d9b3`): their policy
+  decision does not narrow to an exchanged token's permissions
+  (`src/policy/evaluation.rs:16-22`), so a server acting for an administrator would
+  otherwise act with all of that administrator's authority. Proper narrowing comes
+  when a `console` tool first needs an administrative route, such as sharing.
+- A server calls Hub's own routes as its caller only when it declares so
+  (`.calls_hub()` in its SDK declaration; only `console` does). The SDK then
+  exchanges the forwarded token for a permission-less token for Hub's user routes.
+  Every server getting that exchange would let any pushed branch build change a
+  user's selection or watch repositories as that user (decided 2026-10-22).
 - Users connect to one MCP connection named `veoveo`, which carries the Hub MCP
   server and every application MCP.
 - OpenCode is unchanged; selection is per user and held by Hub.
