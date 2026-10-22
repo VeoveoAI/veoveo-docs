@@ -2124,8 +2124,12 @@ such as a GPU runtime in Stage 2.
    creates the factory sandbox with the default size, the installation base policy
    plus the repository policy, and restart policy `always`. Otherwise it sets the
    policy and restarts the sandbox.
-4. The sandbox's fixed start command runs on every start: `lore sync <branch>@LATEST`,
-   then `exec ./openshell/run` in the checkout on the persistent disk. Hub supplies
+4. The sandbox's fixed start command runs on every start: `lore clone <repository>
+   /sandbox/src --branch <branch>` when no checkout exists yet, then
+   `lore sync --reset <branch>@LATEST`, then `exec ./openshell/run` in the checkout on
+   the persistent disk. `--reset` discards local edits to tracked files and removes
+   untracked files, except paths `.loreignore` lists; build output such as `target/`
+   is listed there so its incremental cache survives every start. Hub supplies
    the server's settings as
    environment variables: `VEOVEO_DEPLOYMENT_ID`, `VEOVEO_PUBLIC_BASE_URL`,
    `VEOVEO_HUB_ISSUER` and `VEOVEO_REGISTRATION_SECRET` (a provider placeholder);
@@ -2563,6 +2567,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
 | An empty environment database (probe) | As Hub's role, owner of a new database: `CREATE DATABASE` 176–181 ms, Core's six kernel migrations 214–220 ms, `kernel.ensure_server('time')` plus Time's migration as its group role 168–179 ms, 33 tables; drop 167–177 ms. Three runs, each step including a `kubectl exec` round trip. The database must be owned by Hub's role: owned by `postgres`, the kernel migration failed with `permission denied for database` | No template database needed: a ready Time environment in about 0.6 s |
 | A sandbox larger than the node (probe) | 64 CPU requested on the 32-CPU node: the gateway accepted it, its phase stayed `Provisioning` for over 110 s, and `sandbox get` showed `PodScheduled: False (Unschedulable) - 0/1 nodes are available: 1 Insufficient cpu`; the pod was Pending with `FailedScheduling` | Capacity needs no Hub logic; `status` shows the condition |
+| Lore clone and sync of a branch (probe) | In a sandbox with a device-login identity: `clone --branch` 78 ms; after a second push, `sync --reset <branch>@LATEST` 74 ms reached the new revision and reset a local edit; with nothing new, 39 ms. Without `.loreignore`, the sync deleted an untracked `target/`; with `.loreignore` listing `target/`, it kept it. The probe branch `factory-sync-probe-1792701059` in the test repository `01a1586c…` could not be archived (Lore refuses to archive the current branch, and the sandbox was gone); the reinstall removes it | Start command: clone once, then `sync --reset`; repositories list their build output in `.loreignore` (Time has it; the Rust template gained it, `24ae53e`) |
 | Open egress, second probe | A rule with `**.*.*`, `github.com` and `crates.io` on ports 80 and 443 for any binary was accepted. `index.crates.io` and `registry.npmjs.org` answered 200, `git ls-remote` of Core from `github.com` returned its head, the unlisted two-label `pypi.org` was refused, and a cluster-private address stayed blocked | Open internet in the base policy; repositories need no network rules |
 | Open egress (probe) | A policy whose only rule was a hostless endpoint on ports 80 and 443 with every public IPv4 range in `allowed_ips` (116 ranges) was accepted, but `index.crates.io` and `github.com` resolved to synthetic addresses (`198.18.0.2`, `198.18.0.3`) and were refused: `DENIED index.crates.io [reason:policy_dns_ineligible]`, "unapproved DNS observation cannot authorize egress". A policy with Time's crates and git hosts was accepted (`ConfigurationAccepted`) | Egress is authorized by name; repositories list their hosts |
 | Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
