@@ -2016,9 +2016,9 @@ If adopted, this direction supersedes for the branch workflow:
 
 - No approval layer and no access rules beyond Lore's own. Lore's security model,
   through the grants Hub already issues, is the authority to provision and select.
-- A Lore push changes desired state. Hub restores that state after startup,
-  reconnection and infrastructure restarts. Local edits and local commits trigger
-  nothing.
+- A Lore push changes desired state. Hub restores that state after its own startup
+  and reconnection; OpenShell restores sandboxes after infrastructure restarts.
+  Local edits and local commits trigger nothing.
 - Each repository owns its development environment and OpenShell requirements; the
   installation owns one base.
 - One factory sandbox per instance. Its main program fetches, builds and then
@@ -2081,9 +2081,9 @@ branch is the normal way to stop its instances.
    `openshell/image/` or the installation's builder inputs change.
 3. On the first push of a branch, Hub creates its factory sandbox from that image
    with the declared resources, placement, mounts and providers, the installation
-   base policy plus the repository policy, and restart policy `never`.
+   base policy plus the repository policy, and restart policy `always`.
 4. The sandbox's fixed start command, composed from the provisioning file, runs
-   once: `lore sync <branch>@LATEST`, then the repository's `build` command on the
+   on every start: `lore sync <branch>@LATEST`, then the repository's `build` command on the
    warm caches of the persistent disk, then `exec` of the `run` command, so the
    server becomes the main program. The synced revision is passed to the server as
    its software version, which its SDK registration already reports to Hub. Output
@@ -2095,9 +2095,11 @@ branch is the normal way to stop its instances.
 6. The server resumes the instance's saved registration (Time: "process stop does
    not retire it", `veoveo-mcp-time/README.md:46`), runs its migrations and reports
    `/readyz`. Core moves unfinished Tasks of the stopped process to the new one.
-7. A failed fetch, build or startup exits the main program and leaves the instance
-   down, with its output in the log store. The next push or the management `restart`
-   tool starts it again.
+7. A failed fetch, build or startup exits the main program. OpenShell restarts it
+   with backoff (1 s doubling to 3 min), so a start that failed while a dependency was
+   returning recovers by itself, and a broken branch keeps retrying until the next
+   push. Every attempt's output is in the log store; `status` shows the restart
+   count and last exit code.
 
 | Change | Result |
 |---|---|
@@ -2105,8 +2107,8 @@ branch is the normal way to stop its instances.
 | Network rules only | Live policy reload; no restart |
 | Resources, placement, mounts, environment variables, providers or image | New factory sandbox; its disk cache starts empty |
 | `provision: false`, file removed, or branch deleted or archived | Sandbox deleted after its Tasks finish |
-| Crash or failed build | Down until the next push or `restart` |
-| Infrastructure restart (node reboot, eviction) | Restart policy `never` does not recover it; Hub's startup reconciliation starts sandboxes that should be serving and did not stop through a main-program failure |
+| Crash or failed build | Retried by OpenShell with backoff up to every 3 min until the next push |
+| Infrastructure restart (node reboot, eviction) | OpenShell restores the sandbox (restart policy `always`; measured about 64 s after a node restart) |
 | Sleep and wake | Native stop and start, which also releases a GPU |
 
 Native stop deletes the sandbox's pods; start creates new pods. The only K3s
@@ -2374,7 +2376,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Logs after a pod is gone (probe) | Vector `0.60.0` and VictoriaLogs `v1.53.0`: a pod's 40 stdout lines and 1 stderr line (exit 3), and a one-line crash (exit 1), stayed queryable after pod deletion, with pod, namespace and OpenShell labels | Collector design confirmed, with the settings above |
 | Environment image build (probe) | User-namespace BuildKit worked; Time's `dev` stage 364.9 s cold, 0.2 s warm | Builder design confirmed |
 | Local registry push and pull (probe) | `registry:3` on a 20 GiB volume. BuildKit pushed a 29.8 MB image under the Service name in 3.0 s; the same content under a second tag took under 0.1 s with the same digest. Without a node entry the pull failed to resolve the name. With a `registries.yaml` mirror to the ClusterIP and a K3s restart (API back in 6.6 s, no container restarted), a sandbox pulled the image in 549 ms and was Ready in 6.9 s, running the pushed digest. Tags survived a registry restart, with about 1 s unavailable. Removing the entry took a second restart (API back in 6.5 s, no container restarted) | Registry design confirmed; the registry Service keeps a fixed ClusterIP. Not measured: a multi-gigabyte environment image |
-| Node restart (probe: `k3s-killall.sh`, then K3s start) | Killing every container took 11.5 s. API and node Ready at 7.3 s after start, PostgreSQL 35.7 s, gateway 41.2 s. Every sandbox with restart policy `always` (Hub, Time, Media and the others) was brought back by OpenShell itself, Ready by about 64 s with restart count 1. Sandboxes with `never` stayed down: one reported `Error` with no exit code, another `Completed` with exit 0, because its server exited cleanly on the kill signal, which is indistinguishable from a normal exit. Lore restarted four times waiting for SeaweedFS S3 and was Ready at 124 s. OpenShell's restart backoff is 1 s doubling to 3 min (`openshell-server/src/compute/mod.rs:414-416`) | Proposed: factory sandboxes use `always` (open decision 10) |
+| Node restart (probe: `k3s-killall.sh`, then K3s start) | Killing every container took 11.5 s. API and node Ready at 7.3 s after start, PostgreSQL 35.7 s, gateway 41.2 s. Every sandbox with restart policy `always` (Hub, Time, Media and the others) was brought back by OpenShell itself, Ready by about 64 s with restart count 1. Sandboxes with `never` stayed down: one reported `Error` with no exit code, another `Completed` with exit 0, because its server exited cleanly on the kill signal, which is indistinguishable from a normal exit. Lore restarted four times waiting for SeaweedFS S3 and was Ready at 124 s. OpenShell's restart backoff is 1 s doubling to 3 min (`openshell-server/src/compute/mod.rs:414-416`) | Decided 2026-10-22: factory sandboxes use `always`; Hub drops reboot reconciliation |
 | Factory sandbox lifecycle (probe through the gateway) | Create to Ready 6.7 s; stop to Stopped 2.4 s; start to Ready 2.5 s and server output 4.6 s after start; the disk survived (no recompilation); a failing server under restart policy `never` showed Error, exit code 3, restart count 0; every pod's output reached the log store | About 7 s of restart per push before fetch and build |
 | Time build in a factory sandbox (probe, 8 CPU, 16 GiB) | Cold release build including dependency fetch 156.5 s; one-line change 32.3 s; no change 0.3 s; after a native stop/start (5.2 s) no change 0.3 s and one-line change 32.0 s; caches 1.3 GB target, 417 MB Cargo | A Time push costs about 40 s with a release build: restart plus 32 s compile plus startup. Commands run through `sandbox exec` lack the image's environment, so builds belong in the main program, as designed |
 | Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |
@@ -2398,12 +2400,6 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 7. Management MCP name, API and the home of its contract types.
 8. Installation-wide usage and audit totals.
 9. Whether agents may `exec` into a factory sandbox of a branch they can write.
-10. Restart policy for factory sandboxes. `never`, as planned, leaves every factory sandbox down after a
-    node restart: Hub would have to tell an infrastructure stop from a program exit, and OpenShell reports both
-    the same way; each first start after a reboot would also race Lore, which returned at 124 s. Recommended:
-    `always`. OpenShell then restores factory sandboxes itself and retries a start that fails while dependencies
-    return, and Hub's reconciliation after infrastructure restarts is removed. A broken branch retries with
-    backoff up to every 3 min until the next push; `status` shows its restart count and last exit code.
 
 ### Environment Overrides And Fast Source Activation
 
