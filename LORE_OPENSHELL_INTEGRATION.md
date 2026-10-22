@@ -2414,7 +2414,11 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   metadata included, under the same deployment ID. Normally the server registers
   once and later starts resume from the registration saved on the persistent disk.
   The token is the only check: it is not single-use, does not expire, pins no key
-  and needs no pre-approved metadata or `--describe-registration` step. Those gates
+  and needs no pre-approved metadata or `--describe-registration` step. An RFC 7592
+  update may change a registration's metadata on either path. On the namespace path,
+  for servers not yet served as instances, a new registration of an existing
+  deployment replaces it; the one key per server name stays, as that path's only
+  proof of identity among servers sharing one secret. Those gates
   belonged to the superseded runtime; here Lore's permissions decide the code
   (decided 2026-10-22). The SDK does the same on its side: when its saved
   registration no longer matches the server's declarations, or Hub no longer knows
