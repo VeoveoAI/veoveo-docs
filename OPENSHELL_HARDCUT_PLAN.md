@@ -1349,6 +1349,7 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Data environments as Hub's role | With `CREATEDB` granted for the probe, `veoveo_owner` cloned the 84-table template in 62–80 ms, set `CONNECT` and dropped its clones; without it, permission denied. CNPG cannot reconcile that role: it keeps trying to revoke the admin memberships PostgreSQL gives Hub's role on roles it creates (`dependent privileges exist`). Decision: replace CNPG (B1) |
 | Cluster pod to a server in a sandbox, current gateway | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
 | Inbound gRPC with the OpenShell change (B3a) | Test gateway rolled out in 2.8 s, back in 2.9 s. Reflection, `Health/Check` and the `Health/Watch` stream reached the sandbox; HTTP routes and the gateway CLI unchanged. lore-server's `auth_service` catalog, pointed at a `UrcAuthApi` server in a sandbox, listed exactly its two repositories, about 75 ms per call; with `bearer-passthrough` the caller's token arrived (1840 bytes), with `strip` it did not. Lore's NetworkPolicy first blocked the gateway (50 s deadline) |
+| Empty environment database | As Hub's role, owner of the new database: create 176–181 ms, kernel migrations 214–220 ms, Time's schema and migration 168–179 ms (33 tables), drop 167–177 ms; three runs through `kubectl exec`. Owned by `postgres`, the kernel migration was refused |
 | Sandbox larger than the node | 64 CPU on the 32-CPU node: accepted, `Provisioning` for over 110 s; conditions `PodScheduled: False (Unschedulable) … 1 Insufficient cpu`; pod Pending with `FailedScheduling`. Workspace deleted afterwards |
 | Existing sandbox pods (read-only) | Workload pods Ready 2–18 s after creation, GPU runtime 267 s, supervisors 3–18 s; pod level only |
 
@@ -1363,7 +1364,7 @@ Still to validate, in order of risk to executing the plan:
 | 5 | Watching as a person | Not tested | Subscription as the watcher; a watcher who loses access shows in `status` | B3 |
 | 6 | Lore stream closing on lag | Not tested | Gap tests | B3 |
 | 7 | Superseding pushes and deletion | Node restart measured | A push during a build; a deleted branch removes its sandbox | B8 |
-| 8 | Creating and migrating an empty environment database | Not measured | Kernel migrations plus Time's on a new database | B1 |
+| 8 | Creating and migrating an empty environment database | Measured: create, kernel migrations and Time's migration in about 0.6 s | Done | — |
 | 9 | Object keys across environments | Not checked | Read Artifact's and Media's key scheme: one shared bucket or one per environment | Data-environment review |
 | 10 | What a user sees when the node is full | Measured: accepted, waits in `Provisioning`, OpenShell's conditions carry `Insufficient cpu`; starts when capacity frees | Done | — |
 | 11 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
