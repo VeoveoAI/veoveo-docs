@@ -2150,10 +2150,18 @@ The sandbox uses the same Lore model as everyone else: it reads the repository a
 the branch's latest pusher (decided 2026-10-22). On each push Hub mints one
 long-lived, revocable credential for the instance, meaning "the latest pusher,
 reading this repository, for this instance", and stores it in the sandbox's
-OpenShell provider; it revokes it when the sandbox is deleted. OpenShell's native
-token-exchange refresh trades it at Hub's `/oauth/token` for short-lived Lore tokens,
-keeping a stable placeholder. Hub's RFC 8693 exchange already checks the person's
-current assignment on every exchange and copies no rights
+OpenShell provider; it revokes it when the sandbox is deleted or the next push
+replaces it. The credential is a refresh token for the pusher with Lore's audience
+and the repository's scope. The gateway's own refresh (`oauth2-refresh-token`)
+trades it at Hub's `/oauth/token` for short-lived Lore tokens, writes them into the
+provider behind a stable placeholder, and stores rotated refresh tokens itself
+(`openshell/crates/openshell-server/src/provider_refresh.rs:1175-1245,1664-1690`).
+The installation already refreshes a provider against Hub this way
+(`vv-hub-forwarder`, `veoveo-template-installation/openshell/HUB_TIME.md:86-94`).
+OpenShell's profile `token_exchange` grant is not used: it authenticates to the
+token service with the gateway's and the supervisor's SPIFFE identities
+(`openshell/docs/how-it-works/providers/profiles.mdx:611-616`), which Hub does not
+trust. Hub's refresh re-runs the person's current admission and copies no rights
 (`veoveo-hub/crates/veoveo-hub/DESIGN.md:773-783`), so a pusher who loses access
 stops the branch's next sync with a clear error until someone with access pushes.
 The credential never enters the sandbox. The per-instance credential follows the
