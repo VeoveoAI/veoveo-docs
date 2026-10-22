@@ -2124,9 +2124,19 @@ data.
 
 #### Lore Access In A Factory Sandbox
 
-The sandbox uses the same Lore model as everyone else. Hub issues a Lore token
-through its existing `lore.assignments`; an OpenShell provider attached to the
-sandbox holds it, and the gateway refreshes it while keeping a stable placeholder.
+The sandbox uses the same Lore model as everyone else: it reads the repository as
+the branch's latest pusher (decided 2026-10-22). On each push Hub mints one
+long-lived, revocable credential for the instance, meaning "the latest pusher,
+reading this repository, for this instance", and stores it in the sandbox's
+OpenShell provider; it revokes it when the sandbox is deleted. OpenShell's native
+token-exchange refresh trades it at Hub's `/oauth/token` for short-lived Lore tokens,
+keeping a stable placeholder. Hub's RFC 8693 exchange already checks the person's
+current assignment on every exchange and copies no rights
+(`veoveo-hub/crates/veoveo-hub/DESIGN.md:773-783`), so a pusher who loses access
+stops the branch's next sync with a clear error until someone with access pushes.
+No Hub-owned repository assignments or installation-wide secret are involved, and
+the credential never enters the sandbox. The per-instance credential follows the
+same pattern as the first registration credential.
 The start command passes the placeholder to `lore --access-token`, with `--identity`
 for an opaque placeholder; OpenShell substitutes the real token into Lore's gRPC
 request headers on a `protocol: rest`, `enforcement: enforce` endpoint, the
@@ -2390,16 +2400,14 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 #### Open Decisions
 
 1. When an `own` data environment is created and removed.
-2. Whose Lore grant a factory sandbox uses: the branch owner's, or Hub's own
-   principal with an assignment on managed repositories.
-3. Builder outbound access.
-4. A new instance's first registration credential, delivered through a provider
+2. Builder outbound access.
+3. A new instance's first registration credential, delivered through a provider
    because Hub runs no commands inside the sandbox.
-5. Whether a push also runs the repository's checks.
-6. Sleep thresholds.
-7. Management MCP name, API and the home of its contract types.
-8. Installation-wide usage and audit totals.
-9. Whether agents may `exec` into a factory sandbox of a branch they can write.
+4. Whether a push also runs the repository's checks.
+5. Sleep thresholds.
+6. Management MCP name, API and the home of its contract types.
+7. Installation-wide usage and audit totals.
+8. Whether agents may `exec` into a factory sandbox of a branch they can write.
 
 ### Environment Overrides And Fast Source Activation
 
