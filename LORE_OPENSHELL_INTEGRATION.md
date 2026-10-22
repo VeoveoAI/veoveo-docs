@@ -2017,6 +2017,9 @@ This direction supersedes for the branch workflow:
 #### Decisions Recorded With The User
 
 - No approval layer and no access rules beyond Lore's own.
+- No gate unless it is absolutely necessary (2026-10-22): every check that can stop
+  a person must be required by the function. Lore's grants and OpenShell's sandbox
+  model are the only authorities.
 - Hub acts in Lore only as a person, under that person's current grant: it reads
   `openshell/` as the pusher of that revision, and it watches a repository as the
   person who turned it on. The sandbox fetches as the branch's latest pusher. No
@@ -2070,6 +2073,14 @@ set -e
 cargo build --locked --release --bin veoveo-mcp-time
 exec target/release/veoveo-mcp-time
 ```
+
+`openshell/policy.yaml` lists the public hosts the branch's build and server reach.
+OpenShell authorizes egress by name: a name no policy lists resolves to a synthetic
+address and is refused (`policy_dns_ineligible`), and an endpoint without a host
+cannot open egress to arbitrary names (probe below). The file is the repository's
+own and needs no approval; a refusal appears in `logs`, and the agent adds the host
+and pushes. The Rust template carries the crates and git hosts every Rust build
+uses.
 
 A branch is served while it has an executable `openshell/run`. Removing the file,
 or deleting or archiving the branch, stops its instance. Hub parses nothing in the
@@ -2378,12 +2389,14 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   `BranchPushed.user_id` maps directly to a Hub principal.
 - Registration: Hub mints one registration token per instance, places it in the
   sandbox's provider, and passes the instance's `VEOVEO_DEPLOYMENT_ID` as a plain
-  environment variable. The server registers once with that token; Hub records its
-  key and metadata on that first use and refuses a different key or contract for
-  the same instance later. Later starts resume from the registration saved on the
-  persistent disk; a new sandbox gets a new token. There is no pre-approved metadata
-  and no `--describe-registration` step: that gate belonged to the superseded
-  runtime, and here Lore's permissions decide the code (decided 2026-10-22).
+  environment variable. The token stays valid while the instance exists, and every
+  registration presenting it replaces that instance's registration, new key and
+  metadata included, under the same deployment ID. Normally the server registers
+  once and later starts resume from the registration saved on the persistent disk.
+  The token is the only check: it is not single-use, does not expire, pins no key
+  and needs no pre-approved metadata or `--describe-registration` step. Those gates
+  belonged to the superseded runtime; here Lore's permissions decide the code
+  (decided 2026-10-22).
 - Hub keeps authentication, routing, registrations, selection state and the
   factory reconciler: create, restart, delete and watch. It already creates
   OpenShell sandboxes for Computers through `openshell-sdk`
@@ -2524,6 +2537,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
 | An empty environment database (probe) | As Hub's role, owner of a new database: `CREATE DATABASE` 176–181 ms, Core's six kernel migrations 214–220 ms, `kernel.ensure_server('time')` plus Time's migration as its group role 168–179 ms, 33 tables; drop 167–177 ms. Three runs, each step including a `kubectl exec` round trip. The database must be owned by Hub's role: owned by `postgres`, the kernel migration failed with `permission denied for database` | No template database needed: a ready Time environment in about 0.6 s |
 | A sandbox larger than the node (probe) | 64 CPU requested on the 32-CPU node: the gateway accepted it, its phase stayed `Provisioning` for over 110 s, and `sandbox get` showed `PodScheduled: False (Unschedulable) - 0/1 nodes are available: 1 Insufficient cpu`; the pod was Pending with `FailedScheduling` | Capacity needs no Hub logic; `status` shows the condition |
+| Open egress (probe) | A policy whose only rule was a hostless endpoint on ports 80 and 443 with every public IPv4 range in `allowed_ips` (116 ranges) was accepted, but `index.crates.io` and `github.com` resolved to synthetic addresses (`198.18.0.2`, `198.18.0.3`) and were refused: `DENIED index.crates.io [reason:policy_dns_ineligible]`, "unapproved DNS observation cannot authorize egress". A policy with Time's crates and git hosts was accepted (`ConfigurationAccepted`) | Egress is authorized by name; repositories list their hosts |
 | Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
 
 #### Open Decisions
