@@ -1293,12 +1293,12 @@ Stage 1 proves the whole loop with Time.
 | B6 | Installation | Log collector (Vector, 1 s file discovery, persistent checkpoints) and log store (VictoriaLogs) for all container output | A sandbox's build and server output survive its restart and are queryable by sandbox |
 | B7 | Installation, Hub | BuildKit (user-namespace variant) with persistent cache and GC limits; Hub runs `buildctl --local` on a checkout of `openshell/image/` read as the pusher; local OCI registry (Distribution, persistent volume) with the node's `registries.yaml` entry | An image change builds once; an unchanged image returns the same digest |
 | B8 | Hub | Factory-sandbox reconciler. Prepare without side effects: read `openshell/` as the pusher, build, get the digest. Commit: ensure the data environment, replace the Lore credential (a refresh token Hub mints for the latest pusher, refreshed by the gateway's `oauth2-refresh-token` strategy, revoked on deletion or the next push), create on first push or digest change, otherwise set the policy and restart. Registration provider; restart policy `always`; serving revision from the registered software version; delete when the branch is deleted or archived or `openshell/run` is removed; `failed{stage, message}` on the instance; soft-cap warning. Remove the helper and registration housekeeping | Three branches of Time serving at once; branch deletion removes its sandbox; a node reboot returns them |
-| B9 | Hub | Selection: a branch per server in any combination, base branch for the rest; per-chat state; tool-list changes only to that chat's connection | Two chats with different combinations |
+| B9 | Hub | Selection per user: a branch per server in any combination, base branch for the rest; tool-list change notification to that user's connections | A user's chats switch together; a down instance shows its cause |
 | B10 | Hub, new repository | Hub MCP server version 1 (`status` with `wait`, `logs`, `select`, `watch`) through Hub's calls between servers; Hub's user APIs behind it | A fixture caller uses each tool on a user's behalf |
-| B11 | OpenCode | Root chat ID on `tools/list`, one tool list per chat over the one connection, that chat's tool definitions on each call; connection named `veoveo` | Two chats in one directory with different selections |
+| B11 | Installation | The Computers' MCP connection named `veoveo`; OpenCode itself unchanged | A Computer lists the Hub MCP server's and application tools on one connection |
 
-Stage 1 proof: two Time branches in two data environments; two chats in one
-directory with different combinations; push-driven updates; a push that fails to
+Stage 1 proof: two Time branches in two data environments; a user switching
+between them with `select`, every chat following; push-driven updates; a push that fails to
 build and a push whose server crashes at startup, each diagnosed by the coding agent
 using only the Hub MCP server and fixed by a following push; recovery after a Hub
 restart, a Lore reconnect and a node reboot. Record the interruption per push: stop,
@@ -1356,7 +1356,7 @@ Still to validate, in order of risk to executing the plan:
 
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
-| 1 | Per-chat selection in OpenCode | Source read: connection, tool list and registry are per Location; `tools/call` already carries the session ID, `tools/list` does not | OpenCode sends the root chat ID on `tools/list` and keeps one tool list per chat; then two chats in one directory with different tool lists | B9, B11; approval to depart from OpenCode's one-transform-per-Location rule |
+| 1 | Selection reaching OpenCode | Decided per user, OpenCode unchanged: it refreshes its per-directory tool list on Hub's change notification (source read) | `select` switches every chat of a user | B9 |
 | 2 | Data environments | Design settled by source review; empty database ready in about 0.6 s | Two environments with Tasks through Hub, on the built B1 and B2 | B1, B2 |
 | 3 | A refreshing Lore provider | Mechanism chosen: the gateway's `oauth2-refresh-token` refresh against Hub, as `vv-hub-forwarder` already refreshes with client credentials; OpenShell's SPIFFE-based `token_exchange` grant is not used. Only a static token proven so far | A provider refreshing a pusher's Lore refresh token at Hub; the sandbox clones across a refresh, a restart and a replacement on push | B8 |
 | 4 | First registration through a provider | Mechanism deployed: Time's `vv-time-registration` provider holds the initial access token, bound to `POST /oauth/register`. New: one token per instance, which tells Hub which instance registered | A new instance registers on first start and resumes after restarts | B8 |

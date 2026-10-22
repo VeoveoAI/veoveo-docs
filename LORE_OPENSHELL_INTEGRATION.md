@@ -1988,7 +1988,7 @@ Rust template `c249ef4`. On 2026-10-22 the user and coordinator reviewed every p
 from first principles and removed what no requirement forced.
 
 Function: when a person pushes a Lore branch of a repository that has
-`openshell/run`, that branch's server is built and served beside the others. A chat
+`openshell/run`, that branch's server is built and served beside the others. A user
 can use any combination of instances, and the agent can see why an instance is not
 serving. Lore's permissions decide all of it.
 
@@ -2011,7 +2011,7 @@ This direction supersedes for the branch workflow:
 | Instance | A repository's server running from one branch |
 | Factory sandbox | The one OpenShell sandbox of an instance. Its main program fetches that branch, builds it and serves it. It is reused by every push to the branch and never shared with another server, branch or version |
 | Data environment | The PostgreSQL database of a branch name, with the shared object store. It needs its own type name: `EnvironmentId` already identifies a routing composition |
-| Selection | Which instance of each server a chat uses; session state, not pushed |
+| Selection | Which instance of each server a user uses; held by Hub, not pushed |
 | Base branch | The installation's default branch for servers a selection does not name, for example `dev` |
 
 #### Decisions Recorded With The User
@@ -2038,6 +2038,8 @@ This direction supersedes for the branch workflow:
 - One BuildKit daemon and one plain local OCI registry serve the whole installation.
 - Selection allows any combination of instances. A combination that fails is shown
   with its cause, never prevented; the user picks another or fixes the branch.
+- Selection is per user: every chat of that user follows it. OpenCode stays
+  unchanged (2026-10-22).
 - Per-user caps are soft: exceeding one warns and does not refuse. The `caps`
   setting stays, so caps can become hard later.
 - Hub and the Hub MCP server are separate components. Hub is the central point of
@@ -2263,28 +2265,32 @@ Agents receive no Kubernetes, OpenShell or log-store credentials.
 
 #### Selection
 
-- A chat's selection names a branch per server, for example
+- A user's selection names a branch per server, for example
   `time: dev/jose/x, media: dev/maria/fix`; any combination is allowed. A server the
   selection does not name uses its base-branch instance.
+- Selection is per user, the identity Hub authenticates on every request. `select`
+  changes it, and Hub sends its existing tool-list change notification
+  (`veoveo-hub/crates/veoveo-hub/src/mcp/subscriptions.rs:308`) to that user's
+  connections, so every chat refreshes. OpenCode needs no change: its connection and
+  tool list are per directory (`opencode/packages/core/src/mcp/index.ts:95,166`,
+  `packages/core/src/tool/AGENTS.md:44,48`), and it already refreshes on that
+  notification (`src/mcp/index.ts:416-422`).
+- Consequence: one user cannot run two agents on different branches of the same
+  server at the same time; each `select` changes both. Narrower scopes stay
+  possible later without changing OpenCode: per directory, which OpenCode already
+  reports as its MCP root (`opencode/packages/core/src/mcp/client.ts:204,224,341`).
+  Per chat would need an OpenCode change against its one-tool-list-per-directory
+  rule.
+- Every server keeps one name across its branches: its schema and SQL are named
+  after it (`veoveo-mcp-time/crates/veoveo-mcp-time/migrations/0001_time.sql`). So
+  branches are chosen by selection, not listed as separate servers.
 - A named branch without an instance, or an instance that is down, is shown with
   its cause in `status` and in the tool's error. Nothing falls back silently.
 - Instances of different branches use different data environments, so data one
-  writes is not visible to the other. This is shown, not prevented.
+  writes is not visible to the other. This is shown, not prevented; `status` shows
+  each instance's branch.
 - A Task keeps the instance it started on after the selection changes; Task routes
   keep their original deployment and database.
-- Hub holds each chat's selection and answers each chat's tool list from it.
-- OpenCode's MCP connection, tool list and tool registry are per Location
-  (`opencode/packages/core/src/mcp/index.ts:95,166,427-460`,
-  `packages/core/src/tool/AGENTS.md:44,48`). `tools/call` already carries the chat's
-  session ID as `_meta["ai.opencode/sessionID"]`
-  (`packages/core/src/mcp/client.ts:424-427`); `tools/list` carries nothing
-  (`client.ts:391-394`). Per-chat selection therefore needs an OpenCode change: send
-  the root chat's ID on `tools/list` as well, keep one tool list per chat over the
-  one connection, and pass that chat's tool definitions on each call. Sub-agents use
-  their root chat's selection. Selection changes never reconnect. The change departs
-  from OpenCode's rule that MCP owns one stable tool transform per Location, so it
-  needs the user's approval and an entry in `VEOVEO_FORK.md`. The ID is a key, not
-  authority: Hub binds it to the authenticated principal.
 
 #### Data Environments
 
@@ -2384,8 +2390,7 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   administrative route, such as sharing later; the fix belongs with that tool.
 - Users connect to one MCP connection named `veoveo`, which carries the Hub MCP
   server and every application MCP.
-- OpenCode keeps a selection per chat; a tool alone cannot change headers of its
-  Location-scoped connections.
+- OpenCode is unchanged; selection is per user and held by Hub.
 
 #### Lore Change Events
 
