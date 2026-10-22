@@ -2115,9 +2115,8 @@ such as a GPU runtime in Stage 2.
    plus the repository policy, and restart policy `always`. Otherwise it sets the
    policy and restarts the sandbox.
 4. The sandbox's fixed start command runs on every start: `lore sync <branch>@LATEST`,
-   then `exec ./openshell/run` in the checkout on the persistent disk. The synced
-   revision is passed to the server as its software version, which its SDK
-   registration already reports to Hub. Hub supplies the server's settings as
+   then `exec ./openshell/run` in the checkout on the persistent disk. Hub supplies
+   the server's settings as
    environment variables: `VEOVEO_DEPLOYMENT_ID`, `VEOVEO_PUBLIC_BASE_URL`,
    `VEOVEO_HUB_ISSUER` and `VEOVEO_REGISTRATION_SECRET` (a provider placeholder);
    `openshell/run` sets anything server-specific, such as its key directory on the
@@ -2247,8 +2246,11 @@ Agents follow a push through the Hub MCP server on their existing connection:
    serving revision, phase, exit code, restart count, the last failure and the last
    output lines. With `wait` it returns as soon as that revision serves or fails, or
    after at most 60 s. Hub derives the state from OpenShell's sandbox status (Ready,
-   or the main program's exit code) and from the server registering with that
-   revision as its software version.
+   or the main program's exit code) and from the server registering or resuming
+   after that restart. The serving revision is the one Hub last applied; if a newer
+   push lands during the restart, Hub applies it too, and the Lore sync's output in
+   the logs names the exact revision. Servers report no revision of their own
+   (decided 2026-10-22).
 2. On failure, `logs(repository, branch, since)` returns the instance's complete
    output — Lore sync, build and server, with standard output and error marked —
    together with OpenShell's network denials from its supervisor pod.
