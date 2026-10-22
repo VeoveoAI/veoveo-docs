@@ -1283,17 +1283,17 @@ and the instance owner.
 
 Stage 1 proves the whole loop with Time.
 
-Landed on branches, not pushed, 2026-10-22:
+Landed on `main` and pushed, 2026-10-22:
 
 | Piece | Commit | Evidence |
 |---|---|---|
-| B1 PostgreSQL StatefulSet | installation `6d45dd9` on `postgres-statefulset` | Linux, disposable namespace: Ready in 10 s; roles, databases, `lore` schema, extensions and `max_connections = 512` from first start; TLS `verify-full` as Hub's role; no TLS refused; `CREATE DATABASE` as Hub's role in 224 ms and reachable; `ALTER SYSTEM` reload; restart in 2 s without rerunning init |
-| B3 Lore part | Lore `e2f04c90` on `notification-close-on-lag` | Component test fails without the change and passes with it |
-| B4 Rust template | template `2dc6668` on `factory-openshell` | Linux: cold release build 65 s; the server started and asked only for the four settings Hub supplies |
-| B4 Time | Time `16853a0` on `factory-openshell` | Linux: image built in 14 s with the real Lore CLI; cold release build 80 s; the server started; 417 MB crates and 1.3 GB build output on the persistent disk |
-| B6, B7 logs, builder, registry | installation `bbb8a26` on `factory-infrastructure` | Linux, disposable namespace: a deleted pod's 26 lines stayed queryable and a Vector restart re-read none; BuildKit built and pushed over TCP in 2 s; tags survived a registry restart |
-| B5 removal | installation `c502ba5` on `factory-infrastructure` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
-| SDK resume | SDK `6c881e0` on `resume-registers-again` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
+| B1 PostgreSQL StatefulSet | installation `6d45dd9` | Linux, disposable namespace: Ready in 10 s; roles, databases, `lore` schema, extensions and `max_connections = 512` from first start; TLS `verify-full` as Hub's role; no TLS refused; `CREATE DATABASE` as Hub's role in 224 ms and reachable; `ALTER SYSTEM` reload; restart in 2 s without rerunning init |
+| B3 Lore part | Lore `e2f04c90` | Component test fails without the change and passes with it |
+| B4 Rust template | template `2dc6668`, SDK re-pin `2fe0270` (Linux check: 16 passed) | Linux: cold release build 65 s; the server started and asked only for the four settings Hub supplies |
+| B4 Time | Time `16853a0`, SDK re-pin `3297f55` (Linux check: 143 passed, 10 skipped) | Linux: image built in 14 s with the real Lore CLI; cold release build 80 s; the server started; 417 MB crates and 1.3 GB build output on the persistent disk |
+| B6, B7 logs, builder, registry | installation `bbb8a26` | Linux, disposable namespace: a deleted pod's 26 lines stayed queryable and a Vector restart re-read none; BuildKit built and pushed over TCP in 2 s; tags survived a registry restart |
+| B5 removal | installation `c502ba5` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
+| SDK resume | SDK `6c881e0` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
 
 | # | Component | Work | Done when |
 |---|---|---|---|
