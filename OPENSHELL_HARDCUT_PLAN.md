@@ -1293,6 +1293,7 @@ Landed on `main` and pushed, 2026-10-22:
 | B4 Time | Time `16853a0`, SDK re-pin `3297f55` (Linux check: 143 passed, 10 skipped) | Linux: image built in 14 s with the real Lore CLI; cold release build 80 s; the server started; 417 MB crates and 1.3 GB build output on the persistent disk |
 | B6, B7 logs, builder, registry | installation `bbb8a26` | Linux, disposable namespace: a deleted pod's 26 lines stayed queryable and a Vector restart re-read none; BuildKit built and pushed over TCP in 2 s; tags survived a registry restart |
 | Hub step 1, removal | Hub `0ee1dd0`, `21e22c2`, `dc07047` | 154 files, 11,150 lines removed: source activation, `bin/environment`, deployment admission, `runtimeTemplates`; migration `0014` drops their schema. Linux `docker build --target check .`: 252 tests passed. `tests/environments.rs` stays until selection replaces the composition resolver (step 4) |
+| B5 base policy and profiles | installation `7f73ce1` | Linux: both profiles lint; the gateway accepted the policy; the open rule coexists with Hub's inspected endpoint |
 | B5 removal | installation `c502ba5` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
 | SDK resume | SDK `6c881e0` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
 

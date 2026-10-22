@@ -2083,7 +2083,17 @@ Its validator rejects `*`, `**` and wildcards of two labels or fewer
 (`openshell/crates/openshell-policy/src/lib.rs:1512-1525,1687-1705`). The open rule
 is therefore `**.*.*`, every name of three or more labels, on ports 80 and 443, plus
 the two-label names in use, starting with `github.com` and `crates.io`, for any
-binary. Wildcard endpoints still cannot reach private addresses. A repository adds
+binary. Wildcard endpoints still cannot reach private addresses, and inspected
+rules for an exact host keep applying to that host: with Hub's metadata endpoint
+beside the open rule, that path answered 200, an unlisted Hub path 403 and
+`index.crates.io` 200. The installation's base policy
+(`veoveo-template-installation/kubernetes/policies/factory-base.yaml`) holds this rule,
+Hub's metadata and token endpoints and PostgreSQL. Each instance's Lore and
+registration endpoints, with their credentials, come from two provider profiles
+(`openshell/providers/factory-lore.yaml`, `factory-registration.yaml` there): an
+attached provider contributes its profile's endpoints as a `_provider_*` rule
+(`openshell/docs/how-it-works/providers/profiles.mdx:24,1004`), so the base policy
+names no instance. A repository adds
 `openshell/policy.yaml` only for something else, such as another two-label name or
 port.
 
@@ -2175,8 +2185,8 @@ handler already issues repository-scoped Lore tokens
 (`veoveo-hub/crates/veoveo-hub/src/bin/hub/oauth_client_credentials.rs:519-538`), and
 the Lore profile checks the person's current assignment on every issue
 (`src/bin/hub/contributions/lore/mod.rs:351-360`). The change is that an instance
-client issues for its recorded pusher. The client has no repository assignment of
-its own. On each push Hub records the new pusher and rotates the provider
+client issues for its recorded pusher and repository, so its requests carry no
+scope. The client has no repository assignment of its own. On each push Hub records the new pusher and rotates the provider
 credential; on deletion it removes the client. A pusher who loses access stops the
 branch's next sync with a clear error until someone with access pushes.
 
