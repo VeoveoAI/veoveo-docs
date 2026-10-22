@@ -17,7 +17,8 @@ the final exact MiMo Computer scenario pass. Linux builds the Linux
 runtime images. Exact foundation pins and immutable pullable amd64 images are
 recorded with the execution evidence; installation alone does not qualify them.
 
-Kubernetes directly owns the foundation: CloudNativePG PostgreSQL, the official
+Kubernetes directly owns the foundation: CloudNativePG PostgreSQL (to be replaced by
+a plain StatefulSet, see Factory Sandboxes, Data Environments), the official
 SeaweedFS chart with explicit PVCs, single-replica Lore, OpenShell gateway and the
 tunnel. OpenShell's existing Kubernetes driver owns Hub, MCP, Computer and factory
 sandbox resources. K3s uses its independent embedded datastore. Gateway PostgreSQL
@@ -2246,6 +2247,21 @@ Kubernetes, OpenShell or log-store credentials.
 - `own` names the environment after the branch; same-named branches in different
   repositories deliberately share it. It lives while any instance is bound to it and
   is removed with `DROP DATABASE … WITH (FORCE)` plus its bucket.
+- PostgreSQL runs as a plain Kubernetes StatefulSet with the same extension image,
+  one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, and a
+  server certificate from the installation CA. It replaces CloudNativePG (decided
+  2026-10-22). Its first start creates only `veoveo_owner`
+  (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their
+  databases. Everything after that stays dynamic and is plain SQL: Hub creates
+  server roles, data-environment databases and `CONNECT` grants at runtime.
+  Settings change with `ALTER SYSTEM` and a reload, and a restart only for the few
+  settings PostgreSQL requires it for, such as `max_connections`, as before.
+  CloudNativePG's declared roles worked against this. PostgreSQL gives Hub's role
+  admin membership in every role it creates, and CloudNativePG's reconciler kept
+  trying to revoke those memberships, failing with `dependent privileges exist` and
+  blocking every other change to that role. Its replicas, failover and backups were
+  unused with one instance and disposable data. An operator returns with a scalable
+  design that leaves Hub-owned roles to Hub.
 
 #### Identity
 
@@ -2362,7 +2378,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Time build in a factory sandbox (probe, 8 CPU, 16 GiB) | Cold release build including dependency fetch 156.5 s; one-line change 32.3 s; no change 0.3 s; after a native stop/start (5.2 s) no change 0.3 s and one-line change 32.0 s; caches 1.3 GB target, 417 MB Cargo | A Time push costs about 40 s with a release build: restart plus 32 s compile plus startup. Commands run through `sandbox exec` lack the image's environment, so builds belong in the main program, as designed |
 | Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |
 | Lore repository listing | `lore repository list` returns nothing. The installation sets `repository_catalog = "baseline"` with `baseline_access = "denied"` (`veoveo-template-installation/kubernetes/lore.toml:15-16`). lore-server lists per caller only through the service holding the grants (`UrcAuthApi.LookupUserPermissions`, `lore/lore-server/src/authnz/repository_catalog.rs:38-41`); here the grants are Hub's `lore.assignments`, and Hub does not implement it | Decided: Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`, and Lore uses `repository_catalog = "auth_service"`. Lore's own listing is then per user, while access stays enforced by Lore's token grants |
-| Data-environment databases (probe) | A schema-only template of `veoveo` (12 schemas, 84 tables, 20 MB) built in 1.2 s; clones took 0.23–0.25 s with the default strategy and about 0.28 s with `FILE_COPY`; drops about 0.17 s each. Hub's role `veoveo_owner` has `createrole` but not `createdb`, and the CNPG cluster spec manages it | Add `createdb` to that managed role |
+| Data-environment databases (probe) | A schema-only template of `veoveo` (12 schemas, 84 tables, 20 MB) built in 1.2 s; clones took 0.23–0.25 s with the default strategy and about 0.28 s with `FILE_COPY`; drops about 0.17 s each. Hub's role `veoveo_owner` has `createrole` but not `createdb`, and the CNPG cluster spec manages it. Second probe, as Hub's role (`SET ROLE veoveo_owner`): without `CREATEDB`, `permission denied to create database`. With it, the role cloned the 84-table template in 62–80 ms, restricted and granted `CONNECT`, and dropped its own clones in 33–300 ms. CNPG reports the role as `cannotReconcile`: every reconcile tries `REVOKE "veoveo_server" FROM "veoveo_owner"` and fails with `dependent privileges exist`, because PostgreSQL gave Hub's role admin membership in the 22 roles it created | Replace CloudNativePG with a plain StatefulSet whose first start creates `veoveo_owner` with `CREATEDB` (B1) |
 | A server in a sandbox from a cluster pod (probe, current gateway) | Through the gateway's service route HTTP/2 arrives as HTTP/1.1. A gRPC request is answered by the gateway itself: reflection lists `openshell.v1.OpenShell` and `grpc.health.v1.Health` fails. Direct pod connections time out | Today's gateway cannot carry Lore's catalog call |
 | Inbound gRPC with the OpenShell change (probe) | A test gateway built from `inbound-grpc-service-routes` rolled out in 2.8 s and back in 2.9 s. From a cluster pod, reflection listed the sandbox's own services, `Health/Check` returned `SERVING` and `Health/Watch` streamed. Plain HTTP to Hub stayed HTTP/2 200, and the gateway CLI worked. lore-server was then set to `repository_catalog = "auth_service"` at a sandbox serving `UrcAuthApi` (server code generated from Lore's `auth_api.proto`). `lore repository list` showed exactly the two repositories the sandbox returned, in about 75 ms per call including `sandbox exec`. With `bearer-passthrough` the sandbox received the caller's 1840-byte token; with the default `strip` it received none. The first attempt timed out at Lore's 50 s deadline because Lore's NetworkPolicy allowed no egress to the gateway | Catalog path confirmed; Lore's installation needs are listed under Identity |
 | PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
