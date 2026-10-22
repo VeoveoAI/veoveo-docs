@@ -2253,19 +2253,30 @@ Kubernetes, OpenShell or log-store credentials.
   the caller's token to `UrcAuthApi.LookupUserPermissions`, which Hub answers from
   `lore.assignments` with the caller's repository resource IDs and permissions. Lore
   sets `repository_catalog = "auth_service"` and `repository_catalog_url` to Hub's
-  endpoint. Lore calls it over gRPC, and a probe on the node showed that path does
-  not exist today. Through the gateway's service route an HTTP/2 request reaches a
-  sandbox as HTTP/1.1 (`openshell/crates/openshell-server/src/service_routing.rs:579,655`),
-  a gRPC request is answered by the gateway's own API (`grpc-status: 16`) and never
-  reaches the sandbox, and pods cannot connect to a sandbox directly. In source, the
-  gateway's multiplexer sends every `application/grpc` request to its own gRPC API
-  before the HTTP router that holds service routing
-  (`openshell/crates/openshell-server/src/multiplex.rs:1293-1297`). The installation's
-  HTTP/2 support (`f3bdf2e27`, mediated HTTP/2 REST streams and gRPC credentials)
-  covers the sandbox's outbound proxy, which the Lore probe used successfully; it does
-  not change this inbound path. Recommended: extend it inbound in `openshell-server`,
-  so the multiplexer recognises a sandbox service host before its gRPC split and the
-  service route speaks HTTP/2 to the sandbox when the caller does.
+  gRPC service route. Today's gateway cannot carry that call. Its multiplexer sends
+  every `application/grpc` request to its own gRPC API before the HTTP router that
+  holds service routing (`openshell/crates/openshell-server/src/multiplex.rs:1293-1297`),
+  service routes speak HTTP/1.1 to the sandbox
+  (`openshell/crates/openshell-server/src/service_routing.rs:579,655`), and pods
+  cannot connect to a sandbox directly. The installation's HTTP/2 support
+  (`f3bdf2e27`, mediated HTTP/2 REST streams and gRPC credentials) covers only the
+  sandbox's outbound proxy. An OpenShell change (branch `inbound-grpc-service-routes`)
+  makes the multiplexer recognise a sandbox service host before its gRPC split, and
+  gives gRPC on a service route its own HTTP/2 connection to the sandbox; all other
+  traffic keeps the HTTP/1.1 path. With it, lore-server's own catalog client listed
+  repositories from a `UrcAuthApi` server in a sandbox, with the caller's token
+  forwarded (probe below). Lore's installation then needs:
+  - Hub's gRPC listener exposed as a service route with
+    `--authorization-mode bearer-passthrough`. The default, `strip`, removes the
+    caller's token;
+  - `repository_catalog_url = "https://vv-control--hub--grpc.openshell.localhost:8080"`.
+    The gateway ignores the port when routing, and 8080 is its in-cluster listener;
+  - that name resolving to the gateway Service inside Lore's pod (the probe used a
+    hostAlias);
+  - `openshell-ca` in Lore's trust roots. lore-server's client trusts the system
+    roots, so `SSL_CERT_FILE` names the system bundle plus `openshell-ca`;
+  - an egress rule in Lore's NetworkPolicy to the gateway pods on 8080.
+
   This reverses the earlier choice in
   [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service,
   because people need to see their own repositories.
@@ -2348,7 +2359,8 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |
 | Lore repository listing | `lore repository list` returns nothing. The installation sets `repository_catalog = "baseline"` with `baseline_access = "denied"` (`veoveo-template-installation/kubernetes/lore.toml:15-16`). lore-server lists per caller only through the service holding the grants (`UrcAuthApi.LookupUserPermissions`, `lore/lore-server/src/authnz/repository_catalog.rs:38-41`); here the grants are Hub's `lore.assignments`, and Hub does not implement it | Decided: Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`, and Lore uses `repository_catalog = "auth_service"`. Lore's own listing is then per user, while access stays enforced by Lore's token grants |
 | Data-environment databases (probe) | A schema-only template of `veoveo` (12 schemas, 84 tables, 20 MB) built in 1.2 s; clones took 0.23–0.25 s with the default strategy and about 0.28 s with `FILE_COPY`; drops about 0.17 s each. Hub's role `veoveo_owner` has `createrole` but not `createdb`, and the CNPG cluster spec manages it | Add `createdb` to that managed role |
-| A server in a sandbox from a cluster pod (probe) | Through the gateway's service route HTTP/2 arrives as HTTP/1.1; a gRPC request is answered by the gateway itself (`grpc-status: 16`); direct pod connections time out | Lore cannot reach a gRPC endpoint inside Hub's sandbox today |
+| A server in a sandbox from a cluster pod (probe, current gateway) | Through the gateway's service route HTTP/2 arrives as HTTP/1.1. A gRPC request is answered by the gateway itself: reflection lists `openshell.v1.OpenShell` and `grpc.health.v1.Health` fails. Direct pod connections time out | Today's gateway cannot carry Lore's catalog call |
+| Inbound gRPC with the OpenShell change (probe) | A test gateway built from `inbound-grpc-service-routes` rolled out in 2.8 s and back in 2.9 s. From a cluster pod, reflection listed the sandbox's own services, `Health/Check` returned `SERVING` and `Health/Watch` streamed. Plain HTTP to Hub stayed HTTP/2 200, and the gateway CLI worked. lore-server was then set to `repository_catalog = "auth_service"` at a sandbox serving `UrcAuthApi` (server code generated from Lore's `auth_api.proto`). `lore repository list` showed exactly the two repositories the sandbox returned, in about 75 ms per call including `sandbox exec`. With `bearer-passthrough` the sandbox received the caller's 1840-byte token; with the default `strip` it received none. The first attempt timed out at Lore's 50 s deadline because Lore's NetworkPolicy allowed no egress to the gateway | Catalog path confirmed; Lore's installation needs are listed under Identity |
 | PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
 | Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
 
@@ -2365,9 +2377,6 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 7. Management MCP name, API and the home of its contract types.
 8. Installation-wide usage and audit totals.
 9. Whether agents may `exec` into a factory sandbox of a branch they can write.
-10. How Lore reaches `LookupUserPermissions`: the recommended OpenShell change so
-    service routes carry HTTP/2 and gRPC into sandboxes, or a catalog component
-    outside OpenShell.
 
 ### Environment Overrides And Fast Source Activation
 

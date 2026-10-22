@@ -1269,9 +1269,11 @@ Review method: Claude Opus 5.5 as coordinator, with read-only exploration subage
 for source questions and one research subagent for BuildKit documentation. The K3s
 node `rozgo-sim-pc` was reached over the RustDesk SSH endpoint `127.0.0.1:2222`;
 disposable test-only probes ran there through `kubectl` in a `veoveo-probe`
-namespace, deleted afterwards. That access is for testing the plan, not the
-operator or product path. No OpenShell sandbox, product build or model call was
-made.
+namespace and through OpenShell sandboxes in a `vv-probe` workspace, all deleted
+afterwards. The inbound gRPC probe temporarily ran a test gateway image built from an
+uncommitted OpenShell branch and a temporary Lore catalog configuration; both were
+rolled back. That access is for testing the plan, not the operator or product path.
+No model call was made.
 
 #### Work
 
@@ -1283,7 +1285,8 @@ Stage 1 proves the whole loop with Time.
 | B1 | Core, installation | Data-environment databases: template clone, identity copied on demand, `CONNECT` per login, `createdb` on Hub's managed role. One permanent connection per process per database for the instance lock and every `LISTEN`; pool defaults of 4 connections and a 30 s idle timeout | Tests on a fresh cluster with two environment databases |
 | B2 | Hub | Control database; one permanent connection per watched database (control, and every environment with unfinished Tasks or subscribed agents) and a small pool; Task queries on the owning database | One server serving two environments |
 | B3 | Lore, Hub | Stream closes on lag; Hub subscribes to every assigned repository and reconciles the full branch inventory on (re)subscription | Gap tests; no periodic reads |
-| B3b | Hub, installation | Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`; Lore uses `repository_catalog = "auth_service"` with Hub's endpoint | `lore repository list` shows exactly a caller's granted repositories; a caller with none sees none. Needs a gRPC path from Lore to Hub (item 1 below) |
+| B3a | OpenShell, installation | Inbound gRPC on service routes (branch `inbound-grpc-service-routes`): the multiplexer recognises a sandbox service host before its gRPC split, and gRPC on a service route gets an HTTP/2 connection to the sandbox. The installation's gateway is built from it | A cluster pod's gRPC call reaches a sandbox's server; HTTP routes and the gateway API are unchanged (passed with a test gateway) |
+| B3b | Hub, installation | Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments` on a `grpc` service route with `bearer-passthrough`. Lore uses `repository_catalog = "auth_service"` at that route on port 8080, with the name resolving to the gateway Service, `openshell-ca` in its trust roots and NetworkPolicy egress to the gateway | `lore repository list` shows exactly a caller's granted repositories; a caller with none sees none |
 | B4 | Repositories | `openshell/` contract (`provisioning.yaml`, `policy.yaml`, `image/`); Time and the Rust template | Contract validation; installation copies of Time policy removed |
 | B5 | Installation | Base policy; placement, mount and provider maps; base path; caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
 | B6 | Installation | Log collector (Vector, 1 s file discovery, persistent checkpoints) and log store (VictoriaLogs) for all container output | A sandbox's build and server output survive its restart and are queryable by sandbox |
@@ -1329,14 +1332,15 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Lore through an OpenShell provider | Placeholder-only sandbox cloned a repository in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call |
 | Time build in a factory sandbox | Cold 156.5 s with dependency fetch; one-line change 32.3 s; no change 0.3 s; after stop/start (5.2 s) the cache held: no change 0.3 s, one-line change 32.0 s |
 | Data-environment databases | Schema-only template 1.2 s; clone 0.23–0.25 s; drop about 0.17 s; Hub's role lacks `createdb` |
-| Cluster pod to a server in a sandbox | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
+| Cluster pod to a server in a sandbox, current gateway | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
+| Inbound gRPC with the OpenShell change (B3a) | Test gateway rolled out in 2.8 s, back in 2.9 s. Reflection, `Health/Check` and the `Health/Watch` stream reached the sandbox; HTTP routes and the gateway CLI unchanged. lore-server's `auth_service` catalog, pointed at a `UrcAuthApi` server in a sandbox, listed exactly its two repositories, about 75 ms per call; with `bearer-passthrough` the caller's token arrived (1840 bytes), with `strip` it did not. Lore's NetworkPolicy first blocked the gateway (50 s deadline) |
 | Existing sandbox pods (read-only) | Workload pods Ready 2–18 s after creation, GPU runtime 267 s, supervisors 3–18 s; pod level only |
 
 Still to confirm, in order of risk to executing the plan:
 
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
-| 1 | How Lore reaches `LookupUserPermissions` in Hub | Probed and confirmed in source: the gateway sends gRPC to its own API before service routing (`multiplex.rs:1293-1297`), and service routes speak HTTP/1.1 to sandboxes. The existing HTTP/2 support is outbound only | Recommended: extend HTTP/2 inbound in `openshell-server`, then prove a call from Lore | OpenShell change |
+| 1 | Lore reaching `LookupUserPermissions` in Hub | Path proven with a test gateway and lore-server's own client. The OpenShell change is uncommitted (122 unit and 2 integration tests pass, clippy clean); in-pod name resolution used a hostAlias | Commit and review the change, build the installation's gateway from it, choose how Lore's pod resolves Hub's route, then repeat the listing against Hub | B3a, B3b |
 | 2 | Provider callbacks reach the right branch instance | Design gap: today's callback path names only the server | Two Media branch instances with the fake provider; each webhook settles its own instance's Task and wakes it | B8 and a Media/Hub routing change |
 | 3 | Data-environment databases | Cluster side measured; `createdb` missing | Two environments with Tasks and listeners on separate databases | B1, B2 |
 | 4 | Connection plan | Decided | An idle instance holds one connection; wakes arrive after a reconnect | B1, B2 |
@@ -1364,6 +1368,8 @@ Lore's permission system governs access to each repository, not listing; lore-se
 lists per caller only through the `auth_service` catalog. B3b adds that: Hub answers
 `LookupUserPermissions` from its grants. This reverses the factory-era choice in
 [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service.
+The gRPC path for it needs the OpenShell change in B3a; with that change, a test
+gateway carried lore-server's catalog call into a sandbox with the caller's token.
 
 The three-view diagram stays unchanged until this workflow is implemented and
 qualified.
