@@ -2438,7 +2438,7 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
 #### Lore Change Events
 
 Lore's subscription stream silently dropped events for a lagging subscriber. Lore
-branch `notification-close-on-lag` (`e2f04c90`) ends the stream with `ABORTED`
+`e2f04c90` on `main` ends the stream with `ABORTED`
 instead; tonic sends that status as the stream's trailers
 (`tonic-0.14.6/src/codec/encode.rs:321-325`). A component test that overflows the
 channel fails without the change and passes with it. On every subscription and resubscription Hub re-checks every branch
@@ -2494,8 +2494,7 @@ service routes speak HTTP/1.1 to the sandbox
 (`openshell/crates/openshell-server/src/service_routing.rs:579,655`), and pods
 cannot connect to a sandbox directly. The installation's HTTP/2 support
 (`f3bdf2e27`, mediated HTTP/2 REST streams and gRPC credentials) covers only the
-sandbox's outbound proxy. An OpenShell change (branch `inbound-grpc-service-routes`,
-commit `a6ed0ab41`) makes the multiplexer recognise a sandbox service host before
+sandbox's outbound proxy. An OpenShell change (`a6ed0ab41` on `main`) makes the multiplexer recognise a sandbox service host before
 its gRPC split, and gives gRPC on a service route its own HTTP/2 connection to the
 sandbox; all other traffic keeps the HTTP/1.1 path. With it, lore-server's own
 catalog client listed repositories from a `UrcAuthApi` server in a sandbox, with the
