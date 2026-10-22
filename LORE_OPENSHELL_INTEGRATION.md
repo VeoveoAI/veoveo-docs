@@ -2222,6 +2222,10 @@ Kubernetes, OpenShell or log-store credentials.
   `vv-services` calls Hub in `vv-control`). Only the caller's network policy and
   the service's own authentication apply; Hub adds the resolved host to the caller's
   policy.
+- Provider callbacks, such as Media's `{public_origin}/media/operations/{operation_id}/{token}`,
+  must name the instance, for example by its deployment, so Hub routes each callback
+  to the branch instance that owns the operation and wakes it when asleep. Today the
+  path names only the server.
 
 #### Data Environments
 
@@ -2249,9 +2253,14 @@ Kubernetes, OpenShell or log-store credentials.
   the caller's token to `UrcAuthApi.LookupUserPermissions`, which Hub answers from
   `lore.assignments` with the caller's repository resource IDs and permissions. Lore
   sets `repository_catalog = "auth_service"` and `repository_catalog_url` to Hub's
-  endpoint. Lore calls it over gRPC, while OpenShell's named-service routing
-  relays HTTP/1.1 only to a sandbox (`openshell/crates/openshell-server/src/service_routing.rs:579,655`),
-  so the network path from Lore to Hub's catalog endpoint is still to be confirmed.
+  endpoint. Lore calls it over gRPC, and a probe on the node showed that path does
+  not exist today. Through the gateway's service route an HTTP/2 request reaches a
+  sandbox as HTTP/1.1 (`openshell/crates/openshell-server/src/service_routing.rs:579,655`),
+  a gRPC request is answered by the gateway's own API (`grpc-status: 16`) and never
+  reaches the sandbox, and pods cannot connect to a sandbox directly. Hub runs in a
+  sandbox, so this needs either an OpenShell change (service routes carry HTTP/2 to
+  the sandbox, and a service authority takes precedence over the gateway's own gRPC
+  API) or a catalog component outside OpenShell; see the open decisions.
   This reverses the earlier choice in
   [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service,
   because people need to see their own repositories.
@@ -2283,10 +2292,29 @@ history.
 
 #### Capacity And Cleanup
 
-Per-user caps; native stop and start for sleep and wake; a connection pooler for
-query traffic while Core's session locks and listeners keep dedicated connections;
-cleanup of sandboxes, images, data environments, logins and compositions by age,
-staleness or agent proposal.
+Per-user caps; native stop and start for sleep and wake; cleanup of sandboxes,
+images, data environments, logins and compositions by age, staleness or agent
+proposal.
+
+Each server process holds about five PostgreSQL connections today: a query pool of up
+to 10 with a 10-minute idle timeout, the instance-lock connection, and one connection
+per `listen`. 87 of 512 are in use. The plan:
+
+- Core holds the instance lock and every `LISTEN` channel on one permanent connection
+  per process per database. After a reconnect it still reports `Reconcile`, so
+  notifications missed during the gap are recovered from durable state.
+- Query pools default to at most 4 connections with a 30-second idle timeout.
+- Hub keeps one permanent connection per database it watches: its control database
+  and every data environment with unfinished Tasks or subscribed agents.
+- Permanent connections use TCP keepalives of about 30 seconds; PostgreSQL's
+  `idle_session_timeout` is off.
+- No pooler for now; `max_connections` is raised when measurements require it.
+
+Sleep never loses a wake. An instance with unfinished Tasks or subscriptions does not
+sleep, except one whose Tasks are all parked on provider webhooks, which the webhook
+wakes. A call to a sleeping instance starts its sandbox before Hub forwards it. A
+parked Task holds no worker and no connection
+(`veoveo-core/platform/task/DESIGN.md:265-266`).
 
 #### Verification, 2026-10-21
 
@@ -2314,6 +2342,9 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Time build in a factory sandbox (probe, 8 CPU, 16 GiB) | Cold release build including dependency fetch 156.5 s; one-line change 32.3 s; no change 0.3 s; after a native stop/start (5.2 s) no change 0.3 s and one-line change 32.0 s; caches 1.3 GB target, 417 MB Cargo | A Time push costs about 40 s with a release build: restart plus 32 s compile plus startup. Commands run through `sandbox exec` lack the image's environment, so builds belong in the main program, as designed |
 | Lore through a provider (probe) | The sandbox held only a 59-character placeholder; `lore --access-token <placeholder> --identity <principal> repository clone` succeeded in 0.21 s; OpenShell terminated TLS and allowed each Lore gRPC call | Lore access design confirmed |
 | Lore repository listing | `lore repository list` returns nothing. The installation sets `repository_catalog = "baseline"` with `baseline_access = "denied"` (`veoveo-template-installation/kubernetes/lore.toml:15-16`). lore-server lists per caller only through the service holding the grants (`UrcAuthApi.LookupUserPermissions`, `lore/lore-server/src/authnz/repository_catalog.rs:38-41`); here the grants are Hub's `lore.assignments`, and Hub does not implement it | Decided: Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments`, and Lore uses `repository_catalog = "auth_service"`. Lore's own listing is then per user, while access stays enforced by Lore's token grants |
+| Data-environment databases (probe) | A schema-only template of `veoveo` (12 schemas, 84 tables, 20 MB) built in 1.2 s; clones took 0.23–0.25 s with the default strategy and about 0.28 s with `FILE_COPY`; drops about 0.17 s each. Hub's role `veoveo_owner` has `createrole` but not `createdb`, and the CNPG cluster spec manages it | Add `createdb` to that managed role |
+| A server in a sandbox from a cluster pod (probe) | Through the gateway's service route HTTP/2 arrives as HTTP/1.1; a gRPC request is answered by the gateway itself (`grpc-status: 16`); direct pod connections time out | Lore cannot reach a gRPC endpoint inside Hub's sandbox today |
+| PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
 | Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
 
 #### Open Decisions
@@ -2329,6 +2360,8 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 7. Management MCP name, API and the home of its contract types.
 8. Installation-wide usage and audit totals.
 9. Whether agents may `exec` into a factory sandbox of a branch they can write.
+10. How Lore reaches `LookupUserPermissions`: an OpenShell change so service routes
+    carry HTTP/2 and gRPC to sandboxes, or a catalog component outside OpenShell.
 
 ### Environment Overrides And Fast Source Activation
 
