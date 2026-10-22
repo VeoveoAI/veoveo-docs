@@ -2192,8 +2192,11 @@ installation-wide feed, and `local` is the only notification backend in this bui
 (`lore-server/src/server.rs:1678-1690`; no plugin is registered). A person therefore
 turns a repository on once with the Hub MCP server's `watch`; Hub records them and
 subscribes as them, as its existing follow code does (`activation/lore.rs:96-122`).
-If they lose access, the subscription fails, `status` shows it, and anyone with
-access calls `watch` again.
+Lore checks access when the subscription starts and does not re-check an open
+stream, so a watcher who loses access is noticed at Hub's next subscription, after
+any reconnect or lag: it fails, `status` shows it, and anyone with access calls
+`watch` again. The events carry only branch, revision and pusher; Hub reads
+content as the pusher.
 
 #### Logs
 
@@ -2400,9 +2403,11 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
 
 #### Lore Change Events
 
-Lore's subscription stream silently drops events for a lagging subscriber
-(`lore/lore-server/src/grpc/notification_service.rs:103`). It should close the
-stream instead. On every subscription and resubscription Hub re-checks every branch
+Lore's subscription stream silently dropped events for a lagging subscriber. Lore
+branch `notification-close-on-lag` (`e2f04c90`) ends the stream with `ABORTED`
+instead; tonic sends that status as the stream's trailers
+(`tonic-0.14.6/src/codec/encode.rs:321-325`). A component test that overflows the
+channel fails without the change and passes with it. On every subscription and resubscription Hub re-checks every branch
 of that repository, including deletions, and applies any revision it has not
 applied. No periodic reads, client hooks or new event types are needed.
 Notifications are live signals; Lore revisions remain the durable history.

@@ -1360,8 +1360,8 @@ Still to validate, in order of risk to executing the plan:
 | 2 | Data environments | Design settled by source review; empty database ready in about 0.6 s | Two environments with Tasks through Hub, on the built B1 and B2 | B1, B2 |
 | 3 | A refreshing Lore provider | Mechanism chosen by source read: a per-instance Hub client whose client-credentials grant issues for the recorded pusher; the gateway's `oauth2-client-credentials` refresh runs against Hub on the node today. A refresh grant yields only login tokens, and the SPIFFE-based `token_exchange` grant is not trusted by Hub | Component test of issuance for the recorded pusher and refusal after the pusher loses access; the sandbox clones across a refresh, a restart and a new pusher | B8 |
 | 4 | First registration through a provider | Mechanism deployed: Time's `vv-time-registration` provider holds the initial access token, bound to `POST /oauth/register`. New: one token per instance, which tells Hub which instance registered | A new instance registers on first start and resumes after restarts | B8 |
-| 5 | Watching as a person | Not tested | Subscription as the watcher; a watcher who loses access shows in `status` | B3 |
-| 6 | Lore stream closing on lag | Not tested | Gap tests | B3 |
+| 5 | Watching as a person | Source read: Lore checks access at subscription only, so loss of access shows at Hub's next subscription | Subscription as the watcher; a watcher who lost access fails at resubscription and shows in `status` | B3 |
+| 6 | Lore stream closing on lag | Component test passes: Lore `e2f04c90` on branch `notification-close-on-lag`; fails without the change | Hub resubscribes and catches up after `ABORTED`, on the deployed stack | B3 |
 | 7 | Superseding pushes and deletion | Node restart measured | A push during a build; a deleted branch removes its sandbox | B8 |
 | 8 | Creating and migrating an empty environment database | Measured: create, kernel migrations and Time's migration in about 0.6 s | Done | — |
 | 9 | Object keys across environments | Source read: random keys per artifact, sweep deletes only its own rows; one shared bucket | Done | — |
