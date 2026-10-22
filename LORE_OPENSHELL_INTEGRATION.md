@@ -2117,8 +2117,11 @@ such as a GPU runtime in Stage 2.
 4. The sandbox's fixed start command runs on every start: `lore sync <branch>@LATEST`,
    then `exec ./openshell/run` in the checkout on the persistent disk. The synced
    revision is passed to the server as its software version, which its SDK
-   registration already reports to Hub. Output of every step is ordinary container
-   output.
+   registration already reports to Hub. Hub supplies the server's settings as
+   environment variables: `VEOVEO_DEPLOYMENT_ID`, `VEOVEO_PUBLIC_BASE_URL`,
+   `VEOVEO_HUB_ISSUER` and `VEOVEO_REGISTRATION_SECRET` (a provider placeholder);
+   `openshell/run` sets anything server-specific, such as its key directory on the
+   persistent disk. Output of every step is ordinary container output.
 5. Native start mounts the same persistent volume under the same sandbox name, works
    from any phase and resets OpenShell's restart count. A push during a build
    restarts it again; the latest revision wins.
