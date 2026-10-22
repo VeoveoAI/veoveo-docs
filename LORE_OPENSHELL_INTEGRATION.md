@@ -2257,10 +2257,15 @@ Kubernetes, OpenShell or log-store credentials.
   not exist today. Through the gateway's service route an HTTP/2 request reaches a
   sandbox as HTTP/1.1 (`openshell/crates/openshell-server/src/service_routing.rs:579,655`),
   a gRPC request is answered by the gateway's own API (`grpc-status: 16`) and never
-  reaches the sandbox, and pods cannot connect to a sandbox directly. Hub runs in a
-  sandbox, so this needs either an OpenShell change (service routes carry HTTP/2 to
-  the sandbox, and a service authority takes precedence over the gateway's own gRPC
-  API) or a catalog component outside OpenShell; see the open decisions.
+  reaches the sandbox, and pods cannot connect to a sandbox directly. In source, the
+  gateway's multiplexer sends every `application/grpc` request to its own gRPC API
+  before the HTTP router that holds service routing
+  (`openshell/crates/openshell-server/src/multiplex.rs:1293-1297`). The installation's
+  HTTP/2 support (`f3bdf2e27`, mediated HTTP/2 REST streams and gRPC credentials)
+  covers the sandbox's outbound proxy, which the Lore probe used successfully; it does
+  not change this inbound path. Recommended: extend it inbound in `openshell-server`,
+  so the multiplexer recognises a sandbox service host before its gRPC split and the
+  service route speaks HTTP/2 to the sandbox when the caller does.
   This reverses the earlier choice in
   [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service,
   because people need to see their own repositories.
@@ -2360,8 +2365,9 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 7. Management MCP name, API and the home of its contract types.
 8. Installation-wide usage and audit totals.
 9. Whether agents may `exec` into a factory sandbox of a branch they can write.
-10. How Lore reaches `LookupUserPermissions`: an OpenShell change so service routes
-    carry HTTP/2 and gRPC to sandboxes, or a catalog component outside OpenShell.
+10. How Lore reaches `LookupUserPermissions`: the recommended OpenShell change so
+    service routes carry HTTP/2 and gRPC into sandboxes, or a catalog component
+    outside OpenShell.
 
 ### Environment Overrides And Fast Source Activation
 

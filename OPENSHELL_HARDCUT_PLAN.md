@@ -1336,7 +1336,7 @@ Still to confirm, in order of risk to executing the plan:
 
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
-| 1 | How Lore reaches `LookupUserPermissions` in Hub | Probed: no gRPC path into a sandbox today | Choose an OpenShell change or a component outside OpenShell, then prove a call from Lore | Decision |
+| 1 | How Lore reaches `LookupUserPermissions` in Hub | Probed and confirmed in source: the gateway sends gRPC to its own API before service routing (`multiplex.rs:1293-1297`), and service routes speak HTTP/1.1 to sandboxes. The existing HTTP/2 support is outbound only | Recommended: extend HTTP/2 inbound in `openshell-server`, then prove a call from Lore | OpenShell change |
 | 2 | Provider callbacks reach the right branch instance | Design gap: today's callback path names only the server | Two Media branch instances with the fake provider; each webhook settles its own instance's Task and wakes it | B8 and a Media/Hub routing change |
 | 3 | Data-environment databases | Cluster side measured; `createdb` missing | Two environments with Tasks and listeners on separate databases | B1, B2 |
 | 4 | Connection plan | Decided | An idle instance holds one connection; wakes arrive after a reconnect | B1, B2 |
