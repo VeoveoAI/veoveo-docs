@@ -1290,6 +1290,7 @@ Landed on branches, not pushed, 2026-10-22:
 | B1 PostgreSQL StatefulSet | installation `6d45dd9` on `postgres-statefulset` | Linux, disposable namespace: Ready in 10 s; roles, databases, `lore` schema, extensions and `max_connections = 512` from first start; TLS `verify-full` as Hub's role; no TLS refused; `CREATE DATABASE` as Hub's role in 224 ms and reachable; `ALTER SYSTEM` reload; restart in 2 s without rerunning init |
 | B3 Lore part | Lore `e2f04c90` on `notification-close-on-lag` | Component test fails without the change and passes with it |
 | B4 Time | Time `16853a0` on `factory-openshell` | Linux: image built in 14 s with the real Lore CLI; cold release build 80 s; the server started; 417 MB crates and 1.3 GB build output on the persistent disk |
+| B6, B7 logs, builder, registry | installation `bbb8a26` on `factory-infrastructure` | Linux, disposable namespace: a deleted pod's 26 lines stayed queryable and a Vector restart re-read none; BuildKit built and pushed over TCP in 2 s; tags survived a registry restart |
 | SDK resume | SDK `6c881e0` on `resume-registers-again` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
 
 | # | Component | Work | Done when |
