@@ -2433,9 +2433,14 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   OpenShell sandboxes for Computers through `openshell-sdk`
   (`veoveo-hub/crates/veoveo-hub/src/computers/provisioning.rs`). It runs no
   commands inside sandboxes.
-- The Hub MCP server has its own repository and registers like any MCP server.
-  Version 1 provides `status`, `logs`, `select` and `watch`; later versions add
-  repository creation and sharing, and cleanup.
+- The Hub MCP server is named `console` (repository `VeoveoAI/veoveo-mcp-console`,
+  decided 2026-10-22) and registers like any MCP server; Hub refuses the name `hub`
+  because a server's schema is named after it and `hub` is Hub's own. Agents call
+  `console__status`, `console__logs`, `console__select` and `console__watch` in
+  version 1; later versions add repository creation and sharing, and cleanup. Its
+  Hub routes: `GET /factory/{profile}/instance?repository=&branch=&wait=`,
+  `PUT /factory/{profile}/watch?repository=` and `PUT`/`DELETE
+  /selection/{profile}/{server}`.
 - It calls Hub as the user through Hub's existing calls between servers
   (`veoveo-hub/crates/veoveo-hub/DESIGN.md:254-292`): the user's forwarded token is
   exchanged for a delegated token carrying only the permissions the server declared
