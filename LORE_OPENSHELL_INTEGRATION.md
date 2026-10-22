@@ -2265,8 +2265,19 @@ Agents receive no Kubernetes, OpenShell or log-store credentials.
   writes is not visible to the other. This is shown, not prevented.
 - A Task keeps the instance it started on after the selection changes; Task routes
   keep their original deployment and database.
-- Hub holds each chat's selection and sends tool-list changes only to that chat's
-  connection.
+- Hub holds each chat's selection and answers each chat's tool list from it.
+- OpenCode's MCP connection, tool list and tool registry are per Location
+  (`opencode/packages/core/src/mcp/index.ts:95,166,427-460`,
+  `packages/core/src/tool/AGENTS.md:44,48`). `tools/call` already carries the chat's
+  session ID as `_meta["ai.opencode/sessionID"]`
+  (`packages/core/src/mcp/client.ts:424-427`); `tools/list` carries nothing
+  (`client.ts:391-394`). Per-chat selection therefore needs an OpenCode change: send
+  the root chat's ID on `tools/list` as well, keep one tool list per chat over the
+  one connection, and pass that chat's tool definitions on each call. Sub-agents use
+  their root chat's selection. Selection changes never reconnect. The change departs
+  from OpenCode's rule that MCP owns one stable tool transform per Location, so it
+  needs the user's approval and an entry in `VEOVEO_FORK.md`. The ID is a key, not
+  authority: Hub binds it to the authenticated principal.
 
 #### Data Environments
 
@@ -2349,9 +2360,13 @@ Notifications are live signals; Lore revisions remain the durable history.
   that user. Above it, Hub still creates the instance and `status` carries a
   warning naming the count and the cap. Setting `caps.enforce` to true later
   refuses instead, reported as `failed{stage: capacity}`.
-- The cluster's own limit: OpenShell's resource admission is enabled in the
-  gateway configuration; what a user sees when the node is full is under
-  validation.
+- The cluster's own limit is Kubernetes scheduling. A sandbox that does not fit is
+  accepted and waits in `Provisioning`; OpenShell reports the scheduler's reason in
+  its conditions, for example `PodScheduled: False (Unschedulable) - 0/1 nodes are
+  available: 1 Insufficient cpu`, and `status` passes it on. It starts when
+  capacity frees up. OpenShell's `resource_admission` setting is label approval for
+  attached Kubernetes resources, not capacity
+  (`openshell/docs/how-it-works/gateways/configuration.mdx:746-790`).
 - Cleanup in Stage 1 is deleting or archiving a branch or removing
   `openshell/run`, and the registry deleting unused tags. Cleanup tools come later
   with the Hub MCP server.
@@ -2441,6 +2456,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | A server in a sandbox from a cluster pod (probe, current gateway) | Through the gateway's service route HTTP/2 arrives as HTTP/1.1. A gRPC request is answered by the gateway itself: reflection lists `openshell.v1.OpenShell` and `grpc.health.v1.Health` fails. Direct pod connections time out | Today's gateway cannot carry Lore's catalog call |
 | Inbound gRPC with the OpenShell change (probe) | A test gateway built from `inbound-grpc-service-routes` rolled out in 2.8 s and back in 2.9 s. From a cluster pod, reflection listed the sandbox's own services, `Health/Check` returned `SERVING` and `Health/Watch` streamed. Plain HTTP to Hub stayed HTTP/2 200, and the gateway CLI worked. lore-server was then set to `repository_catalog = "auth_service"` at a sandbox serving `UrcAuthApi` (server code generated from Lore's `auth_api.proto`). `lore repository list` showed exactly the two repositories the sandbox returned, in about 75 ms per call including `sandbox exec`. With `bearer-passthrough` the sandbox received the caller's 1840-byte token; with the default `strip` it received none. The first attempt timed out at Lore's 50 s deadline because Lore's NetworkPolicy allowed no egress to the gateway | Catalog path confirmed; Lore's installation needs are listed under Identity |
 | PostgreSQL connections | About five per server process and 12 for Hub; 87 of 512 in use; `idle_session_timeout` off | Connection plan under Capacity And Cleanup |
+| A sandbox larger than the node (probe) | 64 CPU requested on the 32-CPU node: the gateway accepted it, its phase stayed `Provisioning` for over 110 s, and `sandbox get` showed `PodScheduled: False (Unschedulable) - 0/1 nodes are available: 1 Insufficient cpu`; the pod was Pending with `FailedScheduling` | Capacity needs no Hub logic; `status` shows the condition |
 | Sandbox pod start times | Existing workload pods were Ready 2–18 s after creation (Time 5 s, Artifact 9 s, Hub 14 s, Media 18 s); the GPU embedding runtime 267 s; supervisor pods 3–18 s. Pod level only, not the gateway's Ready | Restart cost per push is seconds before fetch and build |
 
 #### Open Decisions

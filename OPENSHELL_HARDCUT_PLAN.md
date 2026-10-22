@@ -1296,7 +1296,7 @@ Stage 1 proves the whole loop with Time.
 | B8 | Hub | Factory-sandbox reconciler. Prepare without side effects: read `openshell/` as the pusher, build, get the digest. Commit: ensure the data environment, replace the Lore credential (token exchange of a per-instance credential for the latest pusher, revoked on deletion), create on first push or digest change, otherwise set the policy and restart. Registration provider; restart policy `always`; serving revision from the registered software version; delete when the branch is deleted or archived or `openshell/run` is removed; `failed{stage, message}` on the instance; soft-cap warning. Remove the helper and registration housekeeping | Three branches of Time serving at once; branch deletion removes its sandbox; a node reboot returns them |
 | B9 | Hub | Selection: a branch per server in any combination, base branch for the rest; per-chat state; tool-list changes only to that chat's connection | Two chats with different combinations |
 | B10 | Hub, new repository | Hub MCP server version 1 (`status` with `wait`, `logs`, `select`, `watch`) through Hub's calls between servers; Hub's user APIs behind it | A fixture caller uses each tool on a user's behalf |
-| B11 | OpenCode | Per-chat selection; connection named `veoveo` | Two chats in one directory with different selections |
+| B11 | OpenCode | Root chat ID on `tools/list`, one tool list per chat over the one connection, that chat's tool definitions on each call; connection named `veoveo` | Two chats in one directory with different selections |
 
 Stage 1 proof: two Time branches in two data environments; two chats in one
 directory with different combinations; push-driven updates; a push that fails to
@@ -1349,13 +1349,14 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Data environments as Hub's role | With `CREATEDB` granted for the probe, `veoveo_owner` cloned the 84-table template in 62–80 ms, set `CONNECT` and dropped its clones; without it, permission denied. CNPG cannot reconcile that role: it keeps trying to revoke the admin memberships PostgreSQL gives Hub's role on roles it creates (`dependent privileges exist`). Decision: replace CNPG (B1) |
 | Cluster pod to a server in a sandbox, current gateway | HTTP/2 arrives as HTTP/1.1 through the service route; gRPC is answered by the gateway itself; direct connections time out |
 | Inbound gRPC with the OpenShell change (B3a) | Test gateway rolled out in 2.8 s, back in 2.9 s. Reflection, `Health/Check` and the `Health/Watch` stream reached the sandbox; HTTP routes and the gateway CLI unchanged. lore-server's `auth_service` catalog, pointed at a `UrcAuthApi` server in a sandbox, listed exactly its two repositories, about 75 ms per call; with `bearer-passthrough` the caller's token arrived (1840 bytes), with `strip` it did not. Lore's NetworkPolicy first blocked the gateway (50 s deadline) |
+| Sandbox larger than the node | 64 CPU on the 32-CPU node: accepted, `Provisioning` for over 110 s; conditions `PodScheduled: False (Unschedulable) … 1 Insufficient cpu`; pod Pending with `FailedScheduling`. Workspace deleted afterwards |
 | Existing sandbox pods (read-only) | Workload pods Ready 2–18 s after creation, GPU runtime 267 s, supervisors 3–18 s; pod level only |
 
 Still to validate, in order of risk to executing the plan:
 
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
-| 1 | Per-chat selection in OpenCode | Not tested; OpenCode's connection is per Location | Two chats in one directory with different tool lists | B9, B11 |
+| 1 | Per-chat selection in OpenCode | Source read: connection, tool list and registry are per Location; `tools/call` already carries the session ID, `tools/list` does not | OpenCode sends the root chat ID on `tools/list` and keeps one tool list per chat; then two chats in one directory with different tool lists | B9, B11; approval to depart from OpenCode's one-transform-per-Location rule |
 | 2 | Data environments | Cloning as Hub's role proven; design under review | Two environments with Tasks and listeners on separate databases | B1, B2 |
 | 3 | A refreshing Lore provider | Decided: the latest pusher's grant through OpenShell's native token exchange; only a static token proven so far | Hub mints a per-instance credential for the pusher; OpenShell exchanges it at Hub for Lore tokens across a restart and after the credential is replaced on push | B8 |
 | 4 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
@@ -1364,7 +1365,7 @@ Still to validate, in order of risk to executing the plan:
 | 7 | Superseding pushes and deletion | Node restart measured | A push during a build; a deleted branch removes its sandbox | B8 |
 | 8 | Creating and migrating an empty environment database | Not measured | Kernel migrations plus Time's on a new database | B1 |
 | 9 | Object keys across environments | Not checked | Read Artifact's and Media's key scheme: one shared bucket or one per environment | Data-environment review |
-| 10 | What a user sees when the node is full | Resource admission enabled; behaviour not observed | A sandbox larger than the node | B8 |
+| 10 | What a user sees when the node is full | Measured: accepted, waits in `Provisioning`, OpenShell's conditions carry `Insufficient cpu`; starts when capacity frees | Done | — |
 | 11 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
 | 12 | Collector as installation infrastructure | Settings known | Persistent volume, retention, queries from the Hub MCP server | B6 |
 | 13 | Lore reaching `LookupUserPermissions` in Hub | Path proven with a test gateway and lore-server's own client | Review the OpenShell change, build the installation's gateway from it, choose how Lore's pod resolves Hub's route, then repeat the listing against Hub | Separate track |
