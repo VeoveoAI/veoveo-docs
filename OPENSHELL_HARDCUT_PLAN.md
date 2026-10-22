@@ -16,9 +16,9 @@ boundaries below. The existing three-view diagram also passes manual browser and
 SVG/PNG export review. The evidence below records the qualified scope and remaining
 performance limits.
 
-**Proposed next slice, 2026-10-21 — under discussion, not authorized:**
-[factory sandboxes and dynamic selection](#proposed-slice--factory-sandboxes-and-dynamic-selection).
-No source, deployment or diagram change has been made for it.
+**Next slice, agreed with the user on 2026-10-22 except data environments:**
+[factory sandboxes and dynamic selection](#agreed-slice--factory-sandboxes-and-dynamic-selection).
+Implementation has not started; no source, deployment or diagram change has been made for it.
 
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
@@ -1258,11 +1258,11 @@ Source-test this change on Mac, then prove it on the Linux deployment.
 
 ## Agent-Operated Platform Adoption Plan
 
-### Proposed Slice — Factory Sandboxes And Dynamic Selection
+### Agreed Slice — Factory Sandboxes And Dynamic Selection
 
-Status: proposed 2026-10-21 and under discussion with the user; not authorized. No
-source, deployment or diagram change has been made for it. Architecture, recorded
-decisions, verification and open decisions:
+Status: design agreed with the user on 2026-10-22, except data environments, which
+are under review; implementation has not started. No source, deployment or diagram
+change has been made for it. Architecture, recorded decisions and verification:
 [factory sandboxes and dynamic selection](LORE_OPENSHELL_INTEGRATION.md#factory-sandboxes-and-dynamic-selection).
 
 Review method: Claude Opus 5.5 as coordinator, with read-only exploration subagents
@@ -1270,10 +1270,15 @@ for source questions and one research subagent for BuildKit documentation. The K
 node `rozgo-sim-pc` was reached over the RustDesk SSH endpoint `127.0.0.1:2222`;
 disposable test-only probes ran there through `kubectl` in a `veoveo-probe`
 namespace and through OpenShell sandboxes in a `vv-probe` workspace, all deleted
-afterwards. The inbound gRPC probe temporarily ran a test gateway image built from an
-uncommitted OpenShell branch and a temporary Lore catalog configuration; both were
-rolled back. That access is for testing the plan, not the operator or product path.
-No model call was made.
+afterwards. The inbound gRPC probe temporarily ran a test gateway image built from
+OpenShell branch `inbound-grpc-service-routes` and a temporary Lore catalog
+configuration; both were rolled back. That access is for testing the plan, not the
+operator or product path. No model call was made. On 2026-10-22 the user and
+coordinator reviewed the design from first principles and removed: the
+provisioning file and its fields, the image key, the template database, the
+`environment` setting, the delegated-admin prerequisite, the separate `wait` and
+`restart` tools, policy diffing, the connection plan, delete-after-Tasks, hard caps
+and the instance owner.
 
 #### Work
 
@@ -1281,34 +1286,41 @@ Stage 1 proves the whole loop with Time.
 
 | # | Component | Work | Done when |
 |---|---|---|---|
-| B0 | Hub | Delegated subjects on administrative routes authorize against repository assignments with the delegation ceiling | Component test of refusal or narrowing |
-| B1 | Core, installation | PostgreSQL as a plain StatefulSet replacing CloudNativePG, with a data reset: same extension image, one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, a server certificate from the installation CA; first start creates only `veoveo_owner` (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their databases. Lore's NetworkPolicy selector and the CA copy job stop referring to CNPG. Data-environment databases: template clone, identity copied on demand, `CONNECT` per login. One permanent connection per process per database for the instance lock and every `LISTEN`; pool defaults of 4 connections and a 30 s idle timeout | Tests on a fresh cluster with two environment databases |
-| B2 | Hub | Control database; one permanent connection per watched database (control, and every environment with unfinished Tasks or subscribed agents) and a small pool; Task queries on the owning database | One server serving two environments |
-| B3 | Lore, Hub | Stream closes on lag; Hub subscribes to every assigned repository and reconciles the full branch inventory on (re)subscription | Gap tests; no periodic reads |
-| B3a | OpenShell, installation | Inbound gRPC on service routes (branch `inbound-grpc-service-routes`): the multiplexer recognises a sandbox service host before its gRPC split, and gRPC on a service route gets an HTTP/2 connection to the sandbox. The installation's gateway is built from it | A cluster pod's gRPC call reaches a sandbox's server; HTTP routes and the gateway API are unchanged (passed with a test gateway) |
-| B3b | Hub, installation | Hub serves Lore's `UrcAuthApi.LookupUserPermissions` from `lore.assignments` on a `grpc` service route with `bearer-passthrough`. Lore uses `repository_catalog = "auth_service"` at that route on port 8080, with the name resolving to the gateway Service, `openshell-ca` in its trust roots and NetworkPolicy egress to the gateway | `lore repository list` shows exactly a caller's granted repositories; a caller with none sees none |
-| B4 | Repositories | `openshell/` contract (`provisioning.yaml`, `policy.yaml`, `image/`); Time and the Rust template | Contract validation; installation copies of Time policy removed |
-| B5 | Installation | Base policy; placement, mount and provider maps; base path; caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
+| B1 | Core, installation | PostgreSQL as a plain StatefulSet replacing CloudNativePG, with a data reset: same extension image, one volume, a Service, a ConfigMap for `postgresql.conf` and `pg_hba.conf`, a server certificate from the installation CA; first start creates only `veoveo_owner` (`LOGIN CREATEROLE CREATEDB`), the gateway's and Lore's logins and their databases. Lore's NetworkPolicy selector and the CA copy job stop referring to CNPG. Data-environment databases: `CREATE DATABASE`, kernel migrations, `CONNECT` per login | Tests on a fresh cluster with two environment databases |
+| B2 | Hub | Working across several databases. Scope set by the data-environment review | One server serving two environments |
+| B3 | Lore, Hub | Stream closes on lag. Hub watches each repository as the person who turned it on and re-checks every branch on (re)subscription | Gap tests; a watcher who loses access shows in `status`; no periodic reads |
+| B4 | Repositories | `openshell/` contract: `image/`, `policy.yaml`, `run`; Time and the Rust template | Time serves from its `openshell/run`; installation copies of Time policy removed |
+| B5 | Installation | Base policy; default factory sandbox size; base branch; soft caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
 | B6 | Installation | Log collector (Vector, 1 s file discovery, persistent checkpoints) and log store (VictoriaLogs) for all container output | A sandbox's build and server output survive its restart and are queryable by sandbox |
-| B7 | Installation, Hub | BuildKit (user-namespace variant) with persistent cache and GC limits; Hub runs `buildctl --local` on a checkout of `openshell/image/`; local OCI registry (Distribution, persistent volume) with the node's `registries.yaml` entry; image key | An environment change builds once; a code push builds no image; identical environments share one digest |
-| B8 | Hub | Factory-sandbox reconciler: create with the fixed start command, Lore provider (token exchange of a per-instance credential for the latest pusher, replaced on each push, revoked on deletion) and registration provider; stop/start on push; delete; restart policy `always`, so OpenShell restores sandboxes after infrastructure restarts; serving revision from the registered software version; owner from the Lore branch creator; network-only live reload; provider callbacks name the instance and wake it. Remove the helper and registration housekeeping | Three branches of Time serving at once; disable and branch deletion remove their sandboxes; a node reboot returns them |
-| B9 | Hub | Selection and `uses` resolution; tool-list changes only for affected connections | Mixed-selection probe |
-| B10 | Hub, SDK, new repository | Delegated management API and management MCP version 1 (`status`, `wait`, `logs`, `restart`, `select`) | A fixture caller uses each tool on a user's behalf |
+| B7 | Installation, Hub | BuildKit (user-namespace variant) with persistent cache and GC limits; Hub runs `buildctl --local` on a checkout of `openshell/image/` read as the pusher; local OCI registry (Distribution, persistent volume) with the node's `registries.yaml` entry | An image change builds once; an unchanged image returns the same digest |
+| B8 | Hub | Factory-sandbox reconciler. Prepare without side effects: read `openshell/` as the pusher, build, get the digest. Commit: ensure the data environment, replace the Lore credential (token exchange of a per-instance credential for the latest pusher, revoked on deletion), create on first push or digest change, otherwise set the policy and restart. Registration provider; restart policy `always`; serving revision from the registered software version; delete when the branch is deleted or archived or `openshell/run` is removed; `failed{stage, message}` on the instance; soft-cap warning. Remove the helper and registration housekeeping | Three branches of Time serving at once; branch deletion removes its sandbox; a node reboot returns them |
+| B9 | Hub | Selection: a branch per server in any combination, base branch for the rest; per-chat state; tool-list changes only to that chat's connection | Two chats with different combinations |
+| B10 | Hub, new repository | Hub MCP server version 1 (`status` with `wait`, `logs`, `select`, `watch`) through Hub's calls between servers; Hub's user APIs behind it | A fixture caller uses each tool on a user's behalf |
 | B11 | OpenCode | Per-chat selection; connection named `veoveo` | Two chats in one directory with different selections |
 
 Stage 1 proof: two Time branches in two data environments; two chats in one
-directory; push-driven updates; a push that fails to build and a push whose server
-crashes at startup, each diagnosed by the coding agent using only the management
-tools and fixed by a following push; recovery after a Hub restart, a Lore reconnect
-and a node reboot. Record the interruption per push: stop, start, fetch,
-incremental build and server startup.
+directory with different combinations; push-driven updates; a push that fails to
+build and a push whose server crashes at startup, each diagnosed by the coding agent
+using only the Hub MCP server and fixed by a following push; recovery after a Hub
+restart, a Lore reconnect and a node reboot. Record the interruption per push: stop,
+start, fetch, incremental build and server startup.
 
-Stage 2 — B12: Embedding MCP and its GPU runtime through `uses`, including
-cross-workspace routing throughput and GPU release on stop.
+Separate track — Lore catalog: B3a, inbound gRPC on service routes (OpenShell
+`a6ed0ab41` on branch `inbound-grpc-service-routes`, passed with a test gateway),
+and B3b, Hub serving `UrcAuthApi.LookupUserPermissions` from `lore.assignments` with
+Lore's `auth_service` catalog at that route. Done when `lore repository list` shows
+exactly a caller's granted repositories and a caller with none sees none. B15,
+Computers using the Stage 1 Lore provider mechanism instead of a separate device
+login, follows the same track.
 
-Stage 3 — B13: management version 2 (repository creation and sharing, cleanup).
-B14: caps, sleep and wake, never sleeping an instance with unfinished Tasks except webhook-parked ones. B15: Computers use the Stage 1 Lore provider mechanism
-instead of a separate device login.
+Stage 2 — B12: services and `uses`, with the Embedding MCP and its GPU runtime,
+cross-workspace routing throughput and GPU release on stop; GPU placement, mounts
+and repository-owned sizes; provider callbacks naming the instance.
+
+Stage 3 — B13: Hub MCP server version 2 (repository creation and sharing, cleanup;
+fix delegated administrative authorization when a tool first needs it). B14: sleep
+and wake, never sleeping an instance with unfinished Tasks except webhook-parked
+ones.
 
 B16: final acceptance after deterministic, component, integration and deployed
 probes pass, then one `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` scenario.
@@ -1339,24 +1351,24 @@ Measured by disposable `kubectl` probes, 2026-10-21/22:
 | Inbound gRPC with the OpenShell change (B3a) | Test gateway rolled out in 2.8 s, back in 2.9 s. Reflection, `Health/Check` and the `Health/Watch` stream reached the sandbox; HTTP routes and the gateway CLI unchanged. lore-server's `auth_service` catalog, pointed at a `UrcAuthApi` server in a sandbox, listed exactly its two repositories, about 75 ms per call; with `bearer-passthrough` the caller's token arrived (1840 bytes), with `strip` it did not. Lore's NetworkPolicy first blocked the gateway (50 s deadline) |
 | Existing sandbox pods (read-only) | Workload pods Ready 2–18 s after creation, GPU runtime 267 s, supervisors 3–18 s; pod level only |
 
-Still to confirm, in order of risk to executing the plan:
+Still to validate, in order of risk to executing the plan:
 
 | # | Question | Status | How | Needs |
 |---|---|---|---|---|
-| 1 | Lore reaching `LookupUserPermissions` in Hub | Path proven with a test gateway and lore-server's own client. The OpenShell change is uncommitted (122 unit and 2 integration tests pass, clippy clean); in-pod name resolution used a hostAlias | Commit and review the change, build the installation's gateway from it, choose how Lore's pod resolves Hub's route, then repeat the listing against Hub | B3a, B3b |
-| 2 | Provider callbacks reach the right branch instance | Design gap: today's callback path names only the server | Two Media branch instances with the fake provider; each webhook settles its own instance's Task and wakes it | B8 and a Media/Hub routing change |
-| 3 | Data-environment databases | Cloning as Hub's role proven; CNPG to be replaced so the role can hold `CREATEDB` | Two environments with Tasks and listeners on separate databases | B1, B2 |
-| 4 | Connection plan | Decided | An idle instance holds one connection; wakes arrive after a reconnect | B1, B2 |
-| 5 | Sleep without lost wakes | Rules decided | A call, a webhook and a due schedule each wake an instance or prevent its sleep | B14 |
-| 6 | A refreshing Lore provider | Decided: the latest pusher's grant through OpenShell's native token exchange; only a static token proven so far | Hub mints a per-instance credential for the pusher; OpenShell exchanges it at Hub for Lore tokens across a restart and after the credential is replaced on push | B8 |
-| 7 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
-| 8 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
-| 9 | Reboot recovery, superseding pushes, deletion | Node restart measured: OpenShell restores `always` sandboxes itself, `never` ones stay down | Restart policy decided (`always`); remaining: push during a build; delete or disable a branch | B8 |
-| 10 | Per-chat selection | Not tested | Two chats in one directory | B9, B11 |
-| 11 | Lore stream closing on lag | Not tested | Gap tests | B3 |
-| 12 | Delegated administrative access | Not tested | Component test | B0 |
-| 13 | Collector as installation infrastructure | Settings known | Persistent volume, retention, Hub queries | B6 |
-| 14 | Shared GPU service through `uses` | Not tested | Relay throughput; GPU released on stop | Stage 2 |
+| 1 | Per-chat selection in OpenCode | Not tested; OpenCode's connection is per Location | Two chats in one directory with different tool lists | B9, B11 |
+| 2 | Data environments | Cloning as Hub's role proven; design under review | Two environments with Tasks and listeners on separate databases | B1, B2 |
+| 3 | A refreshing Lore provider | Decided: the latest pusher's grant through OpenShell's native token exchange; only a static token proven so far | Hub mints a per-instance credential for the pusher; OpenShell exchanges it at Hub for Lore tokens across a restart and after the credential is replaced on push | B8 |
+| 4 | First registration through a provider | Not tested | Registers on first start and resumes after restarts | B8 |
+| 5 | Watching as a person | Not tested | Subscription as the watcher; a watcher who loses access shows in `status` | B3 |
+| 6 | Lore stream closing on lag | Not tested | Gap tests | B3 |
+| 7 | Superseding pushes and deletion | Node restart measured | A push during a build; a deleted branch removes its sandbox | B8 |
+| 8 | Creating and migrating an empty environment database | Not measured | Kernel migrations plus Time's on a new database | B1 |
+| 9 | Object keys across environments | Not checked | Read Artifact's and Media's key scheme: one shared bucket or one per environment | Data-environment review |
+| 10 | What a user sees when the node is full | Resource admission enabled; behaviour not observed | A sandbox larger than the node | B8 |
+| 11 | End-to-end push latency | Partly measured: restart about 7 s plus a 32 s Time build plus startup | A real Lore sync, migrations, registration and readiness | Stage 1 |
+| 12 | Collector as installation infrastructure | Settings known | Persistent volume, retention, queries from the Hub MCP server | B6 |
+| 13 | Lore reaching `LookupUserPermissions` in Hub | Path proven with a test gateway and lore-server's own client | Review the OpenShell change, build the installation's gateway from it, choose how Lore's pod resolves Hub's route, then repeat the listing against Hub | Separate track |
+| 14 | Provider callbacks and a shared GPU service | Design gaps | Two Media branch instances with the fake provider; relay throughput; GPU released on stop | Stage 2 |
 
 Test access to the gateway uses an Entra device login through the existing public
 CLI registration, as an account holding `openshell-admin` and `openshell:all`, in a
@@ -1367,11 +1379,12 @@ not the product path, where Hub uses its own native-control identity.
 Found by the probes: `lore repository list` is empty for every caller because the
 installation uses Lore's server-side catalog with `baseline_access = "denied"`.
 Lore's permission system governs access to each repository, not listing; lore-server
-lists per caller only through the `auth_service` catalog. B3b adds that: Hub answers
-`LookupUserPermissions` from its grants. This reverses the factory-era choice in
-[LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not to run a catalog service.
-The gRPC path for it needs the OpenShell change in B3a; with that change, a test
-gateway carried lore-server's catalog call into a sandbox with the caller's token.
+lists per caller only through the `auth_service` catalog. The separate Lore catalog
+track adds that: Hub answers `LookupUserPermissions` from its grants. This reverses
+the factory-era choice in [LORE_DIRECT_OIDC_PLAN.md](LORE_DIRECT_OIDC_PLAN.md) not
+to run a catalog service. The gRPC path for it needs the OpenShell change; with that
+change, a test gateway carried lore-server's catalog call into a sandbox with the
+caller's token.
 
 The three-view diagram stays unchanged until this workflow is implemented and
 qualified.
