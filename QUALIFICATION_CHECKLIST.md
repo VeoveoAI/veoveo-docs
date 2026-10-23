@@ -19,7 +19,7 @@ Rules:
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
 (single host), Hub `fd822bd`, Lore `bd9da212`, OpenShell `a6ed0ab41`, installation
-`a10883a`, console `56257e8`.
+`03d803f`, console `56257e8`, Artifact `b7bbde9`, Media `d7ae458`, Embedding `1323732`.
 
 ## A. Identity and administration
 
@@ -41,7 +41,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | B4 | A new assignment works at once | An admin assigns a repository, then the person clones it | Clone succeeds within seconds, without waiting for the 300 s token lifetime | component; pending live |
 | B5 | A removed assignment stops at once | An admin removes it, then the person clones again | Refused | component; pending live |
 | B6 | Lore access survives a restart | Restart the Computer, then `lore repository list` | exit 0 | pending |
-| B7 | Artifact objects through the single host | From the Computer: Artifact upload and download via `veoveo.bioma.ai/artifacts/…` | Byte counts and SHA-256 match; no other hostname used | pending (#11) |
+| B7 | Artifact objects through the single host | From the Computer: Artifact upload and download via `veoveo.bioma.ai/artifacts/…` | Byte counts and SHA-256 match; no other hostname used | proven from outside a Computer 2026-10-23 (administrator via `veoveo-hub-sdk-cli`: 1 MiB, PUT 200 in 0.93 s and GET 200 in 0.41 s, both on `veoveo.bioma.ai/artifacts/`, SHA-256 equal, artifact `01a16960-cd6e…`); pending from a Computer |
 | B8 | Many repositories in one token | An owner with many assignments | Clone works; find the 16 KiB header limit (about 120 repositories estimated) | pending |
 | B9 | Large push through the proxy | Push one file over 16 MiB, and about 500 files | Push succeeds; time it | pending |
 | B10 | The platform puts nothing in the home | A fresh Computer: `echo ~` and `ls -A ~` | `~` is `/sandbox`; only OpenShell's `.workspace-initialized` and what programs created themselves | pending (#13) |
@@ -82,8 +82,8 @@ startup times, from `console__logs` timestamps.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| E1 | Services registered and routed | `veoveo-hub-sdk-cli tools` as the administrator | `artifact__*`, `media__*`, `embedding__*`, `console__*` listed | proven 2026-10-23 (15 + 3 + 1 + 4 tools) |
-| E2 | A service registers again after its registration is abandoned | Keep the service down past Hub's 60 s registration grace while Hub runs, then let it start (a Hub outage alone abandons nothing) | It registers again by itself with a new client; its tools route; no manual file moves | proven 2026-10-23 for Artifact (`artifact-01a1668e…` → `artifact-01a1674370…`, 15 tools route); Media `d7ae458` and Embedding `1323732` pending deployment |
+| E1 | Services registered and routed | `veoveo-hub-sdk-cli tools` as the administrator | `artifact__*`, `media__*`, `embedding__*`, `console__*` listed | proven 2026-10-23 (15 + 3 + 1 + 5 tools after Artifact `b7bbde9`, Media `d7ae458`, Embedding `1323732`) |
+| E2 | A service registers again after its registration is abandoned | Keep the service down past Hub's 60 s registration grace while Hub runs, then let it start (a Hub outage alone abandons nothing) | It registers again by itself with a new client; its tools route; no manual file moves | proven 2026-10-23: Artifact (`artifact-01a1668e…` → `artifact-01a1674370…`); Media `d7ae458` and Embedding `1323732` stopped 100 s and 104 s, registered again 3.3 s after start with new clients; all their tools listed |
 | E3 | Embedding runtime on the GPU | Embedding `/readyz` | `ready` through the runtime | proven 2026-10-23 |
 | E4 | Media through its fixture provider | One Media call | Routed and stored; the output is synthetic fixture data | pending |
 
