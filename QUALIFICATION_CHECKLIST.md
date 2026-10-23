@@ -46,7 +46,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | B9 | Large push through the proxy | Push one file over 16 MiB, and about 500 files | Push succeeds; time it | pending |
 | B10 | The platform puts nothing in the home | A fresh Computer: `echo ~` and `ls -A ~` | `~` is `/sandbox`; only OpenShell's `.openshell-initialized` and what programs created themselves | image proven 2026-10-23 (a sandbox from `computer-v1` `d9c7feb`: `~` = `/sandbox`, only `.openshell-initialized`); the home root is world-writable (`2777`), to fix; pending through Hub |
 | B11 | Restart keeps the home | Create a file, an unpushed Lore change and an OpenCode session; restart | All three present; same URL; only running programs and `/tmp` gone; time it | OpenShell proven 2026-10-23 (keep-delete 1 s, same claim UID; recreate 3 s, adopted, file intact, seed skipped); pending through Hub (part B) |
-| B12 | Any client learns of a new version | Publish a template with a release note | `console__computer`'s description changes mid-session; the call reports running, current and what's new; the same status over HTTP from a shell in the Computer; the start page lists it | pending (#13) |
+| B12 | Any client learns of a new version | Publish a template with a release note | `console__computer`'s description changes mid-session; the call reports running, current and what's new; the same status over HTTP from a shell in the Computer; the start page lists it | partly proven 2026-10-23: `/computer/version` returns version and summary only; `console__computer` lists the current version; pending: a mid-session description change, status from a shell in a Computer, the start page |
 | B13 | An idle Computer is collected | Leave it idle past `computers.collectAfter`, then enter | Sandbox gone, home kept; entry creates the current version; what's new shown once | pending (#13) |
 | B14 | A failed new version is diagnosable | Publish a template whose image cannot start, then restart | The cause is shown; the previous version stays recorded; the home is intact | pending (#13) |
 | B15 | Restart is quick | Measure stop, create and first page | Seconds, not the 101–160 s stops measured 2026-10-23 | pending (#13) |
@@ -96,7 +96,7 @@ startup times, from `console__logs` timestamps.
 | F3 | Script clients are not blocked | Python default User-Agent to `/oauth/token` | Hub answers (JSON 400), not Cloudflare 403 1010 | proven 2026-10-23 |
 | F4 | A config change needs no sandbox recreation | Rerun Hub's config seed on the same claim, then restart Hub | Files replaced; the claim and sandbox are kept | component (installation `0311a69`); pending live |
 | F5 | Hub's Lore CLI trusts Lore's TLS | A factory watch reads `openshell/` | Read succeeds (Hub `4d639af`) | pending (with D1) |
-| F6 | Fresh install order | Follow the installation docs from empty | Lore is Ready after Hub serves its issuer; the Computer template exists before Hub starts | pending (next fresh install) |
+| F6 | Fresh install order | Follow the installation docs from empty | Lore is Ready after Hub serves its issuer; Hub needs no Computer template at start (read at entry since #13 part B; deleting `computer-v1` gave 503 with the cause and recreating it served again in 2.4 s with no Hub restart, 2026-10-23) | pending (next fresh install) |
 
 ## G. Model-driven acceptance (last)
 

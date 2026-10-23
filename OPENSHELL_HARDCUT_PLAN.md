@@ -1513,8 +1513,13 @@ runs as the sandbox user and cannot change it.
   is sequential, and a 60 s step timeout turns a slow Pod into a failed stop and a retry. Revisit only with a
   reproduction under kubelet `-v=2`; B15 measures restart.
 
-Part B (steps 3–5) is pushed on `computer-versions`: SDK `a930cc6`, Hub `00a1749`, console `357ad9e`, installation
-`fa43e47`; Linux gates and deployment are next.
+Part B (steps 3–5) is deployed on the box, 2026-10-23, from `computer-versions`: SDK `a930cc6`, Hub `00a1749`, console
+`357ad9e`, installation `fa43e47` (gates: SDK 249, Hub 317, console 26 passed). Measured: `GET /computer/version`
+200 in 215 ms with only `version` (`223df6dc9a5c`) and `summary`; with template `computer-v1` deleted it answered 503
+with the cause within 1.8 s and Hub kept running; recreated, 200 again within 2.4 s with the same version (the note
+is not part of it); `console__computer` is listed with the current version in its description, and as the
+administrator on profile `local` it answers 401, as designed. To fix: Hub logs no cause for the 503 (only a bare
+tower_http ERROR), and the description doubles a period.
 - Version: the first 12 hex digits of a SHA-256 over the template spec (environment sorted), OpenShell's canonical
   policy JSON and the Computer settings that reach the sandbox. Release note: template annotation
   `veoveo.ai/release-note`, its first line the summary. What's new always lists the image change and the network
