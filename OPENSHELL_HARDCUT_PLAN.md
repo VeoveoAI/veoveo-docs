@@ -1485,8 +1485,17 @@ Work, in order:
    session start and mention an update in a line or two. When an agent restarts its own Computer, Hub answers
    first, then restarts.
 
-Part A (steps 1 and 2) is committed on `computer-home`: installation `d9c7feb`, Hub `1a9bad0`, OpenShell
-`180b9e5a7`; Linux gates and the deployed probe are next.
+Part A (steps 1 and 2) is deployed on the box, 2026-10-23, from `computer-home`: installation `d9c7feb`, Hub `346a733`
+(`1a9bad0` plus the advisory lock bump), OpenShell gateway and CLI `7b3c536c3` (`180b9e5a7` plus a refreshed test
+lock and a dash-portable test). Gates: Hub check 309 passed; OpenShell lint clean, 8472 tests passed and the four
+failures recorded below, helm 342 + 7. The handbook was published live through the admin route (revision
+`gcp-01a169a4…`), since a restart never republishes the seed; the seed file now equals the active revision.
+Measured: a keep-delete took 1 s and kept the claim's UID; recreating the name took 3 s and the new resource adopted the
+claim with the file intact and the seed skipped; an ordinary delete removed it in 3 s. A sandbox from `computer-v1`
+had `HOME=/sandbox` and only `.openshell-initialized` in it.
+Regression found live: the mounted `/sandbox` root is `root:10001` `2777` (world-writable), from the volume
+provisioner and `fsGroup`; with `HOME=/sandbox` that root is the home. To fix before part B deploys; OpenShell's seed
+runs as the sandbox user and cannot change it.
 - Installation: the image sets `HOME=/sandbox` and ships nothing in it; `computer/instructions.md` is the
   handbook's one source, published into `computers.handbook` with `jq --rawfile`; the dead personal repository
   default, the `computer-browser` Lore audience and Hub's `ExecSandbox` rule go.
