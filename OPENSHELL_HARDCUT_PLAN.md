@@ -1610,6 +1610,15 @@ Root causes and fixes (coder, 2026-10-23; local tests and the box's logs, not ye
 - Broker test flakes fixed at the root (`9081db5e9`): a probe descriptor no other test can reuse, and listener
   lifetime tests in their own process.
 
+Part C (collection) is pushed on `collection`: OpenShell `a52a9110d`, Hub `2dcd25a` (OpenShell pin `6aa54e4`),
+installation `22fdc5a`. OpenShell records `SandboxStatus.last_activity_time` from the supervisor's 10 s activity
+summaries when allowed traffic outweighs denials (inbound forwards never count), in the sandbox row, at most once a
+minute. Hub records each forwarded browser request in memory; a sweep every 5 minutes collects a Ready Computer with
+no operation running whose browser and sandbox are both idle for `computers.collectAfterSeconds` (absent: never;
+counted from no earlier than Hub's start), through `Provisioner::remove` (delete keeping the workspace), and records
+`collected_at` (migration `0025`); the next entry creates the current version and shows the update notice. The
+gateway must roll out before Hub. Known limit: the browser record is per process, fine for one Hub replica.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
