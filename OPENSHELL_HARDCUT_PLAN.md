@@ -1589,6 +1589,27 @@ only `provider_env_changed`), and OpenCode did not reopen the stream in 15 minut
 version notice would not reach it mid-session. New connections work (curl 14 ms). The agent container also logs a
 burst of 12 `network notification denied … EINPROGRESS` every 2 minutes from one thread. With the coder.
 
+Root causes and fixes (coder, 2026-10-23; local tests and the box's logs, not yet deployed):
+- Restart failure: Hub awaited `DeleteSandbox` for one 30 s deadline, but the gateway finishes an accepted delete in a
+  worker after the request ends. Hub `b5877ab` waits for the sandbox's absence (at most 300 s) and names what still
+  runs on timeout. The factory's delete gets the same fix.
+- 38 s Computer stop: the boundary (`openshell-sandbox --bootstrap`, the workload pod's PID 1) SIGKILLed the workload
+  on SIGTERM and dropped its runtime before the task recording the exit ran, then waited forever on the blocked
+  `Wait` thread; kubelet killed it at the 30 s grace, and OpenCode never got SIGTERM. OpenShell `fdfa0fcc5` ends the
+  workload as supervisor-recovery expiry already does (SIGCONT, SIGTERM, SIGKILL after 10 s) and waits for the
+  recorded exit; about 105 ms in the test. Services showed the same 31 s restarts.
+- Lost listen stream: the gateway refreshes `LORE_ACCESS_TOKEN` every 4–5 minutes; any provider-env change rebuilds
+  the supervisor's policy runtime as a new generation, and relays close every L7 tunnel on a new generation, though
+  the relay reads credentials per request. Decided: a value-only credential refresh installs in place with no new
+  generation; policy, middleware, attachment, binding, revocation and quarantine changes still publish one and close
+  tunnels. OpenCode's MCP client opened `subscriptions/listen` once and never again; OpenCode `cd97c9b` re-listens
+  after any close it did not make, with backoff, and reloads the covered lists.
+- The 2-minute warnings: Bun's HTTP client thread probing local model servers (Ollama, LM Studio, vLLM) every 30 s;
+  the broker answered the non-blocking `connect` correctly with EINPROGRESS but logged it as denied (`1179b7dd7`).
+  The Computer's `opencode.json` disables those providers.
+- Broker test flakes fixed at the root (`9081db5e9`): a probe descriptor no other test can reuse, and listener
+  lifetime tests in their own process.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
