@@ -1310,6 +1310,7 @@ Landed on `main`, 2026-10-22 and 2026-10-23:
 | Hub SDK re-pin | Hub `fa20446` | The calls test proves Hub accepts a permission-less exchange at the caller's profile and serves the caller's selection route with it. Linux gate 289 passed |
 | Hub step 6, Lore | Hub `3591e25`, `c264c47`, `5c47dc8`, `dfa54a3` | Per-instance Lore client: identifier the deployment ID, only its secret's digest stored; the token endpoint issues the latest pusher's repository-scoped Lore token, checked against that person's current assignment on every issue, with no scope and no grant of its own; a new secret and Lore provider for each new sandbox, rotated before every creation and restart; the start command passes the provider placeholder to `lore --access-token` with the deployment ID as identity. `PUT /factory/{profile}/watch?repository=` subscribes as the caller and records the watcher (403 on Lore's refusal or no assignment); one follower per watched repository resubscribes whenever a subscription ends, including Lore's `ABORTED`; every subscription re-checks every branch, prepares an unapplied latest revision as its committer and removes a deleted branch's instance; `openshell/` read at the pushed revision through the revision tree and Lore's command line, shipped in Hub's image from the `lore` build context; watches resume at startup. Migration `0020`. Linux gate 300 passed; the catalog-refresh deadline test runs alone (`dfa54a3`: in parallel it missed its deadline in two of three runs) |
 | Hub policy change, Lore CLI trust | Hub `bf5dbcf`, `4d639af`, `d3c1641` | A push compares the image and the policy OpenShell recorded for the sandbox (canonical at creation, the form Hub composes) with the built image and base plus repository policy: both equal, stop and start; either changed, recreate. `UpdateConfig` is no longer called, so Hub's identity needs no `config:write`; a refused repository policy is `failed{stage: create}` and leaves the sandbox. Hub's Lore command line keeps `SSL_CERT_FILE`/`SSL_CERT_DIR` through its cleared environment. The browser-session test uses the default 60 s registration grace (at 5 s it lost Ledger's registration under load in two of three Linux runs). Linux gate 302 passed |
+| B15 Computer Lore access | Lore `bd9da212`; Hub `e365584`…`328c5b4`; installation `c3e9c53`…`1d9ed46` | One Hub login gives a Computer Lore access as its owner: Hub registers a client per Computer (only its secret's digest stored) whose client-credentials grant issues the owner's token for every assigned repository; the gateway refreshes it through the shared global profile `vv-lore` and the sandbox sees only a placeholder in `LORE_ACCESS_TOKEN`, with `LORE_IDENTITY` the owner. Lore's CLI reads both variables when the flags are absent; factory start commands rely on them too. An assignment change renews the affected owners' Computer credentials at once (migration `0022` claims each activation once per installation). Linux gate 310 passed. Live: OpenShell substitutes the placeholder in Lore's gRPC traffic (`lore repository list` from a Computer with the placeholder and identity flags, exit 0) |
 | Installation for the reinstall | installation `fa762d0` | Hub example with `factory` and `execution`; Hub policy with `DeleteSandbox`, `DeleteProvider` and BuildKit; base policy in Hub's claim; global factory profiles; console's platform-sandbox inputs; PostgreSQL CA in the platform roots; every Veoveo image from the local registry; Time's fixed sandbox files, the prepared Time factory and `lore-factory` removed; factory base SDK CLI `b230475`. Offline only: YAML and JSON parse, policies pass OpenShell `a6ed0ab41`'s validator, the chart renders |
 | B5 base policy and profiles | installation `7f73ce1` | Linux: both profiles lint; the gateway accepted the policy; the open rule coexists with Hub's inspected endpoint |
 | B5 removal | installation `c502ba5` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
@@ -1394,6 +1395,26 @@ Reinstall decisions, 2026-10-22 and 2026-10-23:
   OpenShell gateway, supervisor and sandbox runtime from `a6ed0ab41`; no image-pull
   Secret remains. Older receipts in this plan name the earlier external registry as
   history.
+
+Friction fixes approved by the user (2026-10-23), in order; no gate stays unless it is necessary:
+
+- #12 A page load of an unavailable Computer redirects to `/computer`, which repairs it, instead of a 503 page.
+- #7 Configuration seeds replace files in their claim, so a config change needs no sandbox recreation.
+- #10 Install order: Lore is Ready only after Hub serves its issuer.
+- #2 Artifact, Media and Embedding move to SDK `b230475`, which registers again after a Hub outage.
+- #6 Platform administration is the Entra `administrator` app role: one installation rule allows `admin_read` and
+  `admin_write` for that role; Hub's `admin` installation role and its risks govern server tool permissions only.
+- #1 Whoever creates a repository owns it: console `create_repository` and Hub `POST /lore/{profile}/repositories`
+  create it in Lore as the caller, register it with the caller's assignment and wait for the caller's renewal.
+- #3 Named environments, their enrollment step and the `veoveo-environment` header are removed.
+- #11 One host: Artifact's S3 objects are served at `veoveo.bioma.ai/artifacts/` and `veoveo-objects.bioma.ai` goes.
+- #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh).
+- #9 Done: Cloudflare Browser Integrity Check is off for `veoveo.bioma.ai` by a Configuration Rule.
+- #4, #5 Done with B15: immediate renewal; no Lore device login in Computers.
+
+Reinstall lessons: a Computer template must exist before Hub starts, because Hub reads it at startup; replacing a
+claim under a sandbox needs a new sandbox, because admission pins each claim's identity; a breaking control-plane
+contract resets the control-plane tables, and Hub then seeds from its file.
 
 Left as they are: `veoveo-template-installation/openshell/README.md` and
 `REFERENCE.md` keep their historical Mac and Docker pins and commands, which are not
