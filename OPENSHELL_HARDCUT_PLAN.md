@@ -18,7 +18,9 @@ performance limits.
 
 **Next slice, agreed with the user on 2026-10-22:**
 [factory sandboxes and dynamic selection](#agreed-slice--factory-sandboxes-and-dynamic-selection).
-Implementation has not started; no source, deployment or diagram change has been made for it.
+Implementation landed on `main` (Hub steps 1–6, SDK, console, Lore, OpenShell and the
+installation inputs); deployment pending: the K3s box is reinstalled on this stack
+next. The diagram stays unchanged until the workflow is qualified.
 
 The user-approved infrastructure target is
 [K3s with dynamic native workloads](LORE_OPENSHELL_INTEGRATION.md#full-native-openshell-management-plan),
@@ -1260,8 +1262,10 @@ Source-test this change on Mac, then prove it on the Linux deployment.
 
 ### Agreed Slice — Factory Sandboxes And Dynamic Selection
 
-Status: design agreed with the user on 2026-10-22; implementation has not started. No source, deployment or diagram
-change has been made for it. Architecture, recorded decisions and verification:
+Status: design agreed with the user on 2026-10-22; implementation landed on `main`
+(table below); deployment pending: the reinstall of the K3s box on this stack is
+next, and nothing of it is deployed or qualified yet. The diagram stays unchanged
+until the workflow is qualified. Architecture, recorded decisions and verification:
 [factory sandboxes and dynamic selection](LORE_OPENSHELL_INTEGRATION.md#factory-sandboxes-and-dynamic-selection).
 
 Review method: Claude Opus 5.5 as coordinator, with read-only exploration subagents
@@ -1283,7 +1287,7 @@ and the instance owner.
 
 Stage 1 proves the whole loop with Time.
 
-Landed on `main` and pushed, 2026-10-22:
+Landed on `main`, 2026-10-22 and 2026-10-23:
 
 | Piece | Commit | Evidence |
 |---|---|---|
@@ -1304,6 +1308,8 @@ Landed on `main` and pushed, 2026-10-22:
 | SDK `calls_hub` | SDK `b230475` | A server may declare that it calls Hub's own routes for its caller; the token-exchange grant follows; `HubClient::hub_bearer()` exchanges for no permissions at the caller's profile. Linux gate 248 passed |
 | B10 `console` v1 | `veoveo-mcp-console` `6b07017`…`2b93b8d` | `console__status`, `console__logs`, `console__select`, `console__watch` over Hub's routes as the caller; logs by `openshell.ai/boundary-pair`; no tables. Linux gate 23 passed; LogsQL query checked against VictoriaLogs `v1.53.0` with synthetic records |
 | Hub SDK re-pin | Hub `fa20446` | The calls test proves Hub accepts a permission-less exchange at the caller's profile and serves the caller's selection route with it. Linux gate 289 passed |
+| Hub step 6, Lore | Hub `3591e25`, `c264c47`, `5c47dc8`, `dfa54a3` | Per-instance Lore client: identifier the deployment ID, only its secret's digest stored; the token endpoint issues the latest pusher's repository-scoped Lore token, checked against that person's current assignment on every issue, with no scope and no grant of its own; a new secret and Lore provider for each new sandbox, rotated before every creation and restart; the start command passes the provider placeholder to `lore --access-token` with the deployment ID as identity. `PUT /factory/{profile}/watch?repository=` subscribes as the caller and records the watcher (403 on Lore's refusal or no assignment); one follower per watched repository resubscribes whenever a subscription ends, including Lore's `ABORTED`; every subscription re-checks every branch, prepares an unapplied latest revision as its committer and removes a deleted branch's instance; `openshell/` read at the pushed revision through the revision tree and Lore's command line, shipped in Hub's image from the `lore` build context; watches resume at startup. Migration `0020`. Linux gate 300 passed; the catalog-refresh deadline test runs alone (`dfa54a3`: in parallel it missed its deadline in two of three runs) |
+| Installation for the reinstall | installation `fa762d0` | Hub example with `factory` and `execution`; Hub policy with `DeleteSandbox`, `DeleteProvider` and BuildKit; base policy in Hub's claim; global factory profiles; console's platform-sandbox inputs; PostgreSQL CA in the platform roots; every Veoveo image from the local registry; Time's fixed sandbox files, the prepared Time factory and `lore-factory` removed; factory base SDK CLI `b230475`. Offline only: YAML and JSON parse, policies pass OpenShell `a6ed0ab41`'s validator, the chart renders |
 | B5 base policy and profiles | installation `7f73ce1` | Linux: both profiles lint; the gateway accepted the policy; the open rule coexists with Hub's inspected endpoint |
 | B5 removal | installation `c502ba5` | The development image, `development-time-v1`, its driver config and the `veoveo-environment` helper removed; the Computer image, policies and handbook updated (467 lines removed) |
 | SDK resume | SDK `6c881e0` | 10 registration tests; Linux `docker build --target check .` passed in 237 s, 245 tests |
@@ -1314,10 +1320,10 @@ Landed on `main` and pushed, 2026-10-22:
 | B2 | Hub, Core, SDK | Per environment: `ensure_server` on its database before the registration transaction; that database's URL in the registration grant; the running-Task check of a delegated exchange queries the deployment's database; administrative Task cancel forwarded as MCP `tasks/cancel`; housekeeping skips provisioned deployments; drop after the sandboxes are deleted. No control database, user copying, permanent connections or `CONNECT` grants. Core and SDK texts that assume one database updated | One server serving two environments; a Task in each completes through Hub; a Task that ended can no longer act for its caller |
 | B3 | Lore, Hub | Stream closes on lag. Hub watches each repository as the person who turned it on and re-checks every branch on (re)subscription | Gap tests; a watcher who loses access shows in `status`; no periodic reads |
 | B4 | Repositories | `openshell/` contract: `image/` and `run`, with an optional `policy.yaml`; Time and the Rust template | Time serves from its `openshell/run`; installation copies of Time policy removed |
-| B5 | Installation | Base policy with the open `internet` rule (`**.*.*` plus two-label names in use, ports 80 and 443); default factory sandbox size; base branch; soft caps. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
+| B5 | Installation | Base policy with the open `internet` rule (`**.*.*` plus two-label names in use, ports 80 and 443); default factory sandbox size, base branch and soft caps as Hub control-plane values (`factory.cpu`, `factory.memory`, `factory.caps`, `execution.baseBranch`) seeded from the installation's Hub configuration. Remove the development image, `development-time-v1` and `runtimeTemplates` | One Rust workload launches from the base |
 | B6 | Installation | Log collector (Vector, 1 s file discovery, persistent checkpoints) and log store (VictoriaLogs) for all container output | A sandbox's build and server output survive its restart and are queryable by sandbox |
 | B7 | Installation, Hub | BuildKit (user-namespace variant) with persistent cache and GC limits; Hub runs `buildctl --local` on a checkout of `openshell/image/` read as the pusher; local OCI registry (Distribution, persistent volume) with the node's `registries.yaml` entry | An image change builds once; an unchanged image returns the same digest |
-| B8 | Hub | Factory-sandbox reconciler. Prepare without side effects: read `openshell/` as the pusher, build, get the digest. Commit: ensure the data environment, record the latest pusher on the instance's Lore client (a per-instance Hub OAuth client whose client-credentials grant issues repository-scoped Lore tokens for that pusher, refreshed by the gateway's `oauth2-client-credentials` strategy, removed on deletion), create on first push or digest change, otherwise set the policy and restart. Registration provider with a per-instance token, valid while the instance exists, each registration replacing the previous one; restart policy `always`; serving revision as Hub's last applied revision once the server registers or resumes after the restart; delete when the branch is deleted or archived or `openshell/run` is removed; `failed{stage, message}` on the instance; soft-cap warning. Remove the helper and registration housekeeping | Three branches of Time serving at once; branch deletion removes its sandbox; a node reboot returns them |
+| B8 | Hub | Factory-sandbox reconciler. Prepare without side effects: read `openshell/` as the pusher, build, get the digest. Commit: ensure the data environment, record the latest pusher on the instance's Lore client (a per-instance Hub OAuth client whose client-credentials grant issues repository-scoped Lore tokens for that pusher, refreshed by the gateway's `oauth2-client-credentials` strategy, removed on deletion), create on first push or when the digest or the sandbox policy changed, otherwise restart; no `UpdateConfig`, so Hub needs no `config:write`. Registration provider with a per-instance token, valid while the instance exists, each registration replacing the previous one; restart policy `always`; serving revision as Hub's last applied revision once the server registers or resumes after the restart; delete when the branch is deleted or archived or `openshell/run` is removed; `failed{stage, message}` on the instance; soft-cap warning. Remove the helper and registration housekeeping | Three branches of Time serving at once; branch deletion removes its sandbox; a node reboot returns them |
 | B9 | Hub | Selection per user: a branch per server in any combination, base branch for the rest; tool-list change notification to that user's connections | A user's chats switch together; a down instance shows its cause |
 | B10 | Hub, `veoveo-mcp-console` | The Hub MCP server `console` version 1 (`status` with `wait`, `logs`, `select`, `watch`) through Hub's calls between servers; Hub's user APIs behind it | A fixture caller uses each tool on a user's behalf |
 | B11 | Installation | The Computers' MCP connection named `veoveo`; OpenCode itself unchanged | A Computer lists the Hub MCP server's and application tools on one connection |
@@ -1358,7 +1364,42 @@ the server registers or resumes after the restart; servers report none.
 Reinstall inputs found while building: the Lore CLI image that factory builds use
 as their `lore` context must be published where BuildKit pulls without
 credentials, the local registry, and pinned by digest in the factory
-configuration; Hub's own policy needs an endpoint for BuildKit on port 1234.
+configuration; Hub's own policy needs an endpoint for BuildKit on port 1234; Hub's
+image now needs the same Lore image as its `lore` build context (`5c47dc8`). All are
+in installation `fa762d0`.
+
+Reinstall decisions, 2026-10-22 and 2026-10-23:
+
+- D1 PostgreSQL trust in factory sandboxes: the PostgreSQL CA joins
+  `platform-destination-roots-v1`, and the server database URL drops `sslrootcert`,
+  keeping `sslmode=verify-full`. Pending a probe: that Core's sqlx native roots read
+  the injected `SSL_CERT_FILE` is an inference from source.
+- D2 No `config:write`: a push restarts when the sandbox policy is unchanged and
+  recreates the sandbox when it changed. The Hub change dropping `UpdateConfig` is
+  separate from step 6.
+- D3 Base branch `main`. D4 Factory default `cpu: "4"`, `memory: "8Gi"`, soft cap
+  `instancesPerUser: 4`, `enforce: false`; builds at that size are unmeasured.
+- D5 Console runs as a platform sandbox in `vv-services` on the namespace
+  registration path, with its own policy (Hub, PostgreSQL, the log store),
+  registration profile, state claim and driver config.
+- D6 Both factory profiles are global. D7 No `lore-factory` client or secret; it is
+  removed from the installation's docs and examples.
+- D8 Artifact, Media and Embedding keep their captured deployment IDs. D9 Managed
+  namespaces left after a native workspace delete are reported first and deleted
+  with `kubectl` only after the gateway reset. D10 The administrator pushes Time as a
+  person from their Computer. D11 The MCP connection stays `hub` for now (B11).
+- Images (confirmed by the user, 2026-10-23): our own (Veoveo-built) images come
+  only from the local registry; public third-party images stay at their upstream
+  registries, pinned by digest. Every Veoveo image is rebuilt from source, the
+  OpenShell gateway, supervisor and sandbox runtime from `a6ed0ab41`; no image-pull
+  Secret remains. Older receipts in this plan name the earlier external registry as
+  history.
+
+Left as they are: `veoveo-template-installation/openshell/README.md` and
+`REFERENCE.md` keep their historical Mac and Docker pins and commands, which are not
+the K3s path; B11 is not done, so `computer/opencode.json` still names the MCP
+connection `hub`. The console README's "Factory Instance" section is outside this
+pass; the integration doc records why console is not served as one.
 
 Box hygiene: each Linux `docker build --target check .` left about 30 GB of untagged
 images. On 2026-10-22 they filled the disk to 96%; Kubernetes tainted the node for

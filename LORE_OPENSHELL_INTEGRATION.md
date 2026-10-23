@@ -1979,8 +1979,11 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 
 ### Factory Sandboxes And Dynamic Selection
 
-Status: design agreed with the user on 2026-10-22. Implementation has not started; no source, deployment or diagram
-change has been made for it. Execution order and evidence gates are in the
+Status: design agreed with the user on 2026-10-22. Implementation landed on `main`
+(Hub steps 1–6 through `dfa54a3`, SDK `b230475`, console `2b93b8d`, Lore `e2f04c90`,
+OpenShell `a6ed0ab41`, the installation inputs); deployment is pending: the K3s box
+is reinstalled on this stack next. The diagram stays unchanged until the workflow is
+qualified. Execution order and evidence gates are in the
 [agreed slice](OPENSHELL_HARDCUT_PLAN.md#agreed-slice--factory-sandboxes-and-dynamic-selection).
 Review baseline: Hub `7c6240d`, SDK `52084ec`, Core `1dd9994`, OpenCode `c5fb626`,
 Lore `ff40bb21`, OpenShell `53e366581`, installation `b39015e`, Time `f5d3fb1`,
@@ -2012,7 +2015,7 @@ This direction supersedes for the branch workflow:
 | Factory sandbox | The one OpenShell sandbox of an instance. Its main program fetches that branch, builds it and serves it. It is reused by every push to the branch and never shared with another server, branch or version |
 | Data environment | The PostgreSQL database of a branch name, with the shared object store. It needs its own type name: `EnvironmentId` already identifies a routing composition |
 | Selection | Which instance of each server a user uses; held by Hub, not pushed |
-| Base branch | The installation's default branch for servers a selection does not name, for example `dev` |
+| Base branch | The installation's default branch for servers a selection does not name: `main` (decided 2026-10-22) |
 
 #### Decisions Recorded With The User
 
@@ -2066,6 +2069,12 @@ installation; a value that can change together with code belongs to the reposito
 | Root `Dockerfile` for release and CI builds, unchanged | Image builder, registry, log collector and the pinned `lore` build context |
 | | Platform components: Hub, Hub MCP server, Lore, PostgreSQL, SeaweedFS, OpenShell gateway, Computers |
 
+The default size, soft caps and base branch are installation values held in Hub's
+control plane (`factory.cpu`, `factory.memory`, `factory.caps`,
+`execution.baseBranch`), seeded from the installation's Hub configuration and
+changed through Hub's live control-plane route; no other installation file carries
+them.
+
 ```sh
 #!/bin/sh
 # veoveo-mcp-time/openshell/run
@@ -2108,7 +2117,11 @@ not name a registry.
 Every factory sandbox gets the installation's default size in Stage 1. OpenShell's
 sandbox templates cannot carry a per-branch image
 (`openshell/docs/how-it-works/sandboxes/templates.mdx:46`), so Hub passes CPU and
-memory on each create. A repository-owned size returns when a workload needs one,
+memory on each create, as limits. The reference installation uses `cpu: "4"` and
+`memory: "8Gi"` with a soft cap of four instances per user (decided 2026-10-22), so
+the Stage 1 proof's three branches fit beside the platform on the 32-CPU, 62.7-GiB
+node; the measured builds ran at 8 CPU and 16 GiB, and build times at the smaller
+size are unmeasured. A repository-owned size returns when a workload needs one,
 such as a GPU runtime in Stage 2.
 
 #### Push To Serving
@@ -2120,19 +2133,26 @@ such as a GPU runtime in Stage 2.
    [image builder](#image-builder) builds `openshell/image/` and returns the image
    digest; BuildKit's cache makes an unchanged image cost well under a second.
 3. Commit: Hub ensures the branch's data environment and replaces the instance's
-   Lore credential for the pusher. On the first push, or when the digest changed, it
-   creates the factory sandbox with the default size, the installation base policy
-   plus the repository policy, and restart policy `always`. Otherwise it sets the
-   policy and restarts the sandbox.
+   Lore credential for the pusher. On the first push, or when the digest or the
+   sandbox policy (the installation base policy plus the repository policy) changed,
+   it creates the factory sandbox with the default size, that policy and restart
+   policy `always`, replacing any previous one. Otherwise it restarts the sandbox.
+   Hub never changes a running sandbox's policy, so its OpenShell identity needs no
+   `config:write` (decided 2026-10-22; the Hub change that drops `UpdateConfig` lands
+   separately from step 6).
 4. The sandbox's fixed start command runs on every start: `lore clone <repository>
    /sandbox/src --branch <branch>` when no checkout exists yet, then
    `lore sync --reset <branch>@LATEST`, then `exec ./openshell/run` in the checkout on
-   the persistent disk. `--reset` discards local edits to tracked files and removes
+   the persistent disk. Each Lore command runs as
+   `lore --access-token "$LORE_AUTH_TOKEN" --identity "$VEOVEO_DEPLOYMENT_ID"`: the
+   token is the instance's Lore provider placeholder, and the identity only names the
+   checkout's local user (Hub `3591e25`). `--reset` discards local edits to tracked files and removes
    untracked files, except paths `.loreignore` lists; build output such as `target/`
    is listed there so its incremental cache survives every start. Hub supplies
    the server's settings as
    environment variables: `VEOVEO_DEPLOYMENT_ID`, `VEOVEO_PUBLIC_BASE_URL`,
-   `VEOVEO_HUB_ISSUER` and `VEOVEO_REGISTRATION_SECRET` (a provider placeholder);
+   `VEOVEO_HUB_ISSUER`, `VEOVEO_PORT` and `VEOVEO_REGISTRATION_SECRET` (a provider
+   placeholder);
    `openshell/run` sets anything server-specific, such as its key directory on the
    persistent disk. Output of every step is ordinary container output.
 5. Native start mounts the same persistent volume under the same sandbox name, works
@@ -2149,8 +2169,8 @@ such as a GPU runtime in Stage 2.
 
 | Change | Result |
 |---|---|
-| Code, `openshell/run` or `openshell/policy.yaml` | Policy set and restart; the sandbox fetches, builds and serves the new revision |
-| `openshell/image/` | New factory sandbox from the new digest; its disk cache starts empty |
+| Code or `openshell/run` | Restart; the sandbox fetches, builds and serves the new revision |
+| `openshell/image/` or `openshell/policy.yaml` | New factory sandbox from the new digest or policy; its disk cache starts empty |
 | `openshell/run` removed, or branch deleted or archived | Sandbox deleted; the data environment goes with the last instance of that branch name |
 | Crash or failed build | Retried by OpenShell with backoff up to every 3 min until the next push |
 | Infrastructure restart (node reboot, eviction) | OpenShell restores the sandbox (restart policy `always`; measured about 64 s after a node restart) |
@@ -2190,40 +2210,48 @@ handler already issues repository-scoped Lore tokens
 the Lore profile checks the person's current assignment on every issue
 (`src/bin/hub/contributions/lore/mod.rs:351-360`). The change is that an instance
 client issues for its recorded pusher and repository, so its requests carry no
-scope. The client has no repository assignment of its own. On each push Hub records the new pusher and rotates the provider
-credential; on deletion it removes the client. A pusher who loses access stops the
-branch's next sync with a clear error until someone with access pushes.
+scope. The client has no repository assignment of its own. Implemented in Hub
+`3591e25`: the client's identifier is the instance's deployment ID and only the
+digest of its secret is stored; each new sandbox gets a new client secret and a new
+Lore provider, and Hub rotates the provider's credential before every creation and
+restart. On each push Hub records the new pusher; on deletion it removes the client.
+A pusher who loses access stops the branch's next sync with a clear error until
+someone with access pushes. No installation-wide factory client or secret exists
+(decided 2026-10-22).
 
 The gateway keeps the client secret in its refresh custody and refreshes with its
 `oauth2-client-credentials` strategy, writing short-lived tokens into the provider
 behind a stable placeholder; the secret never enters the sandbox. That strategy runs
-against Hub on the node today (`vv-hub-native-control`, refreshed hourly) and is the
-one `vv-lore-time` documents for Lore (`veoveo-template-installation/computer/LORE_HUB.md:165-204`,
-there with a separate factory identity). Two other paths do not work: a refresh grant
+against Hub on the node today (`vv-hub-native-control`, refreshed hourly); each
+instance's Lore provider uses it through the installation's global profile
+`vv-factory-lore` (`veoveo-template-installation/openshell/providers/factory-lore.yaml`). Two other paths do not work: a refresh grant
 always issues a login token without repository rights
 (`src/bin/hub/oauth_grants/refresh.rs:250`), and OpenShell's profile `token_exchange`
 grant authenticates with the gateway's and the supervisor's SPIFFE identities
 (`openshell/docs/how-it-works/providers/profiles.mdx:611-616`), which Hub does not
 trust. The per-instance credential follows the same pattern as the first
 registration credential.
-The start command passes the placeholder to `lore --access-token`, with `--identity`
-for an opaque placeholder; OpenShell substitutes the real token into Lore's gRPC
-request headers on a `protocol: rest`, `enforcement: enforce` endpoint, the
-mechanism `factory-time.yaml` already uses with `vv-lore-time`. The proxy must trust
-Lore's server CA. Lore decides what the token permits. A probe on the node confirmed
+The start command passes the placeholder to `lore --access-token`, with the
+instance's deployment ID as `--identity`, which Lore's command line requires with a
+token it cannot read; OpenShell substitutes the real token into Lore's gRPC request
+headers on the profile's `protocol: rest`, `enforcement: enforce` endpoint. The proxy
+must trust Lore's server CA, which the platform roots carry. Lore decides what the token permits. A probe on the node confirmed
 it: the sandbox held only a placeholder and the clone succeeded.
 
-Hub reads `openshell/` with the pusher's identity through the same exchange and an
-exact-revision file read, as its existing Lore adapter does
-(`veoveo-hub/crates/veoveo-hub/src/bin/hub/activation/lore.rs:62-84`,
-`activation/lore_file.rs:14`).
+Hub reads `openshell/` at the pushed revision with the pusher's identity through the
+same exchange: the revision tree through its Lore client and the files through
+Lore's unchanged command line, `/usr/local/bin/lore` in Hub's image, which the
+installation supplies as Hub's `lore` build context (Hub `c264c47`, `5c47dc8`). Hub's
+policy admits Lore for both executables.
 
 Watching: Lore subscriptions are per repository, and each checks the subscriber's
 access (`lore/lore-server/src/grpc/notification_service.rs:73-92`). There is no
 installation-wide feed, and `local` is the only notification backend in this build
 (`lore-server/src/server.rs:1678-1690`; no plugin is registered). A person therefore
-turns a repository on once with the Hub MCP server's `watch`; Hub records them and
-subscribes as them, as its existing follow code does (`activation/lore.rs:96-122`).
+turns a repository on once with the Hub MCP server's `watch`
+(`PUT /factory/{profile}/watch?repository=`); Hub records them and subscribes as
+them, one follower per watched repository, and resumes every watch at startup (Hub
+`c264c47`).
 Lore checks access when the subscription starts and does not re-check an open
 stream, so a watcher who loses access is noticed at Hub's next subscription, after
 any reconnect or lag: it fails, `status` shows it, and anyone with access calls
@@ -2306,6 +2334,12 @@ Agents receive no Kubernetes, OpenShell or log-store credentials.
   and restarted no container (`KillMode=process`).
 - One BuildKit daemon and one registry serve every repository and branch in the
   installation.
+- Our own (Veoveo-built) images come only from that local registry; public
+  third-party images stay at their upstream registries, pinned by digest (confirmed
+  by the user, 2026-10-23). Every Veoveo platform image, the OpenShell gateway,
+  supervisor and sandbox runtime included, is rebuilt from source and published
+  under `veoveo/`; environment images live under `factory/`. The cluster holds no
+  image-pull Secret.
 
 #### Selection
 
@@ -2371,6 +2405,13 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   queries the deployment's database when needed, and administrative Task cancel
   (`src/bin/hub/admin/tasks.rs:66-127`), which is forwarded to the instance as
   MCP `tasks/cancel`.
+- Factory sandboxes trust PostgreSQL through the platform roots (decided
+  2026-10-22): the installation adds its PostgreSQL CA to
+  `platform-destination-roots-v1`, which the supervisor injects into every
+  workload's `SSL_CERT_FILE`, and the server database URL Hub copies into grants
+  keeps `sslmode=verify-full` without `sslrootcert`, a path factory sandboxes do not
+  have. That Core's sqlx client (`tls-rustls-ring-native-roots`) reads that file is an
+  inference from source; the first factory instance's database connection proves it.
 - Registration housekeeping must skip provisioned deployments: liveness only sees
   locks in the current database (`0100_kernel.sql:198-214`), so after its 60 s
   grace Hub would deregister every server in an environment.
@@ -2460,6 +2501,12 @@ Artifact `b53d15e`, Media `6a73e52`) and the empty-database probe below.
   exchanges the forwarded token for a permission-less token for Hub's user routes.
   Every server getting that exchange would let any pushed branch build change a
   user's selection or watch repositories as that user (decided 2026-10-22).
+- The Hub MCP server runs as the platform sandbox `console` in `vv-services`,
+  registered on the namespace path (decided 2026-10-22), because it is a platform
+  component and reads the log store. A console branch can still be built as a
+  factory instance, but its `logs` tool fails there: the base policy withholds the
+  log store, and adding it in a repository policy would let any branch read every
+  instance's output.
 - Users connect to one MCP connection named `veoveo`, which carries the Hub MCP
   server and every application MCP.
 - OpenCode is unchanged; selection is per user and held by Hub.
@@ -2477,8 +2524,8 @@ Notifications are live signals; Lore revisions remain the durable history.
 
 #### Capacity And Cleanup
 
-- Soft caps: `caps.instances_per_user` counts the instances whose latest pusher is
-  that user. Above it, Hub still creates the instance and `status` carries a
+- Soft caps: `caps.instancesPerUser` counts the instances whose latest pusher is
+  that user (4 in the reference installation, `enforce: false`). Above it, Hub still creates the instance and `status` carries a
   warning naming the count and the cap. Setting `caps.enforce` to true later
   refuses instead, reported as `failed{stage: capacity}`.
 - The cluster's own limit is Kubernetes scheduling. A sandbox that does not fit is
@@ -2562,7 +2609,7 @@ They used ordinary Kubernetes workloads only; no OpenShell sandbox was created.
 | Credentials in Lore's gRPC headers | Substituted on inspected `rest` endpoints; providers refresh with a stable placeholder | Lore access through a provider |
 | Mapping a pusher to Hub | `BranchPushed.user_id` is the Hub principal ID | Direct |
 | Image builds | `buildctl --local` is the standard flow; node has kernel 6.8, containerd 2.3.4, runc 1.4.2, K3s 1.36.5; AppArmor restricts unprivileged user namespaces; no `registries.yaml` | User-namespace BuildKit; local OCI registry with one node registry entry |
-| Current external dependencies | All 31 Veoveo platform pods pull from `registry.cloudflare.com` with a pull-only secret, and `public-tunnel` runs Cloudflare's tunnel image | An on-premises-only installation would also move these images to the local registry; outside this slice |
+| Current external dependencies | All 31 Veoveo platform pods pulled from an external private registry with a pull-only secret, and `public-tunnel` runs Cloudflare's tunnel image | Superseded 2026-10-23: Veoveo images come only from the local registry (Image Builder) |
 | Existing log collection | None running | Collector is new installation work |
 | Logs after a pod is gone (probe) | Vector `0.60.0` and VictoriaLogs `v1.53.0`: a pod's 40 stdout lines and 1 stderr line (exit 3), and a one-line crash (exit 1), stayed queryable after pod deletion, with pod, namespace and OpenShell labels | Collector design confirmed, with the settings above |
 | Environment image build (probe) | User-namespace BuildKit worked; Time's `dev` stage 364.9 s cold, 0.2 s warm | Builder design confirmed |
@@ -2597,6 +2644,14 @@ None for Stage 1. Closed on 2026-10-22:
 - Sleep thresholds wait for sleep and wake (Stage 2 and later).
 - The management MCP became the Hub MCP server, in its own repository.
 - Installation-wide usage totals and `exec` into factory sandboxes are dropped.
+- The base branch is `main`; the default size is 4 CPU and 8 GiB, with a soft cap
+  of four instances per user.
+- Both factory provider profiles are global; Hub creates providers without a
+  profile workspace.
+- No installation-wide factory client or secret; Lore access is per instance.
+- A changed sandbox policy recreates the sandbox; Hub needs no `config:write`.
+- PostgreSQL trust in sandboxes comes from the platform roots.
+- The Hub MCP server is a platform sandbox, not a factory instance.
 
 ### Environment Overrides And Fast Source Activation
 
@@ -2627,10 +2682,10 @@ components:
 
 This YAML example illustrates product selection, not the JSON wire format. The
 published source-facing contract is the single
-[`EnvironmentDefinition` DTO](../veoveo-hub/crates/veoveo-hub/src/bin/hub/activation/types.rs),
-shared by the owner HTTP API, Computer CLI and native definition-file reader.
-The [Hub usage example](../veoveo-hub/README.md#environment-source-activation)
-shows its JSON fields and typed build/worker recipe. Base `follow` and exact
+`EnvironmentDefinition` DTO (`bin/hub/activation/types.rs`, removed with the
+superseded runtime in Hub step 1), shared by the owner HTTP API, Computer CLI and
+native definition-file reader. Hub's former README usage example showed its JSON
+fields and typed build/worker recipe. Base `follow` and exact
 `revision` are exclusive, as are source branch
 following and source revision pinning. The base is optional and must be authorized
 and acyclic. A source push advances only definitions explicitly following that
