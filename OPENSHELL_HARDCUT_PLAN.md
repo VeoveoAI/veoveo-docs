@@ -1549,6 +1549,22 @@ is only the sandbox user in these pods). A `workspace-owner` init container (uid
 and sets the volume root alone when it differs. A provisioner setting was rejected: K3s's local-path setup script is
 global. The same OpenShell change bumps tokio and ctutils and replaces `AsyncFd::new`.
 
+First rollout, `e63c23c20`, 2026-10-23: the gates passed, but every new sandbox failed at `workspace-owner` with
+`exec: "/.openshell/runtime/openshell-sandbox": permission denied`. The step ran the bootstrap's staged copy
+(`10001:10001 0500`), which uid 0 without `DAC_OVERRIDE` cannot execute; the unit tests never executed the binary.
+Running sandboxes were untouched; rolled back to revision 11 within minutes, and a new sandbox was Ready in 6.8 s.
+Fixed in `home-owner` `46cfdd906`: the step runs from the bootstrap's image, whose `/openshell-sandbox` is
+`root:root 0555`; a real exec under the step's identity took a volume from `0:10001 2777` to `10001:10001 2770`,
+and the staged copy reproduced the live error. Rollouts of OpenShell now probe a new sandbox at once and roll back
+automatically when it fails.
+
+The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
+that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
+let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
+Fixed on `advisories` (`9e7a98dac`): the writers block on blocking-pool threads; 100 runs pass in about 100 ms each.
+Open, low: `listening_socket_lives_only_as_long_as_workload_aliases` fails about 1 in 10 inside the full threaded
+binary, never alone; a fork in another test holding the listener is suspected.
+
 Dependency advisories, 2026-10-23: `cargo deny` started failing on RUSTSEC-2026-0385 (ctutils < 0.4.4) and
 RUSTSEC-2026-0386 (tokio's unsound `AsyncFd` constructors; fixed in 1.53.3 and later), so every Rust repository's
 next gate would fail. Hub `computer-home` `346a733` bumps both (ctutils 0.4.5, tokio 1.54.1). Branches
