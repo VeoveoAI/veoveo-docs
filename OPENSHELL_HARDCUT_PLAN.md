@@ -1557,7 +1557,19 @@ before `main`: core `5abaca7`, Artifact `6b84a8e`, Embedding `1fbdb10`, Media `d
 template `1784105`. The SDK and console get it in their #13 branches. OpenShell's `tests/suites/features/Cargo.lock`
 was stale on `main` too and is refreshed on `computer-home` (`8a49ff1c2`).
 
-Open, a separate coder task after #13: the forks carry more advisories. OpenShell `main`: RUSTSEC-2026-0367, 0368,
+Fork advisories, fixed on branches `advisories` 2026-10-23, to deploy as one batch after the person's Computer is live
+(the new Lore makes a new Computer version, which qualifies the update notice and a kept-home restart):
+- Lore `4b7b7e23`: rustls 0.23.46, rustls-webpki 0.103.16, webpki-roots 1.0.11, tokio 1.54.1, ctutils 0.4.5, lock only;
+  plus 27 clippy findings that failed on `main` with any current toolchain. Reaches the Lore image, and through it
+  the factory base, the Computer and Hub images.
+- OpenShell `d04fdbe8d` (from `f8eda6a63`): rustls-webpki, webpki-roots and webpki-root-certs in the workspace lock;
+  tokio, rustls and h2 in the e2e, example and test-suite locks; zip 0367–0369 ignored in `deny.toml`, since zip
+  comes only through z3-sys's Windows prebuilt download and z3-sys 0.13.1 still needs zip 8. Reaches the gateway,
+  supervisor, sandbox runtime and CLI.
+- Hub `732155d` and console `3000478` on `computer-versions`: one WARN with the cause when Computers become
+  unavailable and one INFO when they return, no ERROR for that 503; the description's doubled period.
+
+Before those fixes, the forks carried more advisories: OpenShell `main`: RUSTSEC-2026-0367, 0368,
 0369 (zip extraction), 0381, 0382 (distrusted root certificates and intermediates), 0383 (non-constant-time masks),
 0385, 0386; its sandbox runtime calls `AsyncFd::new` (`openshell-sandbox/src/main_session.rs`), so the tokio fix
 needs a code change and a sandbox runtime rebuild. Lore `main`: RUSTSEC-2026-0285, 0346, 0348, 0349 (rustls: TLS
