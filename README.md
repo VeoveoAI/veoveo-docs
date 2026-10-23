@@ -11,6 +11,7 @@ component owns.
 | [Infrastructure Candidate](INFRASTRUCTURE_CANDIDATE.md) | Lore-managed environment definitions without fixed stages, service overrides, native OpenShell execution, identity delegation, CUDA and provider custody |
 | [Lore And OpenShell Integration](LORE_OPENSHELL_INTEGRATION.md) | Canonical full platform plan: user agents/Computers, Lore and Artifact publication, deterministic factories, configuration ownership and environments; native interfaces, trust boundaries and preserved qualification evidence |
 | [OpenShell Hard-Cut Plan](OPENSHELL_HARDCUT_PLAN.md) | Measured Mac/Linux execution status and evidence, active Linux/webhook gates, and pending phased adoption/acceptance for the agent-operated platform |
+| [Qualification Checklist](QUALIFICATION_CHECKLIST.md) | Every feature to test on the factory-sandbox installation, for people and agents: how to check it, what proves it and its current status |
 | [Direct Lore Credentials For Users And Workloads](LORE_DIRECT_OIDC_PLAN.md) | Native user device login and scoped grants, qualified factory OpenShell renewal/termination, local configuration and separate acceptance evidence |
 
 Update the visual guide in the same change as every major architecture change,
