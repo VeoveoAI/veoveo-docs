@@ -1518,6 +1518,14 @@ Open, a separate coder task after #13: the forks carry more advisories. OpenShel
 needs a code change and a sandbox runtime rebuild. Lore `main`: RUSTSEC-2026-0285, 0346, 0348, 0349 (rustls: TLS
 secrets in `Debug`, Brotli certificate decompression, a TLS 1.3 encryption-level check, a ServerHello downgrade),
 0381, 0382, 0385, 0386; its clippy on the newer toolchain also flags `lore-revision/src/state.rs:7577`.
+Also for that task, OpenShell tests that fail on the box on `main` (`a6ed0ab41`) as well, outside the deployed
+gateway and CLI: `openshell-sandbox` `confined_listener_peers_are_limited_to_this_network_namespace`
+(`socket_confinement.rs:211`, a same-namespace client times out connecting from the host's non-loopback address to
+127.0.0.1; it fails toward refusing, not allowing) and `openshell-prover`
+`runtime_parity::endpoint_selector_single_star_crosses_path_separators` (the solver's model cannot be decoded).
+Fixed on `computer-home`: the VM driver's drain test assumed `sh` keeps an explicit `<&0` for a background job,
+which dash does not (`7b3c536c3`, runs it with bash). `supervisor_ca_install_rejects_a_symlinked_directory` needs
+umask 022 to pass.
 
 Found by the coder (source and logs):
 - Activity: the supervisor counts every proxied connection and L7 request and sends a summary every 10 s when
