@@ -1980,7 +1980,7 @@ Implementation evidence: [Hub transport](../veoveo-hub/crates/veoveo-hub/src/mcp
 ### Factory Sandboxes And Dynamic Selection
 
 Status: design agreed with the user on 2026-10-22. Implementation landed on `main`
-(Hub steps 1–6 through `dfa54a3`, SDK `b230475`, console `2b93b8d`, Lore `e2f04c90`,
+(Hub steps 1–6 and the policy-change recreate through `d3c1641`, SDK `b230475`, console `2b93b8d`, Lore `e2f04c90`,
 OpenShell `a6ed0ab41`, the installation inputs); deployment is pending: the K3s box
 is reinstalled on this stack next. The diagram stays unchanged until the workflow is
 qualified. Execution order and evidence gates are in the
@@ -2138,8 +2138,7 @@ such as a GPU runtime in Stage 2.
    it creates the factory sandbox with the default size, that policy and restart
    policy `always`, replacing any previous one. Otherwise it restarts the sandbox.
    Hub never changes a running sandbox's policy, so its OpenShell identity needs no
-   `config:write` (decided 2026-10-22; the Hub change that drops `UpdateConfig` lands
-   separately from step 6).
+   `config:write` (decided 2026-10-22; Hub `bf5dbcf`).
 4. The sandbox's fixed start command runs on every start: `lore clone <repository>
    /sandbox/src --branch <branch>` when no checkout exists yet, then
    `lore sync --reset <branch>@LATEST`, then `exec ./openshell/run` in the checkout on
