@@ -1513,6 +1513,37 @@ runs as the sandbox user and cannot change it.
   is sequential, and a 60 s step timeout turns a slow Pod into a failed stop and a retry. Revisit only with a
   reproduction under kubelet `-v=2`; B15 measures restart.
 
+Part B (steps 3–5) is pushed on `computer-versions`: SDK `a930cc6`, Hub `00a1749`, console `357ad9e`, installation
+`fa43e47`; Linux gates and deployment are next.
+- Version: the first 12 hex digits of a SHA-256 over the template spec (environment sorted), OpenShell's canonical
+  policy JSON and the Computer settings that reach the sandbox. Release note: template annotation
+  `veoveo.ai/release-note`, its first line the summary. What's new always lists the image change and the network
+  endpoints added or removed.
+- The template is read at entry, compared by object ID and resource version (OpenShell has no template update, so a
+  recreated template restarts its resource version), at most once per 5 s. A missing template makes Computers
+  unavailable with the cause; Hub starts and serves running Computers.
+- Restart, update, creation and "previous" are one detached operation claimed on the Computer row: delete keeping
+  the workspace, replace the per-Computer template clone, create, wait until listening, record. It waits 3 s first,
+  so an agent restarting its own Computer gets its answer. Migration `0024`.
+- Routes: `GET /computer` is the way in (sign-in, the start page with what's new, the Computer).
+  `GET /computer/status`, `POST /computer/restart` and `POST /computer/previous` accept the owner's browser session
+  (page) or a bearer for `computers.profile` (JSON; restart 202, or 409 while one runs). `GET /computer/version` is
+  public and returns only the version and the summary.
+- Hub had not passed a server's tool-list changes on to its clients since `5a727c1`; `00a1749` includes the fix
+  (`61468b9`), with an end-to-end test. Console's description changes reach Hub through one listen per caller,
+  which counts toward Hub's watch cap.
+- Console `computer`: status, or `restart: true`; it polls `GET /computer/version` every 30 s and changes its
+  description. Exchanged tokens are bound to a profile, so it works for callers that reach console through the
+  Computers profile, as agents in a Computer do.
+- The handbook with the `console__computer` sentence is live (revision `gcp-01a169f0…`).
+
+Home mode, decided: kubelet's `fsGroup` handling never removes bits and walks the whole volume on every mount unless
+the root has the group, at least `0770` and setgid, so the narrowest stable mode is `10001:10001 2770` (group 10001
+is only the sandbox user in these pods). A `workspace-owner` init container (uid 0 with the sandbox gid, only
+`CHOWN` and `FOWNER`, no privilege escalation, read-only root) runs `openshell-sandbox own-workspace` on every start
+and sets the volume root alone when it differs. A provisioner setting was rejected: K3s's local-path setup script is
+global. The same OpenShell change bumps tokio and ctutils and replaces `AsyncFd::new`.
+
 Dependency advisories, 2026-10-23: `cargo deny` started failing on RUSTSEC-2026-0385 (ctutils < 0.4.4) and
 RUSTSEC-2026-0386 (tokio's unsound `AsyncFd` constructors; fixed in 1.53.3 and later), so every Rust repository's
 next gate would fail. Hub `computer-home` `346a733` bumps both (ctutils 0.4.5, tokio 1.54.1). Branches
