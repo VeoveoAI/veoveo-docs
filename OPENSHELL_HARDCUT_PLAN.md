@@ -1567,6 +1567,17 @@ Deployed 2026-10-23 (Helm revision 14): gateway and sandbox runtime `46cfdd906`,
 kubelet did no recursive walk; console, stopped (2.6 s) and started (3.5 s), came back with the step, `2770` and its
 registration. The other platform sandboxes keep `2777` until their next start.
 
+End to end through Hub in Chrome, 2026-10-23 (the deployed probes had never created a Computer through Hub, because
+that needs a browser sign-in; they do from now on):
+- The first creation failed: part B replaces the per-Computer template clone, and Hub's OpenShell policy allowed
+  `CreateSandboxTemplate` but not `DeleteSandboxTemplate`. Fixed live (Hub recreated with 18 native-control rules)
+  and in installation `computer-versions` `15acfc4`.
+- Then: `~` = `/sandbox` at `10001:10001 2770`; plain `lore` worked with no login; status from OpenCode's shell
+  answered; a Restart kept `~/keep.txt` (content, mode, inode) and the OpenCode session.
+- Two defects: Hub gives up on `DeleteSandbox` after one 30 s RPC deadline although the gateway completes it (it
+  answered after 38.6 s, waiting for the pod); and a Computer's pod takes about 38 s to stop, likely OpenCode not
+  ending on SIGTERM before the 30 s grace. Both with the coder.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
