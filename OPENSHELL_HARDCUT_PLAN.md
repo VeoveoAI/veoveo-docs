@@ -1411,10 +1411,83 @@ Friction fixes approved by the user (2026-10-23), in order; no gate stays unless
 - #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh).
 - #9 Done: Cloudflare Browser Integrity Check is off for `veoveo.bioma.ai` by a Configuration Rule.
 - #4, #5 Done with B15: immediate renewal; no Lore device login in Computers.
+- #13 Computer versions, a kept home and collection of idle Computers: see the next section.
 
 Reinstall lessons: a Computer template must exist before Hub starts, because Hub reads it at startup; replacing a
 claim under a sandbox needs a new sandbox, because admission pins each claim's identity; a breaking control-plane
 contract resets the control-plane tables, and Hub then seeds from its file.
+
+#### Computer versions, kept home and collection — 2026-10-23 (#13)
+
+Decided by the user. Data is disposable: reset Computers, their workspaces, their volumes and Hub's Computer
+rows as needed.
+
+Goal: a Computer is the current version or one restart away from it. A restart or a collection loses only
+running programs and `/tmp`. Any client, not only OpenCode, learns that a new version exists and what it brings.
+
+Found before the change: three platform writers put files in the person's home. The Computer image pre-creates
+the home directories and copies `instructions.md` into `/sandbox/home/.config/computer/`; OpenShell seeds a
+workspace volume from the image only on first use, so a kept home would keep that copy forever. Hub overwrites
+the same file from `computers.handbook` through an Exec at entry (`computers/onboarding.rs`, `INSTALL_HANDBOOK`).
+Hub's Lore contribution writes `workspace.env` the same way (`contributions/lore/workspace/descriptor.rs`).
+Each Computer records its own template and policy at creation, so an installation change never reaches it; and
+deleting its sandbox deletes its `/sandbox` volume.
+
+Rules:
+- `/sandbox` is the person's home: `HOME=/sandbox`, and people, agents and docs say `~`. The mount keeps
+  OpenShell's native path (hard-coded in its Kubernetes driver); no symlink or second name.
+- The platform never writes into `/sandbox`: the image has only the mount point, and Hub writes nothing there.
+  OpenShell's own seed marker, `.workspace-initialized`, is the one exception. This is prevented by design, not
+  by a check.
+- Everything outside `/sandbox` and `/tmp` comes with the Computer version and is read-only (the Computer policy's
+  `read_write` is `/sandbox` and `/tmp`).
+- Deleting a Computer's sandbox keeps its `workspace` volume, and the next sandbox of the same name adopts it.
+  The name comes from the Computer ID, so the URL `/computer/c/<id>/` stays too.
+- One lifecycle path: a Computer has a sandbox at some version, or none. Entry with none creates one at the
+  current version. Stop and resume go away; restart, update, collection and recovery are that one path.
+- The person chooses when to restart a running Computer. No forced restarts, except when Hub can no longer
+  safely serve a Computer; then the notice blocks, with the same restart and nothing lost.
+
+Work, in order:
+1. No platform files in `/sandbox`.
+   - Computer image: `HOME=/sandbox`; drop `XDG_*`, `LORE_GLOBAL_PATH`, `LORE_AUTH_PATH`, the pre-created
+     directories and the `instructions.md` copy; drop `instructions` from `computer/opencode.json`.
+   - Hub sends the handbook as the MCP server `instructions` of its Computer endpoint, so every MCP client gets
+     it when it connects and an edit needs no new version. OpenCode already puts MCP server instructions in its
+     system prompt (`packages/core/src/mcp/instructions.ts`). The handbook's one source is installation
+     `computer/instructions.md`. Remove the handbook and `workspace.env` Exec writes; the personal repository
+     details, if still used, come from the status below.
+   - The handbook says `~`: "`~` is always kept; everything else comes with the Computer version."
+   - The installation's agent instructions say the platform never writes into a Computer's `/sandbox`.
+2. OpenShell fork: deletion can keep the workspace volume, and a new sandbox of the same name adopts it. Find and
+   fix why stops take 101–160 s (console and Artifact sandboxes, 2026-10-23); restart time depends on it.
+3. Hub:
+   - A Computer version is the template image, the policy and Hub's Computer settings, with a release note from
+     a template annotation written by whoever publishes it. Hub re-reads the template when it changes, which also
+     removes the template-before-Hub install order.
+   - Hub sets `COMPUTER_VERSION` in the sandbox at creation.
+   - Restart deletes the sandbox (keeping the home), creates one at the current version, and records that version
+     only once Ready. A failure shows its cause, and the previous version stays recorded.
+   - Status: the running and current versions; what's new between them (the release note and the network rules
+     added or removed); and an update not yet shown. Status and restart are served over HTTP to the owner's
+     browser session and to the Computer's own Hub credential, which the Computer policy allows.
+   - The start page, shown on every creation, lists what's new; `/computer` shows the status and Restart.
+   - Hub records each update on the Computer; status reports it until it has been shown once.
+   - Collection: Hub deletes the sandbox of a Computer idle for `computers.collectAfter` (2 h to start), keeping
+     the home. Idle means no browser request through Hub and no network traffic from the Computer: every working
+     agent calls its model through OpenShell's proxy, whatever the client. A long job with no traffic is the
+     accepted cost; an explicit keep-alive only if a real case needs one.
+4. SDK: tool descriptions that change at runtime, with tool-list change notifications. Hub already passes those
+   on to clients.
+5. Console: a `computer` tool with status and restart. Its description names the current version and changes
+   when a version is published. Tool lists are shared by every caller, so the description says which version is
+   current; the call says whether the caller's Computer is behind. The handbook tells agents to call it at
+   session start and mention an update in a line or two. When an agent restarts its own Computer, Hub answers
+   first, then restarts.
+
+Not yet verified: that a new same-name sandbox adopts a kept volume; whether OpenShell reports per-sandbox network
+activity; cold creation time, which becomes the common path and must be seconds; that Lore and OpenCode create
+their own directories under a bare `HOME`.
 
 Left as they are: `veoveo-template-installation/openshell/README.md` and
 `REFERENCE.md` keep their historical Mac and Docker pins and commands, which are not

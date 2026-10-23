@@ -40,10 +40,16 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | B3 | Lore works with the one Hub login | In the Computer shell: `lore repository list "$VEOVEO_LORE_REMOTE"` with no flags | exit 0 and no login prompt; OpenShell logs show no `credential_endpoint_mismatch` | proven with explicit flags (placeholder swap into Lore gRPC); pending with plain `lore` |
 | B4 | A new assignment works at once | An admin assigns a repository, then the person clones it | Clone succeeds within seconds, without waiting for the 300 s token lifetime | component; pending live |
 | B5 | A removed assignment stops at once | An admin removes it, then the person clones again | Refused | component; pending live |
-| B6 | Lore access survives a Computer stop and start | Stop and start the Computer, then `lore repository list` | exit 0 | pending |
+| B6 | Lore access survives a restart | Restart the Computer, then `lore repository list` | exit 0 | pending |
 | B7 | Artifact objects through the single host | From the Computer: Artifact upload and download via `veoveo.bioma.ai/artifacts/…` | Byte counts and SHA-256 match; no other hostname used | pending (#11) |
 | B8 | Many repositories in one token | An owner with many assignments | Clone works; find the 16 KiB header limit (about 120 repositories estimated) | pending |
 | B9 | Large push through the proxy | Push one file over 16 MiB, and about 500 files | Push succeeds; time it | pending |
+| B10 | The platform puts nothing in the home | A fresh Computer: `echo ~` and `ls -A ~` | `~` is `/sandbox`; only OpenShell's `.workspace-initialized` and what programs created themselves | pending (#13) |
+| B11 | Restart keeps the home | Create a file, an unpushed Lore change and an OpenCode session; restart | All three present; same URL; only running programs and `/tmp` gone; time it | pending (#13) |
+| B12 | Any client learns of a new version | Publish a template with a release note | `console__computer`'s description changes mid-session; the call reports running, current and what's new; the same status over HTTP from a shell in the Computer; the start page lists it | pending (#13) |
+| B13 | An idle Computer is collected | Leave it idle past `computers.collectAfter`, then enter | Sandbox gone, home kept; entry creates the current version; what's new shown once | pending (#13) |
+| B14 | A failed new version is diagnosable | Publish a template whose image cannot start, then restart | The cause is shown; the previous version stays recorded; the home is intact | pending (#13) |
+| B15 | Restart is quick | Measure stop, create and first page | Seconds, not the 101–160 s stops measured 2026-10-23 | pending (#13) |
 
 ## C. Repositories
 
@@ -77,7 +83,7 @@ startup times, from `console__logs` timestamps.
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
 | E1 | Services registered and routed | `veoveo-hub-sdk-cli tools` as the administrator | `artifact__*`, `media__*`, `embedding__*`, `console__*` listed | proven 2026-10-23 (15 + 3 + 1 + 4 tools) |
-| E2 | Services survive a Hub outage | Stop Hub for 90 s, then start it | Each service registers again by itself; no manual file moves | pending (#2: Artifact first, then Media and Embedding) |
+| E2 | A service registers again after its registration is abandoned | Keep the service down past Hub's 60 s registration grace while Hub runs, then let it start (a Hub outage alone abandons nothing) | It registers again by itself with a new client; its tools route; no manual file moves | proven 2026-10-23 for Artifact (`artifact-01a1668e…` → `artifact-01a1674370…`, 15 tools route); Media `d7ae458` and Embedding `1323732` pending deployment |
 | E3 | Embedding runtime on the GPU | Embedding `/readyz` | `ready` through the runtime | proven 2026-10-23 |
 | E4 | Media through its fixture provider | One Media call | Routed and stored; the output is synthetic fixture data | pending |
 
