@@ -1408,7 +1408,11 @@ Friction fixes approved by the user (2026-10-23), in order; no gate stays unless
   create it in Lore as the caller, register it with the caller's assignment and wait for the caller's renewal.
 - #3 Named environments, their enrollment step and the `veoveo-environment` header are removed.
 - #11 One host: Artifact's S3 objects are served at `veoveo.bioma.ai/artifacts/` and `veoveo-objects.bioma.ai` goes.
-- #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh).
+- #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh): SDK `cli-login` `4219f66`. Its own public client
+  `veoveo-hub-sdk-cli` (redirect `http://127.0.0.1:3211/callback`; Hub matches redirect URIs exactly, port included),
+  published live in revision `gcp-01a16a7d…` and in installation `computer-versions` `6e7c77f`. Grants per Hub and
+  profile, 0600, atomic replace, renewal under a per-grant lock with a re-read, a refresh token sent at most once;
+  `logout` revokes. Live sign-in pending.
 - #9 Done: Cloudflare Browser Integrity Check is off for `veoveo.bioma.ai` by a Configuration Rule.
 - #4, #5 Done with B15: immediate renewal; no Lore device login in Computers.
 - #13 Computer versions, a kept home and collection of idle Computers: see the next section.
