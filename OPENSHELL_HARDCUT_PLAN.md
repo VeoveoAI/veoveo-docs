@@ -1504,6 +1504,21 @@ Part A (steps 1 and 2) is committed on `computer-home`: installation `d9c7feb`, 
   is sequential, and a 60 s step timeout turns a slow Pod into a failed stop and a retry. Revisit only with a
   reproduction under kubelet `-v=2`; B15 measures restart.
 
+Dependency advisories, 2026-10-23: `cargo deny` started failing on RUSTSEC-2026-0385 (ctutils < 0.4.4) and
+RUSTSEC-2026-0386 (tokio's unsound `AsyncFd` constructors; fixed in 1.53.3 and later), so every Rust repository's
+next gate would fail. Hub `computer-home` `346a733` bumps both (ctutils 0.4.5, tokio 1.54.1). Branches
+`rustsec-tokio-ctutils` with the same bump, `cargo deny` advisories and clippy clean on macOS, wait for a Linux gate
+before `main`: core `5abaca7`, Artifact `6b84a8e`, Embedding `1fbdb10`, Media `db15e4b`, Time `b90251f`, the MCP
+template `1784105`. The SDK and console get it in their #13 branches. OpenShell's `tests/suites/features/Cargo.lock`
+was stale on `main` too and is refreshed on `computer-home` (`8a49ff1c2`).
+
+Open, a separate coder task after #13: the forks carry more advisories. OpenShell `main`: RUSTSEC-2026-0367, 0368,
+0369 (zip extraction), 0381, 0382 (distrusted root certificates and intermediates), 0383 (non-constant-time masks),
+0385, 0386; its sandbox runtime calls `AsyncFd::new` (`openshell-sandbox/src/main_session.rs`), so the tokio fix
+needs a code change and a sandbox runtime rebuild. Lore `main`: RUSTSEC-2026-0285, 0346, 0348, 0349 (rustls: TLS
+secrets in `Debug`, Brotli certificate decompression, a TLS 1.3 encryption-level check, a ServerHello downgrade),
+0381, 0382, 0385, 0386; its clippy on the newer toolchain also flags `lore-revision/src/state.rs:7577`.
+
 Found by the coder (source and logs):
 - Activity: the supervisor counts every proxied connection and L7 request and sends a summary every 10 s when
   non-zero (`openshell-supervisor/src/activity_aggregator.rs`); the gateway only emits anonymous telemetry from it
