@@ -1437,8 +1437,8 @@ Rules:
 - `/sandbox` is the person's home: `HOME=/sandbox`, and people, agents and docs say `~`. The mount keeps
   OpenShell's native path (hard-coded in its Kubernetes driver); no symlink or second name.
 - The platform never writes into `/sandbox`: the image has only the mount point, and Hub writes nothing there.
-  OpenShell's own seed marker, `.workspace-initialized`, is the one exception. This is prevented by design, not
-  by a check.
+  OpenShell's own seed marker, `.openshell-initialized` on the box's seed path, is the one exception. This is
+  prevented by design, not by a check.
 - Everything outside `/sandbox` and `/tmp` comes with the Computer version and is read-only (the Computer policy's
   `read_write` is `/sandbox` and `/tmp`).
 - Deleting a Computer's sandbox keeps its `workspace` volume, and the next sandbox of the same name adopts it.
@@ -1485,9 +1485,36 @@ Work, in order:
    session start and mention an update in a line or two. When an agent restarts its own Computer, Hub answers
    first, then restarts.
 
-Not yet verified: that a new same-name sandbox adopts a kept volume; whether OpenShell reports per-sandbox network
-activity; cold creation time, which becomes the common path and must be seconds; that Lore and OpenCode create
-their own directories under a bare `HOME`.
+Part A (steps 1 and 2) is committed on `computer-home`: installation `d9c7feb`, Hub `1a9bad0`, OpenShell
+`180b9e5a7`; Linux gates and the deployed probe are next.
+- Installation: the image sets `HOME=/sandbox` and ships nothing in it; `computer/instructions.md` is the
+  handbook's one source, published into `computers.handbook` with `jq --rawfile`; the dead personal repository
+  default, the `computer-browser` Lore audience and Hub's `ExecSandbox` rule go.
+- Hub: `computers.handbook` follows Hub's one-line description as the MCP server `instructions`, only for a
+  `computers.oauthClient` caller on `computers.profile`; the onboarding hook, the handbook and `workspace.env`
+  Exec writes, the personal repository default and `hub.lore_workspace` (migration `0023`) are removed.
+- OpenShell: `DeleteSandboxRequest.keep_workspace` and a driver capability. The Kubernetes driver detaches
+  `workspace-<name>` from the deleted resource (controller reference removed, the Agent Sandbox tracking label
+  moved to `openshell.ai/kept-workspace`); the next create of that name restores the label and controller v1.0.6
+  adopts the claim. Other drivers refuse with `FAILED_PRECONDITION`. The choice is stored with the `Deleting`
+  phase (`SandboxStatus.delete_keeps_workspace`), so a reasserted delete keeps it too. Helm grants PVC `get` and
+  `patch`. In managed mode, deleting the workspace removes kept claims.
+- Slow stops, not changed: the 101–160 s stops were supervisor Pods outliving their 30 s grace by 4–5 times during
+  the reinstall, beyond our processes; the same images stopped in 1–3 s on 2026-10-23 afternoon. Ours: the stop
+  is sequential, and a 60 s step timeout turns a slow Pod into a failed stop and a retry. Revisit only with a
+  reproduction under kubelet `-v=2`; B15 measures restart.
+
+Found by the coder (source and logs):
+- Activity: the supervisor counts every proxied connection and L7 request and sends a summary every 10 s when
+  non-zero (`openshell-supervisor/src/activity_aggregator.rs`); the gateway only emits anonymous telemetry from it
+  (`grpc/policy.rs`, `telemetry.rs`). Cheap exposure: a last-activity time per sandbox, in `GetSandbox`. To
+  measure: whether an idle Computer's own background traffic (Hub MCP streams) looks like activity.
+- Cold creation on the old image: about 17 s from entry to first page, mostly the workload Pod (14.5 s, with a
+  4.0 s image pull and about 4 s for the volume).
+- OpenCode and Lore `bd9da212` create their own directories under `HOME` (source).
+- Hub re-reads the template only on restart or a `computers` change, and a missing template aborts startup.
+  OpenShell has no template watch; a read at entry compared by `resource_version` serves, and a missing
+  template should leave Computers unavailable, not stop Hub.
 
 Left as they are: `veoveo-template-installation/openshell/README.md` and
 `REFERENCE.md` keep their historical Mac and Docker pins and commands, which are not
