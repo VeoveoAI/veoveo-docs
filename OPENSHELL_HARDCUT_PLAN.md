@@ -1619,6 +1619,27 @@ counted from no earlier than Hub's start), through `Provisioner::remove` (delete
 `collected_at` (migration `0025`); the next entry creates the current version and shows the update notice. The
 gateway must roll out before Hub. Known limit: the browser record is per process, fine for one Hub replica.
 
+Deployed 2026-10-23 (builder): Lore server `4b7b7e23` (Ready 22:26:15Z), Artifact `6b84a8e`, Media `db15e4b`, Embedding
+`1fbdb10`, console `3000478`, OpenShell gateway, supervisor and runtime `d1d4da399` then gateway `a52a9110d` (Helm 16),
+Hub `2dcd25a` (migration `0025`), OpenCode `ea6f7c1`, Computer image `22fdc5a-ea6f7c1`, template with the release note
+"Faster restarts, Hub tools that stay connected, and security updates." (version `ae2f51b71720`). `cargo deny`
+advisories clean for every deployed Rust source.
+
+Update test in the person's browser (Chrome), 2026-10-23:
+- `/computer/status` on the running old version showed "An update is available: version ae2f51b71720", the release
+  note and the image change.
+- Restart onto it at 23:47:56 **lost the person's home**. The old pod still ran the old runtime (38 s stop). Hub's
+  absence wait saw the sandbox gone once its Kubernetes object was deleted, while the pod still terminated (the
+  gateway's `DeleteSandbox` completed at 23:48:30.3), and created the new sandbox at 23:48:29.4. The gateway restored
+  the kept claim for adoption, found the old pod of the same name not controlled by the new Sandbox, and rolled the
+  create back by deleting the Sandbox, which garbage-collected the adopted claim. Two OpenShell defects, with the
+  coder: a failed create after adoption must keep the claim; "gone" must mean the pods are gone (or a create must
+  wait for a terminating pod of its name). Data is disposable in this phase; the person's Computer was recreated with
+  a fresh home.
+- On the new runtime: a restart at 23:53:05 completed the gateway's delete in 0.77 s (was 38.6 s) and replaced the
+  sandbox in 5.1 s; the claim kept its UID; `~/keep.txt` kept content, mode and inode; the OpenCode session came back;
+  `COMPUTER_VERSION=ae2f51b71720`; plain `lore` worked with the new CLI.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
