@@ -1498,8 +1498,7 @@ Measured: a keep-delete took 1 s and kept the claim's UID; recreating the name t
 claim with the file intact and the seed skipped; an ordinary delete removed it in 3 s. A sandbox from `computer-v1`
 had `HOME=/sandbox` and only `.openshell-initialized` in it.
 Regression found live: the mounted `/sandbox` root is `root:10001` `2777` (world-writable), from the volume
-provisioner and `fsGroup`; with `HOME=/sandbox` that root is the home. To fix before part B deploys; OpenShell's seed
-runs as the sandbox user and cannot change it.
+provisioner and `fsGroup`; with `HOME=/sandbox` that root is the home. Fixed by the `workspace-owner` step below.
 - Installation: the image sets `HOME=/sandbox` and ships nothing in it; `computer/instructions.md` is the
   handbook's one source, published into `computers.handbook` with `jq --rawfile`; the dead personal repository
   default, the `computer-browser` Lore audience and Hub's `ExecSandbox` rule go.
@@ -1561,6 +1560,12 @@ Fixed in `home-owner` `46cfdd906`: the step runs from the bootstrap's image, who
 `root:root 0555`; a real exec under the step's identity took a volume from `0:10001 2777` to `10001:10001 2770`,
 and the staged copy reproduced the live error. Rollouts of OpenShell now probe a new sandbox at once and roll back
 automatically when it fails.
+Deployed 2026-10-23 (Helm revision 14): gateway and sandbox runtime `46cfdd906`, supervisor unchanged, tokio still
+1.52.1. Gates: lint clean, Kubernetes driver 317 passed, helm 342 + 7. Measured: a new sandbox Ready in 8.2 s with
+`workspace-owner` (uid 0, gid 10001, `CHOWN` and `FOWNER` only, read-only root, only the workspace mounted); `~`
+`10001:10001 2770`; a `0600` file kept its mode and inode across a keep-delete (0.9 s) and recreate (4.4 s), so
+kubelet did no recursive walk; console, stopped (2.6 s) and started (3.5 s), came back with the step, `2770` and its
+registration. The other platform sandboxes keep `2777` until their next start.
 
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
