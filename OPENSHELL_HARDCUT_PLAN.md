@@ -1578,6 +1578,17 @@ that needs a browser sign-in; they do from now on):
   answered after 38.6 s, waiting for the pod); and a Computer's pod takes about 38 s to stop, likely OpenCode not
   ending on SIGTERM before the 30 s grace. Both with the coder.
 
+Idle measurement for collection (part C), the person's Computer idle 21:04:39–21:19Z with no browser tab: the
+supervisor logged no proxied connection or L7 request at all, apart from the closure below; Hub's browser forwards
+(`127.0.0.1:4096` opens) stopped with the tab. So OpenShell's proxied activity is a usable idle signal, once the
+listen-stream defect below is understood (a client that reconnects its stream would count as activity).
+
+Third defect, found during that measurement: at 21:05:34 OpenShell closed OpenCode's four tunnels to Hub, including
+its `subscriptions/listen` stream ("L7 tunnel closed … policy generation is stale", generation 1 → 2; later polls show
+only `provider_env_changed`), and OpenCode did not reopen the stream in 15 minutes, so tool-list changes such as the
+version notice would not reach it mid-session. New connections work (curl 14 ms). The agent container also logs a
+burst of 12 `network notification denied … EINPROGRESS` every 2 minutes from one thread. With the coder.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
