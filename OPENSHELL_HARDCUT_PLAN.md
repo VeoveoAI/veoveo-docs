@@ -1410,6 +1410,17 @@ Friction fixes approved by the user (2026-10-23), in order; no gate stays unless
   2026-10-24: several namespace deployments for one slug, the newest live registration wins (one WARN names the
   deployment set aside); `execution.baseBranch` keeps its name; core's `EnvironmentId` goes now. Order: SDK, Hub and
   every server re-pinned, core, installation; control-plane tables reset; namespace servers redeployed.
+  Deployed 2026-10-24 04:30Z (builder on Sonnet): Hub `5d3f43f`, Artifact `a0566b8`, Media `6bd5843`, Embedding
+  `95216bd`, console `a8f5d29`; control plane reset (134 objects, 7 revisions) and reseeded as `gcp-01a16c2c…`
+  with `execution` `{"baseBranch":"main"}`; migrations `0026` and `0027`. Probes through the person's CLI: 25 tools,
+  no enrollment; Media models, an embedding, an Artifact upload created and aborted, and console status ("no
+  instance") answered; the old `veoveo-environment` header gives a byte-identical answer; the Computer kept its pod.
+  Gates: SDK 275, Hub 333, Media 73, Embedding 33, console 26, Time 143, template 16 passed. Accepted: Artifact's
+  SeaweedFS fixture `dispatch failure` (the test passes 5/5 alone; worse under load, to fix); core's
+  `concurrent_repeats_store_one_record` once (a row hit `record_default`'s check constraint under the parallel suite;
+  10/10 alone at `ca81808` and `d473011`; under investigation for a production race). Hub `main` is `fee5e5a`: #3
+  merged with the other session's Lean selection pilot (one rename resolved; clippy and execution tests pass); the
+  deployed Hub is `5d3f43f`.
 - #11 One host: Artifact's S3 objects are served at `veoveo.bioma.ai/artifacts/` and `veoveo-objects.bioma.ai` goes.
 - #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh): SDK `cli-login` `4219f66`. Its own public client
   `veoveo-hub-sdk-cli` (redirect `http://127.0.0.1:3211/callback`; Hub matches redirect URIs exactly, port included),
