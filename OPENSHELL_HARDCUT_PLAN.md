@@ -1669,6 +1669,13 @@ OpenCode `ea6f7c1`, Artifact `6b84a8e`, Media `db15e4b`, Embedding `1fbdb10`, Ti
 template `1784105`; their merged branches and worktrees removed (OpenCode's remote `relisten-mcp` stays: its pre-push
 hook blocks the delete).
 
+Shell output in the Computer (found by the person: `!lore` showed only a red "exit code 2"): bare `lore` prints its
+help on stdout and exits 2, but OpenCode's compact timeline folded every shell run into two collapsed rows, so the
+output was hidden. OpenCode `59ea8a0` shows the person's own `!` commands on their own row with the output open and
+the exit code below it; the agent's shell calls keep upstream's grouping. Shipped as Computer version `34bdc8df167c`
+(image `22fdc5a-59ea8a0`); in Chrome: `/computer/status` offered it in plain words, Restart replaced the sandbox in
+4.4 s, `~/keep.txt` kept content and inode, and `!lore` showed its help at once with the exit code beneath.
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.
