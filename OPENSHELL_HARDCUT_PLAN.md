@@ -1639,6 +1639,16 @@ Update test in the person's browser (Chrome), 2026-10-23:
 - On the new runtime: a restart at 23:53:05 completed the gateway's delete in 0.77 s (was 38.6 s) and replaced the
   sandbox in 5.1 s; the claim kept its UID; `~/keep.txt` kept content, mode and inode; the OpenCode session came back;
   `COMPUTER_VERSION=ae2f51b71720`; plain `lore` worked with the new CLI.
+- Listen stream across credential refreshes: OpenCode opened `subscriptions/listen` at 23:53:13; the gateway refreshed
+  `computer-lore` at about 23:55:55 and 00:00:52; the supervisor recorded only `provider_env_changed`, no stale-
+  generation closure, no new tunnel and no re-listen. One re-listen at 23:54:04 followed a control-plane publish one
+  second earlier: OpenCode's re-listen, with its list reload. No EINPROGRESS warnings any more.
+- Collection with `collectAfterSeconds` 600 (published live, then back to 7200): Hub logged "Computer collected" at
+  00:05:35 with browser idle 701 s and sandbox idle 733 s; the pod went, the claim stayed (no owner, kept label).
+  Entering `/computer` at 00:12 recreated it in 3.56 s at the current version; `~/keep.txt` kept content, mode and
+  inode, and the OpenCode session came back.
+- UX to polish: the status page says "Its sandbox is none" for a collected Computer, and "What's new" prints raw
+  image references; both should read as plain language.
 
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
