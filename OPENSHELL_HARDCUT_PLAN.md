@@ -1675,6 +1675,14 @@ output was hidden. OpenCode `59ea8a0` shows the person's own `!` commands on the
 the exit code below it; the agent's shell calls keep upstream's grouping. Shipped as Computer version `34bdc8df167c`
 (image `22fdc5a-59ea8a0`); in Chrome: `/computer/status` offered it in plain words, Restart replaced the sandbox in
 4.4 s, `~/keep.txt` kept content and inode, and `!lore` showed its help at once with the exit code beneath.
+Reverted the same day at the user's decision (OpenCode `main` `35659fe`, two revert commits, tree identical to
+`ea6f7c1`): upstream already offers this as a preference. Settings, Timeline detail has five presets; the default
+Compact groups all shell activity, the person's `!` runs and the agent's alike, into collapsed rows to keep the agent
+conversation readable, and Detailed and Everything expand shell output. The setting is stored in each browser. For
+interactive work OpenCode has a terminal. The fork change was unnecessary divergence. The Computer returns to image
+`22fdc5a-ea6f7c1` with a release note pointing people to Detailed or the terminal.
+Process lesson, from the user: a question ("why does it not do X?") gets an investigation and a discussion, not a
+change; change only after the user decides.
 
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
