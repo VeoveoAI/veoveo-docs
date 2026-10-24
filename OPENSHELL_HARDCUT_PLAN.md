@@ -1650,6 +1650,25 @@ Update test in the person's browser (Chrome), 2026-10-23:
 - UX to polish: the status page says "Its sandbox is none" for a collected Computer, and "What's new" prints raw
   image references; both should read as plain language.
 
+Lost-home fix, deployed 2026-10-24 (gateway `c28524bdd`, Helm 17; Hub `3f2663d`): every path that deletes a Sandbox
+after a create restored a kept claim first returns the claim to the kept state (`openshell.ai/kept-workspace-adoption`
+marks the window); Sandbox CRs are deleted with foreground propagation, so `GetSandbox` reports `Deleting` until the
+workload Pod is gone; a driver guard refuses a create while a Pod of that name exists. Race probe with a
+SIGTERM-ignoring workload: `GetSandbox` said `Deleting` until the Pod and the sandbox vanished in the same poll
+(11.6 s); a create during termination was refused before any change (`ALREADY_EXISTS` from the gateway's record,
+which now reaches the guard first, so the guard's `PREVIOUS_SANDBOX_TERMINATING` is a backstop); the claim kept its
+UID, no owner and the kept label; the next create adopted it with the marker's content and inode. Not run: the same
+race through Hub's Restart on the person's Computer (starting a SIGTERM-ignoring process there was refused by the
+coordinator's permission check); Hub's wait relies on `GetSandbox` absence, which the probe shows now means the Pod
+is gone. Observed: deleting a workspace took 148–230 s after the change (about 7 s before); to look at.
+Plain-language status and start pages (Hub `3f2663d`): each state in words, "What's new" without image references.
+
+Merged to `main` and pushed, 2026-10-24, every branch deployed for #13 and the advisories, local and remote `main` in
+sync: Hub `3f2663d`, SDK `4219f66`, console `3000478`, installation `22fdc5a`, OpenShell `c28524bdd`, Lore `4b7b7e23`,
+OpenCode `ea6f7c1`, Artifact `6b84a8e`, Media `db15e4b`, Embedding `1fbdb10`, Time `b90251f`, core `5abaca7`, MCP
+template `1784105`; their merged branches and worktrees removed (OpenCode's remote `relisten-mcp` stays: its pre-push
+hook blocks the delete).
+
 The tokio 1.54.1 test hang was the test alone: sqlx returns the in-memory store's single connection through a task
 that tokio puts in the LIFO slot of the worker the test then blocks on a `std::sync::Barrier`; tokio 1.51.0–1.52.1
 let idle workers steal from that slot, 1.52.2 reverted it. The production CAS path awaits and never blocks a worker.

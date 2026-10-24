@@ -18,8 +18,9 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), Hub `fd822bd`, Lore `bd9da212`, OpenShell `a6ed0ab41`, installation
-`03d803f`, console `56257e8`, Artifact `b7bbde9`, Media `d7ae458`, Embedding `1323732`.
+(single host), all `main`: Hub `3f2663d`, Lore `4b7b7e23`, OpenShell `c28524bdd` (gateway; runtime and
+supervisor `d1d4da399`), installation `22fdc5a`, OpenCode `ea6f7c1`, console `3000478`, Artifact `6b84a8e`, Media
+`db15e4b`, Embedding `1fbdb10`, SDK `4219f66`.
 
 ## A. Identity and administration
 
@@ -45,7 +46,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | B8 | Many repositories in one token | An owner with many assignments | Clone works; find the 16 KiB header limit (about 120 repositories estimated) | pending |
 | B9 | Large push through the proxy | Push one file over 16 MiB, and about 500 files | Push succeeds; time it | pending |
 | B10 | The platform puts nothing in the home | A fresh Computer: `echo ~` and `ls -A ~` | `~` is `/sandbox`; only OpenShell's `.openshell-initialized` and what programs created themselves | proven 2026-10-23 through Hub: `~` = `/sandbox`, `10001:10001 2770`, holding `.cache`, `.config`, `.local` (OpenCode's own) and `.openshell-initialized` |
-| B11 | Restart keeps the home | Create a file, an unpushed Lore change and an OpenCode session; restart | All three present; same URL; only running programs and `/tmp` gone; time it | proven again on the new runtime 2026-10-23 (restart 5.1 s, same claim UID, file content, mode and inode, OpenCode session kept). **Failed once**: a restart from the old runtime lost the home (create raced the terminating pod; the rollback deleted the adopted claim); fix with the coder, then re-prove from a slow-stopping pod |
+| B11 | Restart keeps the home | Create a file, an unpushed Lore change and an OpenCode session; restart | All three present; same URL; only running programs and `/tmp` gone; time it | proven 2026-10-23/24 through Hub on the new runtime; the race that lost a home is fixed and proven at the OpenShell level with a SIGTERM-ignoring workload (claim kept and re-adopted with the same file); not run through Hub with a slow-stopping Computer |
 | B12 | Any client learns of a new version | Publish a template with a release note | `console__computer`'s description changes mid-session; the call reports running, current and what's new; the same status over HTTP from a shell in the Computer; the start page lists it | partly proven 2026-10-23: `/computer/version` returns version and summary only; `console__computer` lists the current version; status from OpenCode's shell (`updateAvailable: false`) and the start page proven 2026-10-23; a new version noticed by a running Computer on `/computer/status` with its note, proven 2026-10-23; the listen stream survived two credential refreshes and OpenCode re-listened after a Hub publish (2026-10-23/24); pending: the `console__computer` description change observed in OpenCode, which needs a model-free way to read its tool list |
 | B13 | An idle Computer is collected | Leave it idle past `computers.collectAfter`, then enter | Sandbox gone, home kept; entry creates the current version; what's new shown once | proven 2026-10-24 with `collectAfterSeconds` 600: collected at 00:05:35 (browser idle 701 s, sandbox 733 s), claim kept; entry recreated it in 3.56 s with `~/keep.txt` (content, mode, inode) and the OpenCode session |
 | B14 | A failed new version is diagnosable | Publish a template whose image cannot start, then restart | The cause is shown; the previous version stays recorded; the home is intact | pending (#13) |
