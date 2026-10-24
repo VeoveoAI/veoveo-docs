@@ -1406,7 +1406,10 @@ Friction fixes approved by the user (2026-10-23), in order; no gate stays unless
   `admin_write` for that role; Hub's `admin` installation role and its risks govern server tool permissions only.
 - #1 Whoever creates a repository owns it: console `create_repository` and Hub `POST /lore/{profile}/repositories`
   create it in Lore as the caller, register it with the caller's assignment and wait for the caller's renewal.
-- #3 Named environments, their enrollment step and the `veoveo-environment` header are removed.
+- #3 Named environments, their enrollment step and the `veoveo-environment` header are removed. Details settled
+  2026-10-24: several namespace deployments for one slug, the newest live registration wins (one WARN names the
+  deployment set aside); `execution.baseBranch` keeps its name; core's `EnvironmentId` goes now. Order: SDK, Hub and
+  every server re-pinned, core, installation; control-plane tables reset; namespace servers redeployed.
 - #11 One host: Artifact's S3 objects are served at `veoveo.bioma.ai/artifacts/` and `veoveo-objects.bioma.ai` goes.
 - #8 `veoveo-hub-sdk-cli login` (browser PKCE with refresh): SDK `cli-login` `4219f66`. Its own public client
   `veoveo-hub-sdk-cli` (redirect `http://127.0.0.1:3211/callback`; Hub matches redirect URIs exactly, port included),
