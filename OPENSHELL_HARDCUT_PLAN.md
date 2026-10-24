@@ -1412,7 +1412,9 @@ Friction fixes approved by the user (2026-10-23), in order; no gate stays unless
   `veoveo-hub-sdk-cli` (redirect `http://127.0.0.1:3211/callback`; Hub matches redirect URIs exactly, port included),
   published live in revision `gcp-01a16a7d…` and in installation `computer-versions` `6e7c77f`. Grants per Hub and
   profile, 0600, atomic replace, renewal under a per-grant lock with a re-read, a refresh token sent at most once;
-  `logout` revokes. Live sign-in pending.
+  `logout` revokes. Live sign-in proven 2026-10-24 02:35Z: the person ran `login`, signed in through Entra in the
+  browser (callback on 127.0.0.1:3211), the grant was stored at `~/.config/veoveo-hub-sdk-cli/grants/` (directory
+  0700, file 0600), and `tools` listed 25 tools on the stored grant alone.
 - #9 Done: Cloudflare Browser Integrity Check is off for `veoveo.bioma.ai` by a Configuration Rule.
 - #4, #5 Done with B15: immediate renewal; no Lore device login in Computers.
 - #13 Computer versions, a kept home and collection of idle Computers: see the next section.
