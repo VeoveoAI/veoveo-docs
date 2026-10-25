@@ -71,18 +71,17 @@ builds one image and changes one value. The design is in the installation's
    ([record](records/2026-10-25-platform-tools-and-time-flow.md), [record](records/2026-10-25-batch3-and-g1.md)); left: the node
    reboot of D11, which needs the box's sudo password.
 6. Done: G1, the final MiMo acceptance ([record](records/2026-10-25-batch3-and-g1.md)).
-7. The installation template's Python tools (`identity/configure-hub`,
-   `identity/configure-openshell`, `identity/provision`) break the no-Python principle;
-   they move into Rust installation tooling and are deleted, in Bioma's installation
-   too.
+7. Done: the installation template's Python tools (`identity/configure-hub`,
+   `identity/configure-openshell`, `identity/provision`) moved into `veoveo-installer`
+   and are deleted, in Bioma's installation too.
 8. Approved 2026-10-25:
    - Done: the person's Hub CLI works inside their Computer, as them.
    - Done: planned replacements log below ERROR in Hub (Computer proxy; rmcp fork).
    - Hub's check caches compiled crates (256 s cold, 168 s after a one-line change);
      the other repositories next.
-   - `veoveo-installer` (`apply`): the design is on the installation template's
-     `installer` branch for review; it absorbs item 7, and publishes changes to Hub's
-     live control plane instead of resetting it.
+   - Done: `veoveo-installer` `plan` and `apply`, on both installations' `main`; the first
+     full apply published only Hub's differences, and a second changed nothing
+     ([record](records/2026-10-25-installer-first-apply.md)).
 9. Housekeeping: done: the coordinator's admin grant is revoked; workspace deletion is
    5.5 s normally, the slow cases are the supervisor race under Open. Left: rotate the
    box's sudo password.
