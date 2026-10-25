@@ -60,6 +60,29 @@ builds one image and changes one value. The design is in the installation's
 7. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
    investigate slow workspace deletion (148–230 s).
 
+## Later
+
+- Factory `uses`: the service instances an instance calls, pushed in the caller's
+  branch and resolved per instance through OpenShell's named-service routing.
+- Factory GPU placement, mounts and repository-owned sandbox sizes.
+- Provider callbacks that name the instance, so Hub routes each callback to the branch
+  instance that owns the operation.
+- Sleep and wake of factory instances through native stop and start, never with
+  unfinished Tasks except those parked on provider webhooks.
+- Hard per-person caps (`caps.enforce`).
+- Console tools to share repositories and to clean up instances.
+- Per-person repository listing in Lore: Hub answers `UrcAuthApi.LookupUserPermissions`
+  and Lore uses `repository_catalog = "auth_service"` through Hub's gRPC service route.
+- Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
+  credential custody.
+- A shared record of browser activity on the Computer row before several Hub replicas
+  serve browsers, so collection sees every replica's requests.
+- Dial-in, so a server without inbound networking joins a Hub.
+- Embedding's multimodal deployed acceptance: real media and options at the service
+  bounds, a real Artifact ACL refusal, a composed call, restart recovery.
+- Remove the installation template's historical Linux Compose launch paths, keeping
+  the Mac fixtures.
+
 ## Open
 
 - **A sleeping Computer's open tab.** When a Computer is collected, its open OpenCode
