@@ -42,7 +42,7 @@ supervisor `d1d4da399`), installation `22fdc5a`, OpenCode `35659fe` (content of 
 | B4 | A new assignment works at once | An admin assigns a repository, then the person clones it | Clone succeeds within seconds, without waiting for the 300 s token lifetime | component; pending live |
 | B5 | A removed assignment stops at once | An admin removes it, then the person clones again | Refused | component; pending live |
 | B6 | Lore access survives a restart | Restart the Computer, then `lore repository list` | exit 0 | pending |
-| B7 | Artifact objects through the single host | From the Computer: Artifact upload and download via `veoveo.bioma.ai/artifacts/…` | Byte counts and SHA-256 match; no other hostname used | proven from outside a Computer 2026-10-23 (administrator via `veoveo-hub-sdk-cli`: 1 MiB, PUT 200 in 0.93 s and GET 200 in 0.41 s, both on `veoveo.bioma.ai/artifacts/`, SHA-256 equal, artifact `01a16960-cd6e…`); pending from a Computer |
+| B7 | Artifact objects through the single host | From the Computer: Artifact upload and download via `veoveo.bioma.ai/artifacts/…` | Byte counts and SHA-256 match; no other hostname used | proven from outside a Computer 2026-10-23 (administrator via `veoveo-hub-sdk-cli`: 1 MiB, PUT 200 in 0.93 s and GET 200 in 0.41 s, both on `veoveo.bioma.ai/artifacts/`, SHA-256 equal, artifact `01a16960-cd6e…`); pending from a Computer; download from inside a Computer proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)); upload from inside pending |
 | B8 | Many repositories in one token | An owner with many assignments | Clone works; find the 16 KiB header limit (about 120 repositories estimated) | pending |
 | B9 | Large push through the proxy | Push one file over 16 MiB, and about 500 files | Push succeeds; time it | pending |
 | B10 | The platform puts nothing in the home | A fresh Computer: `echo ~` and `ls -A ~` | `~` is `/sandbox`; only OpenShell's `.openshell-initialized` and what programs created themselves | proven 2026-10-23 through Hub: `~` = `/sandbox`, `10001:10001 2770`, holding `.cache`, `.config`, `.local` (OpenCode's own) and `.openshell-initialized` |
@@ -56,7 +56,7 @@ supervisor `d1d4da399`), installation `22fdc5a`, OpenCode `35659fe` (content of 
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| C1 | Whoever creates a repository owns it | In OpenCode: `console__create_repository {name}` | Returns `{id, name, remote}`; the next plain `lore` push works with no admin step | component (Hub `c05f50f`, console `56257e8`); pending live |
+| C1 | Whoever creates a repository owns it | In OpenCode: `console__create_repository {name}` | Returns `{id, name, remote}`; the next plain `lore` push works with no admin step | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | C2 | Nobody claims another person's repository | Second person calls with the first person's `id` | 409 `repository-claimed` | component |
 | C3 | An interrupted create completes | Repeat the call with the returned `id` after a failure | Registered once; no duplicate | component |
 
@@ -67,17 +67,17 @@ startup times, from `console__logs` timestamps.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| D1 | Watch as the person | `console__watch {repository}` | Hub subscribes as the caller; the watch survives Lore `ABORTED` | pending |
-| D2 | First push serves `main` | Push `main`, then poll `console__status` | BuildKit builds `openshell/image/`; the image comes from the local registry; the sandbox is Ready; `servingRevision` = the pushed revision; `time__*` tools appear | pending |
-| D3 | Factory instance reaches PostgreSQL | One `time__*` call that uses the database | Works, verified against the platform trust bundle with no `sslrootcert` (decision D1) | pending |
-| D4 | Same image and policy push restarts | Push a source change | Same sandbox ID; restarted, not recreated; incremental build | pending |
-| D5 | Policy change recreates | Push a change to `openshell/policy.yaml` | New sandbox, empty disk; no `UpdateConfig` call | component (Hub `bf5dbcf`); pending live |
-| D6 | Second branch, second data environment | Push `dev/<user>/x`; `console__select` it for `time` | Separate database `dev_<user>_x_<8 hex>`; every chat of that person follows; `select null` returns to `main` | pending |
-| D7 | A broken build is diagnosable | Push code that fails to compile | `failed{stage: build}`; `console__logs` shows the error; the previous sandbox keeps serving | pending |
-| D8 | A crash at startup is diagnosable | Push a server that exits at startup | Status shows the exit code and restart count; logs explain it; a fixing push recovers | pending |
-| D9 | Branch deletion removes its instance | Delete the branch in Lore | The instance, sandbox and providers are removed | pending |
-| D10 | Soft caps warn | Exceed `instancesPerUser` (4) | A warning in status; nothing refused (`enforce: false`) | pending |
-| D11 | Recovery | Restart Hub; restart Lore; reboot the node | Watches resume; instances serve again with no manual step | pending |
+| D1 | Watch as the person | `console__watch {repository}` | Hub subscribes as the caller; the watch survives Lore `ABORTED` | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D2 | First push serves `main` | Push `main`, then poll `console__status` | BuildKit builds `openshell/image/`; the image comes from the local registry; the sandbox is Ready; `servingRevision` = the pushed revision; `time__*` tools appear | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D3 | Factory instance reaches PostgreSQL | One `time__*` call that uses the database | Works, verified against the platform trust bundle with no `sslrootcert` (decision D1) | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D4 | Same image and policy push restarts | Push a source change | Same sandbox ID; restarted, not recreated; incremental build | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D5 | Policy change recreates | Push a change to `openshell/policy.yaml` | New sandbox, empty disk; no `UpdateConfig` call | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D6 | Second branch, second data environment | Push `dev/<user>/x`; `console__select` it for `time` | Separate database `dev_<user>_x_<8 hex>`; every chat of that person follows; `select null` returns to `main` | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D7 | A broken build is diagnosable | Push code that fails to compile | `failed{stage: build}`; `console__logs` shows the error; the previous sandbox keeps serving | differs 2026-10-25: logs show the error; `failed` stays empty and the previous revision stops serving ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D8 | A crash at startup is diagnosable | Push a server that exits at startup | Status shows the exit code and restart count; logs explain it; a fixing push recovers | proven 2026-10-25 except the exit code, which status does not show ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D9 | Branch deletion removes its instance | Delete the branch in Lore | The instance, sandbox and providers are removed | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D10 | Soft caps warn | Exceed `instancesPerUser` (4) | A warning in status; nothing refused (`enforce: false`) | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
+| D11 | Recovery | Restart Hub; restart Lore; reboot the node | Watches resume; instances serve again with no manual step | Hub and Lore restarts proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)); node reboot pending |
 
 ## E. Platform services
 

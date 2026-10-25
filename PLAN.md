@@ -49,7 +49,8 @@ builds one image and changes one value. The design is in the installation's
 - [x] Build and deploy; a new Computer version. All merged to `main`.
 - [x] Probes: the mounted CLIs in a Computer, Hub reading `openshell/`, an instance
       cloning and serving (Time, D2), a source-only push restarting the same sandbox (D4).
-- [ ] The upgrade drill, in which only Lore is built.
+- [x] The upgrade drill: one image built, one value changed, every workload on the new
+      Lore at its next start ([record](records/2026-10-25-platform-tools-and-time-flow.md)).
 - [ ] Bioma's installation updated as template output, and the record.
 
 ## 3. Then
@@ -67,7 +68,9 @@ builds one image and changes one value. The design is in the installation's
 4. Done: `embedding-runtime` and `media-provider` run the current OpenShell runtime
    ([record](records/2026-10-25-charge-periods.md#runtime-restarts)).
 5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model:
-   C1, D1–D4 pass; D5–D11 and the B7 upload from a Computer remain.
+   C1 and D1–D11 ran ([record](records/2026-10-25-platform-tools-and-time-flow.md)); left:
+   the B7 upload from inside a Computer (after the CLI works there) and the node reboot
+   of D11 (it needs the box's sudo password).
 6. G1: the final MiMo acceptance.
 7. The installation template's Python tools (`identity/configure-hub`,
    `identity/configure-openshell`, `identity/provision`) break the no-Python principle;
@@ -106,6 +109,15 @@ builds one image and changes one value. The design is in the installation's
   the Mac fixtures.
 
 ## Open
+
+- **A broken push takes its branch down.** The build runs at start inside the branch's
+  sandbox, so a push that does not compile, or a server that exits, stops the branch
+  until a fixing push; `console__status` shows only the restart backoff (no `failed`
+  stage, no exit code), though `console__logs` shows the cause. Keeping the previous
+  revision serving would need building a new revision beside the running one. Undecided.
+- **The log store adds `missing _msg field` lines** for records without a message.
+- **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
+  'What's new'; republishing a template should take a note.
 
 - **BuildKit cache mounts cross repositories.** Every repository's
   `openshell/image/Dockerfile` builds on one BuildKit daemon, whose cache mounts
