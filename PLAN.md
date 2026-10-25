@@ -114,6 +114,14 @@ builds one image and changes one value. The design is in the installation's
 
 ## Open
 
+- **A first installation does not yet take apply's one path.** `workspace-storage`
+  needs the workspace namespaces, which exist only once providers exist, after the
+  later `profiles` step; and images must be built and in the lock before `postgres`.
+  The installer's README gives the order (some steps with `--step`, then providers and
+  images, then `apply`). The design says first installation and upgrade take the
+  same path.
+- **Seed Jobs other than Hub's claim are run by hand.** `plan` does not compare them
+  and `apply` does not run them; only Hub's claim files are written by the installer.
 - **OpenShell's supervisor can wait out its full grace period on delete.** In 2 of 14
   timed deletions the supervisor pod stayed until its 30 s `terminationGracePeriodSeconds`
   ("sandbox did not acknowledge terminal state: boundary unavailable") after its agent had
