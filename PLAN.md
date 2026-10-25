@@ -51,8 +51,9 @@ builds one image and changes one value. The design is in the installation's
 
 ## 3. Then
 
-1. Core cuts charge periods to whole microseconds, which PostgreSQL stores; the SDK,
-   Artifact and Embedding take the new core (merged), and Embedding redeploys.
+1. Done: core cuts charge periods to whole microseconds; the SDK, Artifact and
+   Embedding took the new core, and Embedding is redeployed
+   ([record](records/2026-10-25-charge-periods.md)).
 2. The installation template's remaining corrections; Bioma's installation follows.
    Includes the stale `computer/LORE_HUB.md` guide in both installations, Time's
    README (it still describes a separate author factory), and whether `lore.toml`
@@ -60,7 +61,8 @@ builds one image and changes one value. The design is in the installation's
 3. Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
    `/mcp/local` on the box) are dead: they served environment source activation,
    which Hub removed in `0ee1dd0`. They go with part 2's policy changes.
-4. Restart `embedding-runtime` and `media-provider` onto the current OpenShell runtime.
+4. Done: `embedding-runtime` and `media-provider` run the current OpenShell runtime
+   ([record](records/2026-10-25-charge-periods.md#runtime-restarts)).
 5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model.
 6. G1: the final MiMo acceptance.
 7. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
@@ -90,6 +92,11 @@ builds one image and changes one value. The design is in the installation's
   the Mac fixtures.
 
 ## Open
+
+- **Hub logs ERROR when a server is replaced.** Recreating Embedding produced 8
+  `worker quit with fatal: Transport channel closed` ERROR lines in two seconds as the
+  old pod went away. A planned replacement is not an error; the level, and whether
+  Hub should say which registration ended, are undecided.
 
 - **A sleeping Computer's open tab.** When a Computer is collected, its open OpenCode
   tab shows OpenCode's own "Server request failed" 503 page; its Reload starts the
