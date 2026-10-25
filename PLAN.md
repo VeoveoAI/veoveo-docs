@@ -25,8 +25,7 @@ Steps:
 - [x] Point the workspace and every Veoveo repository's `AGENTS.md` at its design.
 - [x] Fix every link to a moved document; links across repositories are GitHub URLs.
 - [x] Bioma's `DESIGN.md` reads as the template's would (BiomaAI/veoveo-installation `cd04d4c`).
-- [ ] The visual guide shows the current design (it still shows CloudNativePG and
-      environment overrides), checked in a browser.
+- [x] The visual guide shows the current design, checked in Chrome (2026-10-25).
 
 Done when every current decision has exactly one owning `DESIGN.md`, every repository
 points to its design, and all links resolve.
@@ -130,17 +129,6 @@ builds one image and changes one value. The design is in the installation's
 - **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
   'What's new'; republishing a template should take a note.
 
-- **BuildKit cache mounts cross repositories.** Every repository's
-  `openshell/image/Dockerfile` builds on one BuildKit daemon, whose cache mounts
-  (`RUN --mount=type=cache,id=…`) are directories shared by name across all builds. A
-  repository can leave content there that another repository's build reads, against
-  the installation's rule that factory builds share no writable cache. No repository
-  uses one today. The options for closing it are to be investigated and brought to the
-  user; Hub reads nothing in a repository except `openshell/policy.yaml`.
-- **The Hub CLI in a Computer cannot reach Hub.** The Computer policy admits Hub's MCP
-  endpoint for `/usr/local/bin/opencode` only, so `veoveo-hub-sdk-cli`, which every
-  Computer carries, cannot call Hub from inside one. Whether a person's own CLI should
-  act as them from their Computer is undecided.
 
 - **Hub logs ERROR when a server is replaced.** Recreating Embedding produced 8
   `worker quit with fatal: Transport channel closed` ERROR lines in two seconds as the
