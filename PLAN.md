@@ -109,6 +109,8 @@ builds one image and changes one value. The design is in the installation's
   bounds, a real Artifact ACL refusal, a composed call, restart recovery.
 - Remove the installation template's historical Linux Compose launch paths, keeping
   the Mac fixtures.
+- `veoveo-installer build`: build a component at its locked revision and record its
+  digest in the lock, replacing the box's build scripts.
 
 ## Open
 
