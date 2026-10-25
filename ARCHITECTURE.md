@@ -159,8 +159,8 @@ that changes together with code belongs to the repository that holds the code.
 | Owner | What it holds |
 |---|---|
 | Component repository | Source, contract, checks, image stages and, per branch, `openshell/image/`, `openshell/run` and an optional `openshell/policy.yaml` |
-| Installation repository | Kubernetes foundation inputs, OpenShell base policies, provider profiles and templates, the Computer image and template, the identity provider's clients and roles, public origins, image pins, and the seed of Hub's control plane |
-| Hub's control plane | The live installation catalog: identity providers, clients, tenants, roles and grants, repository registrations and assignments, MCP request destinations, Computer settings and handbook, factory size, soft caps and base branch. PostgreSQL holds the active revision; the installation's file seeds only an empty installation, and changes go through the live administrative route |
+| Installation repository | Kubernetes foundation inputs, OpenShell base policies, provider profiles, the Computer and factory templates (with each workload's size and mounts), the Computer image, the identity provider's clients and roles, public origins, the lock that names each image once, and the seed of Hub's control plane |
+| Hub's control plane | The live installation catalog: identity providers, clients, tenants, roles and grants, repository registrations and assignments, MCP request destinations, Computer settings and handbook, which factory template to use, soft caps and base branch. PostgreSQL holds the active revision; the installation's file seeds only an empty installation, and changes go through the live administrative route |
 | Hub's tables | Registrations, instances, selections, watches and Computers |
 | OpenShell | Runtime inventory: workspaces, sandboxes, templates, providers and their credentials, policies as admitted |
 | Lore | Repositories, revisions and the server's own settings, which the installation supplies |
@@ -199,7 +199,7 @@ its own repository, and reusable fixes go to the template first.
 | Topic | Design |
 |---|---|
 | Placement: K3s, OpenShell's Kubernetes driver, workspaces | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#placement) |
-| Images, their pins and versions | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md) |
+| Images, their pins, and how Lore and the SDK CLI reach workloads | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#images) |
 | Identity providers, clients, roles and Lore server settings | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity) |
 | PostgreSQL, object storage and Lore storage as deployed | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#storage) |
 | Network policies, provider profiles and trust roots | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#policies-and-providers) |
