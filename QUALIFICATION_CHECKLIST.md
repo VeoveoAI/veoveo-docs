@@ -1,9 +1,9 @@
 # Qualification Checklist
 
 Every feature of the factory-sandbox installation that must work, how to check it, and
-where it stands. People and agents use the same list. Architecture is in
-[LORE_OPENSHELL_INTEGRATION.md](LORE_OPENSHELL_INTEGRATION.md); execution status and
-decisions are in [OPENSHELL_HARDCUT_PLAN.md](OPENSHELL_HARDCUT_PLAN.md).
+where it stands. People and agents use the same list. The design is in
+[ARCHITECTURE.md](ARCHITECTURE.md) and the `DESIGN.md` files it maps; what is next is
+in [PLAN.md](PLAN.md); dated evidence is in [records](records/README.md).
 
 Rules:
 - **Status:** `proven` (with evidence), `pending`, or `component` (proven by repository
