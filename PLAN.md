@@ -58,32 +58,34 @@ builds one image and changes one value. The design is in the installation's
 1. Done: core cuts charge periods to whole microseconds; the SDK, Artifact and
    Embedding took the new core, and Embedding is redeployed
    ([record](records/2026-10-25-charge-periods.md)).
-2. The installation template's remaining corrections; Bioma's installation follows.
-   Includes the stale `computer/LORE_HUB.md` guide in both installations, Time's
-   README (it still describes a separate author factory), and whether `lore.toml`
-   still needs the `factory_branch` pre-push hook, since factory sandboxes never push.
+2. Done: the installation template's corrections (identity example, names, pins, role
+   claims, tunnel keys, lock, Linux and Mac paths, Embedding and Media wiring; the stale
+   `computer/LORE_HUB.md` and the `factory_branch` hook that guarded nothing removed)
+   and Time's README ([record](records/2026-10-25-batch3-and-g1.md)). Bioma's installation follows.
 3. Done: Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
    `/mcp/local` on the box) are dead: they served environment source activation,
    which Hub removed in `0ee1dd0`. They went with part 2's policy.
 4. Done: `embedding-runtime` and `media-provider` run the current OpenShell runtime
    ([record](records/2026-10-25-charge-periods.md#runtime-restarts)).
-5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model:
-   C1 and D1–D11 ran ([record](records/2026-10-25-platform-tools-and-time-flow.md)); left:
-   the B7 upload from inside a Computer (after the CLI works there) and the node reboot
-   of D11 (it needs the box's sudo password).
-6. G1: the final MiMo acceptance.
+5. Done: the Time factory flow, C1, D1–D11 and B7, as a person, with no model
+   ([record](records/2026-10-25-platform-tools-and-time-flow.md), [record](records/2026-10-25-batch3-and-g1.md)); left: the node
+   reboot of D11, which needs the box's sudo password.
+6. Done: G1, the final MiMo acceptance ([record](records/2026-10-25-batch3-and-g1.md)).
 7. The installation template's Python tools (`identity/configure-hub`,
    `identity/configure-openshell`, `identity/provision`) break the no-Python principle;
    they move into Rust installation tooling and are deleted, in Bioma's installation
    too.
 8. Approved 2026-10-25:
-   - The person's Hub CLI works inside their Computer, acting as them as OpenCode does.
-   - Planned replacements log below ERROR in Hub.
-   - Our own Docker checks cache compiled crates (Hub first, measured, then the rest).
-   - `apply`: a minimal Rust bootstrap installer for the substrate only, designed
-     first in the installation's `DESIGN.md`; it absorbs item 7.
-9. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
-   workspace deletion: normally 5.5 s; the slow cases are the supervisor race under Open.
+   - Done: the person's Hub CLI works inside their Computer, as them.
+   - Done: planned replacements log below ERROR in Hub (Computer proxy; rmcp fork).
+   - Hub's check caches compiled crates (256 s cold, 168 s after a one-line change);
+     the other repositories next.
+   - `veoveo-installer` (`apply`): the design is on the installation template's
+     `installer` branch for review; it absorbs item 7, and publishes changes to Hub's
+     live control plane instead of resetting it.
+9. Housekeeping: done: the coordinator's admin grant is revoked; workspace deletion is
+   5.5 s normally, the slow cases are the supervisor race under Open. Left: rotate the
+   box's sudo password.
 
 ## Later
 
@@ -120,8 +122,8 @@ builds one image and changes one value. The design is in the installation's
 
 - **A broken push takes its branch down.** The build runs at start inside the branch's
   sandbox, so a push that does not compile, or a server that exits, stops the branch
-  until a fixing push; `console__status` shows only the restart backoff (no `failed`
-  stage, no exit code), though `console__logs` shows the cause. Keeping the previous
+  until a fixing push; `console__status` shows the exit code and restart count but no
+  `failed` stage, and `console__logs` shows the cause. Keeping the previous
   revision serving would need building a new revision beside the running one. Undecided.
 - **The log store adds `missing _msg field` lines** for records without a message.
 - **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
