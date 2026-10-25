@@ -18,12 +18,15 @@ Design, status and records each have one place:
 Steps:
 
 - [x] Move the five dated plans into `records/` unchanged.
-- [ ] Write `ARCHITECTURE.md`: what no repository owns, and the map of which
+- [x] Write `ARCHITECTURE.md`: what no repository owns, and the map of which
       `DESIGN.md` owns each topic.
-- [ ] Move each current decision from the records to its owner's `DESIGN.md`;
-      contradictions go to the user.
-- [ ] Point the workspace and every Veoveo repository's `AGENTS.md` at its design.
-- [ ] Fix every link to a moved document; links across repositories are GitHub URLs.
+- [x] Move each current decision from the records to its owner's `DESIGN.md`. Where
+      a record and the code disagreed, the code was right and the design now says so.
+- [x] Point the workspace and every Veoveo repository's `AGENTS.md` at its design.
+- [x] Fix every link to a moved document; links across repositories are GitHub URLs.
+- [ ] Bioma's `DESIGN.md` reads as the template's would, after part 2 changes it.
+- [ ] The visual guide shows the current design (it still shows CloudNativePG and
+      environment overrides), checked in a browser.
 
 Done when every current decision has exactly one owning `DESIGN.md`, every repository
 points to its design, and all links resolve.
@@ -48,12 +51,15 @@ builds one image and changes one value. The design is in the installation's
 
 ## 3. Then
 
-1. Core cuts charge periods to whole microseconds, which PostgreSQL stores; Embedding
-   updates its core pin and redeploys. About 1 in 2,000 Embedding requests is refused
-   until then.
+1. Core cuts charge periods to whole microseconds, which PostgreSQL stores; the SDK,
+   Artifact and Embedding take the new core (merged), and Embedding redeploys.
 2. The installation template's remaining corrections; Bioma's installation follows.
-3. Hub's extra `/mcp/local` rule for `artifact__create_download`: its origin, then
-   one answer in the installation's design for the template and the box.
+   Includes the stale `computer/LORE_HUB.md` guide in both installations, Time's
+   README (it still describes a separate author factory), and whether `lore.toml`
+   still needs the `factory_branch` pre-push hook, since factory sandboxes never push.
+3. Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
+   `/mcp/local` on the box) are dead: they served environment source activation,
+   which Hub removed in `0ee1dd0`. They go with part 2's policy changes.
 4. Restart `embedding-runtime` and `media-provider` onto the current OpenShell runtime.
 5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model.
 6. G1: the final MiMo acceptance.
