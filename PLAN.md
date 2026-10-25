@@ -65,7 +65,11 @@ builds one image and changes one value. The design is in the installation's
    ([record](records/2026-10-25-charge-periods.md#runtime-restarts)).
 5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model.
 6. G1: the final MiMo acceptance.
-7. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
+7. The installation template's Python tools (`identity/configure-hub`,
+   `identity/configure-openshell`, `identity/provision`) break the no-Python principle;
+   they move into Rust installation tooling and are deleted, in Bioma's installation
+   too.
+8. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
    investigate slow workspace deletion (148–230 s).
 
 ## Later

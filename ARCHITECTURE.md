@@ -188,6 +188,11 @@ its own repository, and reusable fixes go to the template first.
 - **Development data is disposable.** Breaking changes reset application state instead
   of migrating it; source and trusted installation configuration are what an
   installation is rebuilt from.
+- **No Python in the build or the infrastructure.** Builds, checks, installation
+  tooling and the configuration an installation is rebuilt from are Rust, or plain
+  shell where a few lines suffice. Python is used only where Python is the point: a
+  server written in Python, a service whose upstream is Python (the Embedding
+  runtime's model stack), and throwaway scripts for testing.
 
 ## Where Each Topic Is Designed
 
