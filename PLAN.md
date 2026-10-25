@@ -135,14 +135,13 @@ builds one image and changes one value. The design is in the installation's
   `failed` stage, and `console__logs` shows the cause. Keeping the previous
   revision serving would need building a new revision beside the running one. Undecided.
 - **The log store adds `missing _msg field` lines** for records without a message.
+- **The local registry has no authentication.** Network policies keep factory build
+  steps away from it; any other workload the cluster admits to it can push.
+- **OpenCode answers 500 on `/api/fs/find?query=$f`** while text is typed: OpenCode's
+  own bug, for upstream.
 - **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
   'What's new'; republishing a template should take a note.
 
-
-- **Hub logs ERROR when a server is replaced.** Recreating Embedding produced 8
-  `worker quit with fatal: Transport channel closed` ERROR lines in two seconds as the
-  old pod went away. A planned replacement is not an error; the level, and whether
-  Hub should say which registration ended, are undecided.
 
 - **A sleeping Computer's open tab.** When a Computer is collected, its open OpenCode
   tab shows OpenCode's own "Server request failed" 503 page; its Reload starts the
