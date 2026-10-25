@@ -38,16 +38,19 @@ read-only image volumes, instead of being copied into other images. Upgrading Lo
 builds one image and changes one value. The design is in the installation's
 `DESIGN.md`.
 
-- [ ] OpenShell: an `image` volume kind for the Kubernetes driver; factory instances
-      from an installation template with a per-instance image.
-- [ ] Installation: the mounts in the Computer, factory and Hub templates; policy
+- [x] OpenShell: an `image` volume kind for the Kubernetes driver, admitted only when
+      pinned by digest from a repository the installation lists (`491b3503d`).
+- [x] Installation: the mounts in the Computer, factory and Hub templates; policy
       rules name the mounted path; the lock names each image once and fills the files
-      that use it.
-- [ ] Hub: no Lore image setting or build context; the start command uses the mount.
-- [ ] Time, console and the MCP template: images carry only their toolchain.
-- [ ] Build, deploy and update Bioma's installation; a new Computer version.
-- [ ] Probes: the mounted CLIs in a Computer, Hub reading `openshell/`, an instance
-      cloning, and an upgrade drill in which only Lore is built.
+      that use it (`518934b`).
+- [x] Hub: no Lore image setting or build context; factory instances take their size
+      and mounts from the factory template (`9e00c77`).
+- [x] Time, console and the MCP template: images carry only their toolchain.
+- [x] Build and deploy; a new Computer version. All merged to `main`.
+- [x] Probes: the mounted CLIs in a Computer, Hub reading `openshell/`, an instance
+      cloning and serving (Time, D2), a source-only push restarting the same sandbox (D4).
+- [ ] The upgrade drill, in which only Lore is built.
+- [ ] Bioma's installation updated as template output, and the record.
 
 ## 3. Then
 
@@ -58,18 +61,25 @@ builds one image and changes one value. The design is in the installation's
    Includes the stale `computer/LORE_HUB.md` guide in both installations, Time's
    README (it still describes a separate author factory), and whether `lore.toml`
    still needs the `factory_branch` pre-push hook, since factory sandboxes never push.
-3. Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
+3. Done: Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
    `/mcp/local` on the box) are dead: they served environment source activation,
-   which Hub removed in `0ee1dd0`. They go with part 2's policy changes.
+   which Hub removed in `0ee1dd0`. They went with part 2's policy.
 4. Done: `embedding-runtime` and `media-provider` run the current OpenShell runtime
    ([record](records/2026-10-25-charge-periods.md#runtime-restarts)).
-5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model.
+5. The Time factory flow (checklist C1, D1–D11 and B7), as a person, with no model:
+   C1, D1–D4 pass; D5–D11 and the B7 upload from a Computer remain.
 6. G1: the final MiMo acceptance.
 7. The installation template's Python tools (`identity/configure-hub`,
    `identity/configure-openshell`, `identity/provision`) break the no-Python principle;
    they move into Rust installation tooling and are deleted, in Bioma's installation
    too.
-8. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
+8. Approved 2026-10-25:
+   - The person's Hub CLI works inside their Computer, acting as them as OpenCode does.
+   - Planned replacements log below ERROR in Hub.
+   - Our own Docker checks cache compiled crates (Hub first, measured, then the rest).
+   - `apply`: a minimal Rust bootstrap installer for the substrate only, designed
+     first in the installation's `DESIGN.md`; it absorbs item 7.
+9. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
    investigate slow workspace deletion (148–230 s).
 
 ## Later
