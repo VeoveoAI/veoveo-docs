@@ -24,7 +24,7 @@ Steps:
       a record and the code disagreed, the code was right and the design now says so.
 - [x] Point the workspace and every Veoveo repository's `AGENTS.md` at its design.
 - [x] Fix every link to a moved document; links across repositories are GitHub URLs.
-- [ ] Bioma's `DESIGN.md` reads as the template's would, after part 2 changes it.
+- [x] Bioma's `DESIGN.md` reads as the template's would (BiomaAI/veoveo-installation `cd04d4c`).
 - [ ] The visual guide shows the current design (it still shows CloudNativePG and
       environment overrides), checked in a browser.
 
@@ -51,7 +51,7 @@ builds one image and changes one value. The design is in the installation's
       cloning and serving (Time, D2), a source-only push restarting the same sandbox (D4).
 - [x] The upgrade drill: one image built, one value changed, every workload on the new
       Lore at its next start ([record](records/2026-10-25-platform-tools-and-time-flow.md)).
-- [ ] Bioma's installation updated as template output, and the record.
+- [x] Bioma's installation updated as template output (`cd04d4c`), and the records.
 
 ## 3. Then
 
@@ -61,7 +61,8 @@ builds one image and changes one value. The design is in the installation's
 2. Done: the installation template's corrections (identity example, names, pins, role
    claims, tunnel keys, lock, Linux and Mac paths, Embedding and Media wiring; the stale
    `computer/LORE_HUB.md` and the `factory_branch` hook that guarded nothing removed)
-   and Time's README ([record](records/2026-10-25-batch3-and-g1.md)). Bioma's installation follows.
+   and Time's README ([record](records/2026-10-25-batch3-and-g1.md)); Bioma's installation
+   matches (`cd04d4c`).
 3. Done: Hub's `source_artifact` rules (`artifact__create_download` on `/mcp/computer`, and
    `/mcp/local` on the box) are dead: they served environment source activation,
    which Hub removed in `0ee1dd0`. They went with part 2's policy.
