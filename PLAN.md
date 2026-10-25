@@ -83,7 +83,7 @@ builds one image and changes one value. The design is in the installation's
    - `apply`: a minimal Rust bootstrap installer for the substrate only, designed
      first in the installation's `DESIGN.md`; it absorbs item 7.
 9. Housekeeping: revoke the coordinator's admin grant; rotate the box's sudo password;
-   investigate slow workspace deletion (148–230 s).
+   workspace deletion: normally 5.5 s; the slow cases are the supervisor race under Open.
 
 ## Later
 
@@ -109,6 +109,14 @@ builds one image and changes one value. The design is in the installation's
   the Mac fixtures.
 
 ## Open
+
+- **OpenShell's supervisor can wait out its full grace period on delete.** In 2 of 14
+  timed deletions the supervisor pod stayed until its 30 s `terminationGracePeriodSeconds`
+  ("sandbox did not acknowledge terminal state: boundary unavailable") after its agent had
+  already exited, so the workspace took 42 s instead of 5.5 s. A shutdown race in the
+  supervisor, to fix in OpenShell.
+- **A flaky Hub test.** `database_reconnect::the_hub_keeps_serving_and_its_registrations_after_its_database_sessions_end`
+  failed once on Linux with "Address already in use": a free-port race in the test support.
 
 - **A broken push takes its branch down.** The build runs at start inside the branch's
   sandbox, so a push that does not compile, or a server that exits, stops the branch
