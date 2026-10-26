@@ -102,8 +102,13 @@ builds one image and changes one value. The design is in the installation's
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
 - Console tools to share repositories and to clean up instances.
-- Per-person repository listing in Lore: Hub answers `UrcAuthApi.LookupUserPermissions`
-  and Lore uses `repository_catalog = "auth_service"` through Hub's gRPC service route.
+- Lore asks Hub for a person's repositories instead of reading them from the token: Hub
+  answers Lore's auth service (`UrcAuthApi` `CheckUserPermission` and
+  `LookupUserPermissions`), and Lore uses its `auth_url` authorizer and
+  `repository_catalog = "auth_service"` through Hub's gRPC service route. Today every
+  assignment is in the token, twice (`resources`, and a `scope` Lore never reads), so
+  about 85 repositories fill Lore's 16 KiB HTTP/2 header list; the same change gives
+  per-person listing.
 - Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
   credential custody.
 - A shared record of browser activity on the Computer row before several Hub replicas
@@ -133,18 +138,10 @@ builds one image and changes one value. The design is in the installation's
 - Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
 - OpenCode's 500 on `/api/fs/find?query=$f` while text is typed: OpenCode's own bug,
   for upstream.
-- Checklist A3, which needs a second person's account, and D11's node reboot, which
-  needs the box's sudo.
-- Harden Computer deletion: an operator's plain `openshell sandbox delete` of a Computer
-  deletes its home claim and volume (`local-path`, reclaim `Delete`); Hub's own paths use
-  `keep_workspace` ([record](records/2026-10-26-closeout.md)).
+- Checklist A3, which needs a second person's account, and D11's node reboot (the box
+  serving again by itself after a power cycle), which needs the box's sudo.
 - A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff`),
   not only the 120 s readiness deadline.
-- More than about 85 repositories in one Lore token: Lore's 16 KiB HTTP/2 header list
-  binds, and each assignment is in the token twice (`resources` and `scope`).
-- A Computer version that changes only through its policy or Hub's `computers` settings
-  still carries the template's note.
-- Offer `console__computer` only through the Computers profile, which alone admits it.
 
 ## Open
 
