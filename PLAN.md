@@ -90,6 +90,9 @@ builds one image and changes one value. The design is in the installation's
 11. Done 2026-10-26: the flaky Hub test (the fixture holds its socket), blank log lines
     stored empty, the release note declared with its template, and the remaining
     Computer checks ([record](records/2026-10-26-closeout.md)).
+    Done: What's new lists only a changed note (Hub `d40d067`,
+    [record](records/2026-10-26-hub-whats-new.md)). Decided: `console__computer` stays
+    offered to every profile and answers 401 outside a Computer, as console's design says.
 
 ## Later
 
