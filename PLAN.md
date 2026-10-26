@@ -87,6 +87,9 @@ builds one image and changes one value. The design is in the installation's
     push, as Hub's design says (checklist D7); a collected Computer's open tab keeps
     OpenCode's own 503 page, whose Reload starts the Computer; the Mac's Docker Desktop
     keeps its default build-cache limit, so cached checks are fast on the box.
+11. Done 2026-10-26: the flaky Hub test (the fixture holds its socket), blank log lines
+    stored empty, the release note declared with its template, and the remaining
+    Computer checks ([record](records/2026-10-26-closeout.md)).
 
 ## Later
 
@@ -132,14 +135,17 @@ builds one image and changes one value. The design is in the installation's
   for upstream.
 - Checklist A3, which needs a second person's account, and D11's node reboot, which
   needs the box's sudo.
-- Checklist B2, B4, B5, B6, B8, B9, B12's last part and B14: each needs commands in a
-  Computer's OpenCode shell, which the coordinating session's permissions do not admit
-  for an agent; run them when a person drives the Computer.
+- Harden Computer deletion: an operator's plain `openshell sandbox delete` of a Computer
+  deletes its home claim and volume (`local-path`, reclaim `Delete`); Hub's own paths use
+  `keep_workspace` ([record](records/2026-10-26-closeout.md)).
+- A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff`),
+  not only the 120 s readiness deadline.
+- More than about 85 repositories in one Lore token: Lore's 16 KiB HTTP/2 header list
+  binds, and each assignment is in the token twice (`resources` and `scope`).
+- A Computer version that changes only through its policy or Hub's `computers` settings
+  still carries the template's note.
+- Offer `console__computer` only through the Computers profile, which alone admits it.
 
 ## Open
 
-- **A flaky Hub test.** `database_reconnect::the_hub_keeps_serving_and_its_registrations_after_its_database_sessions_end`
-  failed once on Linux with "Address already in use": a free-port race in the test support.
-- **The log store adds `missing _msg field` lines** for records without a message.
-- **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
-  'What's new'; republishing a template should take a note.
+Nothing.
