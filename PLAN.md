@@ -103,6 +103,30 @@ builds one image and changes one value. The design is in the installation's
     scope-free Lore token, served, broken, diagnosed and fixed in 730 s
     ([record](records/2026-10-26-g1-rerun.md)).
 
+## 4. Sharing with people and groups
+
+Approved 2026-10-26. A repository's owner shares it with a person or a group; groups and
+their owners live in Hub's control plane beside assignments; Lore receives one token per
+repository, so nothing bounds how many repositories a person reaches. Entra and Lore do
+not change. The design is in Hub's, console's and the installation's `DESIGN.md`.
+
+- [x] Designs on `sharing` branches: Hub, console, installation, architecture.
+- [ ] OpenShell: upstream `main` merged into the fork, then a credential's refresh scoped
+      by a request header (`request_scope`): the supervisor asks the gateway for the token
+      of the scope a request names and holds it until shortly before expiry.
+- [ ] Hub: groups, assignments to a group, one grant rule for every reader, `hub.person`,
+      the access and group routes, the Computer's client issuing one repository per
+      scope; renewal removed.
+- [ ] Console: `repository_access`, `share_repository`, `groups`, `create_group`,
+      `set_group_member`.
+- [ ] Build and deploy OpenShell, Hub and console; the installation's `vv-lore` profile.
+- [ ] Qualify with both accounts: a share and a group share cloned and pushed, removal
+      refused within the token lifetime, non-owners refused, 200 repositories through one
+      group, a factory push by the second person; then one MiMo-V2.6-Pro run.
+- [ ] Records, checklist, this plan and the visual guide; merge every branch to `main`.
+
+Also: OpenCode moves to upstream 2.0 on a branch, reviewed before its Computer version.
+
 ## Later
 
 - Factory `uses`: the service instances an instance calls, pushed in the caller's
@@ -113,7 +137,7 @@ builds one image and changes one value. The design is in the installation's
 - Sleep and wake of factory instances through native stop and start, never with
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
-- Console tools to share repositories and to clean up instances.
+- Console tools to clean up instances.
 - Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
   credential custody.
 - A shared record of browser activity on the Computer row before several Hub replicas
