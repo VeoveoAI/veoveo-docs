@@ -111,7 +111,8 @@ repository, so nothing bounds how many repositories a person reaches. Entra and 
 not change. The design is in Hub's, console's and the installation's `DESIGN.md`.
 
 - [x] Designs on `sharing` branches: Hub, console, installation, architecture.
-- [ ] OpenShell: upstream `main` merged into the fork, then a credential's refresh scoped
+- [ ] OpenShell: upstream `main` merged into the fork (branch `merge-upstream-2026-10-26`,
+      `9b5fb816e`, checked locally), then a credential's refresh scoped
       by a request header (`request_scope`): the supervisor asks the gateway for the token
       of the scope a request names and holds it until shortly before expiry.
 - [ ] Hub: groups, assignments to a group, one grant rule for every reader, `hub.person`,
@@ -125,7 +126,9 @@ not change. The design is in Hub's, console's and the installation's `DESIGN.md`
       group, a factory push by the second person; then one MiMo-V2.6-Pro run.
 - [ ] Records, checklist, this plan and the visual guide; merge every branch to `main`.
 
-Also: OpenCode moves to upstream 2.0 on a branch, reviewed before its Computer version.
+Done: OpenCode on upstream 2.0 (fork `ca091c8`, base `a697f53611`) is the current Computer version
+`e4c07f404dc8`, proven without a model ([record](records/2026-10-26-opencode-2.md)); the final MiMo
+run of this part qualifies it with a model.
 
 ## Later
 
