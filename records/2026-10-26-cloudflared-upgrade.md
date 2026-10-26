@@ -10,11 +10,17 @@ macOS install needs 2026.10.3. Target: 2026.10.3 everywhere.
 |---|---|---|---|
 | K3s pod `veoveo-system/public-tunnel` (tunnel for `veoveo.bioma.ai`) | 2026.10.1, `sha256:3c0502d2...` (linux/amd64 manifest) | 2026.10.3, index `sha256:faa8e0a1475f137c910be6025f43c8e4092fdd35461b31e19fd1390657a1ff39` | upgraded |
 | Mac `/opt/homebrew/bin/cloudflared` (Homebrew, not running) | 2026.3.0 | 2026.10.3 (`brew upgrade cloudflared`) | upgraded |
-| Box host `/usr/local/bin/cloudflared` -> `/usr/bin/cloudflared`, root-owned, systemd `cloudflared-tunnel.service` ("agent.veoveo.ai", user rozgo, a second tunnel, config `~/.cloudflared/config.yml`) | 2026.2.0 | 2026.2.0 | **not upgraded** |
+| Box host `/usr/local/bin/cloudflared` -> `/usr/bin/cloudflared`, root-owned, systemd `cloudflared-tunnel.service` ("agent.veoveo.ai", user rozgo, a second tunnel, config `~/.cloudflared/config.yml`) | 2026.2.0 | none | **removed** |
 
-The host tunnel was not in the task's inventory. Replacing the root-owned binary and
-restarting a systemd unit needs `sudo`, which asks for a password; no sudo was used. It
-is still running a vulnerable release and needs the owner's decision. Its ingress is
+The host tunnel was not in the task's inventory. The installation has one tunnel, for
+`veoveo.bioma.ai`, so the host tunnel was removed rather than upgraded, on the owner's
+decision: its unit was disabled, stopped and deleted, the `cloudflared` package purged and
+`~/.cloudflared` deleted. The `veoveo-agent-gateway` service it served on port 42618 was
+disabled and stopped too; nothing listened on 42617. Afterwards no `cloudflared` is on the
+host, nothing listens on either port, `agent.veoveo.ai` does not answer, and
+`veoveo.bioma.ai` answered 200 three times. The tunnel itself, `f9d0b6ee-0fc7-4784-bb9c-e2777762fe2f`,
+still exists in Cloudflare: its origin certificate answered `unauthorized`, so it and its DNS
+records have to be deleted in the dashboard. Its ingress was
 plain HTTP to `localhost` ports 42617/42618 (hostnames `agent.bioma.ai`,
 `agent.veoveo.ai`, `*.agent.veoveo.ai`), so it has no origin certificate to check. The
 only cloudflared pods in the cluster (all namespaces) are the `public-tunnel` pods.
@@ -90,7 +96,8 @@ streams; in-flight requests on the old pod at termination were not tested.
 
 ## Not proved or not done
 
-- Box host cloudflared 2026.2.0 (`agent.veoveo.ai`): not upgraded, needs sudo.
+- The host tunnel `f9d0b6ee…` and its DNS records (`agent.veoveo.ai`, `*.agent.veoveo.ai`,
+  `agent.bioma.ai`) still exist in Cloudflare until they are deleted in the dashboard.
 - No test that the upgraded cloudflared still reaches the S3 `/artifacts/` and Media
   callback routes; only the Hub route was probed.
 - The fix itself (rejection of the eMudhra intermediates) was taken from the notice,
