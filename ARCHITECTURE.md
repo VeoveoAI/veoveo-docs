@@ -33,7 +33,7 @@ model proxy: the agent calls its model provider directly through OpenShell's pro
 | Hub | Entry point: browser and MCP authentication, its authorization server (application and Lore tokens), server registration, routing and selection, the factory reconciler, Computers | [veoveo-hub](https://github.com/VeoveoAI/veoveo-hub) | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md), [token and session authority](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/auth/DESIGN.md) |
 | Hub SDK | MCP hosting, the registration protocol and client, forwarded-identity checks, calls between servers, the Task adapter, the command-line client | [veoveo-hub-sdk](https://github.com/VeoveoAI/veoveo-hub-sdk) | [server contract](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/DESIGN.md), [registration protocol](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/registration/DESIGN.md), [CLI](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk-cli/DESIGN.md) |
 | Core | Protocol-independent libraries: types, the database kernel, durable Tasks, audit and usage | [veoveo-core](https://github.com/VeoveoAI/veoveo-core) | [database](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/DATABASE.md), [conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md), `platform/*/DESIGN.md` |
-| Console | The Hub MCP server: the Hub's activities as agent tools (status, logs, selection, watching, repository creation, the Computer) | [veoveo-mcp-console](https://github.com/VeoveoAI/veoveo-mcp-console) | [console](https://github.com/VeoveoAI/veoveo-mcp-console/blob/main/crates/veoveo-mcp-console/DESIGN.md) |
+| Console | The Hub MCP server: the Hub's activities as agent tools (status, logs, selection, watching, repository creation, sharing and groups, the Computer) | [veoveo-mcp-console](https://github.com/VeoveoAI/veoveo-mcp-console) | [console](https://github.com/VeoveoAI/veoveo-mcp-console/blob/main/crates/veoveo-mcp-console/DESIGN.md) |
 | Artifact | Managed content: metadata, access, sharing and signed byte transfers | [veoveo-mcp-artifact](https://github.com/VeoveoAI/veoveo-mcp-artifact) | [Artifact](https://github.com/VeoveoAI/veoveo-mcp-artifact/blob/main/crates/veoveo-mcp-artifact/DESIGN.md) |
 | Media | Generation runs as durable Tasks against an outside provider, with outputs stored through Artifact | [veoveo-mcp-media](https://github.com/VeoveoAI/veoveo-mcp-media) | [Media](https://github.com/VeoveoAI/veoveo-mcp-media/blob/main/crates/veoveo-mcp-media/DESIGN.md) |
 | Embedding | The embedding contract, its permissions and usage; media resolved through Artifact | [veoveo-mcp-embedding](https://github.com/VeoveoAI/veoveo-mcp-embedding) | [Embedding](https://github.com/VeoveoAI/veoveo-mcp-embedding/blob/main/crates/veoveo-mcp-embedding/DESIGN.md) |
@@ -79,8 +79,8 @@ tree in one direction.
 | A person's sign-in | The installation's identity provider (Microsoft Entra in the reference) | Proves who the person is to Hub; it grants nothing in Veoveo by itself |
 | Hub application tokens | Issued by Hub's authorization server to a person's client | MCP and Hub routes, decided by installation roles over each server's declared permissions |
 | Forwarded tokens | Signed by Hub per request, addressed to one server | The caller, client, tenant and the permissions granted in that server's namespace; a call between servers carries the calling server as actor and only the permissions it declared and the caller holds |
-| Lore tokens | Issued by Hub's authorization server from explicit repository assignments in Hub's control plane | Native Lore access, which Lore verifies with its unchanged authorization |
-| A Computer's credentials | OpenShell's credential custody, refreshed from Hub with the Computer's own client | The owner's Hub token and Lore token, which the Computer sees only as placeholders |
+| Lore tokens | Issued by Hub's authorization server from explicit repository assignments, to people and to groups, in Hub's control plane; each names one repository, or none | Native Lore access, which Lore verifies with its unchanged authorization |
+| A Computer's credentials | OpenShell's credential custody, refreshed from Hub with the Computer's own client, a Lore token per repository a request names | The owner's Hub token and Lore token, which the Computer sees only as placeholders |
 | A factory instance's credentials | OpenShell's credential custody, refreshed from Hub with the instance's own client | Lore read access as the branch's latest pusher, and the instance's registration token |
 | A server's registration | Its key pair and its registration access token | The server's identity at Hub: one PostgreSQL login per registration, confined to its schema |
 | Hub's OpenShell control identity | An identity-provider client whose secret stays in OpenShell's custody; only Hub's sandbox holds its placeholder | Creating, starting, stopping and deleting sandboxes and providers, and forwarding to them |
@@ -124,7 +124,8 @@ Identity wiring for an installation (which provider, which clients and roles) is
    replacement.
 2. **Work.** The agent clones and edits repositories with the Lore CLI, which reaches the
    private Lore server with the owner's Lore token; Lore decides what the person may read
-   and push. Whoever creates a repository through Hub owns it.
+   and push. Whoever creates a repository through Hub owns it, and an owner shares it with
+   people and with groups through console.
 3. **Publish.** `lore push` publishes an immutable revision. A repository is built and
    served once someone with access turns watching on with `console__watch`.
 4. **Build and serve.** Hub receives Lore's branch notification, reads the revision's
@@ -162,7 +163,7 @@ that changes together with code belongs to the repository that holds the code.
 |---|---|
 | Component repository | Source, contract, checks, image stages and, per branch, `openshell/image/`, `openshell/run` and an optional `openshell/policy.yaml` |
 | Installation repository | Kubernetes foundation inputs, OpenShell base policies, provider profiles, the Computer and factory templates (with each workload's size and mounts), the Computer image, the identity provider's clients and roles, public origins, the lock that names each image once, and the seed of Hub's control plane |
-| Hub's control plane | The live installation catalog: identity providers, clients, tenants, roles and grants, repository registrations and assignments, MCP request destinations, Computer settings and handbook, which factory template to use, soft caps and base branch. PostgreSQL holds the active revision; the installation's file seeds only an empty installation, and changes go through the live administrative route |
+| Hub's control plane | The live installation catalog: identity providers, clients, tenants, roles and grants, repository registrations, groups and assignments, MCP request destinations, Computer settings and handbook, which factory template to use, soft caps and base branch. PostgreSQL holds the active revision; the installation's file seeds only an empty installation, and changes go through the live administrative route |
 | Hub's tables | Registrations, instances, selections, watches and Computers |
 | OpenShell | Runtime inventory: workspaces, sandboxes, templates, providers and their credentials, policies as admitted |
 | Lore | Repositories, revisions and the server's own settings, which the installation supplies |
