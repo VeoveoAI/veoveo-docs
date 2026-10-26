@@ -108,4 +108,4 @@ proved.
 
 | # | Scenario | Expect | Status |
 |---|---|---|---|
-| G1 | The agent creates a server repository, pushes it, watches it serve, breaks it with a push, diagnoses it from `console__status` and `console__logs` alone, and fixes it with a push | Served again with no human help; every step uses only Hub's tools and plain `lore` | proven 2026-10-25, MiMo-V2.6-Pro ([record](records/2026-10-25-batch3-and-g1.md)) |
+| G1 | The agent creates a server repository, pushes it, watches it serve, breaks it with a push, diagnoses it from `console__status` and `console__logs` alone, and fixes it with a push | Served again with no human help; every step uses only Hub's tools and plain `lore` | proven 2026-10-25, MiMo-V2.6-Pro ([record](records/2026-10-25-batch3-and-g1.md)); again 2026-10-26 on Hub `2739757` with the scope-free Lore token: three pushes, served, broken, diagnosed and fixed in 730 s, $0.08 ([record](records/2026-10-26-g1-rerun.md)) |

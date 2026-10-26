@@ -99,6 +99,9 @@ builds one image and changes one value. The design is in the installation's
     list ([record](records/2026-10-26-lore-listing.md)).
     Done: checklist A3 and C2 with a second account, and the listing and clone isolation
     between two people ([record](records/2026-10-26-second-person.md)).
+    Done: G1 again on the current stack, with MiMo-V2.6-Pro: three pushes with the
+    scope-free Lore token, served, broken, diagnosed and fixed in 730 s
+    ([record](records/2026-10-26-g1-rerun.md)).
 
 ## Later
 
@@ -146,6 +149,14 @@ builds one image and changes one value. The design is in the installation's
   the sign-in's roles for the session's seven days, because Hub holds no Entra refresh
   token. Logout and revocation end the session at once
   ([record](records/2026-10-26-second-person.md)).
+- Unexplained during the G1 re-run, with no effect on the result
+  ([record](records/2026-10-26-g1-rerun.md)):
+  - one `console__logs` call failed with "the log store could not be reached", and its
+    retry 5 s later succeeded;
+  - OpenShell's supervisor in Hub's sandbox warns "sandbox network notification denied
+    (… os error 2)" at each factory action;
+  - each restart of an instance logs "workload frozen pending authenticated recovery" and
+    "SIGTERM before supervisor confirmation".
 - A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff`),
   not only the 120 s readiness deadline.
 
