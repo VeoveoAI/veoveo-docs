@@ -90,8 +90,10 @@ The boundaries that follow from these:
 
 - **Separate audiences.** Hub application tokens, Lore tokens and OpenShell management
   tokens name different audiences, and each service accepts only tokens for its own,
-  even where one issuer signs two kinds. A valid Lore token gives no Hub access, and Hub
-  administration or Work Context membership gives no repository access.
+  even where one issuer signs two kinds. The one exception is Lore's repository listing:
+  Lore forwards its caller's Lore token to Hub, the token's issuer, which answers only
+  that person's repository assignments. A valid Lore token gives no other Hub access, and
+  Hub administration or Work Context membership gives no repository access.
 - **Credentials stay in custody.** Workloads hold placeholders that OpenShell replaces on
   the request; the real Lore, Hub and model credentials never enter a Computer or a
   factory sandbox. Only a credential that must sign stays with its service, such as
