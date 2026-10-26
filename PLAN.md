@@ -97,6 +97,8 @@ builds one image and changes one value. The design is in the installation's
     "auth_service"`), and authorization stays in the token; a Computer's Lore token no
     longer repeats each repository as a scope, so about 130 to 135 fit Lore's 16 KiB header
     list ([record](records/2026-10-26-lore-listing.md)).
+    Done: checklist A3 and C2 with a second account, and the listing and clone isolation
+    between two people ([record](records/2026-10-26-second-person.md)).
 
 ## Later
 
@@ -138,8 +140,12 @@ builds one image and changes one value. The design is in the installation's
 - Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
 - OpenCode's 500 on `/api/fs/find?query=$f` while text is typed: OpenCode's own bug,
   for upstream.
-- Checklist A3, which needs a second person's account, and D11's node reboot (the box
-  serving again by itself after a power cycle), which needs the box's sudo.
+- D11's node reboot (the box serving again by itself after a power cycle), which needs
+  the box's sudo.
+- A role removed in Entra reaches a Hub session only at its next sign-in. A refresh keeps
+  the sign-in's roles for the session's seven days, because Hub holds no Entra refresh
+  token. Logout and revocation end the session at once
+  ([record](records/2026-10-26-second-person.md)).
 - A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff`),
   not only the 120 s readiness deadline.
 
