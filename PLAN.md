@@ -105,13 +105,19 @@ builds one image and changes one value. The design is in the installation's
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
 - Console tools to share repositories and to clean up instances.
-- Lore asks Hub for a person's repositories instead of reading them from the token: Hub
-  answers Lore's auth service (`UrcAuthApi` `CheckUserPermission` and
-  `LookupUserPermissions`), and Lore uses its `auth_url` authorizer and
-  `repository_catalog = "auth_service"` through Hub's gRPC service route. Today every
-  assignment is in the token, twice (`resources`, and a `scope` Lore never reads), so
-  about 85 repositories fill Lore's 16 KiB HTTP/2 header list; the same change gives
-  per-person listing.
+- Lore lists each person's repositories through Hub, and authorization does not change:
+  Lore's `repository_catalog = "auth_service"` asks Hub's
+  `UrcAuthApi.LookupUserPermissions` with the caller's token, only when something
+  lists, at Hub's `http` service route through the gateway; Hub verifies the token as a
+  Lore token it issued and answers the person's assignments in the active control plane.
+  Lore keeps authorizing every request from the token's `resources`, and `auth_url`
+  stays unset. A Computer's Lore token no longer repeats each repository as a
+  `lore-repo-{id}` scope, which Lore never reads, so about 130 to 135 owner assignments
+  fit in Lore's 16 KiB HTTP/2 header list instead of 85 to 88 (computed). Design: Hub's
+  [repository listing](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#repository-listing)
+  and the installation's [identity](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity).
+  On the `lore-catalog` branches of Hub, the template and Bioma's installation; Hub
+  deploys before Lore's settings, then B6 and B8 are qualified again.
 - Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
   credential custody.
 - A shared record of browser activity on the Computer row before several Hub replicas
