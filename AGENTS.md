@@ -29,4 +29,5 @@
   Use its SVG/PNG export controls for images needed outside the guide.
 - After visual edits, inspect all three views in a browser and check component
   details, navigation and exports. A byte-for-byte relocation needs only file and
-  link verification.
+  link verification. An export check leaves nothing behind: delete the files it
+  downloads, and never save the page itself.
