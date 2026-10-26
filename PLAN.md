@@ -132,6 +132,9 @@ builds one image and changes one value. The design is in the installation's
   for upstream.
 - Checklist A3, which needs a second person's account, and D11's node reboot, which
   needs the box's sudo.
+- Checklist B2, B4, B5, B6, B8, B9, B12's last part and B14: each needs commands in a
+  Computer's OpenCode shell, which the coordinating session's permissions do not admit
+  for an agent; run them when a person drives the Computer.
 
 ## Open
 

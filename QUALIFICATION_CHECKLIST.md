@@ -86,7 +86,7 @@ startup times, from `console__logs` timestamps.
 | E1 | Services registered and routed | `veoveo-hub-sdk-cli tools` as the administrator | `artifact__*`, `media__*`, `embedding__*`, `console__*` listed | proven 2026-10-23 (15 + 3 + 1 + 5 tools after Artifact `b7bbde9`, Media `d7ae458`, Embedding `1323732`) |
 | E2 | A service registers again after its registration is abandoned | Keep the service down past Hub's 60 s registration grace while Hub runs, then let it start (a Hub outage alone abandons nothing) | It registers again by itself with a new client; its tools route; no manual file moves | proven 2026-10-23: Artifact (`artifact-01a1668e…` → `artifact-01a1674370…`); Media `d7ae458` and Embedding `1323732` stopped 100 s and 104 s, registered again 3.3 s after start with new clients; all their tools listed |
 | E3 | Embedding runtime on the GPU | Embedding `/readyz` | `ready` through the runtime | proven 2026-10-23 |
-| E4 | Media through its fixture provider | One Media call | Routed and stored; the output is synthetic fixture data | pending |
+| E4 | Media through its fixture provider | One Media call | Routed and stored; the output is synthetic fixture data | proven 2026-10-25: `media__run` on `fake/text-to-image`, 9.8 s, artifact `image/png` 65,536 bytes, downloaded 200 with the same SHA-256 `c6ee57f0…`; synthetic fixture data |
 
 ## F. Installation and operations
 
