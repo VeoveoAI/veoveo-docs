@@ -116,8 +116,9 @@ builds one image and changes one value. The design is in the installation's
   fit in Lore's 16 KiB HTTP/2 header list instead of 85 to 88 (computed). Design: Hub's
   [repository listing](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#repository-listing)
   and the installation's [identity](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity).
-  On the `lore-catalog` branches of Hub, the template and Bioma's installation; Hub
-  deploys before Lore's settings, then B6 and B8 are qualified again.
+  On the `lore-catalog` branches of Hub, OpenShell (the chart's `service.clusterIP`, which
+  declares the gateway address Lore's host alias names), the template and Bioma's
+  installation; Hub deploys before Lore's settings, then B6 and B8 are qualified again.
 - Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
   credential custody.
 - A shared record of browser activity on the Computer row before several Hub replicas
