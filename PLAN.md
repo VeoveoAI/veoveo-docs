@@ -77,14 +77,16 @@ builds one image and changes one value. The design is in the installation's
 8. Approved 2026-10-25:
    - Done: the person's Hub CLI works inside their Computer, as them.
    - Done: planned replacements log below ERROR in Hub (Computer proxy; rmcp fork).
-   - Hub's check caches compiled crates (256 s cold, 168 s after a one-line change);
-     the other repositories next.
+   - Done: Hub's check caches compiled crates (256 s cold, 168 s after a one-line change).
    - Done: `veoveo-installer` `plan` and `apply`, on both installations' `main`; the first
      full apply published only Hub's differences, and a second changed nothing
      ([record](records/2026-10-25-installer-first-apply.md)).
-9. Housekeeping: done: the coordinator's admin grant is revoked; workspace deletion is
-   5.5 s normally, the slow cases are the supervisor race under Open. Left: rotate the
-   box's sudo password.
+9. Done: housekeeping: the coordinator's admin grant is revoked; workspace deletion is
+   5.5 s normally; merged branches and worktrees are removed.
+10. Decided 2026-10-25: a push that does not compile stops its branch until a fixing
+    push, as Hub's design says (checklist D7); a collected Computer's open tab keeps
+    OpenCode's own 503 page, whose Reload starts the Computer; the Mac's Docker Desktop
+    keeps its default build-cache limit, so cached checks are fast on the box.
 
 ## Later
 
@@ -110,39 +112,31 @@ builds one image and changes one value. The design is in the installation's
   the Mac fixtures.
 - `veoveo-installer build`: build a component at its locked revision and record its
   digest in the lock, replacing the box's build scripts.
+- A first installation through apply's one path. Today `workspace-storage` needs the
+  workspace namespaces, which exist only once providers exist, after the later
+  `profiles` step, and images must be built and in the lock before `postgres`; the
+  installer's README gives the order. Qualified with checklist F6 at the next fresh
+  install.
+- The seed Jobs other than Hub's claim through the installer; today they are run by
+  hand, and `plan` does not compare them.
+- OpenShell's supervisor waiting out its full grace period on delete: in 2 of 14 timed
+  deletions the supervisor pod stayed until its 30 s `terminationGracePeriodSeconds`
+  ("sandbox did not acknowledge terminal state: boundary unavailable") after its agent
+  had exited, so the workspace took 42 s instead of 5.5 s. A shutdown race, to fix in
+  OpenShell.
+- Authentication on the local registry. Network policies keep factory build steps away
+  from it; any other workload the cluster admits to it can push.
+- Build caches in the other repositories' checks, as in Hub's.
+- Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
+- OpenCode's 500 on `/api/fs/find?query=$f` while text is typed: OpenCode's own bug,
+  for upstream.
+- Checklist A3, which needs a second person's account, and D11's node reboot, which
+  needs the box's sudo.
 
 ## Open
 
-- **A first installation does not yet take apply's one path.** `workspace-storage`
-  needs the workspace namespaces, which exist only once providers exist, after the
-  later `profiles` step; and images must be built and in the lock before `postgres`.
-  The installer's README gives the order (some steps with `--step`, then providers and
-  images, then `apply`). The design says first installation and upgrade take the
-  same path.
-- **Seed Jobs other than Hub's claim are run by hand.** `plan` does not compare them
-  and `apply` does not run them; only Hub's claim files are written by the installer.
-- **OpenShell's supervisor can wait out its full grace period on delete.** In 2 of 14
-  timed deletions the supervisor pod stayed until its 30 s `terminationGracePeriodSeconds`
-  ("sandbox did not acknowledge terminal state: boundary unavailable") after its agent had
-  already exited, so the workspace took 42 s instead of 5.5 s. A shutdown race in the
-  supervisor, to fix in OpenShell.
 - **A flaky Hub test.** `database_reconnect::the_hub_keeps_serving_and_its_registrations_after_its_database_sessions_end`
   failed once on Linux with "Address already in use": a free-port race in the test support.
-
-- **A broken push takes its branch down.** The build runs at start inside the branch's
-  sandbox, so a push that does not compile, or a server that exits, stops the branch
-  until a fixing push; `console__status` shows the exit code and restart count but no
-  `failed` stage, and `console__logs` shows the cause. Keeping the previous
-  revision serving would need building a new revision beside the running one. Undecided.
 - **The log store adds `missing _msg field` lines** for records without a message.
-- **The local registry has no authentication.** Network policies keep factory build
-  steps away from it; any other workload the cluster admits to it can push.
-- **OpenCode answers 500 on `/api/fs/find?query=$f`** while text is typed: OpenCode's
-  own bug, for upstream.
 - **A Lore-only upgrade keeps the old release note**, so the status page shows a stale
   'What's new'; republishing a template should take a note.
-
-
-- **A sleeping Computer's open tab.** When a Computer is collected, its open OpenCode
-  tab shows OpenCode's own "Server request failed" 503 page; its Reload starts the
-  Computer again. Whether Hub should say more is undecided.

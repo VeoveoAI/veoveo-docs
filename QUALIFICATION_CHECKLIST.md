@@ -28,7 +28,7 @@ supervisor `d1d4da399`), installation `22fdc5a`, OpenCode `35659fe` (content of 
 |---|---|---|---|---|
 | A1 | A person signs in to Hub | Browser PKCE login with Entra | Access token and refresh token issued; refresh rotates | proven 2026-10-23 (admin principal, client `opencode`) |
 | A2 | An administrator uses the admin routes | `GET /admin/local/control-plane` with an Entra `administrator` app-role token | 200, through rule `installation-administration` (`roles: [administrator]`), with no per-person rule | proven 2026-10-23 (revision `gcp-01a166f0…`) |
-| A3 | A member without the role is refused | Same route as a member | 403 | pending |
+| A3 | A member without the role is refused | Same route as a member | 403 | needs a second person's account, which this session cannot create |
 | A4 | A server acting for its caller is refused on admin routes | Hub test `calls.rs` | 403 | component |
 | A5 | Admin publication round trip | GET, edit, PUT `/admin/local/control-plane` | `applied`, new revision, change visible | proven 2026-10-23 (enrollment, Time assignment) |
 
@@ -73,7 +73,7 @@ startup times, from `console__logs` timestamps.
 | D4 | Same image and policy push restarts | Push a source change | Same sandbox ID; restarted, not recreated; incremental build | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | D5 | Policy change recreates | Push a change to `openshell/policy.yaml` | New sandbox, empty disk; no `UpdateConfig` call | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | D6 | Second branch, second data environment | Push `dev/<user>/x`; `console__select` it for `time` | Separate database `dev_<user>_x_<8 hex>`; every chat of that person follows; `select null` returns to `main` | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
-| D7 | A broken build is diagnosable | Push code that fails to compile | `failed{stage: build}`; `console__logs` shows the error; the previous sandbox keeps serving | differs 2026-10-25: logs show the error and status shows exitCode 101; `failed` stays empty and the previous revision stops serving ([record](records/2026-10-25-batch3-and-g1.md)) |
+| D7 | A broken build is diagnosable | Push code that fails to compile | The branch's server exits at start and OpenShell restarts it with back-off; `console__status` shows its `exitCode` and `restartCount`; `console__logs` shows the error; a fixing push serves again. A failed image build or create is `failed{stage}` and leaves the sandbox serving as it was | proven 2026-10-25: exitCode 101, restartCount 1, `error[E0308]` in the logs, the fix served again ([record](records/2026-10-25-batch3-and-g1.md)) |
 | D8 | A crash at startup is diagnosable | Push a server that exits at startup | Status shows the exit code and restart count; logs explain it; a fixing push recovers | proven 2026-10-25: status shows exitCode and restartCount ([record](records/2026-10-25-batch3-and-g1.md)) |
 | D9 | Branch deletion removes its instance | Delete the branch in Lore | The instance, sandbox and providers are removed | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | D10 | Soft caps warn | Exceed `instancesPerUser` (4) | A warning in status; nothing refused (`enforce: false`) | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
@@ -95,8 +95,8 @@ startup times, from `console__logs` timestamps.
 | F1 | Our images come only from the local registry | Pod image references and kubelet events | `registry.veoveo-system.svc.cluster.local:5000/veoveo/…`; public images pinned by digest | proven 2026-10-23 |
 | F2 | A single public host | DNS, and the routes of tunnel `veoveo-bioma-ai` | Only `veoveo.bioma.ai`; S3 under `/artifacts/`; `veoveo-objects` does not resolve | proven 2026-10-23 |
 | F3 | Script clients are not blocked | Python default User-Agent to `/oauth/token` | Hub answers (JSON 400), not Cloudflare 403 1010 | proven 2026-10-23 |
-| F4 | A config change needs no sandbox recreation | Rerun Hub's config seed on the same claim, then restart Hub | Files replaced; the claim and sandbox are kept | component (installation `0311a69`); pending live |
-| F5 | Hub's Lore CLI trusts Lore's TLS | A factory watch reads `openshell/` | Read succeeds (Hub `4d639af`) | pending (with D1) |
+| F4 | A config change needs no sandbox recreation | Rerun Hub's config seed on the same claim, then restart Hub | Files replaced; the claim and sandbox are kept | proven 2026-10-25: the installer's apply wrote Hub's files into claim `hub-config-v1` (created 2026-10-23) with its seed Job and restarted Hub; sandbox `hub` (created 09:04, before the apply) was kept ([record](records/2026-10-25-installer-first-apply.md)) |
+| F5 | Hub's Lore CLI trusts Lore's TLS | A factory watch reads `openshell/` | Read succeeds (Hub `4d639af`) | proven 2026-10-25: D2 read Time's `openshell/` and served it ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | F6 | Fresh install order | Follow the installation docs from empty | Lore is Ready after Hub serves its issuer; Hub needs no Computer template at start (read at entry since #13 part B; deleting `computer-v1` gave 503 with the cause and recreating it served again in 2.4 s with no Hub restart, 2026-10-23) | pending (next fresh install) |
 
 ## G. Model-driven acceptance (last)
