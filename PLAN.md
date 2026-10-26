@@ -93,6 +93,10 @@ builds one image and changes one value. The design is in the installation's
     Done: What's new lists only a changed note (Hub `d40d067`,
     [record](records/2026-10-26-hub-whats-new.md)). Decided: `console__computer` stays
     offered to every profile and answers 401 outside a Computer, as console's design says.
+    Done: Lore lists each person's repositories through Hub (`repository_catalog =
+    "auth_service"`), and authorization stays in the token; a Computer's Lore token no
+    longer repeats each repository as a scope, so about 130 to 135 fit Lore's 16 KiB header
+    list ([record](records/2026-10-26-lore-listing.md)).
 
 ## Later
 
@@ -105,20 +109,6 @@ builds one image and changes one value. The design is in the installation's
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
 - Console tools to share repositories and to clean up instances.
-- Lore lists each person's repositories through Hub, and authorization does not change:
-  Lore's `repository_catalog = "auth_service"` asks Hub's
-  `UrcAuthApi.LookupUserPermissions` with the caller's token, only when something
-  lists, at Hub's `http` service route through the gateway; Hub verifies the token as a
-  Lore token it issued and answers the person's assignments in the active control plane.
-  Lore keeps authorizing every request from the token's `resources`, and `auth_url`
-  stays unset. A Computer's Lore token no longer repeats each repository as a
-  `lore-repo-{id}` scope, which Lore never reads, so about 130 to 135 owner assignments
-  fit in Lore's 16 KiB HTTP/2 header list instead of 85 to 88 (computed). Design: Hub's
-  [repository listing](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#repository-listing)
-  and the installation's [identity](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity).
-  On the `lore-catalog` branches of Hub, OpenShell (the chart's `service.clusterIP`, which
-  declares the gateway address Lore's host alias names), the template and Bioma's
-  installation; Hub deploys before Lore's settings, then B6 and B8 are qualified again.
 - Lore's QUIC storage transport, only for a measured benefit over gRPC with the same
   credential custody.
 - A shared record of browser activity on the Computer row before several Hub replicas
