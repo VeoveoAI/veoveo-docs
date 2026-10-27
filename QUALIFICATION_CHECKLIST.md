@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-27: Hub `623427d`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
-supervisor `ab37a698c`), installation `5fd79c1` (Computer version `a566f49873f9`), OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+(single host), deployed 2026-10-27: Hub `0ca6bb5`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
+supervisor `ab37a698c`), installation `a9876bb` (Computer version `a566f49873f9`), OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
@@ -85,6 +85,8 @@ startup times, from `console__logs` timestamps.
 | D9 | Branch deletion removes its instance | Delete the branch in Lore | The instance, sandbox and providers are removed | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | D10 | Soft caps warn | Exceed `instancesPerUser` (4) | A warning in status; nothing refused (`enforce: false`) | proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | D11 | Recovery | Restart Hub; restart Lore; reboot the node | Watches resume; instances serve again with no manual step | Hub and Lore restarts proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)); node reboot pending |
+| D12 | A watch outlives idle time | Push to a watched repository more than 2 h 13 min after its last push | Applied within seconds | failed 2026-10-27: after 14 h idle, three watches applied no push ([record](records/2026-10-27-shared-capacity.md)). Fixed in Hub `0ca6bb5`: Cilium's records of the four subscription connections were renewed every 30 s. A push after 2 h 13 min of idle is pending |
+| D13 | A removed sandbox is reported | Delete an instance's sandbox outside Hub, then push | Status names the missing sandbox as `failed{stage: create}`; the push creates it again | proven 2026-10-27: the status said so at once; the push at 18:45:58 created the sandbox, which served at 18:50:10 ([record](records/2026-10-27-shared-capacity.md)) |
 
 ## E. Platform services
 

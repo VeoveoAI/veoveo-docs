@@ -106,6 +106,11 @@ builds one image and changes one value. The design is in the installation's
     driver configuration, so nothing is set aside: 30.5 of 32 CPUs had been, for 0.6 in use,
     and Computers could not start. Every existing sandbox was recreated; Computer version
     `a566f49873f9` ([record](records/2026-10-27-shared-capacity.md)).
+    Done 2026-10-27, Hub `0ca6bb5`: Lore connections are kept alive, so a watch no longer
+    goes silent after 2 h 13 min idle (Cilium forgot the connection and Lore's events were
+    dropped); an instance whose sandbox OpenShell removed says so; a Computer that did not
+    start names the sandbox's unmet conditions; the previous version is offered only when
+    there is one (checklist D12, D13).
 
 ## 4. Sharing with people and groups
 
@@ -188,16 +193,8 @@ C9 and C10; Computer version `5b397a7e0ab0`.
     (… os error 2)" at each factory action;
   - each restart of an instance logs "workload frozen pending authenticated recovery" and
     "SIGTERM before supervisor confirmation".
-- A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff` or
-  `Insufficient cpu`), not only the 120 s readiness deadline.
-- Hub's follower of a watched repository stopped without a record: pushes to three watched
-  repositories were not applied until each was watched again (2026-10-27,
-  [record](records/2026-10-27-shared-capacity.md#found-on-the-way)). Find why it stopped and
-  did not resubscribe.
-- An instance whose sandbox OpenShell removes, as it did one it could not place, shows its
-  revision applied with no sandbox and no failure until the branch's next push.
-- After a Computer's first start fails, the page offers "Start the previous version" naming
-  the version that failed.
+- A push to a watched repository after more than 2 h 13 min of idle (checklist D12), to
+  confirm Hub `0ca6bb5`'s keepalive end to end.
 
 ## Open
 
