@@ -121,11 +121,8 @@ refresh (fixed in `ebd6a1c`). OpenCode moved to upstream 2.0 (fork `ca091c8`, Co
 
 ## Later
 
-- Offer upstream to NVIDIA/OpenShell: request-scoped refresh (`ab37a698c`) and the refresh
-  deadline fix (`ebd6a1c`).
-- A removal reaches a Computer within 240 s, the reuse of a repository's token (checklist B5);
-  until this release Hub's renewal made it seconds. Shorten the reuse or Lore's token lifetime
-  if revocation must be faster.
+- Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
+  (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
 - Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
 - The box's port-forward to the gateway (`pf.sh`) ends with every gateway pod change, and the
   box scripts that use the `openshell` CLI fail until it is restarted.
