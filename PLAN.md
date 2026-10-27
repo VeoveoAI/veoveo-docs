@@ -110,28 +110,25 @@ their owners live in Hub's control plane beside assignments; Lore receives one t
 repository, so nothing bounds how many repositories a person reaches. Entra and Lore do
 not change. The design is in Hub's, console's and the installation's `DESIGN.md`.
 
-- [x] Designs on `sharing` branches: Hub, console, installation, architecture.
-- [ ] OpenShell: upstream `main` merged into the fork (branch `merge-upstream-2026-10-26`,
-      `9b5fb816e`, checked locally), then a credential's refresh scoped
-      by a request header (`request_scope`): the supervisor asks the gateway for the token
-      of the scope a request names and holds it until shortly before expiry.
-- [ ] Hub: groups, assignments to a group, one grant rule for every reader, `hub.person`,
-      the access and group routes, the Computer's client issuing one repository per
-      scope; renewal removed.
-- [ ] Console: `repository_access`, `share_repository`, `groups`, `create_group`,
-      `set_group_member`.
-- [ ] Build and deploy OpenShell, Hub and console; the installation's `vv-lore` profile.
-- [ ] Qualify with both accounts: a share and a group share cloned and pushed, removal
-      refused within the token lifetime, non-owners refused, 200 repositories through one
-      group, a factory push by the second person; then one MiMo-V2.6-Pro run.
-- [ ] Records, checklist, this plan and the visual guide; merge every branch to `main`.
-
-Done: OpenCode on upstream 2.0 (fork `ca091c8`, base `a697f53611`) is the current Computer version
-`e4c07f404dc8`, proven without a model ([record](records/2026-10-26-opencode-2.md)); the final MiMo
-run of this part qualifies it with a model.
+Done 2026-10-26 ([record](records/2026-10-26-sharing.md)): OpenShell `main` takes upstream (`d0a163a42`)
+and adds request-scoped refresh (`ab37a698c`); Hub `704cbe9` and console `b96a5a2` share with
+people and groups; the installation's `vv-lore` asks for a token per repository. Checklist B4,
+B5, B8, C4 to C8 and G2. On the way: three installer defects fixed (OpenShell crates pinned at
+the gateway's revision, lint only before an import, groups carried like assignments), and
+an upstream OpenShell refresh-timing defect that let Lore credentials expire before their
+refresh (fixed in `ebd6a1c`). OpenCode moved to upstream 2.0 (fork `ca091c8`, Computer version
+`e4c07f404dc8`, [record](records/2026-10-26-opencode-2.md)); G2 qualifies it with a model.
 
 ## Later
 
+- Offer upstream to NVIDIA/OpenShell: request-scoped refresh (`ab37a698c`) and the refresh
+  deadline fix (`ebd6a1c`).
+- A removal reaches a Computer within 240 s, the reuse of a repository's token (checklist B5);
+  until this release Hub's renewal made it seconds. Shorten the reuse or Lore's token lifetime
+  if revocation must be faster.
+- Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
+- The box's port-forward to the gateway (`pf.sh`) ends with every gateway pod change, and the
+  box scripts that use the `openshell` CLI fail until it is restarted.
 - Factory `uses`: the service instances an instance calls, pushed in the caller's
   branch and resolved per instance through OpenShell's named-service routing.
 - Factory GPU placement, mounts and repository-owned sandbox sizes.
