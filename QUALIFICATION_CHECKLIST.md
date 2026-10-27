@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-27: Hub `0ca6bb5`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
-supervisor `ab37a698c`), installation `a9876bb` (Computer version `a566f49873f9`), OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+(single host), deployed 2026-10-27: Hub `5a1b926`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
+supervisor `ab37a698c`), installation `8b071d3` (Computer version `0de8536be11e`), OpenCode `ca091c8` (2.0; Computer image `38490c5-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
@@ -51,6 +51,7 @@ supervisor `ab37a698c`), installation `a9876bb` (Computer version `a566f49873f9`
 | B13 | An idle Computer is collected | Leave it idle past `computers.collectAfter`, then enter | Sandbox gone, home kept; entry creates the current version; what's new shown once | proven 2026-10-24 with `collectAfterSeconds` 600: collected at 00:05:35 (browser idle 701 s, sandbox 733 s), claim kept; entry recreated it in 3.56 s with `~/keep.txt` (content, mode, inode) and the OpenCode session |
 | B14 | A failed new version is diagnosable | Publish a template whose image cannot start, then restart | The cause is shown; the previous version stays recorded; the home is intact | proven 2026-10-26: the status page named the failure (the 120 s readiness deadline, not `ImagePullBackOff`) and kept the previous version, which served again in about 20 s; the home claim was kept ([record](records/2026-10-26-closeout.md)) |
 | B15 | Restart is quick | Measure stop, create and first page | Seconds, not the 101–160 s stops measured 2026-10-23 | proven 2026-10-23 on the new runtime: the gateway's delete took 0.77 s (was 38.6 s); replacement 5.1 s |
+| B16 | Signing in again keeps a running Computer working | Sign in from a second browser while the Computer runs; call Hub and Lore from it | The browser joins the Computer's custody: no handoff, and Hub and Lore keep answering | failed 2026-10-27: a second sign-in handed custody off, and the running OpenCode's Hub calls were refused for 3 h ([record](records/2026-10-27-early-adopter-failures.md)). Fixed in Hub `5a1b926`, proven by the gate; a deployed sign-in is pending |
 
 ## C. Repositories
 
@@ -87,6 +88,7 @@ startup times, from `console__logs` timestamps.
 | D11 | Recovery | Restart Hub; restart Lore; reboot the node | Watches resume; instances serve again with no manual step | Hub and Lore restarts proven 2026-10-25 ([record](records/2026-10-25-platform-tools-and-time-flow.md)); node reboot pending |
 | D12 | A watch outlives idle time | Push to a watched repository more than 2 h 13 min after its last push | Applied within seconds | failed 2026-10-27: after 14 h idle, three watches applied no push ([record](records/2026-10-27-shared-capacity.md)). Fixed in Hub `0ca6bb5`: Cilium's records of the four subscription connections were renewed every 30 s. A push after 2 h 13 min of idle is pending |
 | D13 | A removed sandbox is reported | Delete an instance's sandbox outside Hub, then push | Status names the missing sandbox as `failed{stage: create}`; the push creates it again | proven 2026-10-27: the status said so at once; the push at 18:45:58 created the sandbox, which served at 18:50:10 ([record](records/2026-10-27-shared-capacity.md)) |
+| D14 | A slug belongs to one repository | Push another repository whose server keeps a slug that a served repository uses | Its registration is refused, saying so in its logs; the served one keeps serving | proven 2026-10-27: `slug-probe` refused at 23:20:05 ("the slug template is served by another repository's server…"), g1-rerun stayed registered ([record](records/2026-10-27-early-adopter-failures.md)) |
 
 ## E. Platform services
 

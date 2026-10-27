@@ -111,6 +111,12 @@ builds one image and changes one value. The design is in the installation's
     dropped); an instance whose sandbox OpenShell removed says so; a Computer that did not
     start names the sandbox's unmet conditions; the previous version is offered only when
     there is one (checklist D12, D13).
+    Done 2026-10-27, Hub `5a1b926`: signing in again joins a Computer's live custody instead
+    of handing it off, which had cut a running Computer off from Hub and Lore; a handoff to a
+    running sandbox restarts it onto its credentials; a slug belongs to one repository, and
+    another repository's server of it is refused. Computers offer only DeepInfra's models:
+    OpenCode's own free models, which the policy refuses, had left sessions retrying
+    `ECONNREFUSED` ([record](records/2026-10-27-early-adopter-failures.md); checklist B16, D14).
 
 ## 4. Sharing with people and groups
 
@@ -195,6 +201,12 @@ C9 and C10; Computer version `5b397a7e0ab0`.
     "SIGTERM before supervisor confirmation".
 - A push to a watched repository after more than 2 h 13 min of idle (checklist D12), to
   confirm Hub `0ca6bb5`'s keepalive end to end.
+- After Hub restarted at 23:14, its calls to console failed for about 90 s ("upstream
+  discovery exceeded ten seconds") and recovered by themselves; cause unknown
+  ([record](records/2026-10-27-early-adopter-failures.md)).
+- Deleting a repository leaves its watch recorded in Hub.
+- The box's login shell runs Helm 4 from `~/.local/bin`, and plan cannot read Helm releases
+  with it ("unknown flag: --all").
 
 ## Open
 
