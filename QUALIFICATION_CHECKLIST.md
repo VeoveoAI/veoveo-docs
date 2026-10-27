@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-26: Hub `704cbe9`, Lore `4b7b7e23`, OpenShell gateway `ebd6a1c` (runtime and
-supervisor `ab37a698c`), installation `e43b6a1`, OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+(single host), deployed 2026-10-27: Hub `623427d`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
+supervisor `ab37a698c`), installation `bed576e`, OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
@@ -64,6 +64,8 @@ supervisor `ab37a698c`), installation `e43b6a1`, OpenCode `ca091c8` (2.0; Comput
 | C6 | An owner shares with a group | `console__create_group`, `console__set_group_member`, `console__share_repository {group}` | Members clone and push; a member cannot change the group | proven 2026-10-26: cloned 291 ms, pushed; the member's change of the group answered 403 ([record](records/2026-10-26-sharing.md)) |
 | C7 | Removal from a group stops access | Remove the member | Refused within the 240 s bound of B5 | the bound is B5's; the run was cut short by the credential gap the same record fixes ([record](records/2026-10-26-sharing.md)) |
 | C8 | A member's push is served | A member pushes a branch of a shared server repository | The factory builds and serves it as theirs | proven 2026-10-26: served 304 s after the push, 0 restarts, read by the member through `console__status` ([record](records/2026-10-26-sharing.md)) |
+| C9 | `lore repository create` makes its creator the owner | In a Computer: `lore repository create "$VEOVEO_LORE_REMOTE/<name>"`, push, clone | Listed at once; the first push and a clone work; Hub records the creator as `owner` | proven 2026-10-27: created in 523 ms, listed at once, pushed 116 ms, cloned 80 ms; the other person likewise ([record](records/2026-10-27-lore-create.md)) |
+| C10 | Only an owner deletes | A member, then the owner, runs `lore repository delete` | The member is refused; the owner's deletion removes the repository from Lore and Hub | proven 2026-10-27: the member refused (Hub `PERMISSION_DENIED` in 21 ms); the owner's in 206 ms, then 404 in Hub ([record](records/2026-10-27-lore-create.md)) |
 
 ## D. Factory serving (Stage 1)
 

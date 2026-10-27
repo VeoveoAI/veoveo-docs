@@ -90,9 +90,10 @@ The boundaries that follow from these:
 
 - **Separate audiences.** Hub application tokens, Lore tokens and OpenShell management
   tokens name different audiences, and each service accepts only tokens for its own,
-  even where one issuer signs two kinds. The one exception is Lore's repository listing:
-  Lore forwards its caller's Lore token to Hub, the token's issuer, which answers only
-  that person's repository assignments. A valid Lore token gives no other Hub access, and
+  even where one issuer signs two kinds. The one exception is Lore's repository listing,
+  creation and deletion: Lore forwards its caller's Lore token to Hub, the token's issuer,
+  which answers only that person's repository assignments, makes them the owner of a
+  repository they create and lets only an owner delete one. A valid Lore token gives no other Hub access, and
   Hub administration or Work Context membership gives no repository access.
 - **Credentials stay in custody.** Workloads hold placeholders that OpenShell replaces on
   the request; the real Lore, Hub and model credentials never enter a Computer or a
@@ -124,8 +125,9 @@ Identity wiring for an installation (which provider, which clients and roles) is
    replacement.
 2. **Work.** The agent clones and edits repositories with the Lore CLI, which reaches the
    private Lore server with the owner's Lore token; Lore decides what the person may read
-   and push. Whoever creates a repository through Hub owns it, and an owner shares it with
-   people and with groups through console.
+   and push. Whoever creates a repository owns it, through console or with
+   `lore repository create`, and an owner shares it with people and with groups through
+   console.
 3. **Publish.** `lore push` publishes an immutable revision. A repository is built and
    served once someone with access turns watching on with `console__watch`.
 4. **Build and serve.** Hub receives Lore's branch notification, reads the revision's

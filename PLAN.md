@@ -119,6 +119,12 @@ an upstream OpenShell refresh-timing defect that let Lore credentials expire bef
 refresh (fixed in `ebd6a1c`). OpenCode moved to upstream 2.0 (fork `ca091c8`, Computer version
 `e4c07f404dc8`, [record](records/2026-10-26-opencode-2.md)); G2 qualifies it with a model.
 
+Done 2026-10-27 ([record](records/2026-10-27-lore-create.md)): `lore repository create` makes
+its creator the owner, as `console__create_repository` does, and only an owner deletes with
+`lore repository delete`. Lore (`4ee9f338`) tells its catalog's endpoint, Hub, of each
+repository it creates and deletes through `RebacApi`; Hub (`623427d`) records it. Checklist
+C9 and C10; Computer version `5b397a7e0ab0`.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
