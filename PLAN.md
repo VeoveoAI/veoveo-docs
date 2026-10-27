@@ -102,6 +102,10 @@ builds one image and changes one value. The design is in the installation's
     Done: G1 again on the current stack, with MiMo-V2.6-Pro: three pushes with the
     scope-free Lore token, served, broken, diagnosed and fixed in 730 s
     ([record](records/2026-10-26-g1-rerun.md)).
+12. Done 2026-10-27: sandboxes share the node. Each size is a limit with zero requests in its
+    driver configuration, so nothing is set aside: 30.5 of 32 CPUs had been, for 0.6 in use,
+    and Computers could not start. Every existing sandbox was recreated; Computer version
+    `a566f49873f9` ([record](records/2026-10-27-shared-capacity.md)).
 
 ## 4. Sharing with people and groups
 
@@ -184,8 +188,16 @@ C9 and C10; Computer version `5b397a7e0ab0`.
     (… os error 2)" at each factory action;
   - each restart of an instance logs "workload frozen pending authenticated recovery" and
     "SIGTERM before supervisor confirmation".
-- A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff`),
-  not only the 120 s readiness deadline.
+- A failed Computer start names the sandbox's own reason (such as `ImagePullBackOff` or
+  `Insufficient cpu`), not only the 120 s readiness deadline.
+- Hub's follower of a watched repository stopped without a record: pushes to three watched
+  repositories were not applied until each was watched again (2026-10-27,
+  [record](records/2026-10-27-shared-capacity.md#found-on-the-way)). Find why it stopped and
+  did not resubscribe.
+- An instance whose sandbox OpenShell removes, as it did one it could not place, shows its
+  revision applied with no sandbox and no failure until the branch's next push.
+- After a Computer's first start fails, the page offers "Start the previous version" naming
+  the version that failed.
 
 ## Open
 

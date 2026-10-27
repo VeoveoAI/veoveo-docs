@@ -19,7 +19,7 @@ Rules:
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
 (single host), deployed 2026-10-27: Hub `623427d`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
-supervisor `ab37a698c`), installation `bed576e`, OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+supervisor `ab37a698c`), installation `5fd79c1` (Computer version `a566f49873f9`), OpenCode `ca091c8` (2.0; Computer image `9f21d3e-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
