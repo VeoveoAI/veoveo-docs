@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-27: Hub `5a1b926`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
-supervisor `ab37a698c`), installation `8b071d3` (Computer version `0de8536be11e`), OpenCode `ca091c8` (2.0; Computer image `38490c5-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+(single host), deployed 2026-10-28: Hub `651390d`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime and
+supervisor `ab37a698c`), installation `62b288e` (Computer version `0de8536be11e`), OpenCode `ca091c8` (2.0; Computer image `38490c5-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
@@ -51,7 +51,8 @@ supervisor `ab37a698c`), installation `8b071d3` (Computer version `0de8536be11e`
 | B13 | An idle Computer is collected | Leave it idle past `computers.collectAfter`, then enter | Sandbox gone, home kept; entry creates the current version; what's new shown once | proven 2026-10-24 with `collectAfterSeconds` 600: collected at 00:05:35 (browser idle 701 s, sandbox 733 s), claim kept; entry recreated it in 3.56 s with `~/keep.txt` (content, mode, inode) and the OpenCode session |
 | B14 | A failed new version is diagnosable | Publish a template whose image cannot start, then restart | The cause is shown; the previous version stays recorded; the home is intact | proven 2026-10-26: the status page named the failure (the 120 s readiness deadline, not `ImagePullBackOff`) and kept the previous version, which served again in about 20 s; the home claim was kept ([record](records/2026-10-26-closeout.md)) |
 | B15 | Restart is quick | Measure stop, create and first page | Seconds, not the 101–160 s stops measured 2026-10-23 | proven 2026-10-23 on the new runtime: the gateway's delete took 0.77 s (was 38.6 s); replacement 5.1 s |
-| B16 | Signing in again keeps a running Computer working | Sign in from a second browser while the Computer runs; call Hub and Lore from it | The browser joins the Computer's custody: no handoff, and Hub and Lore keep answering | failed 2026-10-27: a second sign-in handed custody off, and the running OpenCode's Hub calls were refused for 3 h ([record](records/2026-10-27-early-adopter-failures.md)). Fixed in Hub `5a1b926`, proven by the gate; a deployed sign-in is pending |
+| B16 | Signing in again keeps a running Computer working | Sign in from a second browser while the Computer runs; call Hub and Lore from it | The browser joins the Computer's custody: no handoff, and Hub and Lore keep answering | failed 2026-10-27: a second sign-in handed custody off, and the running OpenCode's Hub calls were refused for 3 h ([record](records/2026-10-27-early-adopter-failures.md)). Fixed in Hub `5a1b926`. Proven 2026-10-28: a second Chrome profile's sign-in at 16:19:15 joined the family; no custody call, no restart, and a process started before it kept calling Hub and Lore with exit 0 ([record](records/2026-10-28-forwarding-and-second-sign-in.md)) |
+| B17 | Many open connections to a Computer all open | 40 concurrent event streams (`…/api/event`) from the Computer's page | All 40 open within a second | failed 2026-10-28 on Hub `5a1b926`: 28 opened and 12 waited, because Hub's forwards shared one gateway connection capped at 32 streams. Proven on Hub `651390d`: 40 of 40 within 341 ms ([record](records/2026-10-28-forwarding-and-second-sign-in.md)) |
 
 ## C. Repositories
 

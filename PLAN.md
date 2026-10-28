@@ -117,6 +117,11 @@ builds one image and changes one value. The design is in the installation's
     another repository's server of it is refused. Computers offer only DeepInfra's models:
     OpenCode's own free models, which the policy refuses, had left sessions retrying
     `ECONNREFUSED` ([record](records/2026-10-27-early-adopter-failures.md); checklist B16, D14).
+    Done 2026-10-28, Hub `651390d`: Hub's forwards ride gateway connections of their own,
+    at most 32 on each. All of them had shared one connection, which the supervisor caps
+    at 32 streams, so a 33rd waited silently: on 2026-10-27, calls to every server timed
+    out for two minutes. A second sign-in was proven deployed
+    ([record](records/2026-10-28-forwarding-and-second-sign-in.md); checklist B16, B17).
 
 ## 4. Sharing with people and groups
 
@@ -201,12 +206,9 @@ C9 and C10; Computer version `5b397a7e0ab0`.
     "SIGTERM before supervisor confirmation".
 - A push to a watched repository after more than 2 h 13 min of idle (checklist D12), to
   confirm Hub `0ca6bb5`'s keepalive end to end.
-- After Hub restarted at 23:14, its calls to console failed for about 90 s ("upstream
-  discovery exceeded ten seconds") and recovered by themselves; cause unknown
-  ([record](records/2026-10-27-early-adopter-failures.md)).
-- Deleting a repository leaves its watch recorded in Hub.
-- The box's login shell runs Helm 4 from `~/.local/bin`, and plan cannot read Helm releases
-  with it ("unknown flag: --all").
+- With about 60 long-lived requests into Hub open, the gateway's public relay into Hub's
+  sandbox times out claiming the next ("relay claim timed out") and answers 502 after
+  10 s; cause not investigated ([record](records/2026-10-28-forwarding-and-second-sign-in.md)).
 
 ## Open
 
