@@ -150,17 +150,19 @@ C9 and C10; Computer version `5b397a7e0ab0`.
 Approved 2026-10-29. What daily work with OpenCode, a Computer and Lore runs into, from
 the logs of 2026-10-28.
 
-- [ ] A push to a repository whose watch has been idle more than 2 h 13 min is served
-      (checklist D12).
-- [ ] Search in Computers: ripgrep in the factory base, which Computers build on. Without
+- [x] A push to a repository whose watch has been idle more than 2 h 13 min is served
+      (checklist D12): after 13 h 37 min, `listening` 22.2 s after the push
+      ([record](records/2026-10-29-computer-internet-and-search.md)).
+- [x] Search in Computers: ripgrep in the factory base, which Computers build on. Without
       it OpenCode downloads ripgrep from GitHub, which the policy refuses, so its file
       search (`/api/fs/find` answers 500) and its `grep` and `glob` tools fail.
-- [ ] Computers reach the internet: the factory's internet rule in the Computer policy, so
+- [x] Computers reach the internet: the factory's internet rule in the Computer policy, so
       `cargo`, `git` and web fetches work in a Computer. Credential placeholders stay
-      behind the proxy. Design first.
-- [ ] One Computer version for both, in the template and Bioma's installation. Probes in a
-      Computer: file search, a clone from GitHub, `cargo check`, Hub and Lore, and a
-      placeholder refused outside Hub.
+      behind the proxy. Design first. On the way: cargo's home moved to
+      `/sandbox/.cargo`, since the toolchain's is read-only.
+- [x] One Computer version for both, in the template (`8b63233`) and Bioma's installation
+      (`6f4129c`). Probes in a Computer: file search, a clone from GitHub, `cargo check`,
+      Hub and Lore, and a placeholder refused outside Hub (checklist B18, B19).
 - [ ] Hub's inbound bound: with about 60 long-lived requests into Hub open, the gateway's
       relay into Hub's sandbox times out claiming the next ("relay claim timed out") and
       answers 502 after 10 s. Find the bound and fix it in OpenShell. Probe: 128 concurrent
