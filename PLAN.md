@@ -218,6 +218,63 @@ This slice does not claim PostgreSQL transaction/trigger correctness, durable wo
 settlement/recovery, cryptography or deployed qualification. It adds no runtime
 authorization rules, automatic proof gate or separate service.
 
+## 7. Comprehensive manual Hub verification
+
+Approved 2026-10-29 and active. Extend the completed Task-decision slice into
+coverage of Hub's complete operations: admitted caller, destination, committed state
+and recovery under concurrent updates, retries and failures. The authoritative
+[proof coverage map](https://github.com/VeoveoAI/veoveo-hub/blob/main/proofs/README.md#approved-implementation-roadmap)
+records the invariants, source boundaries, assumptions and remaining obligations.
+Proofs cover legitimate success and preserved output as well as required refusal.
+
+The ten areas are authorization/delegation, login/refresh continuity, registration,
+routing/Tasks, live configuration, discovery/subscriptions, factories, Computers,
+native Lore grants/contributed issuance, and cleanup/transactional audit.
+Their shared foundation is the platform's typed MCP extension contracts, especially
+`ai.veoveo/authorization` and `ai.veoveo/registration`. The SDK owns their definition,
+generation and wire representations; Hub consumes them. Track the full route-policy
+to declaration to registration/advertisement to Hub admission to SDK dispatch chain
+as `HUB-CONTRACT-01`, with semantic proofs distinct from wire/schema tests.
+
+Execution order:
+
+- [x] Expand the coverage map with registration, native issuance, cleanup and
+      explicit evidence classes; retain the existing invariant IDs and measured scope.
+- [x] First delegated-authority assembly slice: exact exchange-stage outcomes,
+      grant/context preservation and downstream narrowing; four semantic mutants
+      caught and fresh restoration passed. This is partial `HUB-AUTH-01`, with
+      current roles and asynchronous/token boundaries still open. See the
+      [qualification record](records/2026-10-29-authority-proof.md).
+- [ ] Shared SDK–Hub extension-contract semantics: next, prioritize
+      authorization/registration declaration correctness,
+      representation correspondence and resource/route resolution, then connect
+      the producer and consumer guarantees. No new extension or runtime gate.
+- [ ] Production-linked delegation/current-policy decisions and session-family
+      admission, with output/deadline preservation and valid acceptance. Assembly
+      is qualified above; current-role and session/issuer semantics remain.
+- [ ] SQL-backed configuration publication, then refresh concurrency and
+      registration/replacement, including their actual audit/transaction boundaries.
+- [ ] Connect fresh and retained routing, registration identity, current authority,
+      SDK recipient checks and discovery/listener freshness; include replica adoption.
+- [ ] Factory and Computer recovery, interrupted operations and reference-preserving
+      cleanup, with explicit progress assumptions and native/browser evidence.
+- [ ] Compose the established contracts into broader request and lifecycle guarantees;
+      record exact applicability and outstanding external obligations.
+
+Done when each area has useful, checked contracts tied to its actual implementation,
+with remaining boundaries explicit and connected guarantees established. A model-only
+proof is labeled as such until correspondence is justified; tests and code review do
+not become formal SQL refinement by being recorded together. Assume PostgreSQL's
+actual isolation/locking/atomicity semantics, not a stronger database or distributed
+transaction guarantee. Do not attempt to verify PostgreSQL, cryptographic primitives,
+Lore or OpenShell as part of Hub's proof coverage.
+
+Each slice preserves efficient production code and existing component responsibilities,
+uses meaningful semantic mutants and a restored baseline, and adds a dated evidence
+record. Existing proof packages remain manual: no CI hook, proof service, runtime
+authorization rule, extra denial layer or new execution framework. Other agents'
+source/documentation and deployment work remain independent and are preserved.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
