@@ -188,6 +188,36 @@ the logs of 2026-10-28.
 Done when each is deployed and proven, with records, and the checklist says so. Open:
 B22's day of logs.
 
+## 6. Manual Task continuity verification
+
+Approved 2026-10-29. Verify the Task identity, retained routing and authority that
+Hub assembles for dispatch, with the SDK's recipient-deployment binding. The owning
+contract is [Hub Task routes](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/state/task_routes/DESIGN.md);
+the [proof map](https://github.com/VeoveoAI/veoveo-hub/blob/main/proofs/README.md)
+tracks the formal boundary. Verification remains manually requested, outside CI.
+
+- [x] State the complete successful-dispatch and refusal properties in the owning
+      designs, including original capture/expiry on retry and current authority.
+- [x] Share the actual production Rust decision and output assembly with the
+      extraction package; preserve existing behavior and SQL atomic operations.
+- [x] Prove continuity, authority preservation and correct acceptance, with explicit
+      assumptions about stored snapshots, comparison, time, policy and signatures.
+- [x] Check source/model correspondence, semantic mutants and restoration; run the
+      focused Task/routing and SDK recipient-binding regressions.
+- [x] Record exact results and limits in a dated record and update proof coverage.
+
+Completed within the extracted-decision boundary; the full system property remains
+partial. [Qualification record](records/2026-10-29-task-continuity-proof.md): total
+proofs, four semantic mutants caught, fresh restored pass, 18 focused component
+tests and five standalone witnesses. Hub `ee0bdf3` and SDK `8489a58` are published
+on `origin/main` after both repositories' full Mac and Linux checks passed;
+see the [publication record](records/2026-10-29-task-proof-publication.md).
+Deployment is a separate handoff; no dependency repin was performed.
+
+This slice does not claim PostgreSQL transaction/trigger correctness, durable worker
+settlement/recovery, cryptography or deployed qualification. It adds no runtime
+authorization rules, automatic proof gate or separate service.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
