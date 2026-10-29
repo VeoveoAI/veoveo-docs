@@ -275,6 +275,41 @@ record. Existing proof packages remain manual: no CI hook, proof service, runtim
 authorization rule, extra denial layer or new execution framework. Other agents'
 source/documentation and deployment work remain independent and are preserved.
 
+## 8. One group system, and members share artifacts
+
+Approved 2026-10-29 and active. A Lore group is a person's group for every decision the
+Hub makes and every server it forwards to, and members share their own artifacts. The
+design is in Hub's, Artifact's and console's `DESIGN.md`.
+
+Today only repository access reads Lore's groups. Artifact's group grants, role grants,
+policy rules and Work Context memberships read the identity provider's groups, and Entra
+sends none (all 15 sign-in families hold `groups: []`), so a grant to `early-adopters`
+reaches no one. Members cannot grant at all: `artifact.grants.write` declares
+`sensitive`, which the member role does not select and no override can remove. Everyone
+in `reference-work` is a contributor, so each already reads and writes every artifact
+there; a grant adds admin, or reaches people outside the Work Context.
+
+- [x] Hub `3de9654`: each request's subject adds the person's groups by ID, `member` as
+      `write` and `owner` as `admin`, read through `CatalogSection::group_memberships`;
+      group answers show the ID. The existing contracts carry them: role grants, policy
+      rules, Work Context memberships, the forwarded token's `groups` and the invocation
+      claim's `group_roles`.
+- [x] Console `51dff0d`: `groups`, `create_group` and `set_group_member` return the ID.
+- [x] Artifact `91e62be`: `artifact.grants.write` declares no risk, so the member role
+      selects it and Artifact's admin level decides; share links keep `sensitive`.
+- [x] Deployed with installation `a5c7731` at 22:31.
+- [x] Probe: a member granted their artifact `admin` to a group; the group's owner then
+      granted it on; as a member of the group, writing through the Work Context, the same
+      person was refused that; a member's share link was refused (checklist C11, C12,
+      [record](records/2026-10-29-groups-everywhere.md)).
+- [ ] `billed` granted to a group, used by a member: component test only, since no route
+      grants a role but publishing the whole control plane.
+- [ ] Hub's upstream discovery failed for about three minutes after a membership change,
+      and in a burst at 22:37 without one: find why new forwards fail (Hub logs no
+      error source) ([record](records/2026-10-29-groups-everywhere.md)).
+
+Done when deployed and proven, with a record and the checklist. Open: the two above.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
@@ -337,3 +372,5 @@ source/documentation and deployment work remain independent and are preserved.
 
 - Checklist B22: a day of supervisor logs from sandboxes on OpenShell `0e795fc`, with no
   `FAIL_CLOSED` and no connection closed as stale (section 5).
+- Section 8: `billed` through a group live; the upstream discovery failures after a
+  membership change.

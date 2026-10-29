@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-29: Hub `651390d`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
-`1ab0e2386`, supervisor `0e795fc`), installation `b6217da` (Computer version `31282b4461fe`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `b96a5a2`, Artifact `a0566b8`, Media
+(single host), deployed 2026-10-29: Hub `3de9654`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
+`1ab0e2386`, supervisor `0e795fc`), installation `a5c7731` (Computer version `31282b4461fe`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `51dff0d`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
 
 ## A. Identity and administration
@@ -73,6 +73,9 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | C8 | A member's push is served | A member pushes a branch of a shared server repository | The factory builds and serves it as theirs | proven 2026-10-26: served 304 s after the push, 0 restarts, read by the member through `console__status` ([record](records/2026-10-26-sharing.md)) |
 | C9 | `lore repository create` makes its creator the owner | In a Computer: `lore repository create "$VEOVEO_LORE_REMOTE/<name>"`, push, clone | Listed at once; the first push and a clone work; Hub records the creator as `owner` | proven 2026-10-27: created in 523 ms, listed at once, pushed 116 ms, cloned 80 ms; the other person likewise ([record](records/2026-10-27-lore-create.md)) |
 | C10 | Only an owner deletes | A member, then the owner, runs `lore repository delete` | The member is refused; the owner's deletion removes the repository from Lore and Hub | proven 2026-10-27: the member refused (Hub `PERMISSION_DENIED` in 21 ms); the owner's in 206 ms, then 404 in Hub ([record](records/2026-10-27-lore-create.md)) |
+
+| C11 | A Lore group is a group everywhere | A member grants their artifact `admin` to a group; its owner grants it on; the owner, made a member, tries again | The grant and the onward grant are served; as a member, Artifact refuses: "needs admin access" | proven 2026-10-29: Hub `3de9654`, Artifact `91e62be`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-29-groups-everywhere.md)) |
+| C12 | Members share, and share links stay the installation's | A member lists Artifact's tools, then creates a share link | `grant_artifact`, `revoke_artifact_grant`, `decide_access_request` listed; the link refused by the Hub | proven 2026-10-29 ([record](records/2026-10-29-groups-everywhere.md)) |
 
 ## D. Factory serving (Stage 1)
 
