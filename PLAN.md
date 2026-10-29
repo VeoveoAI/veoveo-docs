@@ -163,18 +163,28 @@ the logs of 2026-10-28.
 - [x] One Computer version for both, in the template (`8b63233`) and Bioma's installation
       (`6f4129c`). Probes in a Computer: file search, a clone from GitHub, `cargo check`,
       Hub and Lore, and a placeholder refused outside Hub (checklist B18, B19).
-- [ ] Hub's inbound bound: with about 60 long-lived requests into Hub open, the gateway's
+- [x] Hub's inbound bound: with about 60 long-lived requests into Hub open, the gateway's
       relay into Hub's sandbox times out claiming the next ("relay claim timed out") and
-      answers 502 after 10 s. Find the bound and fix it in OpenShell. Probe: 128 concurrent
-      event streams open.
+      answers 502 after 10 s. Find the bound and fix it in OpenShell. The bound: connections
+      into a sandbox shared the boundary's 128 streams with no budget of their own. OpenShell
+      `1ab0e2386` gives them 896 of 1024. 120 of 120 streams open, the most the Computer
+      path can show (checklist B21,
+      [record](records/2026-10-29-openshell-streams-and-refresh.md)).
 - [ ] A credential refresh keeps connections: a provider refresh that fails during
       preparation revokes static credentials until the next poll and closes open tunnels
       ("policy generation is stale"), 8 times in 3 Computers and 12 in the factory in 30 h.
-      Fix in OpenShell's supervisor. Probe: none in a day of logs.
-- [ ] Qualification with MiMo-V2.6-Pro: an agent in a Computer uses `grep` and `glob`,
-      adds a crate, runs `cargo check`, pushes, and the change is served.
+      Fix in OpenShell's supervisor. Probe: none in a day of logs. Fixed in `1ab0e2386`
+      (a refresh between the poll and its fetch installs in place) and deployed on Hub,
+      the services and the owner's Computer; other sandboxes take it at their next start.
+      The day of logs is pending (checklist B22).
+- [x] Qualification with MiMo-V2.6-Pro: an agent in a Computer uses `grep` and `glob`,
+      adds a crate, runs `cargo check`, pushes, and the change is served. The first run
+      found the toolchain a Computer lacked. Template `430b7ab` adds clang, cmake,
+      pkg-config, clippy and rustfmt. The second run needed no workaround (checklist B20,
+      G3, [record](records/2026-10-29-daily-use-qualification.md)).
 
-Done when each is deployed and proven, with records, and the checklist says so.
+Done when each is deployed and proven, with records, and the checklist says so. Open:
+B22's day of logs.
 
 ## Later
 
@@ -236,4 +246,5 @@ Done when each is deployed and proven, with records, and the checklist says so.
 
 ## Open
 
-Nothing.
+- Checklist B22: a day of supervisor logs from sandboxes on OpenShell `1ab0e2386`, with no
+  `FAIL_CLOSED` and no connection closed as stale (section 5).
