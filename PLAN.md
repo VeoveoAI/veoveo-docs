@@ -145,6 +145,35 @@ its creator the owner, as `console__create_repository` does, and only an owner d
 repository it creates and deletes through `RebacApi`; Hub (`623427d`) records it. Checklist
 C9 and C10; Computer version `5b397a7e0ab0`.
 
+## 5. Daily use
+
+Approved 2026-10-29. What daily work with OpenCode, a Computer and Lore runs into, from
+the logs of 2026-10-28.
+
+- [ ] A push to a repository whose watch has been idle more than 2 h 13 min is served
+      (checklist D12).
+- [ ] Search in Computers: ripgrep in the factory base, which Computers build on. Without
+      it OpenCode downloads ripgrep from GitHub, which the policy refuses, so its file
+      search (`/api/fs/find` answers 500) and its `grep` and `glob` tools fail.
+- [ ] Computers reach the internet: the factory's internet rule in the Computer policy, so
+      `cargo`, `git` and web fetches work in a Computer. Credential placeholders stay
+      behind the proxy. Design first.
+- [ ] One Computer version for both, in the template and Bioma's installation. Probes in a
+      Computer: file search, a clone from GitHub, `cargo check`, Hub and Lore, and a
+      placeholder refused outside Hub.
+- [ ] Hub's inbound bound: with about 60 long-lived requests into Hub open, the gateway's
+      relay into Hub's sandbox times out claiming the next ("relay claim timed out") and
+      answers 502 after 10 s. Find the bound and fix it in OpenShell. Probe: 128 concurrent
+      event streams open.
+- [ ] A credential refresh keeps connections: a provider refresh that fails during
+      preparation revokes static credentials until the next poll and closes open tunnels
+      ("policy generation is stale"), 8 times in 3 Computers and 12 in the factory in 30 h.
+      Fix in OpenShell's supervisor. Probe: none in a day of logs.
+- [ ] Qualification with MiMo-V2.6-Pro: an agent in a Computer uses `grep` and `glob`,
+      adds a crate, runs `cargo check`, pushes, and the change is served.
+
+Done when each is deployed and proven, with records, and the checklist says so.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
@@ -188,8 +217,6 @@ C9 and C10; Computer version `5b397a7e0ab0`.
   from it; any other workload the cluster admits to it can push.
 - Build caches in the other repositories' checks, as in Hub's.
 - Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
-- OpenCode's 500 on `/api/fs/find?query=$f` while text is typed: OpenCode's own bug,
-  for upstream.
 - D11's node reboot (the box serving again by itself after a power cycle), which needs
   the box's sudo.
 - A role removed in Entra reaches a Hub session only at its next sign-in. A refresh keeps
@@ -204,11 +231,6 @@ C9 and C10; Computer version `5b397a7e0ab0`.
     (… os error 2)" at each factory action;
   - each restart of an instance logs "workload frozen pending authenticated recovery" and
     "SIGTERM before supervisor confirmation".
-- A push to a watched repository after more than 2 h 13 min of idle (checklist D12), to
-  confirm Hub `0ca6bb5`'s keepalive end to end.
-- With about 60 long-lived requests into Hub open, the gateway's public relay into Hub's
-  sandbox times out claiming the next ("relay claim timed out") and answers 502 after
-  10 s; cause not investigated ([record](records/2026-10-28-forwarding-and-second-sign-in.md)).
 
 ## Open
 
