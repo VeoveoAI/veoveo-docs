@@ -18,9 +18,9 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-29: Hub `3de9654`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
-`1ab0e2386`, supervisor `0e795fc`), installation `a5c7731` (Computer version `31282b4461fe`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `51dff0d`, Artifact `91e62be`, Media
-`6bd5843`, Embedding `95216bd`, SDK `581fdcb`.
+(single host), deployed 2026-10-29: Hub `fe59868`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
+`1ab0e2386`, supervisor `0e795fc`), installation `c6c9a3b` (Computer version `80fd73c9f7fd`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `51dff0d`, Artifact `91e62be`, Media
+`6bd5843`, Embedding `95216bd`; Hub and its CLI on SDK `05273d1`.
 
 ## A. Identity and administration
 
