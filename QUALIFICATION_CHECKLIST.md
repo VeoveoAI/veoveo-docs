@@ -123,6 +123,26 @@ startup times, from `console__logs` timestamps.
 | F5 | Hub's Lore CLI trusts Lore's TLS | A factory watch reads `openshell/` | Read succeeds (Hub `4d639af`) | proven 2026-10-25: D2 read Time's `openshell/` and served it ([record](records/2026-10-25-platform-tools-and-time-flow.md)) |
 | F6 | Fresh install order | Follow the installation docs from empty | Lore is Ready after Hub serves its issuer; Hub needs no Computer template at start (read at entry since #13 part B; deleting `computer-v1` gave 503 with the cause and recreating it served again in 2.4 s with no Hub restart, 2026-10-23) | pending (next fresh install) |
 
+## H. Security controls
+
+Plan section 11. What an installation configures for the security of AI agents, from the
+[assessment against the NIST AI RMF](records/2026-10-30-ai-security-nist-ai-rmf.md).
+The section sits before G because G stays last.
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| H1 | A content guard inspects what the agent sends to its model | Attach supervisor middleware to the Computer's model endpoint; send one chat with content the guard refuses and one without; stop the middleware service and send again | The first refused by the middleware, the second answered; the middleware never receives the model credential; with the service stopped, the request is blocked | pending |
+| H2 | Interceptors hold sandboxes to the installation's rules | Register a gateway interceptor; create a sandbox with a policy outside the approved one; attach a provider that breaks a rule | The approved policy is applied, or the operation refused with its reason; the refused change is not committed; `post_commit` observes the committed ones | pending |
+| H3 | Policies stay within the installation's boundary | `openshell-prover` boundary check of the Computer and factory policies against the installation's boundary policy; then a policy widened past it | The installation's policies pass; the widened one is reported with the access it adds | pending |
+| H4 | Sandbox events reach the audit destination | Enable OCSF JSON export on a Computer and an instance; make a request their policy denies | The denial arrives at the destination of Hub's audit export as an OCSF event naming the sandbox, the program and the endpoint | pending |
+| H5 | Audit records are sealed | Make an administrative change and a tool call; read their records and blocks through Hub's audit routes | Both records in a signed block whose Merkle root and Ed25519 signature verify; an `UPDATE` of a record refused | pending |
+| H6 | Sealed blocks are exported | Configure S3 export with Object Lock, and OTLP; seal a block | The block delivered to both, with receipts; the downloaded bytes reconcile with the block's SHA-256; the S3 object cannot be overwritten | pending |
+| H7 | A branch's audit records are sealed | A server served from a branch writes audit records in its data environment | The records sealed and read with Hub's audit | pending (design) |
+| H8 | A role removed in Entra stops a live session | Remove a person's role in Entra while their session lives; call an administrative route | Refused within a bound the design states, without a new sign-in | pending (design) |
+| H9 | The local registry admits only its builders | Push an image to the registry from a cluster workload without the registry's credential, then pull as a node | The push refused; the pull and the factory's builds work | pending |
+| H10 | An MCP rule matches a tool's arguments | A deny rule on one argument value of an allowed tool; call the tool with and without the value | With the value refused by the proxy; without it answered | pending (upstream) |
+| H11 | Response middleware reads a streamed model response | Response middleware on the model endpoint; a chat with a streamed completion | The middleware receives the streamed body and its decision applies | pending (upstream) |
+
 ## G. Model-driven acceptance (last)
 
 Only after every deployed check above passes. Use `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` in

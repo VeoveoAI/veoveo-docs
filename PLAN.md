@@ -567,6 +567,50 @@ a credential placeholder had every later message refused by the Computer's proxy
 
 Done.
 
+## 11. AI security controls (NIST AI RMF)
+
+Approved 2026-10-30. A company configures what its agents reach, which credentials
+they use and which tools they call at which risk, and keeps a signed record of all of
+it. Most of this is native: OpenShell's policy, middleware, interceptors and prover,
+and Hub's risk-bearing permissions and audit. This section qualifies those controls in
+a Veoveo installation and closes the gaps configuration cannot. The assessment against
+the NIST AI RMF is in the [record](records/2026-10-30-ai-security-nist-ai-rmf.md);
+checklist section H proves each item. A design change goes to its owner's `DESIGN.md`
+first.
+
+OpenShell's native controls, configured by the installation:
+
+- [ ] Supervisor middleware: a content guard on the Computer's model endpoint (H1).
+- [ ] Gateway interceptors: an approved policy on every new sandbox, and provider or
+      policy changes that break the installation's rules refused (H2).
+- [ ] Policy prover: a boundary policy in the installation, with the Computer and
+      factory policies checked against it (H3).
+- [ ] Sandbox OCSF export into the destination of Hub's audit export (H4).
+
+Veoveo's own controls:
+
+- [ ] Audit sealing and export qualified on the deployment: core and Hub (H5, H6).
+- [ ] Audit records written in a branch's data environment are sealed and read with
+      Hub's audit: core and Hub (H7).
+- [ ] A role removed in Entra reaches a live Hub session: Hub (H8). Today a refresh keeps
+      the sign-in's roles for the session's seven days, because Hub holds no Entra
+      refresh token; logout and revocation end the session at once
+      ([record](records/2026-10-26-second-person.md)).
+- [ ] Authentication on the local registry: the installation (H9). Network policies
+      keep factory build steps away from it; any other workload the cluster admits to it
+      can push.
+- [ ] A crosswalk to the subcategories of NIST AI RMF 1.0, NIST AI 600-1 and NIST
+      SP 800-53 Rev. 5, each row citing its checklist item and evidence: a record.
+
+OpenShell upstream, as the fork's smallest coherent patches, pursued upstream:
+
+- [ ] MCP rules that match a tool's arguments (H10).
+- [ ] Response middleware on a model's streamed response, once measured whether it
+      counts as partial (H11).
+
+Done when H1 to H11 are proven and the crosswalk cites them. Open: the decisions
+listed under Open.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
@@ -606,16 +650,10 @@ Done.
   ("sandbox did not acknowledge terminal state: boundary unavailable") after its agent
   had exited, so the workspace took 42 s instead of 5.5 s. A shutdown race, to fix in
   OpenShell.
-- Authentication on the local registry. Network policies keep factory build steps away
-  from it; any other workload the cluster admits to it can push.
 - Build caches in the other repositories' checks, as in Hub's.
 - Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
 - D11's node reboot (the box serving again by itself after a power cycle), which needs
   the box's sudo.
-- A role removed in Entra reaches a Hub session only at its next sign-in. A refresh keeps
-  the sign-in's roles for the session's seven days, because Hub holds no Entra refresh
-  token. Logout and revocation end the session at once
-  ([record](records/2026-10-26-second-person.md)).
 - Unexplained during the G1 re-run, with no effect on the result
   ([record](records/2026-10-26-g1-rerun.md)):
   - one `console__logs` call failed with "the log store could not be reached", and its
@@ -630,3 +668,11 @@ Done.
 - Checklist B22: a day of supervisor logs from sandboxes on OpenShell `0e795fc`, with no
   `FAIL_CLOSED` and no connection closed as stale (section 5).
 - Section 8: the upstream discovery failures after a membership change.
+- Section 11, decisions for the coordinator:
+  - Per-action human approval, which would change the architecture's principle of no
+    approval layer beside Lore's grants and OpenShell's sandbox model.
+  - OpenShell's policy advisor, an operator's approval of network rules an agent
+    proposes.
+  - A model evaluation or red-teaming server, as a new server repository.
+  - A restricted-egress profile in the installation template, for a company's
+    installation.
