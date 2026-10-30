@@ -485,6 +485,10 @@ Execution order:
       claims bodies, but Aeneas translation still fails on unsupported interfaces;
       no new Lean theorem or coverage completion is claimed
       ([extraction evidence](records/2026-10-30-request-composition-extraction.md)).
+      SDK `201f815` adds native coverage of valid delegated continuation beyond the
+      preserved source token's expiry and corrects overly broad design wording;
+      runtime behavior is unchanged
+      ([deadline boundary](records/2026-10-30-delegated-assertion-expiry.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
