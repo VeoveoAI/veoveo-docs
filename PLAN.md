@@ -382,8 +382,11 @@ Execution order:
       and all nine native tests pass after restoration;
       [controls qualification](records/2026-10-30-refresh-controls-qualification.md).
       The pure refresh predicates are qualified within their stated models.
-      Outcome/history composition, no-fork and positive concurrent executions
-      remain separate transaction-model work; none of these checks proves SQL refinement.
+      Commit `6f2a85b` connects reachable rotation programs, family-lock snapshots
+      and strictly increasing committed generations for one retained family
+      incarnation; [history checkpoint](records/2026-10-30-refresh-generation-history.md).
+      Committed-state replay, positive concurrent executions and uncertain-result
+      witnesses remain separate transaction-model work; no SQL refinement is claimed.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
