@@ -260,10 +260,15 @@ Execution order:
       boundaries. Total exact role/risk/grant equivalences, seven semantic controls
       and clean dedicated-target restoration passed; see the
       [record](records/2026-10-29-current-role-proof.md). Native collections remain
-      modeled. Next connect actual CurrentPermissions registration union/requested
-      filtering and decide_server admission/output; session/issuer semantics and
-      principal/catalog freshness remain open. This does not yet discharge the
-      earlier authority proof's coarse current-permission premise.
+      modeled. The actual CurrentPermissions registration traversal, requested
+      filtering and concrete authority connection are now qualified: exact-result
+      proofs, seven focused native tests, two semantic controls and fresh restored
+      success with identical generated model hashes. The earlier coarse
+      current-permission premise is discharged within the stated model boundary;
+      see the [qualification record](records/2026-10-29-current-permissions-qualification.md).
+      Next connect decide_server admission/output and explicitly address the SDK
+      revision before composing its separate resource-resolution proof. Session/
+      issuer semantics, async caller binding and principal/catalog freshness remain open.
 - [ ] SQL-backed configuration publication, then refresh concurrency and
       registration/replacement, including their actual audit/transaction boundaries.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
