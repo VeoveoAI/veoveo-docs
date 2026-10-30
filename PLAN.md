@@ -370,6 +370,11 @@ Execution order:
       [baseline record](records/2026-10-30-refresh-native-baseline.md). Commit
       `f6e679e` preserves the tests. Concurrent-model proofs and semantic fault
       controls remain pending; this is component evidence, not deployed qualification.
+      Commit `c00037d` adds checked exact binding/delivery predicates, positive
+      delivery, strict deadline refusal, checked generation arithmetic and a
+      mathematical connection to session admission. The full package and theorem
+      axiom audits pass; [proof checkpoint](records/2026-10-30-refresh-predicate-proofs.md).
+      The transaction model and semantic controls remain separate unfinished work.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
