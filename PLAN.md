@@ -408,8 +408,12 @@ Execution order:
       ordinary deployment read before comparison/admission; the unchanged regression,
       six existing registration tests, formatting and strict library Clippy pass.
       See [native race and fix](records/2026-10-30-registration-replica-replacement-race.md).
-      Registration remains formally unproved; the first committed-history model
-      and positive/fault witnesses are next, followed by broader operation composition.
+      Commit `d3885bf` adds the transaction model, independent sequential
+      specification and checked complete-program theorem for every reachable
+      committing attempt; [proof checkpoint](records/2026-10-30-registration-program-completeness.md).
+      Registration coverage is partial. Lock/observation invariants, serial history,
+      abort-event exclusion and positive/fault executions remain next, followed by
+      broader operation composition; the prefix theorem does not establish serialization.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
