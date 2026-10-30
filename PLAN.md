@@ -411,9 +411,12 @@ Execution order:
       Commit `d3885bf` adds the transaction model, independent sequential
       specification and checked complete-program theorem for every reachable
       committing attempt; [proof checkpoint](records/2026-10-30-registration-program-completeness.md).
-      Registration coverage is partial. Lock/observation invariants, serial history,
-      abort-event exclusion and positive/fault executions remain next, followed by
-      broader operation composition; the prefix theorem does not establish serialization.
+      Commit `2231825` derives exclusive active lock ownership, stable current
+      observations and exact replica/replacement write effects against the independent
+      specification; [checked milestone](records/2026-10-30-registration-locked-observations-effects.md).
+      Registration coverage is partial. Serial-history composition, abort-event
+      exclusion and reachable positive/fault executions remain next, followed by
+      broader operation composition; these ingredients do not yet prove serialization.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
