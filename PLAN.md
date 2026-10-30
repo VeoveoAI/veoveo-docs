@@ -447,9 +447,12 @@ Execution order:
       connects update commits to the current independent operation, and proves
       pending no-op absence; the fourteen-module package passes
       ([stability checkpoint](records/2026-10-30-registration-update-stability.md)).
-      Independent mixed histories, general abort-event exclusion, valid update
-      executions and the old-update counterexample remain next; the prior serial
-      theorem does not cover update writers automatically.
+      Commit `e93260b` composes independent register/replace/update effects in actual
+      tagged commit order and excludes confirmed aborted contributions, including
+      no-op successes; the fifteen-module package passes
+      ([mixed histories](records/2026-10-30-registration-update-serial-history.md)).
+      Constructive valid update/no-op executions and the old-update counterexample
+      remain next before closing the mixed-operation slice.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
