@@ -251,9 +251,42 @@ Execution order:
       the producer and consumer guarantees. The SDK resource matcher/resolution
       boundary is qualified: composed acceptance/refusal proofs, five semantic
       controls and fresh restored success; see the
-      [record](records/2026-10-29-sdk-authorization-proof.md). Native parsing,
-      declaration generation/validation, current policy and typed dispatch remain.
+      [record](records/2026-10-29-sdk-authorization-proof.md). SDK `239622d` is now
+      published after exact-source full Mac and Linux checks (283 passed, 3 skipped
+      on each); [publication record](records/2026-10-30-sdk-authorization-publication.md).
+      SDK access is now connected to Hub policy and delegation within the qualified
+      boundary below. Native parsing, declaration generation/validation and typed
+      dispatch remain.
       No new extension or runtime gate.
+      Adoption probes exposed a translator limitation in native URI iterator
+      signatures and a distinct local-versus-foreign MIR lowering difference in
+      the resolver. An isolated Rust 2024 extraction now produces the exact same
+      qualified SDK model. The approved connection reuses that generated resolver
+      through typed adapters, with compilation/linkage and native-template trace
+      boundaries explicit; [extraction checkpoint](records/2026-10-30-sdk-hub-extraction-boundaries.md).
+      Combined wrapper extraction now succeeds with that resolver interface;
+      [wrapper record](records/2026-10-30-sdk-hub-wrapper-extraction.md). Ordinary
+      resolver delegation, typed adapters and the actual NativeMatcher trace now
+      pass the full proof package and audits;
+      [model checkpoint](records/2026-10-30-sdk-hub-adapter-models.md). The old
+      whole-access axiom is removed. Actual SDK access now derives the server-policy
+      premise for all four target kinds from raw declaration semantics, connected
+      to current grants and downstream narrowing. Exact resource precedence,
+      conflicts, full output and zero-grant Authenticated acceptance pass the
+      combined package and audits;
+      [composition checkpoint](records/2026-10-30-sdk-hub-policy-composition.md).
+      Six native tests now pass, including 23 whole-output scenarios and eight direct
+      SDK observations, with formatting and strict library Clippy;
+      [native baseline](records/2026-10-30-sdk-hub-native-baseline.md).
+      Three SDK wrapper faults are now caught by unchanged proofs and native
+      assertions after valid compilation/extraction/model builds; fresh restoration
+      passes all six native tests, formatting/Clippy, extraction, the full Lean
+      package, four direct proofs and three audits. Restored definitions/types agree
+      after only exact SDK source-root comment normalization; raw outputs retained.
+      [Qualification](records/2026-10-30-sdk-hub-authorization-qualification.md).
+      Compiler/linkage, native parser/collection laws, declaration generation/
+      validation, serialization and asynchronous caller correspondence remain explicit
+      boundaries; this qualifies the connection, not the whole extension-contract chain.
 - [ ] Production-linked delegation/current-policy decisions and session-family
       admission, with output/deadline preservation and valid acceptance. Assembly
       and the unchanged current-role evaluator are qualified within their stated
@@ -266,11 +299,72 @@ Execution order:
       success with identical generated model hashes. The earlier coarse
       current-permission premise is discharged within the stated model boundary;
       see the [qualification record](records/2026-10-29-current-permissions-qualification.md).
-      Next connect decide_server admission/output and explicitly address the SDK
-      revision before composing its separate resource-resolution proof. Session/
+      The unchanged decide_server/route-lookup/decision closure now extracts with
+      the prior Held closure retained; [extraction checkpoint](records/2026-10-30-registered-server-policy-extraction.md).
+      The extended models build and existing proofs rerun, with the clock and SDK
+      access retained as two explicit native operation assumptions; [model checkpoint](records/2026-10-30-registered-server-policy-model.md).
+      Target projection, the exact native route-lookup trace and decision metadata
+      construction now have checked proofs; [projection/metadata checkpoint](records/2026-10-30-registered-server-policy-projection.md).
+      The actual server evaluator now has a checked exact admission/output theorem
+      using the proved grant calculation, conditional on explicit native operation
+      premises; [decision checkpoint](records/2026-10-30-registered-server-policy-decision.md).
+      Declarative actual admission, coherent route arguments and permission
+      consistency are also checked; [admission checkpoint](records/2026-10-30-registered-server-policy-admission.md).
+      The actual server decision and extracted delegation kernel are now connected:
+      exact admission, complete grant intersection, required-permission survival
+      and metadata preservation passed; [downstream checkpoint](records/2026-10-30-registered-server-policy-downstream.md).
+      Native qualification is now complete within that boundary: six focused tests
+      (including twelve downstream scenarios), five semantic faults caught by both
+      unchanged proofs and native assertions, and fresh restored extraction with
+      identical generated models, full proof/audit checks, formatting and strict
+      library Clippy; [qualification record](records/2026-10-30-registered-server-policy-qualification.md).
+      That receipt covers unchanged production policy and the prior dependency
+      pin. The newer qualified SDK adoption/composition above derives its access
+      premise and now has paired native controls and restored success. Session/
       issuer semantics, async caller binding and principal/catalog freshness remain open.
+      The unchanged session-family predicate now extracts transparently; the
+      extended package and four audits pass with no new native-operation axioms.
+      Full timestamp order and identity/scope primitives have ordinary models with
+      native correspondence explicit; see the
+      [model checkpoint](records/2026-10-30-session-family-extraction-model.md).
+      The exact independent admission theorem, observed-field invariance and
+      legitimate rotation/issuer/nanosecond success now pass the full package and
+      audits. Four Linux native method tests and the real PostgreSQL session test
+      on macOS also pass; [admission baseline](records/2026-10-30-session-family-admission.md).
+      Session admission is now qualified within its stated boundary: four compiled
+      and extracted predicate faults fail both the unchanged proof and the intended
+      native assertion; fresh original-source extraction, all four native tests,
+      formatting/Clippy, the full Lean package/direct proof and four audits pass.
+      The first control's assertion-log detector false negative is retained and
+      separately reviewed. See the
+      [qualification record](records/2026-10-30-session-family-qualification.md).
+      Exact family lookup, verified claims, caller freshness and the wider concurrent
+      refresh lifecycle remain separate obligations; no session rule was added.
 - [ ] SQL-backed configuration publication, then refresh concurrency and
       registration/replacement, including their actual audit/transaction boundaries.
+      Configuration publication is qualified within its design-model boundary:
+      the full Lean package proves complete reachable commits, one committed
+      successor per retained predecessor, committed-state replay excluding aborted
+      attempts, valid initial/replacement success and reachable uncertain outcomes.
+      PostgreSQL primitives remain separate from Hub's instruction sequence.
+      Four actual PostgreSQL tests, formatting and strict library Clippy passed;
+      both deliberate Rust transaction faults failed their intended assertions,
+      and fresh original-source validation passed again. Final native source is
+      unchanged by the later proof additions. See the
+      [qualification record](records/2026-10-30-control-publication-qualification.md).
+      This is not formal SQL refinement or replica-adoption verification, and no
+      publication runtime behavior changed. Refresh-family concurrency is the next
+      transaction slice, followed by registration/replacement. Trace their actual
+      Rust/SQL and existing retry/replay semantics before specifying the models.
+      Refresh source review is complete and implementation has started: extract
+      the actual binding/redelivery predicates and model the separate rotation,
+      duplicate-delivery and revocation transaction paths. Retention, sampled time,
+      first-revocation semantics and post-commit delivery errors remain explicit;
+      [source review and scope](records/2026-10-30-refresh-transaction-source-review.md).
+      The actual binding/redelivery predicates and delivery closure now extract
+      transparently with the previous roots preserved;
+      [extraction checkpoint](records/2026-10-30-refresh-predicate-extraction.md).
+      This checkpoint has no new refresh proof or native qualification result.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
