@@ -302,13 +302,39 @@ there; a grant adds admin, or reaches people outside the Work Context.
       granted it on; as a member of the group, writing through the Work Context, the same
       person was refused that; a member's share link was refused (checklist C11, C12,
       [record](records/2026-10-29-groups-everywhere.md)).
-- [ ] `billed` granted to a group, used by a member: component test only, since no route
-      grants a role but publishing the whole control plane.
+- [x] `billed` granted to a group: not a path. The installation never names a Lore group,
+      and a person's role decides billed tools (section 9).
 - [ ] Hub's upstream discovery failed for about three minutes after a membership change,
       and in a burst at 22:37 without one: find why new forwards fail (Hub logs no
       error source) ([record](records/2026-10-29-groups-everywhere.md)).
 
-Done when deployed and proven, with a record and the checklist. Open: the two above.
+Done when deployed and proven, with a record and the checklist. Open: the discovery
+failures.
+
+## 9. Owners delete groups, and the installation names no Lore group
+
+Approved 2026-10-30 and active. Nothing could delete a group: an owner never removes
+themselves, so every group keeps one. And a role, rule or Work Context membership could
+reach a Lore group only by naming in the installation an ID that exists once someone
+creates the group. The design is in Hub's and console's `DESIGN.md`.
+
+- [x] Hub `6902627`: `DELETE /lore/{profile}/groups/{name}`, for an owner of the group,
+      takes the group and every assignment naming it and answers the caller's groups;
+      409 `group-owns-repository` while the group is a repository's one owner. A grant
+      outside Lore naming its ID holds nothing afterwards, since no group is given that
+      ID again.
+- [x] Hub's design, same commit: the installation names only people and its identity
+      provider's groups, which exist before it is published, never a Lore group;
+      whether a person may call a billed or other risky tool is their role's to decide.
+- [x] Console `8f94e5a`: `delete_group(group)`; console's sandbox policy allows the route
+      (template installation `0a34b1c`).
+- [x] Deployed with installation `6845224` at 03:08; no Computer version change.
+- [x] Probe: a member who is no owner is refused; a group that is a repository's one
+      owner is refused; an owner deletes it, its repository assignment goes, and an
+      artifact grant naming its ID no longer reaches its former member (checklist C13,
+      [record](records/2026-10-30-owners-delete-groups.md)).
+
+Done when deployed and probed, with a record and the checklist. Done.
 
 ## Later
 
@@ -372,5 +398,4 @@ Done when deployed and proven, with a record and the checklist. Open: the two ab
 
 - Checklist B22: a day of supervisor logs from sandboxes on OpenShell `0e795fc`, with no
   `FAIL_CLOSED` and no connection closed as stale (section 5).
-- Section 8: `billed` through a group live; the upstream discovery failures after a
-  membership change.
+- Section 8: the upstream discovery failures after a membership change.

@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-29: Hub `fe59868`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
-`1ab0e2386`, supervisor `0e795fc`), installation `c6c9a3b` (Computer version `80fd73c9f7fd`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `51dff0d`, Artifact `91e62be`, Media
+(single host), deployed 2026-10-30: Hub `6902627`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
+`1ab0e2386`, supervisor `0e795fc`), installation `6845224` (Computer version `80fd73c9f7fd`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `8f94e5a`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`; Hub and its CLI on SDK `05273d1`.
 
 ## A. Identity and administration
@@ -76,6 +76,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 
 | C11 | A Lore group is a group everywhere | A member grants their artifact `admin` to a group; its owner grants it on; the owner, made a member, tries again | The grant and the onward grant are served; as a member, Artifact refuses: "needs admin access" | proven 2026-10-29: Hub `3de9654`, Artifact `91e62be`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-29-groups-everywhere.md)) |
 | C12 | Members share, and share links stay the installation's | A member lists Artifact's tools, then creates a share link | `grant_artifact`, `revoke_artifact_grant`, `decide_access_request` listed; the link refused by the Hub | proven 2026-10-29 ([record](records/2026-10-29-groups-everywhere.md)) |
+| C13 | Owners delete groups | A member who is no owner deletes a group; its owner deletes it while it is a repository's one owner, then after another owner is added; the former member reads an artifact's grants held through it | 403 `group-owner-required`; 409 `group-owns-repository`; deleted, the repository's group assignment gone, and Artifact refuses: "needs admin access" | proven 2026-10-30: Hub `6902627`, console `8f94e5a`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-30-owners-delete-groups.md)) |
 
 ## D. Factory serving (Stage 1)
 
