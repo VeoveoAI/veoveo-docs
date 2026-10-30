@@ -432,9 +432,15 @@ Execution order:
       contract. The final eight-module build and all seventeen theorem audits pass;
       [first register/replace slice qualified](records/2026-10-30-registration-concurrency-qualification.md).
       The native race-fix inputs remain unchanged. Registration coverage is partial:
-      per-client update, removal and broader authority composition remain. A stale per-client update
-      after replacement is a source-review hypothesis requiring a native probe;
-      it is not covered by the register/replace-only model.
+      per-client update, removal and broader authority composition remain.
+      The next native probe confirmed the stale-update hypothesis: an absent old
+      registration could still overwrite replacement deployment metadata. Commit
+      `22cdabb` takes the deployment lock first and rolls back on a zero-row
+      registration update, retaining no-op success without new authorization rules.
+      The identical regression, both concurrency tests and six existing integration
+      tests pass; [native update qualification](records/2026-10-30-registration-stale-update.md).
+      Extending the Lean model to update writers remains next; the prior theorem
+      does not cover them automatically.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
