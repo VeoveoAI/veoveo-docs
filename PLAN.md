@@ -489,6 +489,10 @@ Execution order:
       preserved source token's expiry and corrects overly broad design wording;
       runtime behavior is unchanged
       ([deadline boundary](records/2026-10-30-delegated-assertion-expiry.md)).
+      SDK `b6912ce` rewrites two private expressions without changing their order or
+      outcomes; 34 token tests, format and strict Clippy pass. Hub remains on its
+      existing SDK pin, and formal extraction is still in progress
+      ([source preparation](records/2026-10-30-sdk-issuer-expression-refactor.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
