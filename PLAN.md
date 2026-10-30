@@ -473,6 +473,14 @@ Execution order:
       fresh/retained routing, current authority and SDK recipient checks.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
+      Hub `cda9372` qualifies the real routing/retained-Task caller with SDK-verified
+      identities, current grant narrowing/revocation, a deliberate policy bypass and
+      clean restoration. Both spawned Hub and test executable identities are recorded;
+      earlier shared-target contamination is excluded. This is native component
+      evidence, not a new Lean composition theorem
+      ([record](records/2026-10-30-request-routing-native-qualification.md)).
+      Connected source extraction remains in progress; no opaque issuer result is
+      accepted as a substitute for its actual assembly.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
