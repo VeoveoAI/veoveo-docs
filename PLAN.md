@@ -439,8 +439,13 @@ Execution order:
       registration update, retaining no-op success without new authorization rules.
       The identical regression, both concurrency tests and six existing integration
       tests pass; [native update qualification](records/2026-10-30-registration-stale-update.md).
-      Extending the Lean model to update writers remains next; the prior theorem
-      does not cover them automatically.
+      Commit `cddf599` derives complete update staging over finite mixed executions,
+      exact captured-row field effects and the no-op's staged/rollback effects;
+      the twelve-module proof package passes with unchanged runtime source
+      ([update proof checkpoint](records/2026-10-30-registration-update-program-effects.md)).
+      Shared-lock/current-row stability, independent mixed histories, valid update
+      executions and the old-update counterexample remain next; the prior serial
+      theorem does not cover update writers automatically.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
