@@ -417,8 +417,12 @@ Execution order:
       Commit `f43441c` proves independent sequential effects in actual server-commit
       order for every finite modeled execution, with aborted-event exclusion;
       [serial-history milestone](records/2026-10-30-registration-serial-history.md).
-      Registration coverage is partial. Reachable positive/fault executions remain
-      next, followed by broader operation composition. A stale per-client update
+      Commit `bec2309` constructs valid initial state, replica admission and
+      completed same-metadata overlap with exact rows/logins, both successful
+      responses and actual commit IDs;
+      [valid-replica milestone](records/2026-10-30-registration-valid-replicas.md).
+      Registration coverage is partial. Replacement/abort and original-fault
+      executions remain next, followed by broader operation composition. A stale per-client update
       after replacement is a source-review hypothesis requiring a native probe;
       it is not covered by the register/replace-only model.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
