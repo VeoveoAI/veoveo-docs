@@ -391,8 +391,11 @@ Execution order:
       Commit `dd3cf17` proves committed-state replay tied to actual model steps
       and excludes aborted attempts from every such contribution trace;
       [replay checkpoint](records/2026-10-30-refresh-transaction-replay.md).
-      Positive concurrent executions and uncertain-result witnesses remain
-      separate transaction-model work; no SQL refinement is claimed.
+      Commit `752fd8c` constructs valid initial data and a complete overlapping
+      rotation/retry execution, with the same successor and exact output maps;
+      [concurrent success](records/2026-10-30-refresh-concurrent-success.md).
+      Uncertain-result witnesses remain transaction-model work; no SQL refinement
+      is claimed.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
