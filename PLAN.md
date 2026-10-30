@@ -248,7 +248,12 @@ Execution order:
 - [ ] Shared SDK–Hub extension-contract semantics: next, prioritize
       authorization/registration declaration correctness,
       representation correspondence and resource/route resolution, then connect
-      the producer and consumer guarantees. No new extension or runtime gate.
+      the producer and consumer guarantees. The SDK resource matcher/resolution
+      boundary is qualified: composed acceptance/refusal proofs, five semantic
+      controls and fresh restored success; see the
+      [record](records/2026-10-29-sdk-authorization-proof.md). Native parsing,
+      declaration generation/validation, current policy and typed dispatch remain.
+      No new extension or runtime gate.
 - [ ] Production-linked delegation/current-policy decisions and session-family
       admission, with output/deadline preservation and valid acceptance. Assembly
       is qualified above; current-role and session/issuer semantics remain.
