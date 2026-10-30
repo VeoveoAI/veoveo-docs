@@ -177,8 +177,13 @@ the logs of 2026-10-28.
       the revisions, which are opaque digests, and still failed closed at 09:32 on
       g1-rerun's instance. `0e795fc` accepts any revision of the polled attachment and
       policy, and is deployed on Hub, the services and the owner's Computer
-      ([record](records/2026-10-29-refresh-revisions-are-opaque.md)); other sandboxes take
-      it at their next start. The day of logs is pending (checklist B22).
+      ([record](records/2026-10-29-refresh-revisions-are-opaque.md)). On `0e795fc`, 2 of 2,735
+      refreshes still failed closed in a day, both when the fetch itself failed during a
+      gateway blip. `49761d1` keeps the installed credentials when a fetch fails, each until
+      its expiry, and fetches again on the next poll; deployed on Hub and the services
+      ([record](records/2026-10-30-refresh-fetch-failures.md)). The owner's Computers took it at
+      19:29; other Computers and the factory instances take it at their next start. The day
+      of logs runs from 19:29 (checklist B22).
 - [x] Qualification with MiMo-V2.6-Pro: an agent in a Computer uses `grep` and `glob`,
       adds a crate, runs `cargo check`, pushes, and the change is served. The first run
       found the toolchain a Computer lacked. Template `430b7ab` adds clang, cmake,
@@ -504,13 +509,63 @@ there; a grant adds admin, or reaches people outside the Work Context.
       granted it on; as a member of the group, writing through the Work Context, the same
       person was refused that; a member's share link was refused (checklist C11, C12,
       [record](records/2026-10-29-groups-everywhere.md)).
-- [ ] `billed` granted to a group, used by a member: component test only, since no route
-      grants a role but publishing the whole control plane.
-- [ ] Hub's upstream discovery failed for about three minutes after a membership change,
-      and in a burst at 22:37 without one: find why new forwards fail (Hub logs no
-      error source) ([record](records/2026-10-29-groups-everywhere.md)).
+- [x] `billed` granted to a group: not a path. The installation never names a Lore group,
+      and a person's role decides billed tools (section 9).
+- [x] Hub's upstream discovery failed for about three minutes after a membership change,
+      and in bursts at restarts ([record](records/2026-10-29-groups-everywhere.md)): idle
+      keep-alive connections held all 64 of Hub's forwards to servers, and the next
+      connection was dropped unlogged. Hub `549b0bb` keeps no idle forward and lets one
+      beyond the 64 wait for another; `9e920f2` names a transport error's causes
+      (checklist E5, [record](records/2026-10-30-handbook-and-upstream-forwards.md)).
 
-Done when deployed and proven, with a record and the checklist. Open: the two above.
+Done when deployed and proven, with a record and the checklist. Done.
+
+## 9. Owners delete groups, and the installation names no Lore group
+
+Approved 2026-10-30 and active. Nothing could delete a group: an owner never removes
+themselves, so every group keeps one. And a role, rule or Work Context membership could
+reach a Lore group only by naming in the installation an ID that exists once someone
+creates the group. The design is in Hub's and console's `DESIGN.md`.
+
+- [x] Hub `6902627`: `DELETE /lore/{profile}/groups/{name}`, for an owner of the group,
+      takes the group and every assignment naming it and answers the caller's groups;
+      409 `group-owns-repository` while the group is a repository's one owner. A grant
+      outside Lore naming its ID holds nothing afterwards, since no group is given that
+      ID again.
+- [x] Hub's design, same commit: the installation names only people and its identity
+      provider's groups, which exist before it is published, never a Lore group;
+      whether a person may call a billed or other risky tool is their role's to decide.
+- [x] Console `8f94e5a`: `delete_group(group)`; console's sandbox policy allows the route
+      (template installation `0a34b1c`).
+- [x] Deployed with installation `6845224` at 03:08; no Computer version change.
+- [x] Probe: a member who is no owner is refused; a group that is a repository's one
+      owner is refused; an owner deletes it, its repository assignment goes, and an
+      artifact grant naming its ID no longer reaches its former member (checklist C13,
+      [record](records/2026-10-30-owners-delete-groups.md)).
+- [x] The Computer handbook names `console__delete_group` (template installation
+      `4fec1eb`, Bioma `21285b2`), published through the live control plane at 17:33;
+      the handbook is not part of the Computer version, so no Computer restarts
+      ([record](records/2026-10-30-handbook-and-upstream-forwards.md)).
+
+Done when deployed and probed, with a record and the checklist. Done.
+
+## 10. A supervisor change reaches every Computer, and quoted placeholders stay text
+
+Approved and done 2026-10-30. A supervisor fix did not change the Computer version, so no
+one was offered an update and no one restarted to take it. And a chat whose history quoted
+a credential placeholder had every later message refused by the Computer's proxy.
+
+- [x] OpenShell `c80bda2`: the compute driver reports its supervisor and sandbox runtime
+      images, and `GetGatewayInfo` carries them; the Kubernetes driver reports its own.
+- [x] Hub `2b14e65`: the Computer version names those images; what's new names a changed
+      supervisor or runtime, and the status page says "The platform that runs your
+      Computer was updated". Design in Hub's `DESIGN.md`. Console `8384a5b` carries them.
+- [x] Installations `713515f` and `ef1aef9`: the model endpoint allows uninspected request
+      bodies; its key stays bound to the header.
+- [x] Deployed and proven (checklist B23, B24,
+      [record](records/2026-10-30-supervisor-in-computer-version.md)).
+
+Done.
 
 ## Later
 
@@ -574,5 +629,4 @@ Done when deployed and proven, with a record and the checklist. Open: the two ab
 
 - Checklist B22: a day of supervisor logs from sandboxes on OpenShell `0e795fc`, with no
   `FAIL_CLOSED` and no connection closed as stale (section 5).
-- Section 8: `billed` through a group live; the upstream discovery failures after a
-  membership change.
+- Section 8: the upstream discovery failures after a membership change.
