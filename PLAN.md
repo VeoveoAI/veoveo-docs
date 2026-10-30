@@ -463,7 +463,14 @@ Execution order:
       replacement and stale update's rollback/success, preserving the entire
       replacement state and sole registration commit event; the sixteen-module
       package passes ([replacement/no-op](records/2026-10-30-registration-update-replacement-noop.md)).
-      The paired old-update counterexample remains next before closing this slice.
+      Commit `eb099bb` completes the paired old-update counterexample from the same
+      reached replacement state and refutes the same independent mixed-history
+      contract. The final sixteen-module build passes; register/replace/update
+      concurrency is qualified within its stated model/native boundaries
+      ([qualification](records/2026-10-30-registration-update-qualification.md)).
+      Physical SQL refinement, removal and broader lifecycle composition remain
+      open. The next implementation slice connects registration identity with
+      fresh/retained routing, current authority and SDK recipient checks.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
