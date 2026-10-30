@@ -365,6 +365,11 @@ Execution order:
       transparently with the previous roots preserved;
       [extraction checkpoint](records/2026-10-30-refresh-predicate-extraction.md).
       This checkpoint has no new refresh proof or native qualification result.
+      The subsequent native baseline passed four new PostgreSQL transaction tests
+      and all five existing `hub_state` tests, formatting and strict library Clippy;
+      [baseline record](records/2026-10-30-refresh-native-baseline.md). Commit
+      `f6e679e` preserves the tests. Concurrent-model proofs and semantic fault
+      controls remain pending; this is component evidence, not deployed qualification.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
