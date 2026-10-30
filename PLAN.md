@@ -347,6 +347,24 @@ creates the group. The design is in Hub's and console's `DESIGN.md`.
 
 Done when deployed and probed, with a record and the checklist. Done.
 
+## 10. A supervisor change reaches every Computer, and quoted placeholders stay text
+
+Approved and done 2026-10-30. A supervisor fix did not change the Computer version, so no
+one was offered an update and no one restarted to take it. And a chat whose history quoted
+a credential placeholder had every later message refused by the Computer's proxy.
+
+- [x] OpenShell `c80bda2`: the compute driver reports its supervisor and sandbox runtime
+      images, and `GetGatewayInfo` carries them; the Kubernetes driver reports its own.
+- [x] Hub `2b14e65`: the Computer version names those images; what's new names a changed
+      supervisor or runtime, and the status page says "The platform that runs your
+      Computer was updated". Design in Hub's `DESIGN.md`. Console `8384a5b` carries them.
+- [x] Installations `713515f` and `ef1aef9`: the model endpoint allows uninspected request
+      bodies; its key stays bound to the header.
+- [x] Deployed and proven (checklist B23, B24,
+      [record](records/2026-10-30-supervisor-in-computer-version.md)).
+
+Done.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
