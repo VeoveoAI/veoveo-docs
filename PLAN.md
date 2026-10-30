@@ -451,7 +451,10 @@ Execution order:
       tagged commit order and excludes confirmed aborted contributions, including
       no-op successes; the fifteen-module package passes
       ([mixed histories](records/2026-10-30-registration-update-serial-history.md)).
-      Constructive valid update/no-op executions and the old-update counterexample
+      Commit `a336620` constructs a well-formed two-replica seed and a complete
+      successful update with exact state and event preservation; the sixteen-module
+      package passes ([valid update](records/2026-10-30-registration-update-valid-success.md)).
+      The replacement-overlap/no-op execution and paired old-update counterexample
       remain next before closing the mixed-operation slice.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
