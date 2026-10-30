@@ -414,9 +414,13 @@ Execution order:
       Commit `2231825` derives exclusive active lock ownership, stable current
       observations and exact replica/replacement write effects against the independent
       specification; [checked milestone](records/2026-10-30-registration-locked-observations-effects.md).
-      Registration coverage is partial. Serial-history composition, abort-event
-      exclusion and reachable positive/fault executions remain next, followed by
-      broader operation composition; these ingredients do not yet prove serialization.
+      Commit `f43441c` proves independent sequential effects in actual server-commit
+      order for every finite modeled execution, with aborted-event exclusion;
+      [serial-history milestone](records/2026-10-30-registration-serial-history.md).
+      Registration coverage is partial. Reachable positive/fault executions remain
+      next, followed by broader operation composition. A stale per-client update
+      after replacement is a source-review hypothesis requiring a native probe;
+      it is not covered by the register/replace-only model.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
