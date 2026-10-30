@@ -256,7 +256,14 @@ Execution order:
       No new extension or runtime gate.
 - [ ] Production-linked delegation/current-policy decisions and session-family
       admission, with output/deadline preservation and valid acceptance. Assembly
-      is qualified above; current-role and session/issuer semantics remain.
+      and the unchanged current-role evaluator are qualified within their stated
+      boundaries. Total exact role/risk/grant equivalences, seven semantic controls
+      and clean dedicated-target restoration passed; see the
+      [record](records/2026-10-29-current-role-proof.md). Native collections remain
+      modeled. Next connect actual CurrentPermissions registration union/requested
+      filtering and decide_server admission/output; session/issuer semantics and
+      principal/catalog freshness remain open. This does not yet discharge the
+      earlier authority proof's coarse current-permission premise.
 - [ ] SQL-backed configuration publication, then refresh concurrency and
       registration/replacement, including their actual audit/transaction boundaries.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
