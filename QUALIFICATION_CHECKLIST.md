@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-30: Hub `6902627`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
-`1ab0e2386`, supervisor `0e795fc`), installation `6845224` (Computer version `80fd73c9f7fd`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `8f94e5a`, Artifact `91e62be`, Media
+(single host), deployed 2026-10-30: Hub `549b0bb`, Lore `4ee9f338`, OpenShell gateway `ebd6a1c` (runtime
+`1ab0e2386`, supervisor `0e795fc`), installation `32b44e4` (Computer version `80fd73c9f7fd`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `8f94e5a`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`; Hub and its CLI on SDK `05273d1`.
 
 ## A. Identity and administration
@@ -108,6 +108,7 @@ startup times, from `console__logs` timestamps.
 | E2 | A service registers again after its registration is abandoned | Keep the service down past Hub's 60 s registration grace while Hub runs, then let it start (a Hub outage alone abandons nothing) | It registers again by itself with a new client; its tools route; no manual file moves | proven 2026-10-23: Artifact (`artifact-01a1668e…` → `artifact-01a1674370…`); Media `d7ae458` and Embedding `1323732` stopped 100 s and 104 s, registered again 3.3 s after start with new clients; all their tools listed |
 | E3 | Embedding runtime on the GPU | Embedding `/readyz` | `ready` through the runtime | proven 2026-10-23 |
 | E4 | Media through its fixture provider | One Media call | Routed and stored; the output is synthetic fixture data | proven 2026-10-25: `media__run` on `fake/text-to-image`, 9.8 s, artifact `image/png` 65,536 bytes, downloaded 200 with the same SHA-256 `c6ee57f0…`; synthetic fixture data |
+| E5 | Hub always reaches its servers | Hub restarted, then two people list tools in parallel after each of five membership changes, then a group is deleted | Every call served; Hub logs no WARN; the forwards Hub holds into servers fall back to its long-lived streams | failed 2026-10-30 on Hub `9e920f2`: at the fifth change, the 65th connection was dropped unlogged while idle keep-alive connections held all 64 server forwards, and Console was unreachable for 53 s to 4 min. Proven on Hub `549b0bb`: 48 of 48 steps, 0 WARN, 8 forwards held instead of 64 ([record](records/2026-10-30-handbook-and-upstream-forwards.md)) |
 
 ## F. Installation and operations
 

@@ -304,12 +304,14 @@ there; a grant adds admin, or reaches people outside the Work Context.
       [record](records/2026-10-29-groups-everywhere.md)).
 - [x] `billed` granted to a group: not a path. The installation never names a Lore group,
       and a person's role decides billed tools (section 9).
-- [ ] Hub's upstream discovery failed for about three minutes after a membership change,
-      and in a burst at 22:37 without one: find why new forwards fail (Hub logs no
-      error source) ([record](records/2026-10-29-groups-everywhere.md)).
+- [x] Hub's upstream discovery failed for about three minutes after a membership change,
+      and in bursts at restarts ([record](records/2026-10-29-groups-everywhere.md)): idle
+      keep-alive connections held all 64 of Hub's forwards to servers, and the next
+      connection was dropped unlogged. Hub `549b0bb` keeps no idle forward and lets one
+      beyond the 64 wait for another; `9e920f2` names a transport error's causes
+      (checklist E5, [record](records/2026-10-30-handbook-and-upstream-forwards.md)).
 
-Done when deployed and proven, with a record and the checklist. Open: the discovery
-failures.
+Done when deployed and proven, with a record and the checklist. Done.
 
 ## 9. Owners delete groups, and the installation names no Lore group
 
@@ -333,6 +335,10 @@ creates the group. The design is in Hub's and console's `DESIGN.md`.
       owner is refused; an owner deletes it, its repository assignment goes, and an
       artifact grant naming its ID no longer reaches its former member (checklist C13,
       [record](records/2026-10-30-owners-delete-groups.md)).
+- [x] The Computer handbook names `console__delete_group` (template installation
+      `4fec1eb`, Bioma `21285b2`), published through the live control plane at 17:33;
+      the handbook is not part of the Computer version, so no Computer restarts
+      ([record](records/2026-10-30-handbook-and-upstream-forwards.md)).
 
 Done when deployed and probed, with a record and the checklist. Done.
 
