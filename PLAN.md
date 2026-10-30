@@ -368,8 +368,7 @@ Execution order:
       The subsequent native baseline passed four new PostgreSQL transaction tests
       and all five existing `hub_state` tests, formatting and strict library Clippy;
       [baseline record](records/2026-10-30-refresh-native-baseline.md). Commit
-      `f6e679e` preserves the tests. Concurrent-model proofs and semantic fault
-      controls remain pending; this is component evidence, not deployed qualification.
+      `f6e679e` preserves the tests. This is component evidence, not deployed qualification.
       Commit `c00037d` adds checked exact binding/delivery predicates, positive
       delivery, strict deadline refusal, checked generation arithmetic and a
       mathematical connection to session admission. The full package and theorem
@@ -377,8 +376,14 @@ Execution order:
       Commit `17f1f74` establishes the transaction model and proves that reachable
       commits stage the complete chosen program, plus family/session and first-revocation
       preservation; [model checkpoint](records/2026-10-30-refresh-program-prefix.md).
-      Outcome/history composition, no-fork, positive concurrent executions and
-      semantic controls remain unfinished. These are design-model results, not SQL refinement.
+      Paired extracted/native controls now catch an inclusive delivery deadline
+      and a bypassed client binding; a native-only premature commit catches the
+      lost audit rollback. Fresh extraction, the full proof package, five audits
+      and all nine native tests pass after restoration;
+      [controls qualification](records/2026-10-30-refresh-controls-qualification.md).
+      The pure refresh predicates are qualified within their stated models.
+      Outcome/history composition, no-fork and positive concurrent executions
+      remain separate transaction-model work; none of these checks proves SQL refinement.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
