@@ -427,9 +427,12 @@ Execution order:
       Commit `82be7bd` constructs the original protocol's reached midpoint: the
       replica has succeeded while replacement still owns its lock and has captured
       only the seed; [checked midpoint](records/2026-10-30-registration-original-midpoint.md).
-      Registration coverage is partial. Completing that execution and refuting
-      the independent serial contract remain next, followed by broader operation
-      composition. A stale per-client update
+      Commit `a81726a` completes that counterexample with both successful responses,
+      exact mixed output maps and a refutation of the independent actual-commit-order
+      contract. The final eight-module build and all seventeen theorem audits pass;
+      [first register/replace slice qualified](records/2026-10-30-registration-concurrency-qualification.md).
+      The native race-fix inputs remain unchanged. Registration coverage is partial:
+      per-client update, removal and broader authority composition remain. A stale per-client update
       after replacement is a source-review hypothesis requiring a native probe;
       it is not covered by the register/replace-only model.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
