@@ -181,8 +181,9 @@ the logs of 2026-10-28.
       refreshes still failed closed in a day, both when the fetch itself failed during a
       gateway blip. `49761d1` keeps the installed credentials when a fetch fails, each until
       its expiry, and fetches again on the next poll; deployed on Hub and the services
-      ([record](records/2026-10-30-refresh-fetch-failures.md)). Computers and factory
-      instances take it at their next start. The day of logs is pending (checklist B22).
+      ([record](records/2026-10-30-refresh-fetch-failures.md)). The owner's Computers took it at
+      19:29; other Computers and the factory instances take it at their next start. The day
+      of logs runs from 19:29 (checklist B22).
 - [x] Qualification with MiMo-V2.6-Pro: an agent in a Computer uses `grep` and `glob`,
       adds a crate, runs `cargo check`, pushes, and the change is served. The first run
       found the toolchain a Computer lacked. Template `430b7ab` adds clang, cmake,
