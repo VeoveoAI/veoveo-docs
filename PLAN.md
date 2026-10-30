@@ -385,8 +385,14 @@ Execution order:
       Commit `6f2a85b` connects reachable rotation programs, family-lock snapshots
       and strictly increasing committed generations for one retained family
       incarnation; [history checkpoint](records/2026-10-30-refresh-generation-history.md).
-      Committed-state replay, positive concurrent executions and uncertain-result
-      witnesses remain separate transaction-model work; no SQL refinement is claimed.
+      Commit `f9ac023` qualifies completeness against a compilable premature-ready
+      model fault, then restores the original passing proof;
+      [fault record](records/2026-10-30-refresh-completeness-control.md).
+      Commit `dd3cf17` proves committed-state replay tied to actual model steps
+      and excludes aborted attempts from every such contribution trace;
+      [replay checkpoint](records/2026-10-30-refresh-transaction-replay.md).
+      Positive concurrent executions and uncertain-result witnesses remain
+      separate transaction-model work; no SQL refinement is claimed.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
