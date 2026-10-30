@@ -402,8 +402,14 @@ Execution order:
       No SQL refinement or complete OAuth lifecycle is claimed. Registration and
       replacement concurrency are the next transaction slice.
       Their source review is recorded and the first deterministic native overlap
-      probe is being implemented; no registration defect or proof is claimed yet.
+      probe was implemented before choosing the model.
       See [registration transaction scope](records/2026-10-30-registration-transaction-source-review.md).
+      The probe reproduced a replica/replacement race. Commit `05737d6` locks the
+      ordinary deployment read before comparison/admission; the unchanged regression,
+      six existing registration tests, formatting and strict library Clippy pass.
+      See [native race and fix](records/2026-10-30-registration-replica-replacement-race.md).
+      Registration remains formally unproved; the first committed-history model
+      and positive/fault witnesses are next, followed by broader operation composition.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
