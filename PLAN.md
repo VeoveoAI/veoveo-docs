@@ -459,8 +459,11 @@ Execution order:
       Commit `a336620` constructs a well-formed two-replica seed and a complete
       successful update with exact state and event preservation; the sixteen-module
       package passes ([valid update](records/2026-10-30-registration-update-valid-success.md)).
-      The replacement-overlap/no-op execution and paired old-update counterexample
-      remain next before closing the mixed-operation slice.
+      Commit `c214d49` constructs the actual old-client preflight, complete ordinary
+      replacement and stale update's rollback/success, preserving the entire
+      replacement state and sole registration commit event; the sixteen-module
+      package passes ([replacement/no-op](records/2026-10-30-registration-update-replacement-noop.md)).
+      The paired old-update counterexample remains next before closing this slice.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
