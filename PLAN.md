@@ -481,6 +481,10 @@ Execution order:
       ([record](records/2026-10-30-request-routing-native-qualification.md)).
       Connected source extraction remains in progress; no opaque issuer result is
       accepted as a substitute for its actual assembly.
+      Separate exact-SDK extraction now includes the real issuer/context/deadline/
+      claims bodies, but Aeneas translation still fails on unsupported interfaces;
+      no new Lean theorem or coverage completion is claimed
+      ([extraction evidence](records/2026-10-30-request-composition-extraction.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
