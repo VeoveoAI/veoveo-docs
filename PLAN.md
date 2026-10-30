@@ -374,7 +374,11 @@ Execution order:
       delivery, strict deadline refusal, checked generation arithmetic and a
       mathematical connection to session admission. The full package and theorem
       axiom audits pass; [proof checkpoint](records/2026-10-30-refresh-predicate-proofs.md).
-      The transaction model and semantic controls remain separate unfinished work.
+      Commit `17f1f74` establishes the transaction model and proves that reachable
+      commits stage the complete chosen program, plus family/session and first-revocation
+      preservation; [model checkpoint](records/2026-10-30-refresh-program-prefix.md).
+      Outcome/history composition, no-fork, positive concurrent executions and
+      semantic controls remain unfinished. These are design-model results, not SQL refinement.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
