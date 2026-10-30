@@ -443,7 +443,11 @@ Execution order:
       exact captured-row field effects and the no-op's staged/rollback effects;
       the twelve-module proof package passes with unchanged runtime source
       ([update proof checkpoint](records/2026-10-30-registration-update-program-effects.md)).
-      Shared-lock/current-row stability, independent mixed histories, valid update
+      Commit `9518418` derives shared-lock ownership and current observations,
+      connects update commits to the current independent operation, and proves
+      pending no-op absence; the fourteen-module package passes
+      ([stability checkpoint](records/2026-10-30-registration-update-stability.md)).
+      Independent mixed histories, general abort-event exclusion, valid update
       executions and the old-update counterexample remain next; the prior serial
       theorem does not cover update writers automatically.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
