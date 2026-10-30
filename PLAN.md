@@ -401,6 +401,9 @@ Execution order:
       [qualification record](records/2026-10-30-refresh-concurrency-qualification.md).
       No SQL refinement or complete OAuth lifecycle is claimed. Registration and
       replacement concurrency are the next transaction slice.
+      Their source review is recorded and the first deterministic native overlap
+      probe is being implemented; no registration defect or proof is claimed yet.
+      See [registration transaction scope](records/2026-10-30-registration-transaction-source-review.md).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
