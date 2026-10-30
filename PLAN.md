@@ -424,8 +424,12 @@ Execution order:
       Commit `8174914` adds exact ordinary/instance replacement and a reachable
       partial-write abort, with valid initial constraints and full output maps;
       [replacement/abort milestone](records/2026-10-30-registration-replacement-abort.md).
-      Registration coverage is partial. The original-fault execution remains next,
-      followed by broader operation composition. A stale per-client update
+      Commit `82be7bd` constructs the original protocol's reached midpoint: the
+      replica has succeeded while replacement still owns its lock and has captured
+      only the seed; [checked midpoint](records/2026-10-30-registration-original-midpoint.md).
+      Registration coverage is partial. Completing that execution and refuting
+      the independent serial contract remain next, followed by broader operation
+      composition. A stale per-client update
       after replacement is a source-review hypothesis requiring a native probe;
       it is not covered by the register/replace-only model.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
