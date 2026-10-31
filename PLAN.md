@@ -573,6 +573,10 @@ Execution order:
       ([initial identity/recipient contracts](records/2026-10-31-sdk-identity-recipient-proof.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
+      The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
+      identifies the required exact identifier, set/traversal, timestamp and complete
+      context correspondence, plus the separate caller TTL and verifier-wrapper
+      obligations. These are proof obligations, not new runtime adapters or checks.
       Native collection correspondence, unconditional selected completion,
       full constructor-input presence/latest-row refinement, qualification of the
       remaining composed edges,
