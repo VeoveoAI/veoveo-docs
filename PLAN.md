@@ -740,7 +740,12 @@ Execution order:
       removal, full key invalidation and unrelated-key preservation. Ten axiom
       guards pass with standard Lean logical axioms only
       ([read/invalidation checkpoint](records/2026-10-31-discovery-cache-read-invalidation-proof.md)).
-      Start/completion and finite histories are next; stale-response fencing,
+      Hub `5dcf9d5` adds a checked complete-state contract for actual fetch start:
+      generation changes, cooldown/pending/capacity priority, valid coalesced and
+      non-coalesced acceptance, exact returned fields and unrelated-ticket
+      preservation. Sixteen executable axiom guards pass; the final leaf took
+      7.398 s ([start checkpoint](records/2026-10-31-discovery-cache-start-proof.md)).
+      Completion, map invariant preservation and finite histories are next; stale-response fencing,
       server-wide invalidation, listeners and native wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
