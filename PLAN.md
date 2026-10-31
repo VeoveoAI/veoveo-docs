@@ -779,6 +779,14 @@ Execution order:
       A first ticket candidate that pruned required dictionaries is retained as an
       interface diagnostic with no Lean rejection claimed
       ([control record](records/2026-10-31-discovery-cache-semantic-controls.md)).
+      Source review and three native regressions now expose and correct discovery
+      watches listening to an immutable selected catalog instead of live publication.
+      The old code kept stale streams/cache and let old admission remove a newer
+      watch. Live epoch checks, including after the existing mutex wait, and the
+      live publication receiver fix all three unchanged regressions. All 23 focused
+      native tests, formatting and strict library Clippy pass
+      ([watch record](records/2026-10-31-discovery-watch-publication.md)).
+      No new Lean theorem or deployment is claimed by this native checkpoint.
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
