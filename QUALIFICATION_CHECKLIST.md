@@ -18,9 +18,9 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
-`*.apps.veoveo.bioma.ai`, deployed 2026-10-31: Hub `d25b6f5` (SDK `9a3cbaa`, core `422dcf2`), Lore
+`*.apps.veoveo.bioma.ai`, deployed 2026-10-31: Hub `b10c8de` (SDK `6e56e81`, core `422dcf2`; linked-repository runners and routing), Lore
 `c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
-supervisor `49761d1`; factory instances take it at their next push), installation `c1e3938`, OpenCode
+supervisor `49761d1`; factory instances take it at their next push), installation `23813fe`, OpenCode
 `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `d8f8a87`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`; the Hub CLI on SDK `05273d1`.
 
