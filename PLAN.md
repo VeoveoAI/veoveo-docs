@@ -578,10 +578,15 @@ Execution order:
       ([context admission](records/2026-10-31-sdk-context-admission-proof.md)).
       SDK `b645f07` supplies populated independent contexts and proves actual
       acceptance in every mode, including a closed no-premise witness. The final
-      manual targets and all eight axiom audits pass. Context source mutations,
-      complete issuance and Hub composition remain next; newer Hub App-origin
+      manual targets and all eight axiom audits pass. Complete issuance and Hub
+      composition remain next; newer Hub App-origin
       changes through observed origin `c39d4b6` are not covered by this result
       ([valid contexts and source applicability](records/2026-10-31-sdk-context-valid-witnesses.md)).
+      SDK `4fb723e` qualifies actual-source wrong-acceptance and wrong-refusal
+      controls: unchanged contracts reject both faults, independent witnesses
+      prove the wrong results, exact source/generated restoration and fresh
+      baseline proofs pass. These are intentional faults, not new production
+      defects ([context semantic controls](records/2026-10-31-sdk-context-semantic-controls.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
