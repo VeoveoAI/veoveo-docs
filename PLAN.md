@@ -473,37 +473,20 @@ Execution order:
       fresh/retained routing, current authority and SDK recipient checks.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
-      Hub `cda9372` qualifies the real routing/retained-Task caller with SDK-verified
-      identities, current grant narrowing/revocation, a deliberate policy bypass and
-      clean restoration. Both spawned Hub and test executable identities are recorded;
-      earlier shared-target contamination is excluded. This is native component
-      evidence, not a new Lean composition theorem
-      ([record](records/2026-10-30-request-routing-native-qualification.md)).
-      Connected source extraction remains in progress; no opaque issuer result is
-      accepted as a substitute for its actual assembly.
-      Separate exact-SDK extraction now includes the real issuer/context/deadline/
-      claims bodies, but Aeneas translation still fails on unsupported interfaces;
-      no new Lean theorem or coverage completion is claimed
-      ([extraction evidence](records/2026-10-30-request-composition-extraction.md)).
-      SDK `201f815` adds native coverage of valid delegated continuation beyond the
-      preserved source token's expiry and corrects overly broad design wording;
-      runtime behavior is unchanged
-      ([deadline boundary](records/2026-10-30-delegated-assertion-expiry.md)).
-      SDK `b6912ce` rewrites two private expressions without changing their order or
-      outcomes; 34 token tests, format and strict Clippy pass. Hub remains on its
-      existing SDK pin, and formal extraction is still in progress
-      ([source preparation](records/2026-10-30-sdk-issuer-expression-refactor.md)).
-      Hub `91ab4cc` and SDK `7e28d5e` commit the next extraction-preparation changes;
-      Hub's focused unit/routing/delegation checks and 35 SDK token tests pass.
-      The Hub scratch partition now translates to Lean, but generated-file adoption,
-      actual SDK issuer composition and the new theorem remain open. Hub's
-      dependency pin is unchanged
-      ([source checkpoint](records/2026-10-30-request-composition-source-checkpoint.md)).
-      Exact Hub extraction and the actual SDK issuer path now both translate.
-      SDK `e268032` resolves the final borrowed-context join with the same ordered
-      validation conditions; 35 native token tests, format and strict Clippy pass.
-      Lean model compilation and the connected theorem remain pending
-      ([translation checkpoint](records/2026-10-30-request-composition-translation.md)).
+      Hub `cda9372` qualifies real routing/retained-Task identities and current grant
+      narrowing/revocation, with a deliberate policy-bypass control and clean
+      restoration ([native record](records/2026-10-30-request-routing-native-qualification.md)).
+      Hub `f85e8ac` adds checked extracted-code proofs of exact direct/delegated
+      request context and complete HTTP-client field preservation, plus conditional
+      snapshot-map preservation. Model compilation, direct proof, default package
+      build and executable axiom audits pass
+      ([proof checkpoint](records/2026-10-30-request-assembly-proof.md)).
+      Actual selected/get correctness, namespace-helper completion/order, provenance
+      of current permissions, SDK issuer/recipient composition and the new module's
+      actual-source semantic controls remain open. SDK `e268032` makes the actual
+      issuer/context/claims path translatable; 35 native token tests, format and
+      strict Clippy pass, but Hub still pins SDK `239622d`
+      ([translation and native checks](records/2026-10-30-request-composition-translation.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
