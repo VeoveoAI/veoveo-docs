@@ -536,7 +536,13 @@ Execution order:
       Hub `7d3f6c6` derives the row from the computed retained
       route and policy from the same catalog, including exact absent-route behavior
       and the complete direct client ([selected policy/client proof](records/2026-10-30-selected-policy-client-proof.md)).
-      Next, connect actual delegation narrowing to those client fields.
+      Hub `e66bb34` connects actual native set intersection and SubjectDelegation
+      narrowing to the computed selected route, same-generation policy and complete
+      direct/delegated client. Seven scoped audits, existing model defaults/audit,
+      connected request targets and one native set regression pass
+      ([native narrowing and selected client](records/2026-10-30-delegated-policy-client-proof.md)).
+      Next, qualify that new edge with actual Rust excess-permission and valid-grant-loss
+      faults plus restored checks, then connect SDK issuance/recipient behavior.
       Native collection correspondence, unconditional selected completion,
       full constructor-input presence/latest-row refinement, qualification of the
       remaining composed edges,
