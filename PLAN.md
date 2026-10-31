@@ -515,6 +515,11 @@ Execution order:
       algorithm, but pinned Aeneas fails on nested borrows and an indexed projection.
       Partial outputs were not adopted; no runtime change or proof coverage is
       claimed ([translation limit](records/2026-10-30-namespace-helper-translation-limit.md)).
+      Hub `dd20465` extracts the actual snapshot constructor unchanged and checks
+      it with all six existing request-composition targets after adding the missing
+      model map-method adapter and allocation-erased Arc creation. This qualifies
+      the supporting model, not the pending constructor/route correctness claims
+      ([constructor extraction](records/2026-10-30-snapshot-constructor-extraction.md)).
       Native collection correspondence, unconditional selected completion,
       constructor coherence, per-slug uniqueness, combined semantic qualification,
       namespace-helper completion/order, provenance
