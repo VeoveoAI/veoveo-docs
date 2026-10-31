@@ -717,6 +717,11 @@ Execution order:
       ([native cache qualification](records/2026-10-31-discovery-cache-authority-isolation.md)).
       This adds no authorization rule or formal cache theorem. Cache transitions,
       invalidation/publication histories and listener freshness remain to prove.
+      The six cache critical sections are now factored behind their existing mutex;
+      body comparison and the same 22 focused native tests, formatting and strict
+      Clippy pass ([preparation record](records/2026-10-31-discovery-cache-state-preparation.md)).
+      No cache extraction or Lean theorem is claimed: native UUID/clock observation
+      modeling and pinned inherent-method selection still need a supported approach.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
