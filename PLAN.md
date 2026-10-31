@@ -745,8 +745,15 @@ Execution order:
       non-coalesced acceptance, exact returned fields and unrelated-ticket
       preservation. Sixteen executable axiom guards pass; the final leaf took
       7.398 s ([start checkpoint](records/2026-10-31-discovery-cache-start-proof.md)).
-      Completion, map invariant preservation and finite histories are next; stale-response fencing,
-      server-wide invalidation, listeners and native wrapper refinement remain open.
+      Hub `9e6228c` adds a checked full-state completion contract and
+      a composed key-invalidation fence: invalidating a key then completing an
+      old response preserves exactly the invalidated state. Current success/failure
+      updates retain whole payloads and exact comparison/time Results. The first
+      proof check passed in 4.474 s with thirteen explicit axiom guards
+      ([completion checkpoint](records/2026-10-31-discovery-cache-completion-proof.md)).
+      Map invariant preservation, longer replacement/generation histories and
+      semantic controls are next; server-wide invalidation, listeners and native
+      wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
