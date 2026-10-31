@@ -659,6 +659,13 @@ Execution order:
       surfaces and newer Core dependency are outside the existing graph's claims
       ([source audit](records/2026-10-31-hub-proof-source-applicability.md)).
       This is source review only; it introduces no runtime/pin change or new proof.
+      SDK merge `dbfd2a0` now reconciles the SDK source lines; `e82ceb8` records
+      35 passing native issuer tests and fresh merged-context extraction with
+      Core `4ebcf89`. All four generated outputs retain exactly the same code,
+      types and interfaces, differing only in 95 source-location comment lines.
+      Existing proof scope and assumptions are retained; Hub pin/source adoption
+      and the incomplete caller control remain separate
+      ([merged SDK qualification](records/2026-10-31-sdk-issuer-merged-source.md)).
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
