@@ -756,9 +756,15 @@ Execution order:
       and size, unrelated-value preservation, capacity and minimum eviction.
       The accepted leaves pass in 12.449 s and 2.533 s with 32 standard-only axiom
       guards ([key/map checkpoint](records/2026-10-31-discovery-cache-key-map-invariants.md)).
-      State invariants from actual operations, longer replacement/generation
-      histories and semantic controls are next; server-wide invalidation,
-      listeners and native wrapper refinement remain open.
+      Hub `a34bab3` adds the checked state invariant: empty represented maps are
+      ordered, unique, bounded and generation-coherent; actual normal-return
+      mutations preserve those properties and never decrease generation. An
+      older-generation completion is a whole-state no-op without ticket freshness.
+      The leaf passed in 2.776 s with seventeen axiom guards, retaining only the
+      existing native time-addition boundary where needed
+      ([state checkpoint](records/2026-10-31-discovery-cache-state-invariants.md)).
+      Finite replacement/generation histories and semantic controls are next;
+      server-wide invalidation, listeners and native wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
