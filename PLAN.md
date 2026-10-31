@@ -816,8 +816,13 @@ Execution order:
       now pass. Actual full-key invalidation preserves another link's complete cached
       value, ticket and retry state, including absent versus present links. Existing
       operation/state/history contracts also pass on the extended domain
-      ([proof record](records/2026-10-31-current-linked-cache-proofs.md)). A current
-      source control that discards link comparison is pending separately.
+      ([proof record](records/2026-10-31-current-linked-cache-proofs.md)). The actual
+      link-comparison fault control in Hub `d008f66` now passes: native full-payload/ticket regression
+      catches the collision, an independent generated-function witness establishes
+      it, and the unchanged comparison theorem rejects the wrong result. Reversal
+      restores the exact source/generated files; a fresh model and all nine proof
+      modules pass in 60.747 s
+      ([control record](records/2026-10-31-linked-cache-comparison-control.md)).
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
