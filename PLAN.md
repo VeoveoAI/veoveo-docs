@@ -602,9 +602,14 @@ Execution order:
       field and empty/nonempty permission details. Populated delegated and empty
       Direct constructions pass; the three manual targets pass all fourteen new
       standard-only audits ([claims assembly](records/2026-10-31-sdk-claims-assembly.md)).
-      Next, qualify the permission-detail source control and connect public SDK
-      issuance/signing/recipient behavior, preserving the distinction between its
-      prepared extraction revision and Hub's pinned dependency.
+      SDK `859990c` qualifies the actual-source permission-detail inversion:
+      the unchanged theorem rejects both wrong branches, independent witnesses
+      derive both complete wrong outputs, and exact source/raw restoration plus
+      a fresh fourteen-audit baseline passes
+      ([claims permission control](records/2026-10-31-sdk-claims-permission-control.md)).
+      Next, connect public SDK issuance/signing/recipient behavior and investigate
+      extraction of Core's unchanged namespace helper, preserving the distinction
+      between the prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
       identifies the required exact identifier, set/traversal, timestamp and complete
       context correspondence, plus the separate caller TTL and verifier-wrapper
