@@ -566,6 +566,11 @@ Execution order:
       Requalify the relevant source changes when composing with latest Hub;
       no deployed revision is inferred from these Git references
       ([source applicability audit](records/2026-10-30-proof-source-applicability.md)).
+      SDK `de98b25` proves complete context-omitted bootstrap identity outcomes,
+      signing continuation and exact recipient binding; the three named manual
+      targets and ten theorem audits pass. This does not yet establish independent
+      complete signer claims or context-bearing issuance
+      ([initial identity/recipient contracts](records/2026-10-31-sdk-identity-recipient-proof.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       Native collection correspondence, unconditional selected completion,
