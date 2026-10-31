@@ -646,8 +646,13 @@ Execution order:
       Independent fixture conditions, actual outcomes and the final three manual
       targets pass with nine new guarded declarations
       ([populated outcomes](records/2026-10-31-hub-sdk-populated-caller-outcomes.md)).
-      The actual-source deadline fault and restored baseline remain next, with
-      explicit source-version applicability and supplied-input boundaries.
+      Hub `f8faea5` records a compiled actual-source deadline fault rejected by
+      the unchanged caller contract, exact same-tree source/raw restoration and
+      a fresh passing three-target baseline. The independent wrong-output witness
+      failed elaboration and remains an explicitly unqualified draft after the
+      coding worker was interrupted; this control is not yet complete
+      ([partial control checkpoint](records/2026-10-31-hub-caller-deadline-control.md)).
+      Source-version applicability and supplied-input boundaries remain explicit.
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
