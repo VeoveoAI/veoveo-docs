@@ -499,6 +499,11 @@ Execution order:
       actual SDK issuer composition and the new theorem remain open. Hub's
       dependency pin is unchanged
       ([source checkpoint](records/2026-10-30-request-composition-source-checkpoint.md)).
+      Exact Hub extraction and the actual SDK issuer path now both translate.
+      SDK `e268032` resolves the final borrowed-context join with the same ordered
+      validation conditions; 35 native token tests, format and strict Clippy pass.
+      Lean model compilation and the connected theorem remain pending
+      ([translation checkpoint](records/2026-10-30-request-composition-translation.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
