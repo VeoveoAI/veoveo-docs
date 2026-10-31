@@ -774,7 +774,7 @@ n8n:
 - [x] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
       `n8n@2.46.0`), and a build of the fork into an image in the installation's registry
       that factory images start from (I12).
-- [ ] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
+- [x] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
       states: runs as Tasks with status checks, workflows applied from Lore, executions,
       the bridge, the editor app and the hooks (I12 to I16).
 
@@ -798,6 +798,19 @@ reached through their direct URLs.
 - Factory GPU placement, mounts and repository-owned sandbox sizes.
 - Provider callbacks that name the instance, so Hub routes each callback to the branch
   instance that owns the operation.
+- Core `4ebcf89` fixes a parked Task left waiting on a settled operation. Media (core
+  `d473011`) and every server on an SDK before `7459481` take it with their next core or
+  SDK bump.
+- The factory base policy's open internet, every binary to any host on ports 80 and 443,
+  narrowed to the branch's toolchain.
+- OpenShell answers a strict-binding refusal over HTTP/2 with a stream reset, without its
+  403 or denial event.
+- The n8n fork's image is built with n8n's development release channel: its pages read
+  "n8n[DEV]".
+- n8n's loopback listener answers any process in its sandbox; isolate it from n8n's own
+  nodes.
+- `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
+  restarting.
 - Sleep and wake of factory instances through native stop and start, never with
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
