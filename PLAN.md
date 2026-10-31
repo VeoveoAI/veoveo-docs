@@ -727,6 +727,13 @@ Execution order:
       The same 22 focused tests, formatting and strict Clippy pass; extraction and
       formal contracts remain pending
       ([observation preparation](records/2026-10-31-discovery-cache-lazy-observations.md)).
+      All six operations now extract with transparent predicates and key methods,
+      but Lean confirms six type mismatches in generated server-invalidation
+      callback dictionaries. No qualified cache model follows from translation
+      success. Proceed with the five supported operations while retaining
+      server-wide invalidation as an explicit open obligation; native code and
+      generated output are not rewritten to conceal the limitation
+      ([compiler evidence](records/2026-10-31-discovery-cache-extraction-boundary.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
