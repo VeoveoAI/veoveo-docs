@@ -809,7 +809,10 @@ Execution order:
       ([deployment isolation record](records/2026-10-31-discovery-watch-deployment-isolation.md)).
       The [integrated qualification record](records/2026-10-31-hub-integrated-native-checks.md)
       records exact source, timings and component-only scope. Fresh extraction for
-      the current optional-link cache key is the next formal applicability step.
+      the current optional-link cache key succeeds, including actual principal/server
+      identifier derives: all 37 own-component bodies are transparent. The new graph's
+      Lean adaptation and cross-link invalidation proof remain pending
+      ([extraction record](records/2026-10-31-current-cache-key-extraction.md)).
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
