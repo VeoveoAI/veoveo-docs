@@ -593,7 +593,11 @@ Execution order:
       examples and the final manual targets pass all nine audits. Constructor
       deadline controls and complete public issuance/claims remain open
       ([complete identity construction](records/2026-10-31-sdk-full-identity-construction.md)).
-      Next, qualify those deadline controls and connect public SDK issuance/recipient behavior, preserving the distinction
+      SDK `4655e9d` qualifies an overlong Direct identity and
+      an incorrectly refused acting call. Independent witnesses establish both
+      wrong results; exact same-tree source/model restoration and fresh nine-audit
+      identity builds pass ([deadline controls](records/2026-10-31-sdk-identity-deadline-controls.md)).
+      Next, prove complete signer claims and connect public SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
       identifies the required exact identifier, set/traversal, timestamp and complete
