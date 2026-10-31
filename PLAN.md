@@ -787,6 +787,17 @@ Execution order:
       native tests, formatting and strict library Clippy pass
       ([watch record](records/2026-10-31-discovery-watch-publication.md)).
       No new Lean theorem or deployment is claimed by this native checkpoint.
+      An unmodified full-pager extraction includes all ten entry functions and
+      258 own-component bodies, but Aeneas cannot translate the current identifier,
+      URI and serde dependency graph. No Lean modules or pagination proof were
+      produced; native pagination stays unchanged
+      ([translation record](records/2026-10-31-catalog-pagination-translation-boundary.md)).
+      Hub `81c933f` integrates the linked-runner source with the committed proof
+      work; `3104ee9` also retains the newer Computer Apps lifecycle. Integrated
+      runtime qualification remains pending. Extended cache keys, registrations, repository-grant
+      forwarding and dependency pins require renewed formal applicability review;
+      existing frozen proofs do not automatically cover that new domain.
+      [Source integration record](records/2026-10-31-linked-runtime-proof-integration.md).
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
@@ -977,28 +988,32 @@ Decisions:
   a Hub convention. Card or full page is the specification's display mode; no Veoveo
   metadata is added.
 - n8n comes from the `VeoveoAI/n8n` fork, whose changes stay in the fork.
+- Hub tells app origins apart by `X-Forwarded-Host`, which `cloudflared` sets on the
+  wildcard route from the name the browser asked for, replacing a client's value, and
+  which OpenShell's ingress passes on. Hub reads it on its `apps` listener alone. No
+  tunnel route or Hub service per server, and no OpenShell change.
 
 Contracts, in the SDK:
-- [ ] The Apps contract follows the specification for a web host: Hub hosts apps; each app
+- [x] The Apps contract follows the specification for a web host: Hub hosts apps; each app
       runs in an opaque inner frame inside Hub's sandbox proxy on `sandbox.apps.{host}`;
       an app's `csp.frameDomains` may name only its own server's app origin. The old
       Console host and monorepo paths leave the contract (I1 to I4).
-- [ ] A registration declares the server's HTTP surfaces: its public route prefixes, with
+- [x] A registration declares the server's HTTP surfaces: its public route prefixes, with
       size and rate limits, and its app origin, with the permission it requires as a new
       requirement kind (I5, I6).
-- [ ] The registration response names the instance's public base, which names its branch,
+- [x] The registration response names the instance's public base, which names its branch,
       and the server's app origin; `PublicDeployment` accepts a base with a path (I5, I6).
 
 Hub:
 - [ ] The Apps host: `/apps/{slug}/{page}` for the person's selected branch, with
       `?branch=`; the sandbox proxy; the bridge, with linked tools only, reads of the
       app's own server, Tasks and reactive wakes (I1 to I4).
-- [ ] App origins: `{slug}.apps.{host}` forwarded to the selected instance's
+- [x] App origins: `{slug}.apps.{host}` forwarded to the selected instance's
       authenticated routes with a forwarded token, behind a sign-in held in a host-only
       cookie of that origin (I6).
-- [ ] Public routes of factory instances on the public host, under a base that names the
+- [x] Public routes of factory instances on the public host, under a base that names the
       instance, through OpenShell's service exposure (I5).
-- [ ] Requested providers: an instance gets the provider profiles its branch requests and
+- [x] Requested providers: an instance gets the provider profiles its branch requests and
       the installation grants, including model access (I8, I9).
 - [ ] Connecting a service: consent in the browser, the refresh material in OpenShell's
       custody, the provider attached to the instance (I10).
@@ -1007,37 +1022,158 @@ Installation:
 - [ ] `*.apps.{host}`: one wildcard DNS name, its certificate and the tunnel route to Hub.
       Bioma's needs Cloudflare's Advanced Certificate Manager for the two-level name
       (I7). Checklist F2's single host becomes the host plus this wildcard.
-- [ ] The factory's provider grants and a model provider profile for instances (I8, I9).
+- [x] The factory's provider grants and a model provider profile for instances (I8, I9).
 
 OpenShell fork:
-- [ ] Strict credential binding: a credential-bound endpoint admits a request only when its
+- [x] Strict credential binding: a credential-bound endpoint admits a request only when its
       credential carries the bound placeholder (I11).
 
 Time:
-- [ ] Time's app: a self-contained view that supports `inline` and `fullscreen` and calls
-      Time's linked tools; the first proof of the host (I1 to I4).
+- [x] Time's app: a self-contained view that supports `inline` and `fullscreen` and calls
+      Time's linked tools; the first proof of the host (I1 to I4). Only `fullscreen` has a
+      host so far: Hub's direct URL.
 
 n8n:
-- [ ] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
+- [x] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
       `n8n@2.46.0`), and a build of the fork into an image in the installation's registry
       that factory images start from (I12).
-- [ ] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
+- [x] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
       states: runs as Tasks with status checks, workflows applied from Lore, executions,
-      the bridge, the editor app and the hooks (I12 to I16).
+      the bridge and the hooks (I12 to I15). Its editor app, where every person acted as
+      n8n's one owner account, is withdrawn by [section 14](#14-n8n-private-editing-in-the-computer-team-workflows-through-lore-links).
 
 Order: the contracts, then the Apps host with Time's app, tested locally on
 `veoveo.localhost` and `sandbox.apps.veoveo.localhost`; the wildcard name, then the deploy
 and qualification of Time's app; then app origins, public routes, providers and strict
 binding; then n8n.
 
-Done when section I is proven, with a record for each step and Time's and n8n's apps
-reached through their direct URLs.
+Done when section I is proven, with a record for each step and Time's app reached through
+its direct URL. n8n's app is section 14's.
+
+## 14. n8n: private editing in the Computer, team workflows through Lore links
+
+Approved 2026-10-31. Section 13's editor signed every person in to n8n as its one owner
+account, so n8n could not tell people apart and `n8n.editor` meant owner of the instance.
+Now each person edits in an n8n in their own Computer, as with OpenCode. Team workflows
+live in team repositories linked into the one n8n repository. The factory runs one n8n,
+a runner, for each environment and linked repository, all the time. The Hub understands
+links, so a person's grant on a linked repository decides their access to that path
+everywhere. Everything uses free n8n. A design change goes to its owner's `DESIGN.md`
+first, in the same branch as the code. Checklist section J proves each item; I16 is
+withdrawn, and its record stays as evidence of what was built.
+
+Decisions:
+- Veoveo follows Lore: the fork carries Epic's `main` with Veoveo's changes on top, and
+  Lore's model of permissions decides how the Hub grants repositories. Lore is brought up
+  to Epic's `main` before work that depends on it, starting with this section.
+- Editing is private, in the person's Computer: an n8n they own, with their drafts,
+  their own automations and the Assistant. No runner serves an editor; on a runner only
+  the server uses n8n's owner account.
+- Workflows change only through Lore. No MCP tool changes a workflow.
+- The n8n repository, the parent, holds the program, its policy, the node types any team
+  may use, and one link per team repository at `{team}/`. Its owners change it to add or
+  remove a team. It is the Hub's directory of teams: people clone the team repositories
+  they hold a grant on, never the parent, since a clone of the parent fails at a link its
+  person may not read ([record](records/2026-10-31-lore-link-access.md)).
+- A team repository holds its workflows, its credentials file and the providers it
+  requests. Its grants, to people and to groups, decide who sees, runs and changes them.
+- Environments are the parent's branches; the base branch is production. An
+  environment's runner for a link runs the head of the team repository's matching
+  branch, applied as its pusher, not the parent's pinned revision, and the Hub records
+  the revision each runner applied. A team releases by merging in its own repository.
+  Other branches get a preview runner only on request.
+- A Lore pin resolves once (`resolve_pin` in `lore-revision/src/link.rs`), so a link
+  never moves by itself.
+- One n8n MCP server. The Hub routes by link and names per link, `n8n.{team}__{tool}`
+  and `n8n://{team}/…`, and a person sees only the links they hold a grant on.
+- The token the Hub forwards to a runner carries the caller's grant on its repository,
+  in the same `resources` form as a Lore token.
+- Each runner gets only the providers granted to its team's repository, in its own
+  sandbox, so one team's credentials never sit in another team's n8n.
+- Execution data follows the authority it was fetched with: an MCP run's data goes only
+  to the person who started it; a webhook or schedule run's data goes to everyone with a
+  grant on the repository; everyone else with access sees status, timing and the failing
+  node. A workflow file may tell n8n to keep no data.
+- Public webhooks reach runners only, never a Computer. A Computer stays on until its
+  owner turns it off, so personal schedules run there.
+- The Apps page `ui://n8n/overview` summarises every linked team the person holds a
+  grant on and opens the person's own Computer with `ui/open-link` to edit.
+
+Lore update, the first slice:
+- [x] The fork takes Epic's `main` (`b8fc623d`, 70 commits since 2026-10-18), keeping
+      Veoveo's 19 commits: the security fixes (the distrusted eMudhra roots, dependency
+      advisories, endpoints that must authenticate the server), storage and client fixes,
+      and an explicit action on every partition operation (`483c96ff`): writing needs
+      `write`, a protected push `push-protected`, deleting a repository `owner` or `admin`,
+      while any token for a repository still reads it (C14).
+- [x] Hub: Lore tokens carry explicit actions, `write` for members and owners and `owner`
+      for owners, and a `reader` access clones and cannot push; Console's share tool offers
+      it (C14).
+- [x] Installation: Lore's per-repository authorizer grants what a token's permission names,
+      plus read; `implicit_actions` belongs to the global authorizer and stays unset (C14).
+- [x] Lore and the Hub deployed together; sharing, pushes, deletion, Computers' clones and
+      pushes, factory fetches and J1 again (C4, C8 to C10, C14, J1,
+      [record](records/2026-10-31-lore-explicit-actions.md)).
+
+Lore:
+- [x] Access stops at a link on the installation's Lore: an ungranted linked repository is
+      refused, directly and through the link; with every grant, one tree (J1,
+      [record](records/2026-10-31-lore-link-access.md)).
+
+Hub:
+- [ ] Links are first-class: read from the parent's revision; a grant on a linked
+      repository decides access to its path; the forwarded token carries the caller's grant
+      on the runner's repository (J2, J3).
+- [ ] Runners: one for each environment branch and link, running the team branch's head
+      as its pusher and recording the applied revision; added, updated and removed as links
+      and team branches change; preview runners on request (J4, J5).
+- [ ] Routing and names per link, with Tasks and token exchange per runner (J3).
+- [ ] Providers granted to a team's repository attach to its runners (J6).
+- [ ] Computers: the Computer's n8n served to its owner, `ui/open-link` to the person's own
+      Computer, and a Computer that stays on until its owner turns it off (J8, J9, J11).
+
+Installation:
+- [ ] n8n and the Veoveo nodes in the Computer image; Computer policy rules for n8n to reach
+      the model and the Hub's MCP as the person; a Computer sized for n8n (J8, J12).
+
+n8n server:
+- [ ] The runner: it applies one link's workflows, with a database schema per link and the
+      team's credentials file (J4, J6).
+- [ ] Execution data by who started the run and by the forwarded grant (J7).
+- [ ] The overview App (J9).
+- [ ] The team editor, its app origin, `editor_changes`, `n8n://editor` and the editor
+      launcher removed (J10).
+
+Computer:
+- [ ] The Computer clones each team repository the person holds a grant on; n8n opens their
+      workflows and saves them back as files; "Edit in my Computer" opens a team and
+      workflow, cloning as the person when needed (J8, J9).
+- [ ] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
+      sandbox protocol (J12).
+
+Docs:
+- [ ] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
+      section 13's state, which the diagram does not show yet.
+
+Order: the Lore check (J1) first, since everything rests on it; then the Lore update; then
+the designs and the diagram; then the Hub's links, runners and routing with the n8n server as runner; then
+the overview App; then n8n in the Computer with the Assistant; then qualification. The
+deployed n8n instance keeps serving until runners replace it.
+
+Done when section J is proven, with a record for each step.
 
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
   (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
 - Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
+- Lore refusals reach the client as an HTTP/2 stream reset: a reader's push reports "Failed
+  to store fragments" ([record](records/2026-10-31-lore-explicit-actions.md)), and a refused
+  link "Repository not found". Trace where the reset starts and report a denial as one.
+- A Lore clone through a link its person may not read fails as a whole, leaves a partial
+  tree that `lore status` and `lore sync` report as in sync, and reports an HTTP/2 stream
+  reset; Lore's design says the link stays unopened and the clone goes on
+  ([record](records/2026-10-31-lore-link-access.md)).
 - The box's port-forward to the gateway (`pf.sh`) ends with every gateway pod change, and the
   box scripts that use the `openshell` CLI fail until it is restarted.
 - Factory `uses`: the service instances an instance calls, pushed in the caller's
@@ -1045,6 +1181,23 @@ reached through their direct URLs.
 - Factory GPU placement, mounts and repository-owned sandbox sizes.
 - Provider callbacks that name the instance, so Hub routes each callback to the branch
   instance that owns the operation.
+- Core `4ebcf89` fixes a parked Task left waiting on a settled operation. Media (core
+  `d473011`) and every server on an SDK before `7459481` take it with their next core or
+  SDK bump.
+- The factory base policy's open internet, every binary to any host on ports 80 and 443,
+  narrowed to the branch's toolchain.
+- The Hub and the OpenShell crates move off `serde_yaml` 0.9, whose `unsafe-libyaml` RustSec
+  lists as unmaintained (RUSTSEC-2024-0449). The Hub reads `providers.yaml` with it, and
+  `openshell-crypto` brings it through `kube` 0.99; Hub `02e6810` holds a reviewed
+  exception until then.
+- OpenShell answers a strict-binding refusal over HTTP/2 with a stream reset, without its
+  403 or denial event.
+- The n8n fork's image is built with n8n's development release channel: its pages read
+  "n8n[DEV]".
+- n8n's loopback listener answers any process in its sandbox; isolate it from n8n's own
+  nodes.
+- `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
+  restarting.
 - Sleep and wake of factory instances through native stop and start, never with
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).

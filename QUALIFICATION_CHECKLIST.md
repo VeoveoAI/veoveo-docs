@@ -17,10 +17,12 @@ Rules:
   storage, not real inference or valid media.
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
-Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-31: Hub `ce3cada`, Lore `4ee9f338`, OpenShell gateway `c80bda2` (runtime
-`1ab0e2386`, supervisor `49761d1`; factory instances take it at their next push), installation `9ff2794` (Computer version `811f82122b7f`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `acc4ba2`, Artifact `91e62be`, Media
-`6bd5843`, Embedding `95216bd`; Hub and its CLI on SDK `05273d1`.
+Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
+`*.apps.veoveo.bioma.ai`, deployed 2026-10-31: Hub `b10c8de` (SDK `6e56e81`, core `422dcf2`; linked-repository runners and routing), Lore
+`c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
+supervisor `49761d1`; factory instances take it at their next push), installation `23813fe`, OpenCode
+`ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `d8f8a87`, Artifact `91e62be`, Media
+`6bd5843`, Embedding `95216bd`; the Hub CLI on SDK `05273d1`.
 
 ## A. Identity and administration
 
@@ -80,6 +82,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | C11 | A Lore group is a group everywhere | A member grants their artifact `admin` to a group; its owner grants it on; the owner, made a member, tries again | The grant and the onward grant are served; as a member, Artifact refuses: "needs admin access" | proven 2026-10-29: Hub `3de9654`, Artifact `91e62be`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-29-groups-everywhere.md)) |
 | C12 | Members share, and share links stay the installation's | A member lists Artifact's tools, then creates a share link | `grant_artifact`, `revoke_artifact_grant`, `decide_access_request` listed; the link refused by the Hub | proven 2026-10-29 ([record](records/2026-10-29-groups-everywhere.md)) |
 | C13 | Owners delete groups | A member who is no owner deletes a group; its owner deletes it while it is a repository's one owner, then after another owner is added; the former member reads an artifact's grants held through it | 403 `group-owner-required`; 409 `group-owns-repository`; deleted, the repository's group assignment gone, and Artifact refuses: "needs admin access" | proven 2026-10-30: Hub `6902627`, console `8f94e5a`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-30-owners-delete-groups.md)) |
+| C14 | A reader clones and cannot push | An owner shares a repository with a person as `reader`; the person clones, then pushes | The clone works; the push is refused by Lore for want of `write` | proven 2026-10-31: shared as `reader` (`actions: []`), cloned in 233 ms; the push was refused in 53 ms, reported by the client as an HTTP/2 stream reset ("Failed to store fragments"), not as a denial, a follow-up; C4, C8, C9, C10 and J1 passed again on Lore `c33e017a` ([record](records/2026-10-31-lore-explicit-actions.md)) |
 
 ## D. Factory serving (Stage 1)
 
@@ -147,26 +150,48 @@ The section sits before G because G stays last.
 ## I. Apps and server surfaces
 
 Plan section 13. Hub as the MCP Apps host, the HTTP a server serves besides MCP, and
-n8n as a contained server. The section sits before G because G stays last.
+n8n as a contained server. The section sits before G because G stays last. I16, the
+editor that acted as n8n's owner for every person, is withdrawn by plan section 14; its
+[record](records/2026-10-31-n8n-phase-2.md) stays.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| I1 | An app opens at its direct URL | Open `https://{host}/apps/time/{page}` signed in, then signed out | Signed in: the app renders full page for the person's selected branch; signed out: sign-in, then the app | pending |
-| I2 | An app runs on the sandbox origin, not Hub's | Inspect the frames of an open app; from the app's script, read `document.cookie` and fetch a Hub route | The proxy frame is on `sandbox.apps.{host}` and the app's inner frame has an opaque origin; no cookie, and the fetch carries no session | pending |
-| I3 | An app reaches only its own server's linked tools | From an app, call a linked tool, an unlinked tool of its server and another server's tool; read its own and another server's resource | Only the linked tool and its own resource answer; the rest are refused by Hub | pending |
-| I4 | Apps keep Tasks and reactive wakes | Start a Task from an app, poll it and cancel it; change a resource the app subscribes to | The Task runs and cancels; the app wakes and reads the new state | pending |
-| I5 | A factory instance's public route is reachable | Push a branch whose server declares a public route; call its public URL from outside | The registration response names the branch's public base; the call reaches that branch's instance and no other | pending |
-| I6 | A server's app origin forwards to its authenticated routes | Open `https://{slug}.apps.{host}/` with and without the declared permission | With it: the selected instance answers with a forwarded token; without it: refused; the origin's cookie never reaches Hub's host | pending |
-| I7 | The wildcard name serves every app origin | DNS and TLS for `sandbox.apps.{host}` and a new `{slug}.apps.{host}` | Both resolve through the tunnel to Hub with a valid certificate, with no DNS change for the new slug | pending |
-| I8 | An instance gets only the providers it requested and was granted | Request one granted and one ungranted profile in a branch | Only the granted provider is attached; the status names the ungranted one | pending |
-| I9 | An instance calls a model | A server's model call through its granted model provider | Answered; the key never enters the sandbox | pending |
+| I1 | An app opens at its direct URL | Open `https://{host}/apps/time/{page}` signed in, then signed out | Signed in: the app renders full page for the person's selected branch; signed out: sign-in, then the app | proven 2026-10-31 signed in: Time's App full page on Hub `57d07ae` and Time `4cc2bc5`; the signed-out redirect not exercised ([record](records/2026-10-31-apps-host-and-time-app.md)) |
+| I2 | An app runs on the sandbox origin, not Hub's | Inspect the frames of an open app; from the app's script, read `document.cookie` and fetch a Hub route | The proxy frame is on `sandbox.apps.{host}` and the app's inner frame has an opaque origin; no cookie, and the fetch carries no session | proven 2026-10-31: the proxy on `sandbox.apps.veoveo.bioma.ai`, unreachable from the host page; a sandboxed `srcdoc` frame under its policy has origin `null`. The app's own `document.cookie` and fetch were not run from inside Time's view ([record](records/2026-10-31-apps-host-and-time-app.md)) |
+| I3 | An app reaches only its own server's linked tools | From an app, call a linked tool, an unlinked tool of its server and another server's tool; read its own and another server's resource | Only the linked tool and its own resource answer; the rest are refused by Hub | proven 2026-10-31: own resource answered; another server's resource, an unlinked Time tool and another server's tool refused by Hub; `resolve_time` answered through the App ([record](records/2026-10-31-apps-host-and-time-app.md)) |
+| I4 | Apps keep Tasks and reactive wakes | Start a Task from an app, poll it and cancel it; change a resource the app subscribes to | The Task runs and cancels; the app wakes and reads the new state | proven 2026-10-31: from Time's App, `expand_schedule` started as a Task, polled to completion and, on a slower calendar, cancelled to `cancelled`; creating an event and a calendar woke the view, which read the new state within 0.5 s, with no timer ([record](records/2026-10-31-time-app-tasks-and-wakes.md)) |
+| I5 | A factory instance's public route is reachable | Push a branch whose server declares a public route; call its public URL from outside | The registration response names the branch's public base; the call reaches that branch's instance and no other | proven 2026-10-31: n8n's hooks at `/instances/{deployment}/n8n/hooks/…` reached its instance from outside, and paths outside the prefix answered 404 ([record](records/2026-10-31-n8n-phase-1.md)); a webhook delivered to n8n answered with its workflow's response, 200 ([record](records/2026-10-31-n8n-phase-2.md)) |
+| I6 | A server's app origin forwards to its authenticated routes | Open `https://{slug}.apps.{host}/` with and without the declared permission | With it: the selected instance answers with a forwarded token; without it: refused; the origin's cookie never reaches Hub's host | proven 2026-10-31 with the permission: the owner signed in at `n8n.apps.veoveo.bioma.ai` through the issuer and reached n8n's server, which verified the forwarded token; the refusal without it is proven in the component test ([record](records/2026-10-31-n8n-phase-1.md)) |
+| I7 | The wildcard name serves every app origin | DNS and TLS for `sandbox.apps.{host}` and a new `{slug}.apps.{host}` | Both resolve through the tunnel to Hub with a valid certificate, with no DNS change for the new slug | proven 2026-10-31 for `sandbox.apps.veoveo.bioma.ai`: certificate `*.apps.veoveo.bioma.ai`, the tunnel to Hub's `apps` service; a server's own origin is not served yet ([record](records/2026-10-31-apps-host-and-time-app.md)) |
+| I8 | An instance gets only the providers it requested and was granted | Request one granted and one ungranted profile in a branch | Only the granted provider is attached; the status names the ungranted one | proven 2026-10-31: probe repository `provider-probe` requested `vv-factory-model`, granted, and `vv-factory-mail`, not; its sandbox attaches only the granted one and `status` names the other ([record](records/2026-10-31-server-surfaces-and-providers.md)) |
+| I9 | An instance calls a model | A server's model call through its granted model provider | Answered; the key never enters the sandbox | proven 2026-10-31: the provider probe instance called `XiaomiMiMo/MiMo-V2.6-Pro` through `vv-factory-model`, 200, holding only the placeholder; it took OpenShell `8bd8335`, which uses HTTP/2 upstream only when the upstream selects it ([record](records/2026-10-31-openshell-strict-binding.md)) |
 | I10 | A person connects a service | Run the connect flow for an OAuth integration | The refresh material stays in OpenShell's custody; the instance's calls carry a fresh token; n8n never refreshes | pending |
-| I11 | Strict binding refuses a typed secret | Send a request to a strictly bound endpoint with a literal credential instead of the placeholder | Refused by the proxy; with the placeholder, substituted and answered | pending |
-| I12 | n8n runs on the installation's PostgreSQL | Serve `veoveo-mcp-n8n` from a branch | n8n migrates without CREATE on the database; its tables belong to `server_n8n` | pending |
-| I13 | Workflows come from Lore | Push a workflow file; push its removal | Applied and active; then archived | pending |
-| I14 | A run is a Task | `n8n__run` on a workflow; restart the instance mid-run | The Task completes with the output; after the restart the worker keeps waiting on the same execution | pending |
-| I15 | n8n reaches Veoveo only through the bridge | A workflow's Veoveo Tool node calls a declared tool and an undeclared one | The declared call acts for the run's caller; the undeclared one is refused | pending |
-| I16 | The n8n editor is an app on n8n's own origin | Open the editor app at its direct URL | It frames `n8n.apps.{host}`, acts as n8n's owner, and the server records the person behind each change | pending |
+| I11 | Strict binding refuses a typed secret | Send a request to a strictly bound endpoint with a literal credential instead of the placeholder | Refused by the proxy; with the placeholder, substituted and answered | proven 2026-10-31 with a dummy credential: the placeholder was substituted and answered; a typed literal got 403 `credential_placeholder_required` with its denial event over HTTP/1.1, and a stream reset without an event over HTTP/2, a follow-up ([record](records/2026-10-31-openshell-strict-binding.md)) |
+| I12 | n8n runs on the installation's PostgreSQL | Serve `veoveo-mcp-n8n` from a branch | n8n migrates without CREATE on the database; its tables belong to `server_n8n` | proven 2026-10-31: 175 tables in schema `n8n`, all owned by `server_n8n`, none in `public`, no CREATE on the database for the role or the login ([record](records/2026-10-31-n8n-phase-1.md)) |
+| I13 | Workflows come from Lore | Push a workflow file; push its removal | Applied and active; then archived | proven 2026-10-31: `hello-veoveo` applied and active, archived when its file was removed ([record](records/2026-10-31-n8n-phase-1.md)) |
+| I14 | A run is a Task | `n8n__run` on a workflow; restart the instance mid-run | The Task completes with the output; after the restart the worker keeps waiting on the same execution | proven 2026-10-31: `hello-run` completed as a Task with its output in 636 ms; `slow-run`, an n8n Wait of 90 s, kept its Task waiting on execution 4 across an instance restart 25 s in, and completed with its output when n8n resumed it ([record](records/2026-10-31-n8n-phase-2.md)) |
+| I15 | n8n reaches Veoveo only through the bridge | A workflow's Veoveo Tool node calls a declared tool and an undeclared one | The declared call acts for the run's caller; the undeclared one is refused | proven 2026-10-31: `resolve-time`'s Veoveo Tool called Time's `resolve_time` through the bridge for the run's caller; `undeclared-tool`'s call of `time__list_sources`, outside the bridge table, was refused and its run failed ([record](records/2026-10-31-n8n-phase-2.md)) |
+
+## J. n8n editing and team workflows
+
+Plan section 14. Private editing in each person's Computer, team workflows in repositories
+linked into the n8n repository, and one runner for each environment and link. The section
+sits before G because G stays last.
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| J1 | Access stops at a link | A parent repository with two linked repositories; read it as a person with a grant on the parent and on one link | The ungranted linked repository is refused, directly and through the link; with every grant, one tree | proven 2026-10-31: a direct clone of the ungranted repository was refused and a clone of the parent stopped at its link; after the grant a fresh clone was one tree. The refused clone fails as a whole rather than leaving the link unopened, and reports a stream reset as "Repository not found", a follow-up ([record](records/2026-10-31-lore-link-access.md)) |
+| J2 | A runner admits only people with a grant on its repository | Call `n8n.{team}__run` as a person with a grant of their own, through a group, and with none | With a grant: the run; without: refused by the Hub, and the team is not listed | pending |
+| J3 | Calls reach the right team's runner | Two linked teams; call each team's tools and read each `n8n://{team}/` resource | Each reaches its own runner; `tools/list` names only the teams the caller holds a grant on | pending |
+| J4 | A team releases by merging in its own repository | Merge a workflow into a team repository's production branch | Its runner applies it as the merger and the Hub records the revision; the other team's runner does not restart | pending |
+| J5 | Adding or removing a link adds or removes its runners | Add a team's link to the parent, then remove it | A runner starts for each environment, then each goes | pending |
+| J6 | A team's credentials stay in its runner | Grant a provider to one team's repository; use its placeholder in the other team's workflow | Only the granted team's runner holds the provider; the other's request is not substituted | pending |
+| J7 | Execution data follows who fetched it | Two people each start a run through MCP; a webhook starts a third | Each person reads only their own MCP run's data; everyone with a grant reads the webhook run's data; status and errors for all | pending |
+| J8 | A person edits in their own Computer | Open the Computer's n8n; build a workflow, save it, push it | n8n opens the checkout's team workflows with the person as its owner; saving writes the files; no other person reaches it | pending |
+| J9 | The overview App summarises and opens the Computer | Open `/apps/n8n/overview`; choose Edit in my Computer on a workflow | Only the teams the person holds a grant on, with revisions, runs and failures; the person's own Computer opens n8n at that workflow | pending |
+| J10 | No runner serves an editor | Request a runner's former app origin and the `n8n://editor` resource | Neither exists; only the server uses n8n's owner account | pending |
+| J11 | Personal automations run while the Computer is on | A schedule in the Computer's n8n; leave the Computer on past the collection time | The schedule keeps firing until the owner turns the Computer off | pending |
+| J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | pending |
 
 ## G. Model-driven acceptance (last)
 
