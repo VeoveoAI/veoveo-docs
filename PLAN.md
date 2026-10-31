@@ -837,19 +837,20 @@ Decisions:
   grant on and opens the person's own Computer with `ui/open-link` to edit.
 
 Lore update, the first slice:
-- [ ] The fork takes Epic's `main` (`b8fc623d`, 70 commits since 2026-10-18), keeping
+- [x] The fork takes Epic's `main` (`b8fc623d`, 70 commits since 2026-10-18), keeping
       Veoveo's 19 commits: the security fixes (the distrusted eMudhra roots, dependency
       advisories, endpoints that must authenticate the server), storage and client fixes,
       and an explicit action on every partition operation (`483c96ff`): writing needs
       `write`, a protected push `push-protected`, deleting a repository `owner` or `admin`,
       while any token for a repository still reads it (C14).
-- [ ] Hub: Lore tokens carry explicit actions, `write` for members and owners and `owner`
+- [x] Hub: Lore tokens carry explicit actions, `write` for members and owners and `owner`
       for owners, and a `reader` access clones and cannot push; Console's share tool offers
       it (C14).
-- [ ] Installation: Lore's `implicit_actions` grants nothing, so a token holds only what its
-      permission names (C14).
-- [ ] Lore and the Hub deployed together; sharing, pushes, deletion, Computers' clones and
-      pushes, factory fetches and J1 again (C4, C6, C8 to C10, C14, J1).
+- [x] Installation: Lore's per-repository authorizer grants what a token's permission names,
+      plus read; `implicit_actions` belongs to the global authorizer and stays unset (C14).
+- [x] Lore and the Hub deployed together; sharing, pushes, deletion, Computers' clones and
+      pushes, factory fetches and J1 again (C4, C8 to C10, C14, J1,
+      [record](records/2026-10-31-lore-explicit-actions.md)).
 
 Lore:
 - [x] Access stops at a link on the installation's Lore: an ungranted linked repository is
@@ -903,6 +904,9 @@ Done when section J is proven, with a record for each step.
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
   (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
 - Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
+- Lore refusals reach the client as an HTTP/2 stream reset: a reader's push reports "Failed
+  to store fragments" ([record](records/2026-10-31-lore-explicit-actions.md)), and a refused
+  link "Repository not found". Trace where the reset starts and report a denial as one.
 - A Lore clone through a link its person may not read fails as a whole, leaves a partial
   tree that `lore status` and `lore sync` report as in sync, and reports an HTTP/2 stream
   reset; Lore's design says the link stays unopened and the clone goes on
