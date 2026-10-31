@@ -745,10 +745,10 @@ Hub:
 - [ ] The Apps host: `/apps/{slug}/{page}` for the person's selected branch, with
       `?branch=`; the sandbox proxy; the bridge, with linked tools only, reads of the
       app's own server, Tasks and reactive wakes (I1 to I4).
-- [ ] App origins: `{slug}.apps.{host}` forwarded to the selected instance's
+- [x] App origins: `{slug}.apps.{host}` forwarded to the selected instance's
       authenticated routes with a forwarded token, behind a sign-in held in a host-only
       cookie of that origin (I6).
-- [ ] Public routes of factory instances on the public host, under a base that names the
+- [x] Public routes of factory instances on the public host, under a base that names the
       instance, through OpenShell's service exposure (I5).
 - [x] Requested providers: an instance gets the provider profiles its branch requests and
       the installation grants, including model access (I8, I9).
@@ -771,7 +771,7 @@ Time:
       host so far: Hub's direct URL.
 
 n8n:
-- [ ] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
+- [x] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
       `n8n@2.46.0`), and a build of the fork into an image in the installation's registry
       that factory images start from (I12).
 - [ ] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
