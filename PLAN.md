@@ -503,7 +503,11 @@ Execution order:
       emissions and equal-key whole-row consistency. Direct and nondefault target
       checks pass with five standard-only audits
       ([finite scan](records/2026-10-30-finite-selection-scan-proof.md)).
-      Native iterator correspondence and actual map collection remain open.
+      Hub `ef07e8d` adds total ordered map insertion, derived unique keys and exact
+      whole-row union, with compatibility derived from those emissions. Both manual
+      checks and four audits pass
+      ([insertion](records/2026-10-30-ordered-selection-insertion-proof.md)).
+      Native collection correspondence and complete `collectMap` output remain open.
       Full selected-map correctness, namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
