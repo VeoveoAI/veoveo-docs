@@ -507,8 +507,27 @@ Execution order:
       whole-row union, with compatibility derived from those emissions. Both manual
       checks and four audits pass
       ([insertion](records/2026-10-30-ordered-selection-insertion-proof.md)).
-      Native collection correspondence and complete `collectMap` output remain open.
-      Full selected-map correctness, namespace-helper completion/order, provenance
+      Hub `dac4cf7` closes total modeled collection with exact eligible whole-row
+      contents and connects it to every successful result of the extracted
+      `selected` method. Both manual checks and four scoped audits pass
+      ([complete collection](records/2026-10-30-complete-selection-collection-proof.md)).
+      Hub `a9b0cad` records an unchanged-helper probe: Charon extracts the namespace
+      algorithm, but pinned Aeneas fails on nested borrows and an indexed projection.
+      Partial outputs were not adopted; no runtime change or proof coverage is
+      claimed ([translation limit](records/2026-10-30-namespace-helper-translation-limit.md)).
+      Hub `dd20465` extracts the actual snapshot constructor unchanged and checks
+      it with all six existing request-composition targets after adding the missing
+      model map-method adapter and allocation-erased Arc creation. This qualifies
+      the supporting model, not the pending constructor/route correctness claims
+      ([constructor extraction](records/2026-10-30-snapshot-constructor-extraction.md)).
+      Hub `3cf2feb` derives actual constructor key/row coherence through arbitrary
+      overwriting insertion, then connects exact selected per-slug lookup to the
+      actual HTTP destination and direct/delegated request context. Both new
+      nondefault targets pass nine scoped audits with an unchanged 66-path source
+      map ([connected route](records/2026-10-30-constructed-route-context-proof.md)).
+      Native collection correspondence, unconditional selected completion,
+      full constructor-input presence/latest-row refinement, combined semantic qualification,
+      namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
       issuer/context/claims path translatable; 35 native token tests, format and
