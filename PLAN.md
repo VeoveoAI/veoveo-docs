@@ -798,6 +798,13 @@ Execution order:
       forwarding and dependency pins require renewed formal applicability review;
       existing frozen proofs do not automatically cover that new domain.
       [Source integration record](records/2026-10-31-linked-runtime-proof-integration.md).
+      Native integration review reproduces and corrects a second watch defect:
+      one deployment's effective unchanging capability suppressed another's watch
+      under the same server name. Memoizing by actual deployment and generation
+      fixes both linked and cross-selection cases; unchanged regressions, the three
+      earlier watch tests and the subscription regression pass (six tests total).
+      Final formatting passes; full integrated Mac/Linux checks remain pending
+      ([deployment isolation record](records/2026-10-31-discovery-watch-deployment-isolation.md)).
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
