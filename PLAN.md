@@ -722,6 +722,11 @@ Execution order:
       Clippy pass ([preparation record](records/2026-10-31-discovery-cache-state-preparation.md)).
       No cache extraction or Lean theorem is claimed: native UUID/clock observation
       modeling and pinned inherent-method selection still need a supported approach.
+      The next native-qualified change gives state methods unique names and lazy
+      per-operation clock/UUID inputs; sampling remains in the original branches.
+      The same 22 focused tests, formatting and strict Clippy pass; extraction and
+      formal contracts remain pending
+      ([observation preparation](records/2026-10-31-discovery-cache-lazy-observations.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
