@@ -708,6 +708,15 @@ Execution order:
       combining the existing proof modules. The stock failure, patched regression
       and both unchanged proof packages pass their expected checks; this adds no
       Hub contract coverage ([tooling checkpoint](records/2026-10-30-request-composition-tool-imports.md)).
+      Hub `8543cc5` fixes a discovery-cache collision found in the next source
+      review: current principal groups and exchanged permission ceilings were
+      absent from cache identity. Both broad-first extra visibility and narrow-first
+      omission fail the unchanged regressions before a four-line correction and
+      pass afterward. Twenty-two focused native tests, formatting and strict
+      library Clippy pass; timestamp/audit-only reuse remains
+      ([native cache qualification](records/2026-10-31-discovery-cache-authority-isolation.md)).
+      This adds no authorization rule or formal cache theorem. Cache transitions,
+      invalidation/publication histories and listener freshness remain to prove.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
