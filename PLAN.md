@@ -637,8 +637,13 @@ Execution order:
       signing claims and preserved errors/effects. Eight manual targets and the
       explicit global definition/axiom audit pass
       ([operational connection](records/2026-10-31-hub-sdk-operational-issuer-connection.md)).
-      Timestamp comparison/minimum and connecting the actual Hub caller to that
-      outcome remain next, with explicit source-version applicability.
+      Hub `24c2795` proves the actual extracted caller's complete request assembly,
+      optional inherited-deadline minimum and exact SDK outcome/bearer/error
+      projection. Direct and named manual checks pass all ten guards
+      ([actual caller theorem](records/2026-10-31-hub-sdk-actual-caller-proof.md)).
+      Populated valid caller acceptance and the actual-source deadline control
+      remain next, with explicit source-version applicability and supplied-input
+      boundaries. TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
       A bounded unchanged-helper probe passes Charon but fails pinned
