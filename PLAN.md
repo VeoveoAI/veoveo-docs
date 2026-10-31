@@ -734,6 +734,14 @@ Execution order:
       server-wide invalidation as an explicit open obligation; native code and
       generated output are not rewritten to conceal the limitation
       ([compiler evidence](records/2026-10-31-discovery-cache-extraction-boundary.md)).
+      Hub `4500e6d` records the five supported operations compiling from unchanged generated source.
+      Their independent primitive model and first read/key-invalidation contracts
+      pass: actual key comparison, exact payload/denied-count reads, cached-only
+      removal, full key invalidation and unrelated-key preservation. Ten axiom
+      guards pass with standard Lean logical axioms only
+      ([read/invalidation checkpoint](records/2026-10-31-discovery-cache-read-invalidation-proof.md)).
+      Start/completion and finite histories are next; stale-response fencing,
+      server-wide invalidation, listeners and native wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
