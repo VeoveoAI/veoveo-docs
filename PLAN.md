@@ -776,15 +776,107 @@ n8n:
       that factory images start from (I12).
 - [x] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
       states: runs as Tasks with status checks, workflows applied from Lore, executions,
-      the bridge, the editor app and the hooks (I12 to I16).
+      the bridge and the hooks (I12 to I15). Its editor app, where every person acted as
+      n8n's one owner account, is withdrawn by [section 14](#14-n8n-private-editing-in-the-computer-team-workflows-through-lore-links).
 
 Order: the contracts, then the Apps host with Time's app, tested locally on
 `veoveo.localhost` and `sandbox.apps.veoveo.localhost`; the wildcard name, then the deploy
 and qualification of Time's app; then app origins, public routes, providers and strict
 binding; then n8n.
 
-Done when section I is proven, with a record for each step and Time's and n8n's apps
-reached through their direct URLs.
+Done when section I is proven, with a record for each step and Time's app reached through
+its direct URL. n8n's app is section 14's.
+
+## 14. n8n: private editing in the Computer, team workflows through Lore links
+
+Approved 2026-10-31. Section 13's editor signed every person in to n8n as its one owner
+account, so n8n could not tell people apart and `n8n.editor` meant owner of the instance.
+Now each person edits in an n8n in their own Computer, as with OpenCode. Team workflows
+live in team repositories linked into the one n8n repository. The factory runs one n8n,
+a runner, for each environment and linked repository, all the time. The Hub understands
+links, so a person's grant on a linked repository decides their access to that path
+everywhere. Everything uses free n8n. A design change goes to its owner's `DESIGN.md`
+first, in the same branch as the code. Checklist section J proves each item; I16 is
+withdrawn, and its record stays as evidence of what was built.
+
+Decisions:
+- Editing is private, in the person's Computer: an n8n they own, with their drafts,
+  their own automations and the Assistant. No runner serves an editor; on a runner only
+  the server uses n8n's owner account.
+- Workflows change only through Lore. No MCP tool changes a workflow.
+- The n8n repository, the parent, holds the program, its policy, the node types any team
+  may use, and one link per team repository at `{team}/`. Its owners change it to add or
+  remove a team.
+- A team repository holds its workflows, its credentials file and the providers it
+  requests. Its grants, to people and to groups, decide who sees, runs and changes them.
+- Environments are the parent's branches; the base branch is production. An
+  environment's runner for a link runs the head of the team repository's matching
+  branch, applied as its pusher, not the parent's pinned revision, and the Hub records
+  the revision each runner applied. A team releases by merging in its own repository.
+  Other branches get a preview runner only on request.
+- A Lore pin resolves once (`resolve_pin` in `lore-revision/src/link.rs`), so a link
+  never moves by itself.
+- One n8n MCP server. The Hub routes by link and names per link, `n8n.{team}__{tool}`
+  and `n8n://{team}/…`, and a person sees only the links they hold a grant on.
+- The token the Hub forwards to a runner carries the caller's grant on its repository,
+  in the same `resources` form as a Lore token.
+- Each runner gets only the providers granted to its team's repository, in its own
+  sandbox, so one team's credentials never sit in another team's n8n.
+- Execution data follows the authority it was fetched with: an MCP run's data goes only
+  to the person who started it; a webhook or schedule run's data goes to everyone with a
+  grant on the repository; everyone else with access sees status, timing and the failing
+  node. A workflow file may tell n8n to keep no data.
+- Public webhooks reach runners only, never a Computer. A Computer stays on until its
+  owner turns it off, so personal schedules run there.
+- The Apps page `ui://n8n/overview` summarises every linked team the person holds a
+  grant on and opens the person's own Computer with `ui/open-link` to edit.
+
+Lore:
+- [ ] Access stops at a link on the installation's Lore: a person without a grant on a
+      linked repository sees its link and cannot descend; with both grants, one tree. Lore's
+      roadmap lists per-link access as in progress (J1).
+
+Hub:
+- [ ] Links are first-class: read from the parent's revision; a grant on a linked
+      repository decides access to its path; the forwarded token carries the caller's grant
+      on the runner's repository (J2, J3).
+- [ ] Runners: one for each environment branch and link, running the team branch's head
+      as its pusher and recording the applied revision; added, updated and removed as links
+      and team branches change; preview runners on request (J4, J5).
+- [ ] Routing and names per link, with Tasks and token exchange per runner (J3).
+- [ ] Providers granted to a team's repository attach to its runners (J6).
+- [ ] Computers: the Computer's n8n served to its owner, `ui/open-link` to the person's own
+      Computer, and a Computer that stays on until its owner turns it off (J8, J9, J11).
+
+Installation:
+- [ ] n8n and the Veoveo nodes in the Computer image; Computer policy rules for n8n to reach
+      the model and the Hub's MCP as the person; a Computer sized for n8n (J8, J12).
+
+n8n server:
+- [ ] The runner: it applies one link's workflows, with a database schema per link and the
+      team's credentials file (J4, J6).
+- [ ] Execution data by who started the run and by the forwarded grant (J7).
+- [ ] The overview App (J9).
+- [ ] The team editor, its app origin, `editor_changes`, `n8n://editor` and the editor
+      launcher removed (J10).
+
+Computer:
+- [ ] n8n opens the team workflows of the person's checkout and saves them back as files;
+      "Edit in my Computer" opens a team and workflow, cloning as the person when needed
+      (J8, J9).
+- [ ] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
+      sandbox protocol (J12).
+
+Docs:
+- [ ] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
+      section 13's state, which the diagram does not show yet.
+
+Order: the Lore check (J1) first, since everything rests on it; then the designs and the
+diagram; then the Hub's links, runners and routing with the n8n server as runner; then
+the overview App; then n8n in the Computer with the Assistant; then qualification. The
+deployed n8n instance keeps serving until runners replace it.
+
+Done when section J is proven, with a record for each step.
 
 ## Later
 

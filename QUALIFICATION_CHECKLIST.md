@@ -147,7 +147,9 @@ The section sits before G because G stays last.
 ## I. Apps and server surfaces
 
 Plan section 13. Hub as the MCP Apps host, the HTTP a server serves besides MCP, and
-n8n as a contained server. The section sits before G because G stays last.
+n8n as a contained server. The section sits before G because G stays last. I16, the
+editor that acted as n8n's owner for every person, is withdrawn by plan section 14; its
+[record](records/2026-10-31-n8n-phase-2.md) stays.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
@@ -166,7 +168,27 @@ n8n as a contained server. The section sits before G because G stays last.
 | I13 | Workflows come from Lore | Push a workflow file; push its removal | Applied and active; then archived | proven 2026-10-31: `hello-veoveo` applied and active, archived when its file was removed ([record](records/2026-10-31-n8n-phase-1.md)) |
 | I14 | A run is a Task | `n8n__run` on a workflow; restart the instance mid-run | The Task completes with the output; after the restart the worker keeps waiting on the same execution | proven 2026-10-31: `hello-run` completed as a Task with its output in 636 ms; `slow-run`, an n8n Wait of 90 s, kept its Task waiting on execution 4 across an instance restart 25 s in, and completed with its output when n8n resumed it ([record](records/2026-10-31-n8n-phase-2.md)) |
 | I15 | n8n reaches Veoveo only through the bridge | A workflow's Veoveo Tool node calls a declared tool and an undeclared one | The declared call acts for the run's caller; the undeclared one is refused | proven 2026-10-31: `resolve-time`'s Veoveo Tool called Time's `resolve_time` through the bridge for the run's caller; `undeclared-tool`'s call of `time__list_sources`, outside the bridge table, was refused and its run failed ([record](records/2026-10-31-n8n-phase-2.md)) |
-| I16 | The n8n editor is an app on n8n's own origin | Open the editor app at its direct URL | It opens `n8n.apps.{host}` with `ui/open-link`, the editor acts as n8n's owner, and the server records the person behind each change | proven 2026-10-31: the App's button opened `n8n.apps.veoveo.bioma.ai` top-level, where the editor acted as `global:owner` and a change was logged with the person; a view cannot frame the origin, since a nested frame inherits its sandbox and holds no session (measured, 401) ([record](records/2026-10-31-n8n-phase-2.md)) |
+
+## J. n8n editing and team workflows
+
+Plan section 14. Private editing in each person's Computer, team workflows in repositories
+linked into the n8n repository, and one runner for each environment and link. The section
+sits before G because G stays last.
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| J1 | Access stops at a link | A parent repository with two linked repositories; read it as a person with a grant on the parent and on one link | They see the other link's node and cannot descend into it; with every grant, one tree | pending |
+| J2 | A runner admits only people with a grant on its repository | Call `n8n.{team}__run` as a person with a grant of their own, through a group, and with none | With a grant: the run; without: refused by the Hub, and the team is not listed | pending |
+| J3 | Calls reach the right team's runner | Two linked teams; call each team's tools and read each `n8n://{team}/` resource | Each reaches its own runner; `tools/list` names only the teams the caller holds a grant on | pending |
+| J4 | A team releases by merging in its own repository | Merge a workflow into a team repository's production branch | Its runner applies it as the merger and the Hub records the revision; the other team's runner does not restart | pending |
+| J5 | Adding or removing a link adds or removes its runners | Add a team's link to the parent, then remove it | A runner starts for each environment, then each goes | pending |
+| J6 | A team's credentials stay in its runner | Grant a provider to one team's repository; use its placeholder in the other team's workflow | Only the granted team's runner holds the provider; the other's request is not substituted | pending |
+| J7 | Execution data follows who fetched it | Two people each start a run through MCP; a webhook starts a third | Each person reads only their own MCP run's data; everyone with a grant reads the webhook run's data; status and errors for all | pending |
+| J8 | A person edits in their own Computer | Open the Computer's n8n; build a workflow, save it, push it | n8n opens the checkout's team workflows with the person as its owner; saving writes the files; no other person reaches it | pending |
+| J9 | The overview App summarises and opens the Computer | Open `/apps/n8n/overview`; choose Edit in my Computer on a workflow | Only the teams the person holds a grant on, with revisions, runs and failures; the person's own Computer opens n8n at that workflow | pending |
+| J10 | No runner serves an editor | Request a runner's former app origin and the `n8n://editor` resource | Neither exists; only the server uses n8n's owner account | pending |
+| J11 | Personal automations run while the Computer is on | A schedule in the Computer's n8n; leave the Computer on past the collection time | The schedule keeps firing until the owner turns the Computer off | pending |
+| J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | pending |
 
 ## G. Model-driven acceptance (last)
 
