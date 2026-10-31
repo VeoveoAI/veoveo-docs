@@ -18,8 +18,8 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai`
-(single host), deployed 2026-10-30: Hub `2b14e65`, Lore `4ee9f338`, OpenShell gateway `c80bda2` (runtime
-`1ab0e2386`, supervisor `49761d1`; factory instances take it at their next push), installation `0d41e8a` (Computer version `811f82122b7f`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `8384a5b`, Artifact `91e62be`, Media
+(single host), deployed 2026-10-31: Hub `ce3cada`, Lore `4ee9f338`, OpenShell gateway `c80bda2` (runtime
+`1ab0e2386`, supervisor `49761d1`; factory instances take it at their next push), installation `9ff2794` (Computer version `811f82122b7f`), OpenCode `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `acc4ba2`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`; Hub and its CLI on SDK `05273d1`.
 
 ## A. Identity and administration
@@ -31,6 +31,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | A3 | A member without the role is refused | Same route as a member | 403 | proven 2026-10-26 with a second account whose operator and administrator roles were removed in Entra: a fresh sign-in's token had no `roles`, and the route answered 403 in 0.26 s. A refresh of a session signed in before the removal kept both roles, for up to seven days ([record](records/2026-10-26-second-person.md)) |
 | A4 | A server acting for its caller is refused on admin routes | Hub test `calls.rs` | 403 | component |
 | A5 | Admin publication round trip | GET, edit, PUT `/admin/local/control-plane` | `applied`, new revision, change visible | proven 2026-10-23 (enrollment, Time assignment) |
+| A6 | An administrator ends a person's sessions | `DELETE /admin/local/people/{email}/sessions` as an administrator; an unknown email; a member through Console | 200 with the sessions ended and the Computer stopped; the person's Hub calls and Lore stop; their next sign-in works; 404; 403 | proven 2026-10-31 on Hub `ce3cada`: 2 sessions revoked as `administrator_revocation`, the Computer stopped and its Lore client cleared in 1.38 s; sign-in again gave a Computer in 6 s with Lore working; unknown 404 in 0.41 s; a member's and an administrator's call through Console both 403, as the admin routes refuse servers ([record](records/2026-10-31-end-a-persons-sessions.md)) |
 
 ## B. Computer
 
