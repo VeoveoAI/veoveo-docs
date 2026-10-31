@@ -511,6 +511,10 @@ Execution order:
       contents and connects it to every successful result of the extracted
       `selected` method. Both manual checks and four scoped audits pass
       ([complete collection](records/2026-10-30-complete-selection-collection-proof.md)).
+      Hub `a9b0cad` records an unchanged-helper probe: Charon extracts the namespace
+      algorithm, but pinned Aeneas fails on nested borrows and an indexed projection.
+      Partial outputs were not adopted; no runtime change or proof coverage is
+      claimed ([translation limit](records/2026-10-30-namespace-helper-translation-limit.md)).
       Native collection correspondence, unconditional selected completion,
       constructor coherence, per-slug uniqueness, combined semantic qualification,
       namespace-helper completion/order, provenance
