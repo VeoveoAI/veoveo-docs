@@ -919,6 +919,10 @@ Done when section J is proven, with a record for each step.
   SDK bump.
 - The factory base policy's open internet, every binary to any host on ports 80 and 443,
   narrowed to the branch's toolchain.
+- The Hub and the OpenShell crates move off `serde_yaml` 0.9, whose `unsafe-libyaml` RustSec
+  lists as unmaintained (RUSTSEC-2024-0449). The Hub reads `providers.yaml` with it, and
+  `openshell-crypto` brings it through `kube` 0.99; Hub `02e6810` holds a reviewed
+  exception until then.
 - OpenShell answers a strict-binding refusal over HTTP/2 with a stream reset, without its
   403 or denial event.
 - The n8n fork's image is built with n8n's development release channel: its pages read
