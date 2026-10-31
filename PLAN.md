@@ -666,6 +666,83 @@ OpenShell upstream, as the fork's smallest coherent patches, pursued upstream:
 Done when H1 to H11 are proven and the crosswalk cites them. Open: the decisions
 listed under Open.
 
+## 12. MCP Apps, server surfaces and n8n
+
+Approved 2026-10-30. Hub becomes the installation's MCP Apps host, following MCP Apps
+`2026-01-26` without additions where the specification already provides a mechanism.
+A server declares the HTTP it serves besides MCP, and Hub routes it, for factory
+instances too. Time ships the first app; n8n then runs as a contained server, its editor
+an app. Each step is a platform capability that any server uses; nothing is particular to
+n8n. A design change goes to its owner's `DESIGN.md` first, in the same branch as the
+code. Evidence so far: the
+[n8n containment spike](records/2026-10-30-n8n-containment-spike.md). Checklist section I
+proves each item.
+
+Decisions:
+- One public host for Hub, `veoveo.bioma.ai`, plus one wildcard,
+  `*.apps.veoveo.bioma.ai`: `sandbox.apps.…` is Hub's sandbox proxy for every
+  self-contained app, and `{slug}.apps.…` is the own origin of a server whose app is a
+  full web application. `sandbox` is a reserved slug.
+- An app's direct URL is `https://veoveo.bioma.ai/apps/{slug}/{page}` for `ui://{slug}/{page}`,
+  a Hub convention. Card or full page is the specification's display mode; no Veoveo
+  metadata is added.
+- n8n comes from the `VeoveoAI/n8n` fork, whose changes stay in the fork.
+
+Contracts, in the SDK:
+- [ ] The Apps contract follows the specification for a web host: Hub hosts apps; each app
+      runs in an opaque inner frame inside Hub's sandbox proxy on `sandbox.apps.{host}`;
+      an app's `csp.frameDomains` may name only its own server's app origin. The old
+      Console host and monorepo paths leave the contract (I1 to I4).
+- [ ] A registration declares the server's HTTP surfaces: its public route prefixes, with
+      size and rate limits, and its app origin, with the permission it requires as a new
+      requirement kind (I5, I6).
+- [ ] The registration response names the instance's public base, which names its branch,
+      and the server's app origin; `PublicDeployment` accepts a base with a path (I5, I6).
+
+Hub:
+- [ ] The Apps host: `/apps/{slug}/{page}` for the person's selected branch, with
+      `?branch=`; the sandbox proxy; the bridge, with linked tools only, reads of the
+      app's own server, Tasks and reactive wakes (I1 to I4).
+- [ ] App origins: `{slug}.apps.{host}` forwarded to the selected instance's
+      authenticated routes with a forwarded token, behind a sign-in held in a host-only
+      cookie of that origin (I6).
+- [ ] Public routes of factory instances on the public host, under a base that names the
+      instance, through OpenShell's service exposure (I5).
+- [ ] Requested providers: an instance gets the provider profiles its branch requests and
+      the installation grants, including model access (I8, I9).
+- [ ] Connecting a service: consent in the browser, the refresh material in OpenShell's
+      custody, the provider attached to the instance (I10).
+
+Installation:
+- [ ] `*.apps.{host}`: one wildcard DNS name, its certificate and the tunnel route to Hub.
+      Bioma's needs Cloudflare's Advanced Certificate Manager for the two-level name
+      (I7). Checklist F2's single host becomes the host plus this wildcard.
+- [ ] The factory's provider grants and a model provider profile for instances (I8, I9).
+
+OpenShell fork:
+- [ ] Strict credential binding: a credential-bound endpoint admits a request only when its
+      credential carries the bound placeholder (I11).
+
+Time:
+- [ ] Time's app: a self-contained view that supports `inline` and `fullscreen` and calls
+      Time's linked tools; the first proof of the host (I1 to I4).
+
+n8n:
+- [ ] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
+      `n8n@2.46.0`), and a build of the fork into an image in the installation's registry
+      that factory images start from (I12).
+- [ ] `veoveo-mcp-n8n` as its [design](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md)
+      states: runs as Tasks with status checks, workflows applied from Lore, executions,
+      the bridge, the editor app and the hooks (I12 to I16).
+
+Order: the contracts, then the Apps host with Time's app, tested locally on
+`veoveo.localhost` and `sandbox.apps.veoveo.localhost`; the wildcard name, then the deploy
+and qualification of Time's app; then app origins, public routes, providers and strict
+binding; then n8n.
+
+Done when section I is proven, with a record for each step and Time's and n8n's apps
+reached through their direct URLs.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
@@ -731,3 +808,7 @@ listed under Open.
   - A model evaluation or red-teaming server, as a new server repository.
   - A restricted-egress profile in the installation template, for a company's
     installation.
+- Section 12: the Cloudflare Advanced Certificate Manager subscription and the wildcard
+  name for Bioma's installation, which only the account's owner can add; and whether a
+  factory image may start from an image in the installation's registry, which the n8n
+  build needs.

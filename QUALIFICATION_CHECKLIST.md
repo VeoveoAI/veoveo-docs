@@ -143,6 +143,30 @@ The section sits before G because G stays last.
 | H10 | An MCP rule matches a tool's arguments | A deny rule on one argument value of an allowed tool; call the tool with and without the value | With the value refused by the proxy; without it answered | pending (upstream) |
 | H11 | Response middleware reads a streamed model response | Response middleware on the model endpoint; a chat with a streamed completion | The middleware receives the streamed body and its decision applies | pending (upstream) |
 
+## I. Apps and server surfaces
+
+Plan section 12. Hub as the MCP Apps host, the HTTP a server serves besides MCP, and
+n8n as a contained server. The section sits before G because G stays last.
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| I1 | An app opens at its direct URL | Open `https://{host}/apps/time/{page}` signed in, then signed out | Signed in: the app renders full page for the person's selected branch; signed out: sign-in, then the app | pending |
+| I2 | An app runs on the sandbox origin, not Hub's | Inspect the frames of an open app; from the app's script, read `document.cookie` and fetch a Hub route | The proxy frame is on `sandbox.apps.{host}` and the app's inner frame has an opaque origin; no cookie, and the fetch carries no session | pending |
+| I3 | An app reaches only its own server's linked tools | From an app, call a linked tool, an unlinked tool of its server and another server's tool; read its own and another server's resource | Only the linked tool and its own resource answer; the rest are refused by Hub | pending |
+| I4 | Apps keep Tasks and reactive wakes | Start a Task from an app, poll it and cancel it; change a resource the app subscribes to | The Task runs and cancels; the app wakes and reads the new state | pending |
+| I5 | A factory instance's public route is reachable | Push a branch whose server declares a public route; call its public URL from outside | The registration response names the branch's public base; the call reaches that branch's instance and no other | pending |
+| I6 | A server's app origin forwards to its authenticated routes | Open `https://{slug}.apps.{host}/` with and without the declared permission | With it: the selected instance answers with a forwarded token; without it: refused; the origin's cookie never reaches Hub's host | pending |
+| I7 | The wildcard name serves every app origin | DNS and TLS for `sandbox.apps.{host}` and a new `{slug}.apps.{host}` | Both resolve through the tunnel to Hub with a valid certificate, with no DNS change for the new slug | pending |
+| I8 | An instance gets only the providers it requested and was granted | Request one granted and one ungranted profile in a branch | Only the granted provider is attached; the status names the ungranted one | pending |
+| I9 | An instance calls a model | A server's model call through its granted model provider | Answered; the key never enters the sandbox | pending |
+| I10 | A person connects a service | Run the connect flow for an OAuth integration | The refresh material stays in OpenShell's custody; the instance's calls carry a fresh token; n8n never refreshes | pending |
+| I11 | Strict binding refuses a typed secret | Send a request to a strictly bound endpoint with a literal credential instead of the placeholder | Refused by the proxy; with the placeholder, substituted and answered | pending |
+| I12 | n8n runs on the installation's PostgreSQL | Serve `veoveo-mcp-n8n` from a branch | n8n migrates without CREATE on the database; its tables belong to `server_n8n` | pending |
+| I13 | Workflows come from Lore | Push a workflow file; push its removal | Applied and active; then archived | pending |
+| I14 | A run is a Task | `n8n__run` on a workflow; restart the instance mid-run | The Task completes with the output; after the restart the worker keeps waiting on the same execution | pending |
+| I15 | n8n reaches Veoveo only through the bridge | A workflow's Veoveo Tool node calls a declared tool and an undeclared one | The declared call acts for the run's caller; the undeclared one is refused | pending |
+| I16 | The n8n editor is an app on n8n's own origin | Open the editor app at its direct URL | It frames `n8n.apps.{host}`, acts as n8n's owner, and the server records the person behind each change | pending |
+
 ## G. Model-driven acceptance (last)
 
 Only after every deployed check above passes. Use `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` in
