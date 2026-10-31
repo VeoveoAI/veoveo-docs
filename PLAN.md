@@ -559,6 +559,13 @@ Execution order:
       extraction and 35 passing native token tests. Exact issuer correctness and
       direct/delegated constructions remain next
       ([checked model](records/2026-10-30-sdk-internal-auth-model.md)).
+      Source synchronization remains explicit: local Hub `c6feadb` pins SDK
+      `239622d`; observed origin `cd363a2` pins `154a473` and adds App-origin
+      policy/routing plus registration surfaces. Those additions are not covered
+      by the older extracted graph. SDK origin `24bd67b` changes design prose only.
+      Requalify the relevant source changes when composing with latest Hub;
+      no deployed revision is inferred from these Git references
+      ([source applicability audit](records/2026-10-30-proof-source-applicability.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       Native collection correspondence, unconditional selected completion,
