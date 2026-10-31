@@ -750,7 +750,7 @@ Hub:
       cookie of that origin (I6).
 - [ ] Public routes of factory instances on the public host, under a base that names the
       instance, through OpenShell's service exposure (I5).
-- [ ] Requested providers: an instance gets the provider profiles its branch requests and
+- [x] Requested providers: an instance gets the provider profiles its branch requests and
       the installation grants, including model access (I8, I9).
 - [ ] Connecting a service: consent in the browser, the refresh material in OpenShell's
       custody, the provider attached to the instance (I10).
@@ -759,10 +759,10 @@ Installation:
 - [ ] `*.apps.{host}`: one wildcard DNS name, its certificate and the tunnel route to Hub.
       Bioma's needs Cloudflare's Advanced Certificate Manager for the two-level name
       (I7). Checklist F2's single host becomes the host plus this wildcard.
-- [ ] The factory's provider grants and a model provider profile for instances (I8, I9).
+- [x] The factory's provider grants and a model provider profile for instances (I8, I9).
 
 OpenShell fork:
-- [ ] Strict credential binding: a credential-bound endpoint admits a request only when its
+- [x] Strict credential binding: a credential-bound endpoint admits a request only when its
       credential carries the bound placeholder (I11).
 
 Time:
