@@ -794,7 +794,8 @@ Execution order:
       ([translation record](records/2026-10-31-catalog-pagination-translation-boundary.md)).
       Hub `81c933f` integrates the linked-runner source with the committed proof
       work; `3104ee9` also retains the newer Computer Apps lifecycle. Integrated
-      runtime qualification remains pending. Extended cache keys, registrations, repository-grant
+      runtime qualification passed at `c23d9ae` on both Mac Docker Desktop and Linux.
+      Extended cache keys, registrations, repository-grant
       forwarding and dependency pins require renewed formal applicability review;
       existing frozen proofs do not automatically cover that new domain.
       [Source integration record](records/2026-10-31-linked-runtime-proof-integration.md).
@@ -803,8 +804,12 @@ Execution order:
       under the same server name. Memoizing by actual deployment and generation
       fixes both linked and cross-selection cases; unchanged regressions, the three
       earlier watch tests and the subscription regression pass (six tests total).
-      Final formatting passes; full integrated Mac/Linux checks remain pending
+      Final formatting and full integrated Mac/Linux checks pass: 454 tests passed,
+      two skipped on each host, including all six regressions
       ([deployment isolation record](records/2026-10-31-discovery-watch-deployment-isolation.md)).
+      The [integrated qualification record](records/2026-10-31-hub-integrated-native-checks.md)
+      records exact source, timings and component-only scope. Fresh extraction for
+      the current optional-link cache key is the next formal applicability step.
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
