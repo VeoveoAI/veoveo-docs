@@ -751,9 +751,14 @@ Execution order:
       updates retain whole payloads and exact comparison/time Results. The first
       proof check passed in 4.474 s with thirteen explicit axiom guards
       ([completion checkpoint](records/2026-10-31-discovery-cache-completion-proof.md)).
-      Map invariant preservation, longer replacement/generation histories and
-      semantic controls are next; server-wide invalidation, listeners and native
-      wrapper refinement remain open.
+      Hub `6cfcb69` adds the checked full-key order and concrete map-model
+      preservation contracts: ordered/unique keys, exact insertion replacement
+      and size, unrelated-value preservation, capacity and minimum eviction.
+      The accepted leaves pass in 12.449 s and 2.533 s with 32 standard-only axiom
+      guards ([key/map checkpoint](records/2026-10-31-discovery-cache-key-map-invariants.md)).
+      State invariants from actual operations, longer replacement/generation
+      histories and semantic controls are next; server-wide invalidation,
+      listeners and native wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
