@@ -576,6 +576,12 @@ Execution order:
       representation bounds. Direct and named manual checks pass with standard-only
       axioms; admitted constructions, semantic controls and full issuance remain open
       ([context admission](records/2026-10-31-sdk-context-admission-proof.md)).
+      SDK `b645f07` supplies populated independent contexts and proves actual
+      acceptance in every mode, including a closed no-premise witness. The final
+      manual targets and all eight axiom audits pass. Context source mutations,
+      complete issuance and Hub composition remain next; newer Hub App-origin
+      changes through observed origin `c39d4b6` are not covered by this result
+      ([valid contexts and source applicability](records/2026-10-31-sdk-context-valid-witnesses.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
