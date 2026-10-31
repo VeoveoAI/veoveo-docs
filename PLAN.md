@@ -666,6 +666,12 @@ Execution order:
       Existing proof scope and assumptions are retained; Hub pin/source adoption
       and the incomplete caller control remain separate
       ([merged SDK qualification](records/2026-10-31-sdk-issuer-merged-source.md)).
+      Hub merge `1ccb868` also reconciles upstream runtime source with the local
+      proof work. Thirteen focused registration, App-origin, policy and HTTP tests,
+      formatting and strict library Clippy pass; the old models remain unchanged.
+      Added AppOrigin, registration-surface and administrative-revocation domains
+      require fresh extraction and formal adaptation
+      ([merged Hub native checkpoint](records/2026-10-31-hub-merged-source-native.md)).
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
