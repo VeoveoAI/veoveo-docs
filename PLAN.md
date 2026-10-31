@@ -670,6 +670,8 @@ Veoveo's own controls:
       the sign-in's roles for the session's seven days, because Hub holds no Entra
       refresh token; logout and revocation end the session at once
       ([record](records/2026-10-26-second-person.md)).
+      An administrator now ends a person's sessions and stops their Computer at once
+      (section 12); the identity provider's change itself still waits for that call.
 - [ ] Authentication on the local registry: the installation (H9). Network policies
       keep factory build steps away from it; any other workload the cluster admits to it
       can push.
@@ -685,7 +687,24 @@ OpenShell upstream, as the fork's smallest coherent patches, pursued upstream:
 Done when H1 to H11 are proven and the crosswalk cites them. Open: the decisions
 listed under Open.
 
-## 12. MCP Apps, server surfaces and n8n
+## 12. An administrator ends a person's sessions
+
+Approved and done 2026-10-31. When a person's access changes in the identity provider,
+nothing ended their Hub sessions, which keep the sign-in's roles for seven days, and their
+Computer kept minting Lore tokens through its own client whatever their session.
+
+- [x] Hub `ce3cada`: `DELETE /admin/{profile}/people/{email}/sessions`, for `admin_write`,
+      revokes the person's live families (`administrator_revocation`, migration `0030`),
+      clears their Computer's Lore client and stops their Computer, keeping its home.
+- [x] Hub refuses a server acting for its caller on every admin route, so the call is the
+      administrator's own, on the profile the admin rule names (`local`). A Console tool
+      for it was built, found refused by that rule, and removed (console `acc4ba2`).
+- [x] Deployed and proven (checklist A6,
+      [record](records/2026-10-31-end-a-persons-sessions.md)).
+
+Done.
+
+## 13. MCP Apps, server surfaces and n8n
 
 Approved 2026-10-30. Hub becomes the installation's MCP Apps host, following MCP Apps
 `2026-01-26` without additions where the specification already provides a mechanism.
@@ -762,6 +781,7 @@ binding; then n8n.
 Done when section I is proven, with a record for each step and Time's and n8n's apps
 reached through their direct URLs.
 
+||||||| a8eb4e7
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
@@ -827,7 +847,7 @@ reached through their direct URLs.
   - A model evaluation or red-teaming server, as a new server repository.
   - A restricted-egress profile in the installation template, for a company's
     installation.
-- Section 12: the Cloudflare Advanced Certificate Manager subscription and the wildcard
+- Section 13: the Cloudflare Advanced Certificate Manager subscription and the wildcard
   name for Bioma's installation, which only the account's owner can add; and whether a
   factory image may start from an image in the installation's registry, which the n8n
   build needs.
