@@ -487,6 +487,10 @@ Execution order:
       issuer/context/claims path translatable; 35 native token tests, format and
       strict Clippy pass, but Hub still pins SDK `239622d`
       ([translation and native checks](records/2026-10-30-request-composition-translation.md)).
+      Hub `ed1c42d` fixes a pinned Aeneas instance-name collision that prevented
+      combining the existing proof modules. The stock failure, patched regression
+      and both unchanged proof packages pass their expected checks; this adds no
+      Hub contract coverage ([tooling checkpoint](records/2026-10-30-request-composition-tool-imports.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
