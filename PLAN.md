@@ -610,8 +610,13 @@ Execution order:
       SDK `6665e9c` proves generic public-issuer composition: exact first-foreign refusal,
       complete identity and claims construction, exact signer arguments and
       preserved signing errors/results. The final two manual targets pass all
-      four audits. Populated public-issuer examples and source controls remain
-      next ([public composition](records/2026-10-31-sdk-public-issuer-composition.md)).
+      four audits ([public composition](records/2026-10-31-sdk-public-issuer-composition.md)).
+      SDK `e9e6d41` adds passing populated public-issuer examples: a complete two-permission Direct
+      result with source-capped expiry and exact signer claims, plus first-foreign
+      refusal before an independently invalid client context. The two manual
+      targets pass all seven new audits
+      ([issuer examples](records/2026-10-31-sdk-public-issuer-examples.md)).
+      Public-issuer source-fault qualification remains next.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
       A bounded unchanged-helper probe passes Charon but fails pinned
