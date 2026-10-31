@@ -80,6 +80,7 @@ Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bio
 | C11 | A Lore group is a group everywhere | A member grants their artifact `admin` to a group; its owner grants it on; the owner, made a member, tries again | The grant and the onward grant are served; as a member, Artifact refuses: "needs admin access" | proven 2026-10-29: Hub `3de9654`, Artifact `91e62be`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-29-groups-everywhere.md)) |
 | C12 | Members share, and share links stay the installation's | A member lists Artifact's tools, then creates a share link | `grant_artifact`, `revoke_artifact_grant`, `decide_access_request` listed; the link refused by the Hub | proven 2026-10-29 ([record](records/2026-10-29-groups-everywhere.md)) |
 | C13 | Owners delete groups | A member who is no owner deletes a group; its owner deletes it while it is a repository's one owner, then after another owner is added; the former member reads an artifact's grants held through it | 403 `group-owner-required`; 409 `group-owns-repository`; deleted, the repository's group assignment gone, and Artifact refuses: "needs admin access" | proven 2026-10-30: Hub `6902627`, console `8f94e5a`, two people through `veoveo-hub-sdk-cli` ([record](records/2026-10-30-owners-delete-groups.md)) |
+| C14 | A reader clones and cannot push | An owner shares a repository with a person as `reader`; the person clones, then pushes | The clone works; the push is refused by Lore for want of `write` | pending |
 
 ## D. Factory serving (Stage 1)
 

@@ -800,6 +800,9 @@ first, in the same branch as the code. Checklist section J proves each item; I16
 withdrawn, and its record stays as evidence of what was built.
 
 Decisions:
+- Veoveo follows Lore: the fork carries Epic's `main` with Veoveo's changes on top, and
+  Lore's model of permissions decides how the Hub grants repositories. Lore is brought up
+  to Epic's `main` before work that depends on it, starting with this section.
 - Editing is private, in the person's Computer: an n8n they own, with their drafts,
   their own automations and the Assistant. No runner serves an editor; on a runner only
   the server uses n8n's owner account.
@@ -832,6 +835,21 @@ Decisions:
   owner turns it off, so personal schedules run there.
 - The Apps page `ui://n8n/overview` summarises every linked team the person holds a
   grant on and opens the person's own Computer with `ui/open-link` to edit.
+
+Lore update, the first slice:
+- [ ] The fork takes Epic's `main` (`b8fc623d`, 70 commits since 2026-10-18), keeping
+      Veoveo's 19 commits: the security fixes (the distrusted eMudhra roots, dependency
+      advisories, endpoints that must authenticate the server), storage and client fixes,
+      and an explicit action on every partition operation (`483c96ff`): writing needs
+      `write`, a protected push `push-protected`, deleting a repository `owner` or `admin`,
+      while any token for a repository still reads it (C14).
+- [ ] Hub: Lore tokens carry explicit actions, `write` for members and owners and `owner`
+      for owners, and a `reader` access clones and cannot push; Console's share tool offers
+      it (C14).
+- [ ] Installation: Lore's `implicit_actions` grants nothing, so a token holds only what its
+      permission names (C14).
+- [ ] Lore and the Hub deployed together; sharing, pushes, deletion, Computers' clones and
+      pushes, factory fetches and J1 again (C4, C6, C8 to C10, C14, J1).
 
 Lore:
 - [x] Access stops at a link on the installation's Lore: an ungranted linked repository is
@@ -873,8 +891,8 @@ Docs:
 - [ ] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
       section 13's state, which the diagram does not show yet.
 
-Order: the Lore check (J1) first, since everything rests on it; then the designs and the
-diagram; then the Hub's links, runners and routing with the n8n server as runner; then
+Order: the Lore check (J1) first, since everything rests on it; then the Lore update; then
+the designs and the diagram; then the Hub's links, runners and routing with the n8n server as runner; then
 the overview App; then n8n in the Computer with the Assistant; then qualification. The
 deployed n8n instance keeps serving until runners replace it.
 
