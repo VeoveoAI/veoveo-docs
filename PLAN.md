@@ -810,9 +810,14 @@ Execution order:
       The [integrated qualification record](records/2026-10-31-hub-integrated-native-checks.md)
       records exact source, timings and component-only scope. Fresh extraction for
       the current optional-link cache key succeeds, including actual principal/server
-      identifier derives: all 37 own-component bodies are transparent. The new graph's
-      Lean adaptation and cross-link invalidation proof remain pending
+      identifier derives: all 37 own-component bodies are transparent
       ([extraction record](records/2026-10-31-current-cache-key-extraction.md)).
+      The new graph's four model modules, all nine proof modules and 103 axiom guards
+      now pass. Actual full-key invalidation preserves another link's complete cached
+      value, ticket and retry state, including absent versus present links. Existing
+      operation/state/history contracts also pass on the extended domain
+      ([proof record](records/2026-10-31-current-linked-cache-proofs.md)). A current
+      source control that discards link comparison is pending separately.
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
