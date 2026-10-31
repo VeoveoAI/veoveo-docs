@@ -525,8 +525,14 @@ Execution order:
       actual HTTP destination and direct/delegated request context. Both new
       nondefault targets pass nine scoped audits with an unchanged 66-path source
       map ([connected route](records/2026-10-30-constructed-route-context-proof.md)).
+      Hub `1057bcb` qualifies the HTTP permission-preservation edge with an actual
+      Rust mutation, independent accepted-input witness, exact raw restoration and
+      passing connected targets ([source control](records/2026-10-30-http-permission-preservation-control.md)).
+      Next, reuse the policy proof through one shared generated graph, then connect
+      computed current grants and actual delegation narrowing to the client fields.
       Native collection correspondence, unconditional selected completion,
-      full constructor-input presence/latest-row refinement, combined semantic qualification,
+      full constructor-input presence/latest-row refinement, qualification of the
+      remaining composed edges,
       namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
