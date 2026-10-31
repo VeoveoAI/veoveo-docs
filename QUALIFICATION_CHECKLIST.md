@@ -177,7 +177,7 @@ sits before G because G stays last.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| J1 | Access stops at a link | A parent repository with two linked repositories; read it as a person with a grant on the parent and on one link | They see the other link's node and cannot descend into it; with every grant, one tree | pending |
+| J1 | Access stops at a link | A parent repository with two linked repositories; read it as a person with a grant on the parent and on one link | The ungranted linked repository is refused, directly and through the link; with every grant, one tree | proven 2026-10-31: a direct clone of the ungranted repository was refused and a clone of the parent stopped at its link; after the grant a fresh clone was one tree. The refused clone fails as a whole rather than leaving the link unopened, and reports a stream reset as "Repository not found", a follow-up ([record](records/2026-10-31-lore-link-access.md)) |
 | J2 | A runner admits only people with a grant on its repository | Call `n8n.{team}__run` as a person with a grant of their own, through a group, and with none | With a grant: the run; without: refused by the Hub, and the team is not listed | pending |
 | J3 | Calls reach the right team's runner | Two linked teams; call each team's tools and read each `n8n://{team}/` resource | Each reaches its own runner; `tools/list` names only the teams the caller holds a grant on | pending |
 | J4 | A team releases by merging in its own repository | Merge a workflow into a team repository's production branch | Its runner applies it as the merger and the Hub records the revision; the other team's runner does not restart | pending |

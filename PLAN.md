@@ -806,7 +806,9 @@ Decisions:
 - Workflows change only through Lore. No MCP tool changes a workflow.
 - The n8n repository, the parent, holds the program, its policy, the node types any team
   may use, and one link per team repository at `{team}/`. Its owners change it to add or
-  remove a team.
+  remove a team. It is the Hub's directory of teams: people clone the team repositories
+  they hold a grant on, never the parent, since a clone of the parent fails at a link its
+  person may not read ([record](records/2026-10-31-lore-link-access.md)).
 - A team repository holds its workflows, its credentials file and the providers it
   requests. Its grants, to people and to groups, decide who sees, runs and changes them.
 - Environments are the parent's branches; the base branch is production. An
@@ -832,9 +834,9 @@ Decisions:
   grant on and opens the person's own Computer with `ui/open-link` to edit.
 
 Lore:
-- [ ] Access stops at a link on the installation's Lore: a person without a grant on a
-      linked repository sees its link and cannot descend; with both grants, one tree. Lore's
-      roadmap lists per-link access as in progress (J1).
+- [x] Access stops at a link on the installation's Lore: an ungranted linked repository is
+      refused, directly and through the link; with every grant, one tree (J1,
+      [record](records/2026-10-31-lore-link-access.md)).
 
 Hub:
 - [ ] Links are first-class: read from the parent's revision; a grant on a linked
@@ -861,9 +863,9 @@ n8n server:
       launcher removed (J10).
 
 Computer:
-- [ ] n8n opens the team workflows of the person's checkout and saves them back as files;
-      "Edit in my Computer" opens a team and workflow, cloning as the person when needed
-      (J8, J9).
+- [ ] The Computer clones each team repository the person holds a grant on; n8n opens their
+      workflows and saves them back as files; "Edit in my Computer" opens a team and
+      workflow, cloning as the person when needed (J8, J9).
 - [ ] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
       sandbox protocol (J12).
 
@@ -883,6 +885,10 @@ Done when section J is proven, with a record for each step.
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
   (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
 - Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
+- A Lore clone through a link its person may not read fails as a whole, leaves a partial
+  tree that `lore status` and `lore sync` report as in sync, and reports an HTTP/2 stream
+  reset; Lore's design says the link stays unopened and the clone goes on
+  ([record](records/2026-10-31-lore-link-access.md)).
 - The box's port-forward to the gateway (`pf.sh`) ends with every gateway pod change, and the
   box scripts that use the `openshell` CLI fail until it is restarted.
 - Factory `uses`: the service instances an instance calls, pushed in the caller's
