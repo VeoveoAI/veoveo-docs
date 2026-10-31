@@ -781,7 +781,6 @@ binding; then n8n.
 Done when section I is proven, with a record for each step and Time's and n8n's apps
 reached through their direct URLs.
 
-||||||| a8eb4e7
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
