@@ -631,8 +631,14 @@ Execution order:
       swap preserves inverse laws but fails the independent field contract, and
       exact restoration passes the named targets
       ([complete record bridge](records/2026-10-31-hub-sdk-complete-record-bridge.md)).
-      Timestamp comparison/minimum and connecting Hub's actual caller to the
-      checked SDK issuer remain next, with explicit source-version applicability.
+      Hub `a1cf258` replaces the Hub model's opaque issuer operation with the
+      checked SDK implementation. Independent Hub bounds derive the converted
+      request/domain and complete outcome, including ordered refusals, exact
+      signing claims and preserved errors/effects. Eight manual targets and the
+      explicit global definition/axiom audit pass
+      ([operational connection](records/2026-10-31-hub-sdk-operational-issuer-connection.md)).
+      Timestamp comparison/minimum and connecting the actual Hub caller to that
+      outcome remain next, with explicit source-version applicability.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
       A bounded unchanged-helper probe passes Charon but fails pinned
