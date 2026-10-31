@@ -571,6 +571,11 @@ Execution order:
       targets and ten theorem audits pass. This does not yet establish independent
       complete signer claims or context-bearing issuance
       ([initial identity/recipient contracts](records/2026-10-31-sdk-identity-recipient-proof.md)).
+      SDK `f72f91f` now proves the actual context validator's exact acceptance and
+      refusal for Direct, Automated and Delegated provenance, under explicit text
+      representation bounds. Direct and named manual checks pass with standard-only
+      axioms; admitted constructions, semantic controls and full issuance remain open
+      ([context admission](records/2026-10-31-sdk-context-admission-proof.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
