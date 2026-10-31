@@ -493,6 +493,12 @@ Execution order:
       outcomes; 34 token tests, format and strict Clippy pass. Hub remains on its
       existing SDK pin, and formal extraction is still in progress
       ([source preparation](records/2026-10-30-sdk-issuer-expression-refactor.md)).
+      Hub `91ab4cc` and SDK `7e28d5e` commit the next extraction-preparation changes;
+      Hub's focused unit/routing/delegation checks and 35 SDK token tests pass.
+      The Hub scratch partition now translates to Lean, but generated-file adoption,
+      actual SDK issuer composition and the new theorem remain open. Hub's
+      dependency pin is unchanged
+      ([source checkpoint](records/2026-10-30-request-composition-source-checkpoint.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
