@@ -679,9 +679,12 @@ Execution order:
       revocation are included. Existing current-policy, caller and request targets
       pass; the two new proof targets remain manual and nondefault
       ([current-domain qualification](records/2026-10-31-hub-current-domain-proofs.md)).
-      Next is composition from computed route/current grants to issuer outcome,
-      removing arbitrary client/grant provenance while retaining the explicit
-      native SDK equivalence and async/SQL boundaries.
+      The subsequent composition derives the complete selected input row, current
+      grants, optional carried ceiling, client, SDK request and issuer outcome.
+      It includes missing-route and context-refusal outcomes without assuming a
+      prepared client, desired grants or context success
+      ([composition qualification](records/2026-10-31-hub-policy-issuer-composition.md)).
+      Native SDK equivalence, recipient continuity and async/SQL boundaries remain.
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
@@ -695,8 +698,8 @@ Execution order:
       Native collection correspondence, unconditional selected completion,
       full constructor-input presence/latest-row refinement, qualification of the
       remaining composed edges,
-      namespace-helper completion/order, provenance
-      of current permissions, SDK issuer/recipient composition and the separate
+      namespace-helper completion/order, async provenance of current permissions,
+      recipient composition, native SDK equivalence and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
       issuer/context/claims path translatable; 35 native token tests, format and
       strict Clippy pass, but Hub still pins SDK `239622d`
