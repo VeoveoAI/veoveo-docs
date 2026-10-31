@@ -770,8 +770,17 @@ Execution order:
       ticket exclusion is derived. Constructive accepted/advancing histories and
       twelve axiom guards pass in 2.847 s
       ([history checkpoint](records/2026-10-31-discovery-cache-finite-histories.md)).
-      Actual-source semantic controls and restored qualification are next;
-      server-wide invalidation, listeners and native wrapper refinement remain open.
+      Two actual-source semantic control classes are qualified: omitting the
+      generation in-flight clear and admitting wrong present tickets. Fresh mutant
+      models compile; unchanged `start_exact` and `complete_exact` reject the wrong
+      state in 2.926/2.984 s, alongside intended native assertion failures. Both
+      original full source maps/raw4 restore exactly, selected native tests pass,
+      and separate fresh baselines compile all thirteen own modules and guards.
+      A first ticket candidate that pruned required dictionaries is retained as an
+      interface diagnostic with no Lean rejection claimed
+      ([control record](records/2026-10-31-discovery-cache-semantic-controls.md)).
+      HUB-CATALOG remains partial: server-wide invalidation/retain translation,
+      native wrapper/refinement and cursor/listener freshness remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
