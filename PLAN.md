@@ -498,6 +498,12 @@ Execution order:
       independent wrong-route witness and exact canonical restoration followed by
       fresh passing proof checks
       ([entry control](records/2026-10-30-selected-entry-control.md)).
+      Hub `282acdc` proves finite cursor steps in the explicit iterator model
+      using the qualified extracted entry predicate, exact eligible reference
+      emissions and equal-key whole-row consistency. Direct and nondefault target
+      checks pass with five standard-only audits
+      ([finite scan](records/2026-10-30-finite-selection-scan-proof.md)).
+      Native iterator correspondence and actual map collection remain open.
       Full selected-map correctness, namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
