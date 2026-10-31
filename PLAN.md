@@ -735,10 +735,10 @@ Contracts, in the SDK:
       runs in an opaque inner frame inside Hub's sandbox proxy on `sandbox.apps.{host}`;
       an app's `csp.frameDomains` may name only its own server's app origin. The old
       Console host and monorepo paths leave the contract (I1 to I4).
-- [ ] A registration declares the server's HTTP surfaces: its public route prefixes, with
+- [x] A registration declares the server's HTTP surfaces: its public route prefixes, with
       size and rate limits, and its app origin, with the permission it requires as a new
       requirement kind (I5, I6).
-- [ ] The registration response names the instance's public base, which names its branch,
+- [x] The registration response names the instance's public base, which names its branch,
       and the server's app origin; `PublicDeployment` accepts a base with a path (I5, I6).
 
 Hub:
