@@ -731,7 +731,7 @@ Decisions:
   tunnel route or Hub service per server, and no OpenShell change.
 
 Contracts, in the SDK:
-- [ ] The Apps contract follows the specification for a web host: Hub hosts apps; each app
+- [x] The Apps contract follows the specification for a web host: Hub hosts apps; each app
       runs in an opaque inner frame inside Hub's sandbox proxy on `sandbox.apps.{host}`;
       an app's `csp.frameDomains` may name only its own server's app origin. The old
       Console host and monorepo paths leave the contract (I1 to I4).
@@ -766,8 +766,9 @@ OpenShell fork:
       credential carries the bound placeholder (I11).
 
 Time:
-- [ ] Time's app: a self-contained view that supports `inline` and `fullscreen` and calls
-      Time's linked tools; the first proof of the host (I1 to I4).
+- [x] Time's app: a self-contained view that supports `inline` and `fullscreen` and calls
+      Time's linked tools; the first proof of the host (I1 to I4). Only `fullscreen` has a
+      host so far: Hub's direct URL.
 
 n8n:
 - [ ] `VeoveoAI/n8n`: the schema check before `CREATE SCHEMA` (branch `veoveo` over
