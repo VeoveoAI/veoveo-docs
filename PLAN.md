@@ -528,8 +528,13 @@ Execution order:
       Hub `1057bcb` qualifies the HTTP permission-preservation edge with an actual
       Rust mutation, independent accepted-input witness, exact raw restoration and
       passing connected targets ([source control](records/2026-10-30-http-permission-preservation-control.md)).
-      Next, reuse the policy proof through one shared generated graph, then connect
-      computed current grants and actual delegation narrowing to the client fields.
+      Hub `9aa3988` removes the duplicate generated graph and proves actual direct-call
+      policy grants reach the complete client, with exact independent membership and
+      no desired-grant premise. All 25 policy defaults, model audit, request defaults,
+      six routing targets and the direct theorem pass
+      ([shared graph and policy composition](records/2026-10-30-shared-policy-request-proof.md)).
+      Next, derive installation and registration together from the computed selected
+      route, then connect actual delegation narrowing to those client fields.
       Native collection correspondence, unconditional selected completion,
       full constructor-input presence/latest-row refinement, qualification of the
       remaining composed edges,
