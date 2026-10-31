@@ -763,7 +763,14 @@ Execution order:
       The leaf passed in 2.776 s with seventeen axiom guards, retaining only the
       existing native time-addition boundary where needed
       ([state checkpoint](records/2026-10-31-discovery-cache-state-invariants.md)).
-      Finite replacement/generation histories and semantic controls are next;
+      Hub `5aa01ef` adds finite histories defined by actual method equations,
+      deriving invariants from empty and preserving generation fences through
+      arbitrary supported suffixes. Full key invalidation also fences old work
+      across accepted replacements under scoped same-key ticket nonreuse; final
+      ticket exclusion is derived. Constructive accepted/advancing histories and
+      twelve axiom guards pass in 2.847 s
+      ([history checkpoint](records/2026-10-31-discovery-cache-finite-histories.md)).
+      Actual-source semantic controls and restored qualification are next;
       server-wide invalidation, listeners and native wrapper refinement remain open.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
