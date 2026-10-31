@@ -587,7 +587,13 @@ Execution order:
       prove the wrong results, exact source/generated restoration and fresh
       baseline proofs pass. These are intentional faults, not new production
       defects ([context semantic controls](records/2026-10-31-sdk-context-semantic-controls.md)).
-      Next, connect actual SDK issuance/recipient behavior, preserving the distinction
+      SDK `95ecd75` proves generic complete identity construction and delegation
+      refusal priority, preserving all fields, native errors/effects and the
+      conditional source-expiry cap. Populated Direct and inherited-chain acting
+      examples and the final manual targets pass all nine audits. Constructor
+      deadline controls and complete public issuance/claims remain open
+      ([complete identity construction](records/2026-10-31-sdk-full-identity-construction.md)).
+      Next, qualify those deadline controls and connect public SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
       identifies the required exact identifier, set/traversal, timestamp and complete
