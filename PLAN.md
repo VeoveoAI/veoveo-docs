@@ -607,9 +607,11 @@ Execution order:
       derive both complete wrong outputs, and exact source/raw restoration plus
       a fresh fourteen-audit baseline passes
       ([claims permission control](records/2026-10-31-sdk-claims-permission-control.md)).
-      Next, connect public SDK issuance/signing/recipient behavior and investigate
-      extraction of Core's unchanged namespace helper, preserving the distinction
-      between the prepared extraction revision and Hub's pinned dependency.
+      Next, connect public SDK issuance/signing/recipient behavior, preserving the
+      distinction between the prepared extraction revision and Hub's pinned
+      dependency. A bounded unchanged-helper probe passes Charon but fails pinned
+      Aeneas string-pattern signature translation; native namespace refinement
+      remains explicit ([probe](records/2026-10-31-permission-namespace-extraction-boundary.md)).
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
       identifies the required exact identifier, set/traversal, timestamp and complete
       context correspondence, plus the separate caller TTL and verifier-wrapper
