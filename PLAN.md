@@ -616,7 +616,13 @@ Execution order:
       refusal before an independently invalid client context. The two manual
       targets pass all seven new audits
       ([issuer examples](records/2026-10-31-sdk-public-issuer-examples.md)).
-      Public-issuer source-fault qualification remains next.
+      SDK `6afa18a` qualifies the public issuer's actual-source guard inversion:
+      the unchanged proof rejects it, an independent witness proves the wrong
+      refusal, and exact same-tree source/raw restoration plus a fresh four-target
+      baseline passes all eleven public audits
+      ([issuer guard control](records/2026-10-31-sdk-public-issuer-guard-control.md)).
+      Connecting Hub's actual caller to the checked SDK issuer is next, with
+      complete value correspondence and explicit source-version applicability.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
       A bounded unchanged-helper probe passes Charon but fails pinned
