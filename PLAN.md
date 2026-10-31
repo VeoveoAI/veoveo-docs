@@ -672,6 +672,16 @@ Execution order:
       Added AppOrigin, registration-surface and administrative-revocation domains
       require fresh extraction and formal adaptation
       ([merged Hub native checkpoint](records/2026-10-31-hub-merged-source-native.md)).
+      Hub `6d69258` records fresh extraction and passing formal adaptation on that
+      exact stack:
+      AppOrigin's complete valid/refused decisions, whole constructor-input row
+      provenance through selection with ordered surface fields, and administrative
+      revocation are included. Existing current-policy, caller and request targets
+      pass; the two new proof targets remain manual and nondefault
+      ([current-domain qualification](records/2026-10-31-hub-current-domain-proofs.md)).
+      Next is composition from computed route/current grants to issuer outcome,
+      removing arbitrary client/grant provenance while retaining the explicit
+      native SDK equivalence and async/SQL boundaries.
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
