@@ -625,7 +625,13 @@ Execution order:
       correspondence between the two extracted type graphs. Direct and named
       checks pass fourteen standard-only guards in a shared tool context
       ([value bridge](records/2026-10-31-hub-sdk-issuer-value-bridge.md)).
-      Complete record field meaning and connecting Hub's actual caller to the
+      Hub `e4da328` proves complete request/identity field correspondence from
+      independent physical bounds, SDK-to-Hub token/error preservation and modeled
+      result/effect preservation. Twenty-three guards pass; a bidirectional role
+      swap preserves inverse laws but fails the independent field contract, and
+      exact restoration passes the named targets
+      ([complete record bridge](records/2026-10-31-hub-sdk-complete-record-bridge.md)).
+      Timestamp comparison/minimum and connecting Hub's actual caller to the
       checked SDK issuer remain next, with explicit source-version applicability.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
