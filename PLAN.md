@@ -481,7 +481,11 @@ Execution order:
       snapshot-map preservation. Model compilation, direct proof, default package
       build and executable axiom audits pass
       ([proof checkpoint](records/2026-10-30-request-assembly-proof.md)).
-      Actual selected/get correctness, namespace-helper completion/order, provenance
+      Hub `9d064b6` proves the actual slug getter returns the sole matching complete
+      registration and refuses zero or multiple matches. All five axiom audits and
+      the direct/nondefault target checks pass
+      ([lookup checkpoint](records/2026-10-30-registration-lookup-proof.md)).
+      Full selected-map correctness, namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the new module's
       actual-source semantic controls remain open. SDK `e268032` makes the actual
       issuer/context/claims path translatable; 35 native token tests, format and
