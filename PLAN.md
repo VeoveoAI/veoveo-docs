@@ -621,8 +621,12 @@ Execution order:
       refusal, and exact same-tree source/raw restoration plus a fresh four-target
       baseline passes all eleven public audits
       ([issuer guard control](records/2026-10-31-sdk-public-issuer-guard-control.md)).
-      Connecting Hub's actual caller to the checked SDK issuer is next, with
-      complete value correspondence and explicit source-version applicability.
+      Hub `e9d9c8a` establishes identifier/payload, ordered-set and bounded-timestamp
+      correspondence between the two extracted type graphs. Direct and named
+      checks pass fourteen standard-only guards in a shared tool context
+      ([value bridge](records/2026-10-31-hub-sdk-issuer-value-bridge.md)).
+      Complete record field meaning and connecting Hub's actual caller to the
+      checked SDK issuer remain next, with explicit source-version applicability.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
       A bounded unchanged-helper probe passes Charon but fails pinned
