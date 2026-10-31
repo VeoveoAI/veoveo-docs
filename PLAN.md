@@ -520,8 +520,13 @@ Execution order:
       model map-method adapter and allocation-erased Arc creation. This qualifies
       the supporting model, not the pending constructor/route correctness claims
       ([constructor extraction](records/2026-10-30-snapshot-constructor-extraction.md)).
+      Hub `3cf2feb` derives actual constructor key/row coherence through arbitrary
+      overwriting insertion, then connects exact selected per-slug lookup to the
+      actual HTTP destination and direct/delegated request context. Both new
+      nondefault targets pass nine scoped audits with an unchanged 66-path source
+      map ([connected route](records/2026-10-30-constructed-route-context-proof.md)).
       Native collection correspondence, unconditional selected completion,
-      constructor coherence, per-slug uniqueness, combined semantic qualification,
+      full constructor-input presence/latest-row refinement, combined semantic qualification,
       namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
