@@ -552,6 +552,13 @@ Execution order:
       pass, including a separate native run against current SDK main. This is proof
       preparation; the operational model and issuer correctness remain unfinished
       ([extraction milestone](records/2026-10-30-sdk-delegated-id-extraction.md)).
+      SDK `5d37105` then qualifies the actual issuer/context/claims/recipient model
+      and nine-entry dependency audit. Seven functions have only standard axioms;
+      identity creation and signing retain explicit native observations. A private
+      parameter rename resolves a generated namespace collision, with fresh
+      extraction and 35 passing native token tests. Exact issuer correctness and
+      direct/delegated constructions remain next
+      ([checked model](records/2026-10-30-sdk-internal-auth-model.md)).
       Next, connect actual SDK issuance/recipient behavior, preserving the distinction
       between its prepared extraction revision and Hub's pinned dependency.
       Native collection correspondence, unconditional selected completion,
