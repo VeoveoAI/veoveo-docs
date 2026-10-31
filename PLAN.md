@@ -494,7 +494,10 @@ Execution order:
       and refusal, including preservation of the complete matching registration
       and snapshot state. All ten module audits and direct/target checks pass
       ([entry checkpoint](records/2026-10-30-selected-entry-proof.md)).
-      Its actual-source semantic control remains pending.
+      Hub `9b367d3` qualifies it against an actual-Rust slug-check bypass, with an
+      independent wrong-route witness and exact canonical restoration followed by
+      fresh passing proof checks
+      ([entry control](records/2026-10-30-selected-entry-control.md)).
       Full selected-map correctness, namespace-helper completion/order, provenance
       of current permissions, SDK issuer/recipient composition and the separate
       assembly contracts' semantic controls remain open. SDK `e268032` makes the actual
