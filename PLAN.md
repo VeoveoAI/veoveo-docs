@@ -725,6 +725,10 @@ Decisions:
   a Hub convention. Card or full page is the specification's display mode; no Veoveo
   metadata is added.
 - n8n comes from the `VeoveoAI/n8n` fork, whose changes stay in the fork.
+- Hub tells app origins apart by `X-Forwarded-Host`, which `cloudflared` sets on the
+  wildcard route from the name the browser asked for, replacing a client's value, and
+  which OpenShell's ingress passes on. Hub reads it on its `apps` listener alone. No
+  tunnel route or Hub service per server, and no OpenShell change.
 
 Contracts, in the SDK:
 - [ ] The Apps contract follows the specification for a web host: Hub hosts apps; each app
