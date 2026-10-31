@@ -653,6 +653,12 @@ Execution order:
       coding worker was interrupted; this control is not yet complete
       ([partial control checkpoint](records/2026-10-31-hub-caller-deadline-control.md)).
       Source-version applicability and supplied-input boundaries remain explicit.
+      Hub `e68d33a` refreshes that applicability audit against fetched Hub
+      `0ff0819` and SDK `7459481`: five relevant function regions are unchanged,
+      but the remote's non-MCP forwarder, AppOrigin policy cases, registration
+      surfaces and newer Core dependency are outside the existing graph's claims
+      ([source audit](records/2026-10-31-hub-proof-source-applicability.md)).
+      This is source review only; it introduces no runtime/pin change or new proof.
       TTL/clock wrappers and HTTP transport remain separate.
       Native signing/verifier and Hub integration retain the distinction between
       the prepared extraction revision and Hub's pinned dependency.
