@@ -597,8 +597,14 @@ Execution order:
       an incorrectly refused acting call. Independent witnesses establish both
       wrong results; exact same-tree source/model restoration and fresh nine-audit
       identity builds pass ([deadline controls](records/2026-10-31-sdk-identity-deadline-controls.md)).
-      Next, prove complete signer claims and connect public SDK issuance/recipient behavior, preserving the distinction
-      between its prepared extraction revision and Hub's pinned dependency.
+      SDK `ed21505` proves complete actual claims assembly against the independent
+      specification, including scope text, actor-chain order, every invocation
+      field and empty/nonempty permission details. Populated delegated and empty
+      Direct constructions pass; the three manual targets pass all fourteen new
+      standard-only audits ([claims assembly](records/2026-10-31-sdk-claims-assembly.md)).
+      Next, qualify the permission-detail source control and connect public SDK
+      issuance/signing/recipient behavior, preserving the distinction between its
+      prepared extraction revision and Hub's pinned dependency.
       The [composition-boundary review](records/2026-10-31-issuer-composition-boundaries.md)
       identifies the required exact identifier, set/traversal, timestamp and complete
       context correspondence, plus the separate caller TTL and verifier-wrapper
