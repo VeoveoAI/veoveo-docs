@@ -1280,9 +1280,9 @@ Done when section J is proven, with a record for each step.
 - `n8n.apps.{host}` asks for sign-in before answering "No app here", because a registration of
   the slug still declares an app origin; and every other name under `*.apps` answers with the
   sandbox proxy's page. Serve the proxy on `sandbox.apps` alone and trace the registration.
-- Which n8n node and credential types the parent admits by default: today only the template's
-  basic nodes and no credential type, so a team cannot use HTTP Request or a credential until
-  the parent admits it.
+- Lock down the n8n node and credential types the parent admits: today it admits all but the
+  always-excluded nodes, as the owner chose while proving it works
+  ([record](records/2026-11-01-n8n-open-admission.md)).
 - n8n's loopback listener answers any process in its sandbox; isolate it from n8n's own
   nodes.
 - `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
