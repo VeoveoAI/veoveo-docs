@@ -883,9 +883,12 @@ Execution order:
       Independent wrong-result/refusal witnesses pass first; both exact source
       restorations and fresh baseline checks pass
       ([semantic controls](records/2026-10-31-factory-semantic-controls.md)).
-      The next native investigation is a deterministic stale linked-preparation
-      interleaving; it is not yet a confirmed defect. Finite-history composition
-      and concurrent registration publication ordering remain open.
+      A deterministic native component test now reproduces a stale linked
+      preparation undoing a completed parent retarget: runner, native command,
+      client lookup and subsequent push routing revert to the old repository
+      ([concurrency reproduction](records/2026-10-31-factory-stale-preparation.md)).
+      Correction and qualification are pending. Finite-history composition and
+      concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
