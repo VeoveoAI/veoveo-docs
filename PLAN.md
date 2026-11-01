@@ -832,6 +832,13 @@ Execution order:
       reconstruction are the next formal integration slice, not already qualified
       by that publication
       ([SDK history and checks](records/2026-10-31-sdk-proof-history-publication.md)).
+      SDK `ce85c3d` records the unmodified current four-root issuance/recipient/
+      verifier extraction. Its final own-graph inventory passes, but Aeneas cannot
+      translate the verifier's early loop exits and identifier-profile function
+      pointers; no Lean output or new theorem is produced
+      ([translation boundary](records/2026-10-31-linked-identity-translation-boundary.md)).
+      Production code is unchanged. Current verifier continuity remains open;
+      source-linked repository-grant computation is the next candidate foundation.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
