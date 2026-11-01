@@ -485,9 +485,12 @@ Execution order:
       ownership, ordered staging, current DELETE snapshots and the exact full
       removal effect at reached commits; thirty axiom guards pass
       ([proof checkpoint](records/2026-11-01-registration-lifetime-foundation.md)).
-      Exact registration effects, mixed commit histories, no-orphan/abort
-      consequences, constructive valid/original/rollback executions and semantic
-      controls remain next, with complete response payloads still unproved.
+      The history extension now proves exact registration effects, independent
+      actual-commit-order histories with explicit frame interference, initial
+      no-orphan preservation and confirmed-abort exclusion; twenty new guards pass
+      ([history checkpoint](records/2026-11-01-registration-lifetime-history.md)).
+      Constructive valid/original/rollback executions and semantic controls remain
+      next, with complete response payloads still unproved.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
