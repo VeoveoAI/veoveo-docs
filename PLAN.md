@@ -870,7 +870,11 @@ Execution order:
       proves independent modeled provider/native-observation/request outputs and a
       populated constructive retarget, with 14 new axiom guards
       ([output checkpoint](records/2026-10-31-factory-native-output-proof.md)).
-      Independent lifecycle-choice contracts, failure-prefix/retry composition
+      Exact failure prefixes, row/runner survival, pre-target preservation and
+      conditional two-call retry now pass, including native absence and uncertain
+      commits, with 21 new axiom guards
+      ([recovery checkpoint](records/2026-10-31-factory-recovery-proof.md)).
+      Independent lifecycle-choice contracts, finite-history composition
       and semantic controls remain next; independent
       stale preparations and concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
