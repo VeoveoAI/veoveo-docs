@@ -476,6 +476,12 @@ Execution order:
       A fresh Linux compilation qualifies the corrected regression; instance-row
       serialization and the corresponding lifecycle proof are in progress
       ([native reproduction](records/2026-11-01-registration-instance-removal-race.md)).
+      Hub `12a132d` now implements that shared instance-row serialization. Both
+      native acquisition orders pass, including actual registration acceptance;
+      neighboring integration/cleanup checks and full Mac/Linux Docker checks
+      pass (471 tests and two external-fixture skips on each host).
+      [Native fix qualification](records/2026-11-01-registration-instance-removal-fix.md)
+      is complete; the corresponding lifecycle proof remains in progress.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
