@@ -920,6 +920,11 @@ Execution order:
       This closes the scoped watcher-control checkpoint, not native/distributed
       Factory verification. Remaining work includes saved-parent retry freshness,
       cross-replica reconciliation and concurrent registration publication ordering.
+      A native component regression now reproduces a saved parent retry undoing
+      a completed newer retarget: program, target, client lookup and later push
+      routing revert to the older revision. The one test fails its expected-output
+      assertion in 1.69 s against unchanged production; correction remains pending
+      ([saved retry reproduction](records/2026-10-31-factory-saved-parent-retry.md)).
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
