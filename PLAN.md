@@ -564,16 +564,22 @@ Execution order:
       premises, and proves reached no-op cursor absence and own rollback
       preservation. The scope is one admitted deployment; other registration
       audit programs and native SQL/Core correspondence remain explicit
-      boundaries. Next: populated success, refusal/confirmed-abort/retry,
-      replacement/no-op and omitted-Update control
+      boundaries. The populated checkpoints follow below; replacement/no-op and
+      omitted-Update control remain
       ([foundation evidence](records/2026-11-01-registration-audited-update-foundation.md)).
       The populated matched-update path now qualifies nine actual model steps,
       independent complete database/audit outputs, retained fields and unrelated
       state, private precommit writes, lock release and successful store reply.
       Fifteen declaration guards and nine printed closures pass; execution stays
-      separately importable for the future omission control. Next is explicit
-      audit refusal with confirmed abort and fresh retry, then replacement/no-op
-      and the control ([success evidence](records/2026-11-01-registration-audited-update-success.md)).
+      separately importable for the future omission control
+      ([success evidence](records/2026-11-01-registration-audited-update-success.md)).
+      Audit-refusal recovery now qualifies sixteen composed actual model steps:
+      failure preserves committed data/audit, explicit abort releases the lock,
+      and a fresh retry produces the independently specified complete result.
+      Both attempts remain in the final maps. Twenty guards and nine closures pass;
+      this is a possible recovery schedule, not a liveness or native-SQL proof.
+      Next: actual replacement/stale no-op, then the omitted-Update control
+      ([recovery evidence](records/2026-11-01-registration-audited-update-recovery.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
