@@ -20,9 +20,9 @@ Rules:
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
 `*.apps.veoveo.bioma.ai`, deployed 2026-10-31: Hub `f8c97ad` (SDK `7360c0f`, core `422dcf2`; linked-repository runners and routing, Computer apps and keep-on), Lore
 `c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
-supervisor `49761d1`; factory instances take it at their next push), installation `462e93e` (Computer version `0d5e74dd8b1f`), OpenCode
+supervisor `49761d1`; factory instances take it at their next push), installation `89c5f35` (Computer version `a8f5e9711a8d`; the Hub CLI on SDK `7360c0f`), OpenCode
 `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `d8f8a87`, Artifact `91e62be`, Media
-`6bd5843`, Embedding `95216bd`; the Hub CLI on SDK `05273d1`.
+`6bd5843`, Embedding `95216bd`; n8n `61f2fb4` as two runners.
 
 ## A. Identity and administration
 
@@ -181,10 +181,10 @@ sits before G because G stays last.
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
 | J1 | Access stops at a link | A parent repository with two linked repositories; read it as a person with a grant on the parent and on one link | The ungranted linked repository is refused, directly and through the link; with every grant, one tree | proven 2026-10-31: a direct clone of the ungranted repository was refused and a clone of the parent stopped at its link; after the grant a fresh clone was one tree. The refused clone fails as a whole rather than leaving the link unopened, and reports a stream reset as "Repository not found", a follow-up ([record](records/2026-10-31-lore-link-access.md)) |
-| J2 | A runner admits only people with a grant on its repository | Call `n8n.{team}__run` as a person with a grant of their own, through a group, and with none | With a grant: the run; without: refused by the Hub, and the team is not listed | pending |
-| J3 | Calls reach the right team's runner | Two linked teams; call each team's tools and read each `n8n://{team}/` resource | Each reaches its own runner; `tools/list` names only the teams the caller holds a grant on | pending |
+| J2 | A runner admits only people with a grant on its repository | Call `n8n.{team}__run` as a person with a grant of their own, through a group, and with none | With a grant: the run; without: refused by the Hub, and the team is not listed | proven 2026-10-31: with A's own grant on team-b removed, A (role `admin`) was refused at the link; through a group, listed in 1.4 s and served; removed from the group, refused in 1.8 s. A `member` is refused by the role gate first, since `n8n.workflows.run` is `sensitive` ([record](records/2026-10-31-n8n-runners-phase-1.md)) |
+| J3 | Calls reach the right team's runner | Two linked teams; call each team's tools and read each `n8n://{team}/` resource | Each reaches its own runner; `tools/list` names only the teams the caller holds a grant on | proven 2026-10-31: `n8n__team-a__run` and `n8n__team-b__run` answered from their own runners (679 ms, 698 ms) with each team's output; each team's `n8n://{link}/workflows` lists only its own; `resolve-time` reached Time through the bridge under a runner ([record](records/2026-10-31-n8n-runners-phase-1.md)) |
 | J4 | A team releases by merging in its own repository | Merge a workflow into a team repository's production branch | Its runner applies it as the merger and the Hub records the revision; the other team's runner does not restart | pending |
-| J5 | Adding or removing a link adds or removes its runners | Add a team's link to the parent, then remove it | A runner starts for each environment, then each goes | pending |
+| J5 | Adding or removing a link adds or removes its runners | Add a team's link to the parent, then remove it | A runner starts for each environment, then each goes | proven 2026-10-31: `team-c` added, its run listed 6 min 34 s after the push; removed, gone within 15 s. Every parent push also recreated the other runners, a fix in progress ([record](records/2026-10-31-n8n-runners-phase-1.md)) |
 | J6 | A team's credentials stay in its runner | Grant a provider to one team's repository; use its placeholder in the other team's workflow | Only the granted team's runner holds the provider; the other's request is not substituted | pending |
 | J7 | Execution data follows who fetched it | Two people each start a run through MCP; a webhook starts a third | Each person reads only their own MCP run's data; everyone with a grant reads the webhook run's data; status and errors for all | pending |
 | J8 | A person edits in their own Computer | Open the Computer's n8n; build a workflow, save it, push it | n8n opens the checkout's team workflows with the person as its owner; saving writes the files; no other person reaches it | pending |
