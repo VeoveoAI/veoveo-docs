@@ -510,9 +510,15 @@ Execution order:
       returns after admission commits without a Register audit. Both reach their
       intended final assertions after fresh compilation and real PostgreSQL
       fixture checks ([native evidence](records/2026-11-01-registration-audit-gaps.md)).
-      Moving existing registration audit activities into their owning transactions
-      is in progress; rollback/retry qualification and the composed proof remain
-      pending. This checkpoint adds no Lean theorem or deployed evidence.
+      Existing registration audit activities now append in their owning
+      transactions, including intentional removal. Real audit-insert failures
+      roll back owned state and earlier private audits; retries and missing/no-op
+      behavior pass. Full Mac/Linux Docker checks each pass 475 tests with two
+      existing external-fixture skips; test SQL packaging and a premature factory
+      test observation were corrected during qualification
+      ([native fix evidence](records/2026-11-01-registration-audit-fix.md)).
+      The composed audited-store proof is in progress; this native checkpoint adds
+      no Lean theorem or deployed evidence.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
