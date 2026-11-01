@@ -912,7 +912,13 @@ Execution order:
       clearing and successful recorded fallback retaining the requested-target
       error; ten guards pass with a 92.718 s proof check
       ([fixture checkpoint](records/2026-10-31-factory-watcher-fixtures.md)).
-      Semantic controls/restoration remain pending, alongside saved-parent retry freshness,
+      Two watcher model controls now prove the intended wrong outputs/refusal and
+      fail the unchanged valid-acceptance assertion. Exact patch reversals restore
+      the complete source maps; fresh positive checks and the final six-history
+      proof pass with original artifact hashes (92.624 s for the final proof)
+      ([watcher controls](records/2026-10-31-factory-watcher-controls.md)).
+      This closes the scoped watcher-control checkpoint, not native/distributed
+      Factory verification. Remaining work includes saved-parent retry freshness,
       cross-replica reconciliation and concurrent registration publication ordering.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
