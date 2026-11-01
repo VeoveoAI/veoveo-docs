@@ -543,9 +543,17 @@ Execution order:
       complete data/audit outputs. A lost-reply suffix also proves that an error
       can accompany committed removal and audit. Nineteen declaration guards and
       seven printed closures pass; this is a two-row handwritten-model schedule,
-      distinct from the previous one-row native refusal fixture. Next is the
-      postcommit service boundary, then remaining registration operation adapters
+      distinct from the previous one-row native refusal fixture
       ([recovery evidence](records/2026-11-01-registration-audit-recovery.md)).
+      The source-shaped service continuation now preserves first errors, exact
+      call prefixes, typed response errors and opaque successful output. A closed
+      composition starts from the checked two-row store execution and reaches
+      confirmed no-write marker refusal with complete admitted data/audit still
+      known, inner store success and outer Internal. Nineteen guards and eight
+      printed closures pass. This does not prove native callbacks, response
+      construction or arbitrary concurrent persistence. Next is an ignore-marker
+      refusal control, then remaining registration operation adapters
+      ([continuation evidence](records/2026-11-01-registration-postcommit-continuation.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
