@@ -555,9 +555,18 @@ Execution order:
       ([continuation evidence](records/2026-11-01-registration-postcommit-continuation.md)).
       The ignored-marker control now proves the independent wrong ten-call success,
       observes the unchanged acceptance proof reject that result, and restores all
-      sources with fresh positive compilation. Next is the Update audit adapter,
-      retaining an explicit boundary for other registrations' audit programs
+      sources with fresh positive compilation, retaining an explicit boundary
+      for other registrations' audit programs
       ([control evidence](records/2026-11-01-registration-postcommit-control.md)).
+      The Update audit foundation now passes 27 declaration guards and ten
+      printed closures. It reuses actual mixed data transitions, derives the
+      singleton Update intent and complete commit under stated freshness
+      premises, and proves reached no-op cursor absence and own rollback
+      preservation. The scope is one admitted deployment; other registration
+      audit programs and native SQL/Core correspondence remain explicit
+      boundaries. Next: populated success, refusal/confirmed-abort/retry,
+      replacement/no-op and omitted-Update control
+      ([foundation evidence](records/2026-11-01-registration-audited-update-foundation.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
