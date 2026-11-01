@@ -1188,39 +1188,47 @@ Lore:
       [record](records/2026-10-31-lore-link-access.md)).
 
 Hub:
-- [ ] Links are first-class: read from the parent's revision; a grant on a linked
+- [x] Links are first-class: read from the parent's revision; a grant on a linked
       repository decides access to its path; the forwarded token carries the caller's grant
-      on the runner's repository (J2, J3).
-- [ ] Runners: one for each environment branch and link, running the team branch's head
+      on the runner's repository (J2, J3,
+      [record](records/2026-10-31-n8n-runners-phase-1.md)).
+- [x] Runners: one for each environment branch and link, running the team branch's head
       as its pusher and recording the applied revision; added, updated and removed as links
-      and team branches change; preview runners on request (J4, J5).
-- [ ] Routing and names per link, with Tasks and token exchange per runner (J3).
-- [ ] Providers granted to a team's repository attach to its runners (J6).
-- [ ] Computers: the Computer's n8n served to its owner, `ui/open-link` to the person's own
-      Computer, and a Computer that stays on until its owner turns it off (J8, J9, J11).
+      and team branches change, leaving the other runners untouched (J4, J5,
+      [record](records/2026-11-01-n8n-runners-phase-2.md)). Preview runners on request stay
+      planned.
+- [x] Routing and names per link, with Tasks and token exchange per runner (J3).
+- [x] Providers granted to a team's repository attach to its runners, read from the live
+      control plane at each push (J6, [record](records/2026-11-01-n8n-team-credentials.md)).
+- [x] Computers: the Computer's programs served to its owner (`computers.apps`),
+      `ui/open-link` to the person's own Computer, keep-on and stop (J8, J9,
+      [record](records/2026-11-01-n8n-in-the-computer.md)); J11 is checked after the
+      collection time.
 
 Installation:
-- [ ] n8n and the Veoveo nodes in the Computer image; Computer policy rules for n8n to reach
-      the model and the Hub's MCP as the person; a Computer sized for n8n (J8, J12).
+- [x] n8n and the Veoveo nodes in the Computer image; `veoveo-n8n-computer` the one n8n
+      program in the Computer policy's `hub` and `model` rules; OpenShell's `npm_registry`
+      rule; 6 GiB (J8, J12, [record](records/2026-11-01-n8n-assistant.md)).
 
 n8n server:
-- [ ] The runner: it applies one link's workflows, with a database schema per link and the
+- [x] The runner: it applies one link's workflows, in a database per runner, with the
       team's credentials file (J4, J6).
-- [ ] Execution data by who started the run and by the forwarded grant (J7).
-- [ ] The overview App (J9).
-- [ ] The team editor, its app origin, `editor_changes`, `n8n://editor` and the editor
+- [x] Execution data by who started the run and by the forwarded grant (J7).
+- [x] The overview App (J9).
+- [x] The team editor, its app origin, `editor_changes`, `n8n://editor` and the editor
       launcher removed (J10).
 
 Computer:
-- [ ] The Computer clones each team repository the person holds a grant on; n8n opens their
+- [x] The Computer clones each team repository the person holds a grant on; n8n opens their
       workflows and saves them back as files; "Edit in my Computer" opens a team and
       workflow, cloning as the person when needed (J8, J9).
-- [ ] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
+- [x] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
       sandbox protocol (J12).
 
 Docs:
-- [ ] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
-      section 13's state, which the diagram does not show yet.
+- [x] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
+      section 13's state. The diagram marks J8 to J12 pending and moves to proven once J11
+      is in.
 
 Order: the Lore check (J1) first, since everything rests on it; then the Lore update; then
 the designs and the diagram; then the Hub's links, runners and routing with the n8n server as runner; then
