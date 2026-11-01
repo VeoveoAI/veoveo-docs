@@ -481,7 +481,13 @@ Execution order:
       neighboring integration/cleanup checks and full Mac/Linux Docker checks
       pass (471 tests and two external-fixture skips on each host).
       [Native fix qualification](records/2026-11-01-registration-instance-removal-fix.md)
-      is complete; the corresponding lifecycle proof remains in progress.
+      is complete. The separate manual lifetime foundation now derives shared
+      ownership, ordered staging, current DELETE snapshots and the exact full
+      removal effect at reached commits; thirty axiom guards pass
+      ([proof checkpoint](records/2026-11-01-registration-lifetime-foundation.md)).
+      Exact registration effects, mixed commit histories, no-orphan/abort
+      consequences, constructive valid/original/rollback executions and semantic
+      controls remain next, with complete response payloads still unproved.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
