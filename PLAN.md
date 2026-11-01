@@ -532,6 +532,13 @@ Execution order:
       model input, not a claimed native creation history. Removal/rollback,
       postcommit and fault/restoration cases remain pending
       ([replacement witness](records/2026-11-01-registration-audited-replacement.md)).
+      The missing-final-Register model control now passes: its legal actual
+      execution and complete wrong ledger are proved, the unchanged acceptance
+      assertions reject the missing full record/cursor, and exact restoration
+      with a fresh affected compilation graph passes. This is model sensitivity
+      evidence, not a new native bug. Next is removal with partial audit append,
+      confirmed abort and retry, followed by the postcommit service boundary
+      ([control and restoration](records/2026-11-01-registration-audit-control.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
