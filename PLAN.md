@@ -505,6 +505,14 @@ Execution order:
       Next, review native response/postcommit and expected audit guarantees before
       extending the store proof or proposing source fixes. Complete response
       payloads and those service effects remain unproved.
+      Two native probes now reproduce actual audit gaps: intentional removal
+      clears registrations/logins without an audit, and a served-marker error
+      returns after admission commits without a Register audit. Both reach their
+      intended final assertions after fresh compilation and real PostgreSQL
+      fixture checks ([native evidence](records/2026-11-01-registration-audit-gaps.md)).
+      Moving existing registration audit activities into their owning transactions
+      is in progress; rollback/retry qualification and the composed proof remain
+      pending. This checkpoint adds no Lean theorem or deployed evidence.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
