@@ -866,8 +866,12 @@ Execution order:
       contracts, with 24 executable axiom audits
       ([proof checkpoint](records/2026-10-31-factory-retarget-row-proof.md)).
       This is handwritten source correspondence, not extracted async Rust or
-      formal SQL refinement. Complete native outputs, failure-prefix/retry
-      composition, valid runs and semantic controls remain next; independent
+      formal SQL refinement. The next checked extension derives capacity acceptance,
+      proves independent modeled provider/native-observation/request outputs and a
+      populated constructive retarget, with 14 new axiom guards
+      ([output checkpoint](records/2026-10-31-factory-native-output-proof.md)).
+      Independent lifecycle-choice contracts, failure-prefix/retry composition
+      and semantic controls remain next; independent
       stale preparations and concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
