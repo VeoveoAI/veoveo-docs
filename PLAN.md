@@ -947,9 +947,14 @@ Execution order:
       after both diagnostic clears derives its state/domain from the first
       operation and still succeeds
       ([history checkpoint](records/2026-10-31-factory-saved-parent-histories.md)).
-      Independent populated cases and semantic controls are still pending,
-      alongside initial allocation, general membership effects and the stated
-      wider lifecycle and native/distributed correspondence obligations.
+      Five independent populated sequences now pass against the models without
+      importing those correctness theorems: stale success/error, failed clear,
+      newer error protection, actual replacement at a reused name and valid
+      duplicate after both clears. Eight guards pass; the assertion proof takes
+      60.328 s ([populated checkpoint](records/2026-10-31-factory-saved-parent-fixtures.md)).
+      Semantic controls are still pending, alongside initial allocation, general
+      membership effects and the stated wider lifecycle and native/distributed
+      correspondence obligations.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
