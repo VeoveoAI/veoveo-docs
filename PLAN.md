@@ -952,9 +952,14 @@ Execution order:
       newer error protection, actual replacement at a reused name and valid
       duplicate after both clears. Eight guards pass; the assertion proof takes
       60.328 s ([populated checkpoint](records/2026-10-31-factory-saved-parent-fixtures.md)).
-      Semantic controls are still pending, alongside initial allocation, general
-      membership effects and the stated wider lifecycle and native/distributed
-      correspondence obligations.
+      Both selected semantic controls now detect their intended wrong outcomes:
+      old-head replay and refusal of a valid retry after diagnostics clear. Exact
+      patch reversals restore the complete source maps; fresh positive checks and
+      the final five-history proof pass with original artifact hashes (57.075 s
+      for the final proof)
+      ([saved-parent controls](records/2026-11-01-factory-saved-parent-controls.md)).
+      Initial allocation, general membership effects and the stated wider lifecycle
+      and native/distributed correspondence obligations remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
