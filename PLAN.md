@@ -1084,6 +1084,13 @@ Execution order:
       ([saved-parent controls](records/2026-11-01-factory-saved-parent-controls.md)).
       Initial allocation, general membership effects and the stated wider lifecycle
       and native/distributed correspondence obligations remain open.
+      The Computer store regression now covers old finish/failure during a newer
+      operation and after its completion. All four return false and preserve the
+      complete exposed Computer projection. Focused real-PostgreSQL execution passes
+      in 1.41 s; full Mac/Linux checks each pass 475 tests with two existing skips.
+      Hub `8b7303d` records this test-only checkpoint. The source-mapped replacement
+      Lean model is being authored; no new theorem or native sandbox guarantee is
+      claimed ([Computer native evidence](records/2026-11-01-computer-stale-completion-native.md)).
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
