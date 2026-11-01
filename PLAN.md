@@ -855,10 +855,17 @@ Execution order:
       The initial Factory review reproduced a same-name link-retarget defect:
       the sandbox command moves to the new repository while stored identity,
       credential lookup and later push routing retain the old target. A focused
-      native regression captures the complete mismatch; correction and live
-      registration propagation are in progress
-      ([reproduction](records/2026-10-31-factory-retarget-identity.md)). This is
-      native component evidence, not yet a Factory transition proof.
+      native regression captures the complete mismatch
+      ([reproduction](records/2026-10-31-factory-retarget-identity.md)). Hub
+      `48d7e25` corrects the complete target and live registration propagation;
+      all three focused regressions and the integrated Mac/Linux Docker checks
+      pass, 460 tests passed and two skipped on each host
+      ([fix qualification](records/2026-10-31-factory-retarget-fix.md)). The fix
+      is pushed; deployment is separate. The manual full-transition proof is
+      in progress, with success, partial failures, uncertain SQL outcomes and
+      retry distinguished. This is native component evidence, not yet a checked
+      Factory transition proof; independent stale preparations and concurrent
+      registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
