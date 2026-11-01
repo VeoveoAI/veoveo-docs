@@ -567,6 +567,13 @@ Execution order:
       boundaries. Next: populated success, refusal/confirmed-abort/retry,
       replacement/no-op and omitted-Update control
       ([foundation evidence](records/2026-11-01-registration-audited-update-foundation.md)).
+      The populated matched-update path now qualifies nine actual model steps,
+      independent complete database/audit outputs, retained fields and unrelated
+      state, private precommit writes, lock release and successful store reply.
+      Fifteen declaration guards and nine printed closures pass; execution stays
+      separately importable for the future omission control. Next is explicit
+      audit refusal with confirmed abort and fresh retry, then replacement/no-op
+      and the control ([success evidence](records/2026-11-01-registration-audited-update-success.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
