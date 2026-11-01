@@ -1237,6 +1237,10 @@ Done when section J is proven, with a record for each step.
   nodes.
 - `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
   restarting.
+- A runner or instance replaced without a gap: create the new sandbox under a per-generation
+  name, move the Hub's routing to it, then delete the old one. OpenShell has no update or
+  rename, and the Hub names a sandbox by its deployment, so a replacement serves nothing
+  between delete and create ([record](records/2026-10-31-n8n-runners-phase-1.md)).
 - Sleep and wake of factory instances through native stop and start, never with
   unfinished Tasks except those parked on provider webhooks.
 - Hard per-person caps (`caps.enforce`).
