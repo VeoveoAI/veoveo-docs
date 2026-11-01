@@ -494,8 +494,13 @@ Execution order:
       existing-deployment replacement. The original orphan refutes the same history
       contract the fixed execution satisfies; thirty-six new guards pass
       ([witness checkpoint](records/2026-11-01-registration-lifetime-witnesses.md)).
-      Semantic controls and exact restoration remain next, with complete response
-      payloads still unproved.
+      Two deliberate model faults now fail the unchanged login-cleanup and valid
+      response assertions after independent wrong-output diagnostics pass. Both
+      exact restorations and fresh positive graphs pass
+      ([semantic controls](records/2026-11-01-registration-lifetime-controls.md)).
+      The scoped store-model slice is qualified. Next, probe extraction of the
+      unchanged native response constructor and trace its postcommit effects;
+      complete response payloads and those service effects remain unproved.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
