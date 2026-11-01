@@ -471,6 +471,11 @@ Execution order:
       Physical SQL refinement, removal and broader lifecycle composition remain
       open. The next implementation slice connects registration identity with
       fresh/retained routing, current authority and SDK recipient checks.
+      The later lifecycle probe now reproduces first instance registration
+      committing after completed removal, leaving its login and catalog entry.
+      A fresh Linux compilation qualifies the corrected regression; instance-row
+      serialization and the corresponding lifecycle proof are in progress
+      ([native reproduction](records/2026-11-01-registration-instance-removal-race.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
