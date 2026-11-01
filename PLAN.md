@@ -489,8 +489,13 @@ Execution order:
       actual-commit-order histories with explicit frame interference, initial
       no-orphan preservation and confirmed-abort exclusion; twenty new guards pass
       ([history checkpoint](records/2026-11-01-registration-lifetime-history.md)).
-      Constructive valid/original/rollback executions and semantic controls remain
-      next, with complete response payloads still unproved.
+      Six constructive executions now establish independent complete stored outputs,
+      valid acceptance/cleanup, removal-first, abort/retry, lost commit reply and
+      existing-deployment replacement. The original orphan refutes the same history
+      contract the fixed execution satisfies; thirty-six new guards pass
+      ([witness checkpoint](records/2026-11-01-registration-lifetime-witnesses.md)).
+      Semantic controls and exact restoration remain next, with complete response
+      payloads still unproved.
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
