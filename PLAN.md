@@ -941,9 +941,15 @@ Execution order:
       stale/error/cancellation outcomes, exact preparation publication and complete
       current-head existing-runner outputs are checked
       ([foundation checkpoint](records/2026-10-31-factory-saved-parent-foundation.md)).
-      Composed newer-parent/old-retry histories, independent populated cases and
-      semantic controls are still pending, alongside the stated wider lifecycle
-      and native/distributed correspondence obligations.
+      Composed histories now pass seven guards and closure audits in 4.873 s:
+      actual newer-parent application survives an old prepared retry, a newer
+      source-error publication survives obsolete work, and a valid duplicate
+      after both diagnostic clears derives its state/domain from the first
+      operation and still succeeds
+      ([history checkpoint](records/2026-10-31-factory-saved-parent-histories.md)).
+      Independent populated cases and semantic controls are still pending,
+      alongside initial allocation, general membership effects and the stated
+      wider lifecycle and native/distributed correspondence obligations.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
