@@ -903,8 +903,11 @@ Execution order:
       Intermediate row/key uniqueness is derived from the first operation;
       23 axiom guards pass in 5.773 s
       ([history checkpoint](records/2026-10-31-factory-watcher-histories.md)).
-      Detailed failure/fallback/status ordering, scoped deletion composition,
-      populated witnesses and semantic controls remain pending, alongside saved-parent retry freshness,
+      Failure/fallback/status ordering and scoped completed-deletion composition
+      now pass ten axiom guards in 5.473 s, preserving full status payloads and
+      committed-versus-acknowledged outcomes
+      ([status checkpoint](records/2026-10-31-factory-watcher-status.md)).
+      Populated witnesses and semantic controls remain pending, alongside saved-parent retry freshness,
       cross-replica reconciliation and concurrent registration publication ordering.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
