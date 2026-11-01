@@ -10,7 +10,7 @@ component's `DESIGN.md`, which this document links to and does not restate.
 ## Purpose
 
 Every person gets a private **Computer**: a persistent OpenShell sandbox running the
-OpenCode agent, the Lore command line and a connection to the Hub. The agent works
+OpenCode agent, the Lore command line, a connection to the Hub and the person's own n8n. The agent works
 there with its ordinary file and shell tools. Two acts publish work to the platform: a
 Lore push publishes source, and an Artifact upload publishes content. Nothing else on a
 Computer, such as local commits, scratch files or agent history, is platform state.
@@ -30,7 +30,7 @@ model proxy: the agent calls its model provider directly through OpenShell's pro
 
 | Component | Responsibility | Repository | Design |
 |---|---|---|---|
-| Hub | Entry point: browser and MCP authentication, its authorization server (application and Lore tokens), server registration, routing and selection, the factory reconciler, Computers | [veoveo-hub](https://github.com/VeoveoAI/veoveo-hub) | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md), [token and session authority](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/auth/DESIGN.md) |
+| Hub | Entry point: browser and MCP authentication, its authorization server (application and Lore tokens), server registration, routing and selection, the factory reconciler and its runners of linked repositories, the MCP Apps host and servers' app origins, Computers and their programs | [veoveo-hub](https://github.com/VeoveoAI/veoveo-hub) | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md), [token and session authority](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/auth/DESIGN.md) |
 | Hub SDK | MCP hosting, the registration protocol and client, forwarded-identity checks, calls between servers, the Task adapter, the command-line client | [veoveo-hub-sdk](https://github.com/VeoveoAI/veoveo-hub-sdk) | [server contract](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/DESIGN.md), [registration protocol](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/registration/DESIGN.md), [CLI](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk-cli/DESIGN.md) |
 | Core | Protocol-independent libraries: types, the database kernel, durable Tasks, audit and usage | [veoveo-core](https://github.com/VeoveoAI/veoveo-core) | [database](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/DATABASE.md), [conventions](https://github.com/VeoveoAI/veoveo-core/blob/main/docs/CONVENTIONS.md), `platform/*/DESIGN.md` |
 | Console | The Hub MCP server: the Hub's activities as agent tools (status, logs, selection, watching, repository creation, sharing and groups, the Computer) | [veoveo-mcp-console](https://github.com/VeoveoAI/veoveo-mcp-console) | [console](https://github.com/VeoveoAI/veoveo-mcp-console/blob/main/crates/veoveo-mcp-console/DESIGN.md) |
@@ -38,6 +38,7 @@ model proxy: the agent calls its model provider directly through OpenShell's pro
 | Media | Generation runs as durable Tasks against an outside provider, with outputs stored through Artifact | [veoveo-mcp-media](https://github.com/VeoveoAI/veoveo-mcp-media) | [Media](https://github.com/VeoveoAI/veoveo-mcp-media/blob/main/crates/veoveo-mcp-media/DESIGN.md) |
 | Embedding | The embedding contract, its permissions and usage; media resolved through Artifact | [veoveo-mcp-embedding](https://github.com/VeoveoAI/veoveo-mcp-embedding) | [Embedding](https://github.com/VeoveoAI/veoveo-mcp-embedding/blob/main/crates/veoveo-mcp-embedding/DESIGN.md) |
 | Embedding runtime | Private GPU inference behind the Embedding server | [veoveo-runtime-embedding](https://github.com/VeoveoAI/veoveo-runtime-embedding) | [runtime](https://github.com/VeoveoAI/veoveo-runtime-embedding/blob/main/DESIGN.md) |
+| n8n | Workflow automation: one runner for each team repository linked into the n8n repository, and the person's own n8n in each Computer through `veoveo-n8n-computer` | [veoveo-mcp-n8n](https://github.com/VeoveoAI/veoveo-mcp-n8n), with n8n from [VeoveoAI/n8n](https://github.com/VeoveoAI/n8n), a fork | [n8n](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md) |
 | Time | Time resolution, schedules and events; the reference server of the factory | [veoveo-mcp-time](https://github.com/VeoveoAI/veoveo-mcp-time) | [Time](https://github.com/VeoveoAI/veoveo-mcp-time/blob/main/crates/veoveo-mcp-time/DESIGN.md) |
 | MCP template | The starting point of a Rust server repository, including its factory layout | [veoveo-template-mcp-rust](https://github.com/VeoveoAI/veoveo-template-mcp-rust) | [template](https://github.com/VeoveoAI/veoveo-template-mcp-rust/blob/main/crates/veoveo-template-mcp-rust/DESIGN.md) |
 | Installation template | How an installation is assembled and deployed: placement, images, versions, configuration ownership, identity wiring, policies and providers | [veoveo-template-installation](https://github.com/VeoveoAI/veoveo-template-installation) | [installation](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md) |
@@ -81,7 +82,7 @@ tree in one direction.
 | Forwarded tokens | Signed by Hub per request, addressed to one server | The caller, client, tenant and the permissions granted in that server's namespace; a call between servers carries the calling server as actor and only the permissions it declared and the caller holds |
 | Lore tokens | Issued by Hub's authorization server from explicit repository assignments, to people and to groups, in Hub's control plane; each names one repository, or none | Native Lore access, which Lore verifies with its unchanged authorization |
 | A Computer's credentials | OpenShell's credential custody, refreshed from Hub with the Computer's own client, a Lore token per repository a request names | The owner's Hub token and Lore token, which the Computer sees only as placeholders |
-| A factory instance's credentials | OpenShell's credential custody, refreshed from Hub with the instance's own client | Lore read access as the branch's latest pusher, and the instance's registration token |
+| A factory instance's credentials | OpenShell's credential custody, refreshed from Hub with the instance's own client | Lore read access as the branch's latest pusher, and the instance's registration token; a runner also reads its linked repository as that tracked branch's latest pusher, each token for the repository its request names |
 | A server's registration | Its key pair and its registration access token | The server's identity at Hub: one PostgreSQL login per registration, confined to its schema |
 | Hub's OpenShell control identity | An identity-provider client whose secret stays in OpenShell's custody; only Hub's sandbox holds its placeholder | Creating, starting, stopping and deleting sandboxes and providers, and forwarding to them |
 | OpenShell management sign-in | Operators, against the installation's issuer | The gateway's own administration, with an audience separate from Hub's and Lore's |
@@ -97,10 +98,12 @@ The boundaries that follow from these:
   Hub administration or Work Context membership gives no repository access.
 - **Credentials stay in custody.** Workloads hold placeholders that OpenShell replaces on
   the request; the real Lore, Hub and model credentials never enter a Computer or a
-  factory sandbox. Only a credential that must sign stays with its service, such as
+  factory sandbox. A placeholder resolves only for the process tree it was given to. Only a credential that must sign stays with its service, such as
   Artifact's bucket key, which SigV4 needs in the signer.
 - **One owner per Computer.** Each Computer has its own OpenShell workspace and only its
-  owner's browser session or Hub credential reaches it. Computers share no
+  owner's browser session or Hub credential reaches it, including the programs of its
+  version at `/computer/c/{computer}/apps/{name}/`; a server's App may send a person to
+  `/computer/apps/`, which reaches that person's own Computer only. Computers share no
   administrative identity, and never receive Hub's OpenShell control identity.
 - **Hub acts in Lore only as a person.** It reads a pushed revision as its pusher,
   watches a repository as the person who turned watching on, and a factory sandbox
@@ -108,7 +111,10 @@ The boundaries that follow from these:
 - **Branches cannot raise their own authority.** A repository supplies its environment
   image, its program and extra network rules; it cannot add providers, mounts,
   credentials or policy beyond network rules, and the installation's base policy
-  withholds what a branch must not reach, such as the log store.
+  withholds what a branch must not reach, such as the log store. A linked repository is
+  content for the parent's program: it requests only the providers granted to it, its
+  network rules name no program of its own, and a person reaches its runner only with a
+  grant on it.
 - **The platform never writes into a Computer's home.** `/sandbox` belongs to its
   owner; everything else in a Computer comes with its version and is read-only.
 - **Agent output is not a verdict.** A test an agent wrote and ran is not independent
@@ -135,11 +141,15 @@ Identity wiring for an installation (which provider, which clients and roles) is
    into the local registry, and creates or restarts the branch's factory sandbox. The
    sandbox fetches the branch, runs `openshell/run`, which builds and then becomes the
    server, and the server registers with Hub as that branch's instance, in that branch
-   name's data environment.
+   name's data environment. A branch whose revision links other repositories at its top
+   level runs one runner for each link instead: the parent's program, serving the linked
+   repository's tracked branch, which its own pushes release.
 5. **Select and call.** Each person's selection names a branch per server; servers it
    does not name use the base branch. Every chat of that person follows the selection.
    Hub routes each call to the selected instance and nothing else: a missing or failed
-   instance answers with its cause.
+   instance answers with its cause. A linked server is listed once for each link whose
+   repository the person holds a grant on, as `{slug}__{link}__{tool}` and
+   `{slug}://{link}/…`.
 6. **Diagnose and fix.** `console__status` and `console__logs` show the serving
    revision, the last failure and the sandbox's complete output; the agent fixes the
    source and pushes again. Deleting the branch, or removing `openshell/run`, removes the
@@ -221,9 +231,13 @@ its own repository, and reusable fixes go to the template first.
 | Lore credentials and repository creation | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#native-contributed-credential-lifecycle) |
 | Selection and routing | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#execution-composition-and-deployment-identity) |
 | Factory sandboxes and data environments | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#factory-sandboxes) |
+| Linked repositories and their runners | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#linked-repositories) |
+| The MCP Apps host, the bridge and servers' app origins | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#apps-host), [SDK Apps](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/apps/DESIGN.md) |
+| Public routes of instances and the providers a branch requests | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#public-routes), [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#factory-sandboxes) |
 | A server repository's factory layout | [MCP template](https://github.com/VeoveoAI/veoveo-template-mcp-rust/blob/main/crates/veoveo-template-mcp-rust/DESIGN.md#factory) |
 | Agent tools for status, logs, selection and watching | [console](https://github.com/VeoveoAI/veoveo-mcp-console/blob/main/crates/veoveo-mcp-console/DESIGN.md) |
-| Computers: entry, versions, collection, browser access | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#computer-versions) |
+| Computers: entry, versions, collection, keep-on, browser access, programs of a version | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#computer-versions) |
+| n8n: runners of team repositories, the data rule, the overview App, n8n in a Computer and its Assistant | [n8n](https://github.com/VeoveoAI/veoveo-mcp-n8n/blob/main/crates/veoveo-mcp-n8n/DESIGN.md) |
 | Live control-plane changes | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#live-native-destinations-and-computer-defaults) |
 | Artifact storage, sharing and transfers | [Artifact](https://github.com/VeoveoAI/veoveo-mcp-artifact/blob/main/crates/veoveo-mcp-artifact/DESIGN.md) |
 | Media runs and providers | [Media](https://github.com/VeoveoAI/veoveo-mcp-media/blob/main/crates/veoveo-mcp-media/DESIGN.md) |
