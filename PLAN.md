@@ -525,6 +525,13 @@ Execution order:
       PostgreSQL/Core interpretation assumptions; populated executions,
       postcommit service paths and semantic controls remain pending
       ([foundation evidence](records/2026-11-01-registration-audited-store-foundation.md)).
+      A separate populated replacement now constructs eighteen actual modeled
+      steps and proves independent complete data/audit outputs, two old-server
+      Replace records, the new-server Register record, cleanup and preservation.
+      Fourteen declaration guards pass. The two-row seed is explicitly a valid
+      model input, not a claimed native creation history. Removal/rollback,
+      postcommit and fault/restoration cases remain pending
+      ([replacement witness](records/2026-11-01-registration-audited-replacement.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
