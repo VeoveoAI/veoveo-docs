@@ -897,8 +897,14 @@ Execution order:
       current-row selection, captured-metadata independence, complete obsolete/
       absent no-op and valid acceptance to the existing full Factory outputs
       ([watcher foundation](records/2026-10-31-factory-watcher-foundation.md)).
-      Actual parent/queued-update history composition, status ordering and its
-      semantic controls remain pending, alongside saved-parent retry freshness,
+      Actual parent/queued-update histories now pass: completed repository or
+      tracked-ID retargets survive obsolete notifications, and relevant queued
+      updates use the current parent program with complete modeled outputs.
+      Intermediate row/key uniqueness is derived from the first operation;
+      23 axiom guards pass in 5.773 s
+      ([history checkpoint](records/2026-10-31-factory-watcher-histories.md)).
+      Detailed failure/fallback/status ordering, scoped deletion composition,
+      populated witnesses and semantic controls remain pending, alongside saved-parent retry freshness,
       cross-replica reconciliation and concurrent registration publication ordering.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
