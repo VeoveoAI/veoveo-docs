@@ -536,9 +536,16 @@ Execution order:
       execution and complete wrong ledger are proved, the unchanged acceptance
       assertions reject the missing full record/cursor, and exact restoration
       with a fresh affected compilation graph passes. This is model sensitivity
-      evidence, not a new native bug. Next is removal with partial audit append,
-      confirmed abort and retry, followed by the postcommit service boundary
+      evidence, not a new native bug
       ([control and restoration](records/2026-11-01-registration-audit-control.md)).
+      Removal recovery now constructs partial private append, explicit refusal,
+      confirmed rollback and a fresh successful attempt, proving independent
+      complete data/audit outputs. A lost-reply suffix also proves that an error
+      can accompany committed removal and audit. Nineteen declaration guards and
+      seven printed closures pass; this is a two-row handwritten-model schedule,
+      distinct from the previous one-row native refusal fixture. Next is the
+      postcommit service boundary, then remaining registration operation adapters
+      ([recovery evidence](records/2026-11-01-registration-audit-recovery.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
