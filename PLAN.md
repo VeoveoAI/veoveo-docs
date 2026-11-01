@@ -1269,6 +1269,16 @@ Done when section J is proven, with a record for each step.
   403 or denial event.
 - The n8n fork's image is built with n8n's development release channel: its pages read
   "n8n[DEV]".
+- The Veoveo Result node shows n8n's missing-icon mark on the canvas
+  ([record](records/2026-11-01-n8n-in-the-computer.md)).
+- Node's `fetch` of a scoped npm path (`%2F`) over HTTP/2 fails in a Computer, where npm
+  itself works over HTTP/1.1 ([record](records/2026-11-01-n8n-assistant.md)).
+- `n8n.apps.{host}` asks for sign-in before answering "No app here", because a registration of
+  the slug still declares an app origin; and every other name under `*.apps` answers with the
+  sandbox proxy's page. Serve the proxy on `sandbox.apps` alone and trace the registration.
+- Which n8n node and credential types the parent admits by default: today only the template's
+  basic nodes and no credential type, so a team cannot use HTTP Request or a credential until
+  the parent admits it.
 - n8n's loopback listener answers any process in its sandbox; isolate it from n8n's own
   nodes.
 - `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
