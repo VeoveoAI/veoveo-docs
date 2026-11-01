@@ -564,14 +564,13 @@ Execution order:
       premises, and proves reached no-op cursor absence and own rollback
       preservation. The scope is one admitted deployment; other registration
       audit programs and native SQL/Core correspondence remain explicit
-      boundaries. The populated checkpoints follow below; the omitted-Update
-      control remains
+      boundaries. The populated checkpoints and omitted-Update control follow below
       ([foundation evidence](records/2026-11-01-registration-audited-update-foundation.md)).
       The populated matched-update path now qualifies nine actual model steps,
       independent complete database/audit outputs, retained fields and unrelated
       state, private precommit writes, lock release and successful store reply.
       Fifteen declaration guards and nine printed closures pass; execution stays
-      separately importable for the future omission control
+      separately importable for the omission control
       ([success evidence](records/2026-11-01-registration-audited-update-success.md)).
       Audit-refusal recovery now qualifies sixteen composed actual model steps:
       failure preserves committed data/audit, explicit abort releases the lock,
@@ -586,8 +585,16 @@ Execution order:
       through stale rollback, with both store success responses and no Update
       record. Twenty-four guards and eleven closures pass. Generic external
       registration audit vocabulary and SQL correspondence remain explicit
-      boundaries. Next: omitted-Update semantic control and exact restoration
+      boundaries
       ([replacement evidence](records/2026-11-01-registration-audited-update-replacement.md)).
+      The omitted-Update control now proves legal full data success with the
+      required audit record absent. The unchanged acceptance proof rejects that
+      exact false slot assertion; all 88 original source files are restored, then
+      the original positive target passes after ordinary Lake rebuilding. Seven
+      diagnostic guards and four closures pass. This is deliberate model fault
+      detection, not a new production bug. Generic audit adapters and broader
+      Computer/Lore coverage remain open
+      ([control evidence](records/2026-11-01-registration-audited-update-control.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
