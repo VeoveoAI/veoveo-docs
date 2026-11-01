@@ -935,9 +935,15 @@ Execution order:
       composes this saved-parent boundary with the checked full Factory outputs;
       first allocation and complete membership retirement remain formal obligations.
       The new two-phase manual model now elaborates in 18.699 s, with arbitrary-
-      state discard and conditional existing-row application. Correctness theorem
-      checks are still pending
+      state discard and conditional existing-row application
       ([model checkpoint](records/2026-10-31-factory-saved-parent-model.md)).
+      Its foundation now passes 28 axiom guards in 5.426 s: arbitrary-state
+      stale/error/cancellation outcomes, exact preparation publication and complete
+      current-head existing-runner outputs are checked
+      ([foundation checkpoint](records/2026-10-31-factory-saved-parent-foundation.md)).
+      Composed newer-parent/old-retry histories, independent populated cases and
+      semantic controls are still pending, alongside the stated wider lifecycle
+      and native/distributed correspondence obligations.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
