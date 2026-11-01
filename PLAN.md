@@ -1088,9 +1088,16 @@ Execution order:
       operation and after its completion. All four return false and preserve the
       complete exposed Computer projection. Focused real-PostgreSQL execution passes
       in 1.41 s; full Mac/Linux checks each pass 475 tests with two existing skips.
-      Hub `8b7303d` records this test-only checkpoint. The source-mapped replacement
-      Lean model is being authored; no new theorem or native sandbox guarantee is
-      claimed ([Computer native evidence](records/2026-11-01-computer-stale-completion-native.md)).
+      Hub `8b7303d` records this test-only checkpoint
+      ([Computer native evidence](records/2026-11-01-computer-stale-completion-native.md)).
+      Hub `a751c9b` adds the checked manual replacement model: exact scoped row
+      effects, acknowledged launch/reread, returned-stage ordering and populated
+      success, failure/retry and stale-completion histories. The final Lean target
+      passes in 3.620 s, with 27 guarded declarations and eleven permitted axiom
+      closures ([Computer proof evidence](records/2026-11-01-computer-replacement-proof.md)).
+      Semantic controls remain next. This is not extracted Rust/SQL refinement;
+      the outer timeout scheduler, browser/custody composition and actual native
+      cancellation/readiness/storage guarantees remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
