@@ -878,8 +878,14 @@ Execution order:
       including keep precedence across rebuilt-image changes, provider multiplicity
       and ignored configuration fields, with 15 new axiom guards
       ([choice checkpoint](records/2026-10-31-factory-choice-proof.md)).
-      Finite-history composition and semantic controls remain next; independent
-      stale preparations and concurrent registration publication ordering remain open.
+      Standalone complete-output assertions now reject two deliberate manual-model
+      faults: omitted target assignments and refusal at the exact capacity limit.
+      Independent wrong-result/refusal witnesses pass first; both exact source
+      restorations and fresh baseline checks pass
+      ([semantic controls](records/2026-10-31-factory-semantic-controls.md)).
+      The next native investigation is a deterministic stale linked-preparation
+      interleaving; it is not yet a confirmed defect. Finite-history composition
+      and concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
