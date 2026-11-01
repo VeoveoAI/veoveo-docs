@@ -564,8 +564,8 @@ Execution order:
       premises, and proves reached no-op cursor absence and own rollback
       preservation. The scope is one admitted deployment; other registration
       audit programs and native SQL/Core correspondence remain explicit
-      boundaries. The populated checkpoints follow below; replacement/no-op and
-      omitted-Update control remain
+      boundaries. The populated checkpoints follow below; the omitted-Update
+      control remains
       ([foundation evidence](records/2026-11-01-registration-audited-update-foundation.md)).
       The populated matched-update path now qualifies nine actual model steps,
       independent complete database/audit outputs, retained fields and unrelated
@@ -578,8 +578,16 @@ Execution order:
       and a fresh retry produces the independently specified complete result.
       Both attempts remain in the final maps. Twenty guards and nine closures pass;
       this is a possible recovery schedule, not a liveness or native-SQL proof.
-      Next: actual replacement/stale no-op, then the omitted-Update control
+      The replacement checkpoint follows below
       ([recovery evidence](records/2026-11-01-registration-audited-update-recovery.md)).
+      Actual replacement/stale no-op now qualifies twenty composed model steps
+      with an explicit source-faithful three-record replacement audit batch.
+      Independent full data/audit/transaction outputs retain the replacement
+      through stale rollback, with both store success responses and no Update
+      record. Twenty-four guards and eleven closures pass. Generic external
+      registration audit vocabulary and SQL correspondence remain explicit
+      boundaries. Next: omitted-Update semantic control and exact restoration
+      ([replacement evidence](records/2026-11-01-registration-audited-update-replacement.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
