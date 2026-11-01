@@ -852,6 +852,13 @@ Execution order:
       issuer/verifier coverage remain open, without runtime or backend rewrites.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
+      The initial Factory review reproduced a same-name link-retarget defect:
+      the sandbox command moves to the new repository while stored identity,
+      credential lookup and later push routing retain the old target. A focused
+      native regression captures the complete mismatch; correction and live
+      registration propagation are in progress
+      ([reproduction](records/2026-10-31-factory-retarget-identity.md)). This is
+      native component evidence, not yet a Factory transition proof.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
