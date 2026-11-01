@@ -861,11 +861,14 @@ Execution order:
       all three focused regressions and the integrated Mac/Linux Docker checks
       pass, 460 tests passed and two skipped on each host
       ([fix qualification](records/2026-10-31-factory-retarget-fix.md)). The fix
-      is pushed; deployment is separate. The manual full-transition proof is
-      in progress, with success, partial failures, uncertain SQL outcomes and
-      retry distinguished. This is native component evidence, not yet a checked
-      Factory transition proof; independent stale preparations and concurrent
-      registration publication ordering remain open.
+      is pushed; deployment is separate. The manual Factory model now has checked
+      complete successful-row, client/selection, error-state and preservation
+      contracts, with 24 executable axiom audits
+      ([proof checkpoint](records/2026-10-31-factory-retarget-row-proof.md)).
+      This is handwritten source correspondence, not extracted async Rust or
+      formal SQL refinement. Complete native outputs, failure-prefix/retry
+      composition, valid runs and semantic controls remain next; independent
+      stale preparations and concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
