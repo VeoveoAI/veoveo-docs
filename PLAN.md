@@ -907,7 +907,12 @@ Execution order:
       now pass ten axiom guards in 5.473 s, preserving full status payloads and
       committed-versus-acknowledged outcomes
       ([status checkpoint](records/2026-10-31-factory-watcher-status.md)).
-      Populated witnesses and semantic controls remain pending, alongside saved-parent retry freshness,
+      Six populated complete-output histories now pass, including both retarget
+      cases, current-parent acceptance, native-error construction, failure
+      clearing and successful recorded fallback retaining the requested-target
+      error; ten guards pass with a 92.718 s proof check
+      ([fixture checkpoint](records/2026-10-31-factory-watcher-fixtures.md)).
+      Semantic controls/restoration remain pending, alongside saved-parent retry freshness,
       cross-replica reconciliation and concurrent registration publication ordering.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
