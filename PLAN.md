@@ -892,9 +892,14 @@ Execution order:
       regressions and both full Mac/Linux checks pass: 465 tests passed and two
       skipped on each host
       ([fix qualification](records/2026-10-31-factory-preparation-serialization.md)).
-      This is native component evidence; watcher/finite-history proof composition,
-      saved-parent retry freshness, cross-replica reconciliation and concurrent
-      registration publication ordering remain open. Deployment is separate.
+      This is native component evidence; deployment is separate. A new manual
+      watcher foundation now passes 14 lemmas and 18 axiom guards, connecting
+      current-row selection, captured-metadata independence, complete obsolete/
+      absent no-op and valid acceptance to the existing full Factory outputs
+      ([watcher foundation](records/2026-10-31-factory-watcher-foundation.md)).
+      Actual parent/queued-update history composition, status ordering and its
+      semantic controls remain pending, alongside saved-parent retry freshness,
+      cross-replica reconciliation and concurrent registration publication ordering.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
