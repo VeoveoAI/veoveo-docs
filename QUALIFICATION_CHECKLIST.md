@@ -20,9 +20,9 @@ Rules:
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
 `*.apps.veoveo.bioma.ai`, deployed 2026-11-01: Hub `18c6268` (SDK `7360c0f`, core `422dcf2`; linked-repository runners and routing, Computer apps and keep-on), Lore
 `c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
-supervisor `49761d1`; factory instances take it at their next push), installation `649ef1b` (Computer version `a83c10c14f33`, with n8n; the Hub CLI on SDK `7360c0f`), OpenCode
+supervisor `49761d1`; factory instances take it at their next push), installation `d1d8612` (Computer version `af6043514dfa`, with n8n and the Assistant's Hub tools; the Hub CLI on SDK `7360c0f`), OpenCode
 `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `811e476`, Artifact `91e62be`, Media
-`6bd5843`, Embedding `95216bd`; n8n `137824e` as two runners (the parent's Lore revision 32) and `264dc89` in each Computer.
+`6bd5843`, Embedding `95216bd`; n8n `68eecbb` as two runners (the parent's Lore revision 34) and in each Computer, on the fork `a4efd135`.
 
 ## A. Identity and administration
 
@@ -192,6 +192,8 @@ sits before G because G stays last.
 | J10 | No runner serves an editor | Request a runner's former app origin and the `n8n://editor` resource | Neither exists; only the server uses n8n's owner account | proven 2026-11-01: `n8n.apps.veoveo.bioma.ai` answers "No app here" after sign-in; `n8n://{link}/editor` is refused; the runners list only `run`, `retry_execution`, `stop_execution` and no editor resource ([record](records/2026-11-01-n8n-assistant.md)) |
 | J11 | Personal automations run while the Computer is on | A schedule in the Computer's n8n; leave the Computer on past the collection time | The schedule keeps firing until the owner turns the Computer off | proven 2026-11-01 up to 68 minutes: A's Computer kept on, its own published schedule ran every minute, 68 runs from 02:16:40 to 03:24:08, in the same sandbox with no restart. The two-hour collection case is the owner's overnight check: a kept-on Computer that is collected shows why in the Hub's collection log, and is fixed ([record](records/2026-11-01-n8n-keep-on-schedule.md)) |
 | J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | proven 2026-11-01 in the browser: the Assistant built and verified "J12 Assistant probe" with the Computer's model through `veoveo-n8n-computer`; its sandbox in `$HOME/n8n/.sandboxes` installed `@n8n/workflow-sdk` 0.39.0 through the `npm_registry` rule ([record](records/2026-11-01-n8n-assistant.md)) |
+| J13 | The Assistant uses the person's Hub tools | Ask the Assistant in the Computer's n8n to call a Veoveo tool | It finds the tool among the person's Hub tools and calls it as the person; the Hub decides the call | proven 2026-11-01 in the browser on Computer version `af6043514dfa`: the Assistant found and loaded `veoveo_time__resolve_time` and called it; the program logged three admitted requests, each 200, and the answer came from Time. No approval was asked for that read-only tool; the approval card for a changing tool was not tried ([record](records/2026-11-01-n8n-assistant-hub-tools.md)) |
+| J14 | A workflow calls Hub tools from a list | Add a Veoveo Tool node in the Computer's n8n; check a runner's list | The Tool field lists the person's Hub tools in the Computer and the bridge table on a runner; a typed name still loads and runs | proven 2026-11-01: 69 tools of 11 servers listed in A's n8n; a workflow saved with a typed name opened and ran; both runners list `time__resolve_time`; team runs unchanged ([record](records/2026-11-01-n8n-assistant-hub-tools.md)) |
 
 ## G. Model-driven acceptance (last)
 

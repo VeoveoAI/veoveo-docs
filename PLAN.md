@@ -1275,10 +1275,13 @@ Computer:
       workflow, cloning as the person when needed (J8, J9).
 - [x] The Assistant: the Computer's model, and a local sandbox service speaking n8n's
       sandbox protocol (J12).
+- [x] The Assistant uses the person's Hub tools through the program's MCP endpoint, and the
+      Veoveo Tool lists the tools; the fork's MCP client negotiates 2026-07-28 first (J13,
+      J14, [record](records/2026-11-01-n8n-assistant-hub-tools.md)).
 
 Docs:
 - [x] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
-      section 13's state. The diagram shows J1 to J12 proven.
+      section 13's state. The diagram shows J1 to J14 proven.
 
 Order: the Lore check (J1) first, since everything rests on it; then the Lore update; then
 the designs and the diagram; then the Hub's links, runners and routing with the n8n server as runner; then
@@ -1332,6 +1335,11 @@ Done when section J is proven, with a record for each step.
 - Lock down `n8n.workflows.run`: it declares no risk while the platform is in early access,
   so any role that grants it runs the workflows of every team its holder reaches
   ([record](records/2026-11-01-n8n-run-for-members.md)).
+- n8n's `mcp-registry` module makes MCP client node types that `NODES_EXCLUDE` cannot name,
+  on the 2025 client; decide them with the lock-down
+  ([record](records/2026-11-01-n8n-assistant-hub-tools.md)).
+- The Veoveo Tool's list shows no `n8n__…` tools, and the editor once showed "Offline"
+  after a restart; not investigated ([record](records/2026-11-01-n8n-assistant-hub-tools.md)).
 - n8n's loopback listener answers any process in its sandbox; isolate it from n8n's own
   nodes.
 - `veoveo-hub-sdk-cli` polls a Task again after a transport error, such as an instance
