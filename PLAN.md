@@ -842,8 +842,13 @@ Execution order:
       reaches all producer functions and fields, but the pinned Aeneas backend
       rejects a required associated-type equality in `Iterator::cloned`. No
       producer Lean model or theorem is emitted. The separate SDK detail
-      construction/projection generates a model successfully; its full-value
-      preservation proofs and semantic control are next. Producer and full
+      construction/projection now has checked full-value preservation and roundtrip
+      proofs, including valid empty-action read grants. An actual Rust fault that
+      drops actions is caught by the unchanged proof and existing native test;
+      an independent witness proves its wrong output. Exact source/raw-model
+      restoration and fresh proof checks pass
+      ([detail proof and control](records/2026-10-31-repository-grant-detail-proof.md)).
+      Standard-library correspondence remains explicit. Producer and full
       issuer/verifier coverage remain open, without runtime or backend rewrites.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
