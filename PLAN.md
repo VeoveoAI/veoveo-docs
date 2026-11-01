@@ -517,8 +517,14 @@ Execution order:
       existing external-fixture skips; test SQL packaging and a premature factory
       test observation were corrected during qualification
       ([native fix evidence](records/2026-11-01-registration-audit-fix.md)).
-      The composed audited-store proof is in progress; this native checkpoint adds
-      no Lean theorem or deployed evidence.
+      The separate audited-store foundation now passes Lean: actual append
+      progression and source binding establish independent activity/server
+      multiplicities, complete modeled data effects and full-record extension at
+      the combined commit; confirmed abort preserves both committed stores.
+      Thirty declaration guards pass. This is a handwritten model with explicit
+      PostgreSQL/Core interpretation assumptions; populated executions,
+      postcommit service paths and semantic controls remain pending
+      ([foundation evidence](records/2026-11-01-registration-audited-store-foundation.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
