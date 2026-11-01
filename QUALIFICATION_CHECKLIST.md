@@ -18,9 +18,9 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
-`*.apps.veoveo.bioma.ai`, deployed 2026-11-01: Hub `bfd390d` (SDK `7360c0f`, core `422dcf2`; linked-repository runners and routing, Computer apps and keep-on), Lore
+`*.apps.veoveo.bioma.ai`, deployed 2026-11-01: Hub `18c6268` (SDK `7360c0f`, core `422dcf2`; linked-repository runners and routing, Computer apps and keep-on), Lore
 `c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
-supervisor `49761d1`; factory instances take it at their next push), installation `57f960a` (Computer version `dd3cc36b4772`, with n8n; the Hub CLI on SDK `7360c0f`), OpenCode
+supervisor `49761d1`; factory instances take it at their next push), installation `649ef1b` (Computer version `a83c10c14f33`, with n8n; the Hub CLI on SDK `7360c0f`), OpenCode
 `ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `811e476`, Artifact `91e62be`, Media
 `6bd5843`, Embedding `95216bd`; n8n `264dc89` as two runners and in each Computer.
 
@@ -189,9 +189,9 @@ sits before G because G stays last.
 | J7 | Execution data follows who fetched it | Two people each start a run through MCP; a webhook starts a third | Each person reads only their own MCP run's data; everyone with a grant reads the webhook run's data; status and errors for all | proven 2026-11-01: A's run gave A `access: data` and M `summary`; a webhook run gave M, a writer, `data`; with M a reader, a webhook run gave M `summary` ([record](records/2026-11-01-n8n-runners-phase-2.md)) |
 | J8 | A person edits in their own Computer | Open the Computer's n8n; build a workflow, save it, push it | n8n opens the checkout's team workflows with the person as its owner; saving writes the files; no other person reaches it | proven 2026-11-01 in the browser: "Edit in my Computer" opened the owner's own n8n with no sign-in, cloned team-a at its tracked branch and applied its workflows; a saved edit was written to `$HOME/n8n/team-a/workflows/hello-run.json`, nothing pushed; the other person's Computer has no n8n checkout ([record](records/2026-11-01-n8n-in-the-computer.md)) |
 | J9 | The overview App summarises and opens the Computer | Open `/apps/n8n/overview`; choose Edit in my Computer on a workflow | Only the teams the person holds a grant on, with revisions, runs and failures; the person's own Computer opens n8n at that workflow | proven 2026-11-01 in the browser: `/apps/n8n/overview` listed the owner's two teams with workflows, webhooks and executions; Run returned team-a's output; "Edit in my Computer" opened that workflow in the owner's own Computer ([record](records/2026-11-01-n8n-in-the-computer.md)) |
-| J10 | No runner serves an editor | Request a runner's former app origin and the `n8n://editor` resource | Neither exists; only the server uses n8n's owner account | pending |
+| J10 | No runner serves an editor | Request a runner's former app origin and the `n8n://editor` resource | Neither exists; only the server uses n8n's owner account | proven 2026-11-01: `n8n.apps.veoveo.bioma.ai` answers "No app here" after sign-in; `n8n://{link}/editor` is refused; the runners list only `run`, `retry_execution`, `stop_execution` and no editor resource ([record](records/2026-11-01-n8n-assistant.md)) |
 | J11 | Personal automations run while the Computer is on | A schedule in the Computer's n8n; leave the Computer on past the collection time | The schedule keeps firing until the owner turns the Computer off | pending |
-| J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | pending |
+| J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | proven 2026-11-01 in the browser: the Assistant built and verified "J12 Assistant probe" with the Computer's model through `veoveo-n8n-computer`; its sandbox in `$HOME/n8n/.sandboxes` installed `@n8n/workflow-sdk` 0.39.0 through the `npm_registry` rule ([record](records/2026-11-01-n8n-assistant.md)) |
 
 ## G. Model-driven acceptance (last)
 
