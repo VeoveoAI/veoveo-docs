@@ -923,8 +923,17 @@ Execution order:
       A native component regression now reproduces a saved parent retry undoing
       a completed newer retarget: program, target, client lookup and later push
       routing revert to the older revision. The one test fails its expected-output
-      assertion in 1.69 s against unchanged production; correction remains pending
+      assertion in 1.69 s against unchanged production
       ([saved retry reproduction](records/2026-10-31-factory-saved-parent-retry.md)).
+      That correction is now pushed as Hub `77b258a`: the existing parent guard
+      serializes publication and membership, and native Lore identity/live/head
+      checks discard obsolete retry successes and errors. Five focused native
+      tests pass, including failed best-effort clear, name reuse and valid first
+      provisioning; full Mac/Linux checks each pass 469 tests with two skipped
+      ([correction qualification](records/2026-10-31-factory-saved-parent-retry-fix.md)).
+      No deployment or new formal theorem is claimed. The next proof checkpoint
+      composes this saved-parent boundary with the checked full Factory outputs;
+      first allocation and complete membership retirement remain formal obligations.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
