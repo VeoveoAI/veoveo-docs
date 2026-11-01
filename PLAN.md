@@ -1219,8 +1219,8 @@ Hub:
       control plane at each push (J6, [record](records/2026-11-01-n8n-team-credentials.md)).
 - [x] Computers: the Computer's programs served to its owner (`computers.apps`),
       `ui/open-link` to the person's own Computer, keep-on and stop (J8, J9,
-      [record](records/2026-11-01-n8n-in-the-computer.md)); J11 is checked after the
-      collection time.
+      [record](records/2026-11-01-n8n-in-the-computer.md)); J11, a kept-on Computer's schedule
+      ([record](records/2026-11-01-n8n-keep-on-schedule.md)).
 
 Installation:
 - [x] n8n and the Veoveo nodes in the Computer image; `veoveo-n8n-computer` the one n8n
@@ -1244,8 +1244,7 @@ Computer:
 
 Docs:
 - [x] `ARCHITECTURE.md`, the owning `DESIGN.md` files and the platform diagram, including
-      section 13's state. The diagram marks J8 to J12 pending and moves to proven once J11
-      is in.
+      section 13's state. The diagram shows J1 to J12 proven.
 
 Order: the Lore check (J1) first, since everything rests on it; then the Lore update; then
 the designs and the diagram; then the Hub's links, runners and routing with the n8n server as runner; then
