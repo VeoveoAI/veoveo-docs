@@ -874,8 +874,11 @@ Execution order:
       conditional two-call retry now pass, including native absence and uncertain
       commits, with 21 new axiom guards
       ([recovery checkpoint](records/2026-10-31-factory-recovery-proof.md)).
-      Independent lifecycle-choice contracts, finite-history composition
-      and semantic controls remain next; independent
+      Independent necessary-and-sufficient lifecycle-choice contracts now pass,
+      including keep precedence across rebuilt-image changes, provider multiplicity
+      and ignored configuration fields, with 15 new axiom guards
+      ([choice checkpoint](records/2026-10-31-factory-choice-proof.md)).
+      Finite-history composition and semantic controls remain next; independent
       stale preparations and concurrent registration publication ordering remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
