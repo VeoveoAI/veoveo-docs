@@ -934,6 +934,10 @@ Execution order:
       No deployment or new formal theorem is claimed. The next proof checkpoint
       composes this saved-parent boundary with the checked full Factory outputs;
       first allocation and complete membership retirement remain formal obligations.
+      The new two-phase manual model now elaborates in 18.699 s, with arbitrary-
+      state discard and conditional existing-row application. Correctness theorem
+      checks are still pending
+      ([model checkpoint](records/2026-10-31-factory-saved-parent-model.md)).
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
