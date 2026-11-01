@@ -551,9 +551,13 @@ Execution order:
       confirmed no-write marker refusal with complete admitted data/audit still
       known, inner store success and outer Internal. Nineteen guards and eight
       printed closures pass. This does not prove native callbacks, response
-      construction or arbitrary concurrent persistence. Next is an ignore-marker
-      refusal control, then remaining registration operation adapters
+      construction or arbitrary concurrent persistence
       ([continuation evidence](records/2026-11-01-registration-postcommit-continuation.md)).
+      The ignored-marker control now proves the independent wrong ten-call success,
+      observes the unchanged acceptance proof reject that result, and restores all
+      sources with fresh positive compilation. Next is the Update audit adapter,
+      retaining an explicit boundary for other registrations' audit programs
+      ([control evidence](records/2026-11-01-registration-postcommit-control.md)).
 - [ ] Connect fresh and retained routing, registration identity, current authority,
       SDK recipient checks and discovery/listener freshness; include replica adoption.
       Hub `cda9372` qualifies real routing/retained-Task identities and current grant
