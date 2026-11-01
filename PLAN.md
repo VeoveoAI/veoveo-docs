@@ -887,8 +887,14 @@ Execution order:
       preparation undoing a completed parent retarget: runner, native command,
       client lookup and subsequent push routing revert to the old repository
       ([concurrency reproduction](records/2026-10-31-factory-stale-preparation.md)).
-      Correction and qualification are pending. Finite-history composition and
-      concurrent registration publication ordering remain open.
+      Hub `c340a2d` corrects current-runner preparation and failure publication
+      under the existing mutex. With test-only lint fix `a69e3cb`, all five new
+      regressions and both full Mac/Linux checks pass: 465 tests passed and two
+      skipped on each host
+      ([fix qualification](records/2026-10-31-factory-preparation-serialization.md)).
+      This is native component evidence; watcher/finite-history proof composition,
+      saved-parent retry freshness, cross-replica reconciliation and concurrent
+      registration publication ordering remain open. Deployment is separate.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
       record exact applicability and outstanding external obligations.
 
