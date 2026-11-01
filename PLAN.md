@@ -825,6 +825,13 @@ Execution order:
       ([control record](records/2026-10-31-linked-cache-comparison-control.md)).
       HUB-CATALOG remains partial: server-wide invalidation/retain translation,
       native wrapper/refinement and cursor/listener freshness remain open.
+      SDK `4e84876` publishes the 15 previously local proof commits while preserving
+      the newer upstream runtime exactly. Both full Docker checks pass: 328 tests
+      passed and three skipped on each host. Historical proof scope remains tied
+      to the recorded source; current repository-grant issuance and verifier
+      reconstruction are the next formal integration slice, not already qualified
+      by that publication
+      ([SDK history and checks](records/2026-10-31-sdk-proof-history-publication.md)).
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
