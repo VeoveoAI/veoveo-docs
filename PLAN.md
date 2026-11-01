@@ -838,7 +838,13 @@ Execution order:
       pointers; no Lean output or new theorem is produced
       ([translation boundary](records/2026-10-31-linked-identity-translation-boundary.md)).
       Production code is unchanged. Current verifier continuity remains open;
-      source-linked repository-grant computation is the next candidate foundation.
+      the [repository-grant extraction](records/2026-10-31-repository-grant-translation-boundary.md)
+      reaches all producer functions and fields, but the pinned Aeneas backend
+      rejects a required associated-type equality in `Iterator::cloned`. No
+      producer Lean model or theorem is emitted. The separate SDK detail
+      construction/projection generates a model successfully; its full-value
+      preservation proofs and semantic control are next. Producer and full
+      issuer/verifier coverage remain open, without runtime or backend rewrites.
 - [ ] Factory and Computer recovery, interrupted operations and reference-preserving
       cleanup, with explicit progress assumptions and native/browser evidence.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
