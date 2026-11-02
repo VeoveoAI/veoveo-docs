@@ -1101,8 +1101,12 @@ Execution order:
       prove each full wrong outcome, unchanged assertions reject both faults, and
       exact restoration passes in 11.274 s and 10.477 s
       ([Computer controls](records/2026-11-01-computer-lifecycle-controls.md)).
-      Next is unchanged-source extraction feasibility for current membership in
-      browser admission. This is not extracted Rust/SQL refinement;
+      The unchanged-source browser-membership graph passes Charon (87 own
+      functions, 204 own types), but Aeneas fails on dynamic authority and the
+      required borrowed group iterator; partial output is not adopted
+      ([translation boundary](records/2026-11-01-browser-membership-translation.md)).
+      Next is the independent rule-selection calculation, retaining full browser
+      composition as an open obligation. This is not extracted Rust/SQL refinement;
       the outer timeout scheduler, browser/custody composition and actual native
       cancellation/readiness/storage guarantees remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
