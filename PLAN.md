@@ -1627,6 +1627,79 @@ Order: rmcp and core first, then the SDK with one server (console) end to end th
 Hub, then the Hub's own skills and the handbook, then OpenCode, then n8n, then the rest of
 the servers.
 
+## 16. Remove Work Context: a project is a group
+
+Approved 2026-11-01; started 2026-11-02 in one sweep with section 15 and the rmcp move, so every server is rebuilt once. A Work Context is a configured project: each token
+binds one, a caller who is not a member is refused everything, and Hub signs the caller's
+membership level into every forwarded token. Today it separates nothing. Every Computer
+works in the one Work Context the installation's `computers` section names, so nobody
+switches, and since `create_upload` needs contributor, everyone who creates artifacts
+also writes everyone else's. Only Artifact decides with it (its membership rule and its
+output labels), and Hub binds Tasks to it; Time and Embedding store it; Media, n8n,
+console, Lore and the factory ignore it. The output policy's `owner` and
+`initial_grants` are signed into every token, and no server reads them.
+
+Projects must be separable by classification, and a person keeps one Computer across
+their projects, as they keep one laptop. Lore's groups already give that.
+
+Decisions:
+- A project is a group. Lore repository assignments and Artifact grants stay separate
+  mechanisms that name the same group. Joining the group gives what is already shared
+  with it; leaving removes that, in Lore and in Artifact, and a person's own assignments
+  and grants stay.
+- An artifact belongs to its creator and is private until shared. Sharing is a separate
+  `grant_artifact` call, so a failed share leaves it private. `create_upload` takes no
+  grants: Hub decides permissions per tool, and uploading must not carry
+  `artifact.grants.write`.
+- A Task belongs to the person who started it. Ownership is attribution, not authority:
+  a Task reaches nothing its person's repository assignments, artifact grants and data
+  labels do not.
+- An output that a Task or another server produces is owned by its person, never by a
+  server's identity; the acting server and Task stay in its provenance. Check how
+  Artifact names the owner of a call another server makes for a caller today.
+- Data labels stay, per person, for classification beyond who is on a project.
+- One Computer per person, across projects. A project is an access grouping, not an
+  execution boundary; revoking access does not take back what a Computer holds or a
+  person downloaded. `ARCHITECTURE.md` says so.
+- No replacement project context.
+
+Work, each design change written in its owner's `DESIGN.md` first, in the same branch
+as the code:
+- [ ] Core: remove `WorkContextId`, `WorkContextMembershipLevel`,
+      `WorkContextOutputPolicy`, `WorkContextGrant` and `InvocationAuthority`'s Work
+      Context fields, the `identity` schema's Work Contexts, and the Work Context of
+      audit and usage records (`platform/types/DESIGN.md`, `docs/DATABASE.md`).
+- [ ] SDK: forwarded identity, request context, Task ownership, usage and the test Hub
+      without a Work Context.
+- [ ] Hub: no Work Context definitions or memberships in the control plane, no
+      `work-context` claim, `work_context` parameter or client `defaultWorkContext`, no
+      membership check at sign-in or per request, no Work Context column or binding on
+      Task routes, and no Work Context in the `computers` section (Hub's, its token and
+      session authority's and its Task routes' `DESIGN.md`).
+- [ ] Artifact: no Work Context column, listing filter or membership rule; a caller's
+      level is the highest of ownership, principal grants and group grants capped by
+      the group role; labels are the requested ones, within the caller's data labels.
+- [ ] Time and Embedding: no Work Context columns or fields.
+- [ ] Installation template and Bioma: seeds without `workContexts` or client defaults;
+      `veoveo-installer plan` no longer leaves out memberships.
+- [ ] Each owning design names where each remaining decision is made: repository access
+      by Lore from Hub's tokens, artifact access by Artifact from the forwarded groups
+      and its grants, Task access by Hub's route and then the server, tool permissions
+      by Hub's roles.
+- [ ] Docs: `ARCHITECTURE.md`'s trust boundaries, the platform diagram and the
+      checklist.
+- [ ] Cutover: reset application state; end every session and refresh family so no token
+      of the old shape remains; every server takes the new core and SDK in one rollout;
+      Computers restart onto it.
+- [ ] Qualification: a group member reads and writes an artifact granted to the group and
+      loses it when removed, while a personal grant survives; a removed member loses the
+      group's repository access, within the token reuse in Later; an artifact a Media
+      Task produces is owned by the person who started it; a Task answers only its
+      person; no token, table or record names a Work Context.
+
+Order: core, then the SDK, Hub, the servers and the installation, then cutover and
+qualification. Done when deployed and proven, with a record and the checklist.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
