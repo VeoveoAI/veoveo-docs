@@ -228,8 +228,12 @@ authorization rules, automatic proof gate or separate service.
 Approved 2026-10-29; paused 2026-11-01 for a coverage and value review. The
 [pause report](records/2026-11-01-hub-formal-verification-status.md) records the
 completed contracts, ten production correction groups, source applicability and
-remaining obligations. All proof workers and compiler runs are stopped. No new
-proof development is authorized by the roadmap below while this goal is paused.
+remaining obligations. The subsequent
+[closeout](records/2026-11-01-hub-proof-closeout.md) adopts the tested dependency
+manifest and shared-package evidence, restores the checked membership baseline,
+and explicitly defers its two unfinished semantic controls. Further verification
+is paused pending better Rust/Aeneas support; no compiler is running. The roadmap
+below does not authorize starting another slice while this goal is paused.
 The intended scope remains to extend the completed Task-decision slice into
 coverage of Hub's complete operations: admitted caller, destination, committed state
 and recovery under concurrent updates, retries and failures. The authoritative
@@ -1115,8 +1119,14 @@ Execution order:
       valid grants, absence, termination and order/duplicate invariance. The focused
       check passes in 5.583 s with 48 standard-only axiom guards
       ([membership proof checkpoint](records/2026-11-01-work-context-membership-proof.md)).
-      Deliberate fault controls and broader shared-package regression are next;
-      full browser composition remains open. The Computer store/lifecycle model
+      Four shared-package regression commands now pass within their original
+      source scopes, and their exact tested dependency manifest is adopted.
+      Both additional membership fault controls are deferred and unqualified:
+      the first diagnostic still failed Lean authoring; neither an original
+      negative acceptance check nor the second case was run. Exact source
+      restoration passes the original audit in 16.96 s with 48 guards and twelve
+      standard-only axiom closures ([closeout](records/2026-11-01-hub-proof-closeout.md)).
+      Full browser composition remains open. The Computer store/lifecycle model
       is not extracted Rust/SQL refinement;
       the outer timeout scheduler, browser/custody composition and actual native
       cancellation/readiness/storage guarantees remain open.
