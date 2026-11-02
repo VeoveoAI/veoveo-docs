@@ -1105,11 +1105,14 @@ Execution order:
       functions, 204 own types), but Aeneas fails on dynamic authority and the
       required borrowed group iterator; partial output is not adopted
       ([translation boundary](records/2026-11-01-browser-membership-translation.md)).
-      The independent rule-selection calculation now translates on current pins
-      and in an additive shared-graph candidate; no Lean theorem or model adoption
-      is claimed yet ([extraction evidence](records/2026-11-01-work-context-membership-extraction.md)).
-      Next are its exact-result proof and controls, retaining full browser
-      composition as an open obligation. This is not extracted Rust/SQL refinement;
+      The independent rule-selection calculation now has an adopted additive
+      extraction and checked actual-function proof: exact highest matching level,
+      valid grants, absence, termination and order/duplicate invariance. The focused
+      check passes in 5.583 s with 48 standard-only axiom guards
+      ([membership proof checkpoint](records/2026-11-01-work-context-membership-proof.md)).
+      Deliberate fault controls and broader shared-package regression are next;
+      full browser composition remains open. The Computer store/lifecycle model
+      is not extracted Rust/SQL refinement;
       the outer timeout scheduler, browser/custody composition and actual native
       cancellation/readiness/storage guarantees remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
