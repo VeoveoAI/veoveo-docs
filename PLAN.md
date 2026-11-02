@@ -1095,7 +1095,14 @@ Execution order:
       success, failure/retry and stale-completion histories. The final Lean target
       passes in 3.620 s, with 27 guarded declarations and eleven permitted axiom
       closures ([Computer proof evidence](records/2026-11-01-computer-replacement-proof.md)).
-      Semantic controls remain next. This is not extracted Rust/SQL refinement;
+      Two semantic controls now pass: removing the current-operation comparison
+      prematurely publishes a newer operation's target; removing the listener
+      attempt commits success with an incomplete trace. Independent diagnostics
+      prove each full wrong outcome, unchanged assertions reject both faults, and
+      exact restoration passes in 11.274 s and 10.477 s
+      ([Computer controls](records/2026-11-01-computer-lifecycle-controls.md)).
+      Next is unchanged-source extraction feasibility for current membership in
+      browser admission. This is not extracted Rust/SQL refinement;
       the outer timeout scheduler, browser/custody composition and actual native
       cancellation/readiness/storage guarantees remain open.
 - [ ] Compose the established contracts into broader request and lifecycle guarantees;
