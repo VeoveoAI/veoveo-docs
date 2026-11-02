@@ -1665,30 +1665,30 @@ Decisions:
 
 Work, each design change written in its owner's `DESIGN.md` first, in the same branch
 as the code:
-- [ ] Core: remove `WorkContextId`, `WorkContextMembershipLevel`,
+- [x] Core (05b6c47): remove `WorkContextId`, `WorkContextMembershipLevel`,
       `WorkContextOutputPolicy`, `WorkContextGrant` and `InvocationAuthority`'s Work
       Context fields, the `identity` schema's Work Contexts, and the Work Context of
       audit and usage records (`platform/types/DESIGN.md`, `docs/DATABASE.md`).
-- [ ] SDK: forwarded identity, request context, Task ownership, usage and the test Hub
+- [x] SDK (aff0022): forwarded identity, request context, Task ownership, usage and the test Hub
       without a Work Context.
-- [ ] Hub: no Work Context definitions or memberships in the control plane, no
+- [x] Hub (496988c): no Work Context definitions or memberships in the control plane, no
       `work-context` claim, `work_context` parameter or client `defaultWorkContext`, no
       membership check at sign-in or per request, no Work Context column or binding on
       Task routes, and no Work Context in the `computers` section (Hub's, its token and
       session authority's and its Task routes' `DESIGN.md`).
-- [ ] Artifact: no Work Context column, listing filter or membership rule; a caller's
+- [x] Artifact (044a75b): no Work Context column, listing filter or membership rule; a caller's
       level is the highest of ownership, principal grants and group grants capped by
       the group role; labels are the requested ones, within the caller's data labels.
-- [ ] Time and Embedding: no Work Context columns or fields.
-- [ ] Installation template and Bioma: seeds without `workContexts` or client defaults;
+- [x] Time (565502c) and Embedding (488594e): no Work Context columns or fields.
+- [x] Installation template (8055532) and Bioma (0a0255a): seeds without `workContexts` or client defaults;
       `veoveo-installer plan` no longer leaves out memberships.
-- [ ] Each owning design names where each remaining decision is made: repository access
+- [x] Each owning design names where each remaining decision is made: repository access
       by Lore from Hub's tokens, artifact access by Artifact from the forwarded groups
       and its grants, Task access by Hub's route and then the server, tool permissions
       by Hub's roles.
 - [ ] Docs: `ARCHITECTURE.md`'s trust boundaries, the platform diagram and the
       checklist.
-- [ ] Cutover: reset application state; end every session and refresh family so no token
+- [x] Cutover (2026-11-02): reset application state; end every session and refresh family so no token
       of the old shape remains; every server takes the new core and SDK in one rollout;
       Computers restart onto it.
 - [ ] Qualification: a group member reads and writes an artifact granted to the group and
@@ -1696,6 +1696,16 @@ as the code:
       group's repository access, within the token reuse in Later; an artifact a Media
       Task produces is owned by the person who started it; a Task answers only its
       person; no token, table or record names a Work Context.
+- [x] Hub (92ad0be): a Task exchange is refused once the installation removes its
+      caller from a configured group they held when the Task started.
+
+Known limits, accepted for now:
+- Groups the identity provider alone gives are kept from the sign-in that created the
+  session; a refresh does not read them again, so a removal there takes effect at the
+  next sign-in. Re-reading them at refresh is the fix when it matters.
+- The ID-JAG grant's delegated mode makes the OAuth client the actor and owner of
+  outputs. No installation configures it; it is not for a person's work until outputs
+  are owned by the initiating person.
 
 Order: core, then the SDK, Hub, the servers and the installation, then cutover and
 qualification. Done when deployed and proven, with a record and the checklist.
