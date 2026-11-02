@@ -23,7 +23,7 @@
   The qualification checklist determines acceptance status; distinguish planned,
   implemented and qualified behavior. Do not infer acceptance from adjacent tests.
 - Preserve the whitepaper colors and the three views: current platform, credential
-  path and next integration. Update the snapshot date when reviewing new state.
+  path and serving path. Update the snapshot date when reviewing new state.
 - Edit the existing standalone HTML. Keep it self-contained; do not introduce a
   separate manifest, compatibility copy, archive or generated-image collection.
   Use its SVG/PNG export controls for images needed outside the guide.
