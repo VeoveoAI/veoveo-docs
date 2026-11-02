@@ -1,0 +1,20 @@
+// The docs Worker. site/build.sh assembles ../.site first; it is not committed.
+{
+  "name": "veoveo-docs",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  // Bioma's installation records this route (kubernetes/edge-routes.yaml). The docs are
+  // public by the owner's choice.
+  "routes": [
+    { "pattern": "veoveo.bioma.ai/docs", "zone_name": "bioma.ai" },
+    { "pattern": "veoveo.bioma.ai/docs/*", "zone_name": "bioma.ai" }
+  ],
+  "assets": {
+    "directory": "../.site",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

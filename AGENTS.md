@@ -27,6 +27,10 @@
 - Edit the existing standalone HTML. Keep it self-contained; do not introduce a
   separate manifest, compatibility copy, archive or generated-image collection.
   Use its SVG/PNG export controls for images needed outside the guide.
+- The diagram is published at `https://veoveo.bioma.ai/docs/architecture/`, public, by
+  the Worker in [site/](site/): `sh site/build.sh` copies it into
+  `.site/`, which is not committed, and `npx wrangler deploy --config site/wrangler.jsonc`
+  deploys it. Its relative links to this repository's Markdown redirect to GitHub.
 - After visual edits, inspect all three views in a browser and check component
   details, navigation and exports. A byte-for-byte relocation needs only file and
   link verification. An export check leaves nothing behind: delete the files it
