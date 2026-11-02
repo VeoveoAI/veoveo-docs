@@ -1502,7 +1502,7 @@ Done when section J is proven, with a record for each step.
 
 ## 15. MCP Skills: one home for agent guidance
 
-Proposed 2026-11-02, not approved. Guidance for agents is spread over places that do not
+Approved 2026-11-02, with the decisions below as settled. Guidance for agents is spread over places that do not
 reach each other, and most of it reaches no agent. The MCP Skills extension
 (`io.modelcontextprotocol/skills`, SEP-2640, base protocol `2026-07-28`, spec in
 [ext-skills](https://github.com/modelcontextprotocol/ext-skills/blob/main/specification/beta/skills.mdx))
@@ -1531,7 +1531,7 @@ Where guidance lives today (survey of 2026-11-02, by reading code):
   remote skills. OpenCode has filesystem skills, a URL skill index and two built-in skills
   (`opencode`, `report`); the Computer bakes in no AGENTS.md or skills.
 
-Decisions for the owner:
+Decisions:
 1. Server skills are published under `skill://{slug}/{name}/SKILL.md`, which registration
    enforces as it enforces `ui://{slug}/`. The Hub then passes entries and bytes through
    unchanged, digests hold, and the path keeps the originating server visible behind the
@@ -1541,21 +1541,25 @@ Decisions for the owner:
 3. The Hub's own skills live under a reserved `skill://veoveo/…` that no slug can take,
    sourced from the installation as the handbook is today (`computers.skills` replacing
    `computers.handbook`), with digests computed when the catalog loads.
-4. Approval on a Computer. The spec requires explicit per-skill approval before content
-   from an MCP skill can lead to host-side code execution. Sessions the platform drives run
-   unattended. Decide whether the installation's pre-approval of the Hub's own skills
-   counts, which tools count as code execution (shell, Code Mode `execute`, subagents) and
-   whether the acting window is the session or ends at compaction.
+4. Approval on a Computer. The installation pre-approves, by name, the Hub's own skills and
+   the skills of the platform's native servers (console, Artifact, Media, Embedding); that
+   is the explicit per-skill approval the spec asks for, given by the installation for its
+   people. A skill of a factory-served branch, which is code a person pushed, needs the
+   person's approval before its first load and again when its files change, and while it
+   is active the host asks before shell, Code Mode `execute` and subagents. The acting
+   window ends when the session compacts the skill out of context.
 5. Upstream `instructions` stop being a channel: each server's guidance moves into its
    skills, and its `instructions` say only what it is and which skills it serves. The Hub
    keeps one line, the person's section and pointers to its own skills.
-6. Prompts: kept as user-invoked templates, or folded into skills.
+6. Prompts stay user-invoked templates, and the guidance they repeat moves into the
+   server's skills, so a prompt states its task and names the skill.
 7. Skill text names tools as callers see them (`{slug}__{tool}`, `n8n__<team>__run`), which
    the SDK's authoring guide states, since the Hub cannot rewrite bytes without breaking
    digests.
-8. rmcp follows upstream `main` from a pinned revision with the Skills support merged in
-   #1392 (after 3.8.0), plus #1412 when it merges, carrying our four patches until upstream
-   takes them. `"dynamic"` skills are not served and hosts refuse them. AGENTS.md and
+8. rmcp follows upstream `main` from a pinned revision of our fork's `veoveo/main`, which
+   carries the Skills support merged in #1392 (after 3.8.0), #1412 until it merges, and
+   our four patches (task status subscriptions, typed HTTP rejections, two log levels).
+   Our forks stay ours: nothing is offered upstream for now. `"dynamic"` skills are not served and hosts refuse them. AGENTS.md and
    DESIGN.md stay maintainer documents, not skills. `resources/directory/read` is not
    declared at first, since manifests are complete.
 
@@ -1709,7 +1713,6 @@ the servers.
   had exited, so the workspace took 42 s instead of 5.5 s. A shutdown race, to fix in
   OpenShell.
 - Build caches in the other repositories' checks, as in Hub's.
-- Offer the rmcp fork's fix (`faa4e9d`) upstream; Hub pins it by commit.
 - D11's node reboot (the box serving again by itself after a power cycle), which needs
   the box's sudo.
 - Unexplained during the G1 re-run, with no effect on the result
