@@ -1627,6 +1627,13 @@ Order: rmcp and core first, then the SDK with one server (console) end to end th
 Hub, then the Hub's own skills and the handbook, then OpenCode, then n8n, then the rest of
 the servers.
 
+Delivered 2026-11-02 ([record](records/2026-11-02-skills-and-work-context-sweep.md)): rmcp fork
+`d45f7f5` (1), core `05b6c47` (2), SDK `aff0022` (3), the servers (4: console `4c8a185`, Time
+`565502c`, Artifact `044a75b`, Media `e54cbb0`, Embedding `488594e`, n8n `5d82515`, template
+`fdb7df8`), Hub `496988c` (5), installation `8055532` and Bioma (6), OpenCode `e3dd1a1` (7),
+n8n fork `fa3e680` (8). Deployed and proven: checklist K1 and K7. Pending: K8, a pushed
+server's skill asking for approval in OpenCode and in n8n's Assistant.
+
 ## 16. Remove Work Context: a project is a group
 
 Approved 2026-11-01; started 2026-11-02 in one sweep with section 15 and the rmcp move, so every server is rebuilt once. A Work Context is a configured project: each token
@@ -1686,12 +1693,13 @@ as the code:
       by Lore from Hub's tokens, artifact access by Artifact from the forwarded groups
       and its grants, Task access by Hub's route and then the server, tool permissions
       by Hub's roles.
-- [ ] Docs: `ARCHITECTURE.md`'s trust boundaries, the platform diagram and the
-      checklist.
+- [ ] Docs: `ARCHITECTURE.md`'s trust boundaries (4ed3dd1) and the checklist (section K)
+      done; the platform diagram still shows Work Context.
 - [x] Cutover (2026-11-02): reset application state; end every session and refresh family so no token
       of the old shape remains; every server takes the new core and SDK in one rollout;
       Computers restart onto it.
-- [ ] Qualification: a group member reads and writes an artifact granted to the group and
+- [x] Qualification (2026-11-02, [record](records/2026-11-02-skills-and-work-context-sweep.md);
+      a Task answering only its person stays pending as checklist K6): a group member reads and writes an artifact granted to the group and
       loses it when removed, while a personal grant survives; a removed member loses the
       group's repository access, within the token reuse in Later; an artifact a Media
       Task produces is owned by the person who started it; a Task answers only its

@@ -18,11 +18,13 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
-`*.apps.veoveo.bioma.ai`, deployed 2026-11-01: Hub `18c6268` (SDK `7360c0f`, core `422dcf2`; linked-repository runners and routing, Computer apps and keep-on), Lore
-`c33e017a` (Epic's `main` with Veoveo's changes), OpenShell gateway `c80bda2` (runtime `1ab0e2386`,
-supervisor `49761d1`; factory instances take it at their next push), installation `d1d8612` (Computer version `af6043514dfa`, with n8n and the Assistant's Hub tools; the Hub CLI on SDK `7360c0f`), OpenCode
-`ca091c8` (2.0; Computer image `430b7ab-ca091c8`), console `811e476`, Artifact `91e62be`, Media
-`6bd5843`, Embedding `95216bd`; n8n `68eecbb` as two runners (the parent's Lore revision 34) and in each Computer, on the fork `a4efd135`.
+`*.apps.veoveo.bioma.ai`, deployed 2026-11-02 after the skills and Work Context sweep
+([record](records/2026-11-02-skills-and-work-context-sweep.md)): core `05b6c47`, SDK `a85b72d`,
+Hub `b5c0832`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time `565502c`, Artifact
+`1bebe8c`, Media `a7cba4e`, Embedding `488594e`; n8n server `ff4c37f` on the fork `8e87007`
+(the parent's Lore revision 36); OpenCode `e3dd1a1`; Computer version `d673fa224715`;
+installation `a1edf31` (template `d869b8a`), control plane `gcp-01a19d5b…`. Rows proven
+before 2026-11-02 were proven on earlier revisions, as their evidence says.
 
 ## A. Identity and administration
 
@@ -194,6 +196,19 @@ sits before G because G stays last.
 | J12 | The Assistant works in the Computer | Ask the Assistant in the Computer's n8n to build a workflow | It answers with the Computer's model and runs its code in the person's Computer | proven 2026-11-01 in the browser: the Assistant built and verified "J12 Assistant probe" with the Computer's model through `veoveo-n8n-computer`; its sandbox in `$HOME/n8n/.sandboxes` installed `@n8n/workflow-sdk` 0.39.0 through the `npm_registry` rule ([record](records/2026-11-01-n8n-assistant.md)) |
 | J13 | The Assistant uses the person's Hub tools | Ask the Assistant in the Computer's n8n to call a Veoveo tool | It finds the tool among the person's Hub tools and calls it as the person; the Hub decides the call | proven 2026-11-01 in the browser on Computer version `af6043514dfa`: the Assistant found and loaded `veoveo_time__resolve_time` and called it; the program logged three admitted requests, each 200, and the answer came from Time. No approval was asked for that read-only tool; the approval card for a changing tool was not tried ([record](records/2026-11-01-n8n-assistant-hub-tools.md)) |
 | J14 | A workflow calls Hub tools from a list | Add a Veoveo Tool node in the Computer's n8n; check a runner's list | The Tool field lists the person's Hub tools in the Computer and the bridge table on a runner; a typed name still loads and runs | proven 2026-11-01: 69 tools of 11 servers listed in A's n8n; a workflow saved with a typed name opened and ran; both runners list `time__resolve_time`; team runs unchanged ([record](records/2026-11-01-n8n-assistant-hub-tools.md)) |
+
+## K. Skills and groups
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| K1 | Servers and Hub declare and serve skills | `server/discover`; `skills/list` and `resources/read` from a Computer | The extension declared; every listed skill's bytes match its sha256 and size; Hub's own under `skill://veoveo/` | proven 2026-11-02: 23 skills on 7 sources, all matching ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K2 | A group member gets an artifact granted to the group, capped by their group role, and loses it when removed; a personal grant survives | Artifact grants to a group and a principal, then removal from the group | read; admin refused as `member`, allowed as `owner`; refused within seconds of removal; personal grant still reads | proven 2026-11-02, removal refused within 1 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K3 | A group member reaches a shared repository and loses it when removed | Lore clone and push as member, then removal | push works; clone refused after removal within the token reuse | proven 2026-11-02, refused 261 s after removal ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K4 | A Task's output is owned by the person who started it | `media__run` from a Computer (fixture model) | Artifact owner is the person; acting server Media | proven 2026-11-02 with synthetic fixture bytes ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K5 | A running Task stops acting for a caller removed from a configured group | n8n workflow that waits, then calls a Hub tool; remove the starter from a group during the wait | The call after the wait refused: "the caller's groups changed since the Task started"; without removal it succeeds | proven 2026-11-02: refused at 66.7 s, control succeeded in 61.2 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K6 | A Task answers only its person | Another person polls or cancels it | Refused or not found | pending: no Computer-profile `tasks/get` for a second person; the local-profile attempt was inconclusive ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K7 | Nothing names a Work Context | Database schema, token claims, control plane, instructions | None | proven 2026-11-02 ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K8 | A skill from a pushed server needs approval in OpenCode and n8n's Assistant | Use a factory server's skill from each client | The client asks first; the platform's own skills load without asking | pending |
 
 ## G. Model-driven acceptance (last)
 
