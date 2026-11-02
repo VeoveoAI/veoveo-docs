@@ -1500,6 +1500,129 @@ deployed n8n instance keeps serving until runners replace it.
 
 Done when section J is proven, with a record for each step.
 
+## 15. MCP Skills: one home for agent guidance
+
+Proposed 2026-11-02, not approved. Guidance for agents is spread over places that do not
+reach each other, and most of it reaches no agent. The MCP Skills extension
+(`io.modelcontextprotocol/skills`, SEP-2640, base protocol `2026-07-28`, spec in
+[ext-skills](https://github.com/modelcontextprotocol/ext-skills/blob/main/specification/beta/skills.mdx))
+lets the component that owns a piece of knowledge serve it as skills: `skills/list` and
+`skills/get` answer each skill's verbatim frontmatter and a complete manifest of its files
+with SHA-256 digests, the files are resources read with `resources/read`, and a host loads
+a skill only when a task needs it. The goal is one channel: each server serves the skills
+for using it, the installation's guidance becomes skills the Hub serves, the server
+`instructions` shrink to a few lines that point at skills, and OpenCode and n8n's
+Assistant load them the same way.
+
+Where guidance lives today (survey of 2026-11-02, by reading code):
+- The Hub's instructions: one fixed line, the installation's Computer handbook
+  (`computer/instructions.md`, 5.9 KB, Computers' client only) and the person's section
+  (Hub `5c72d75`). OpenCode reads them once per connection.
+- Each server's own `instructions`: console 276 B, Time 342 B, Artifact 489 B, Media
+  387 B, Embedding 499 B, n8n 350 B, the template 151 B. The Hub reads only an upstream's
+  capabilities from `server/discover`, so none of this reaches any agent. Embedding's text
+  lacks spaces ("default to768"); n8n's names `n8n://workflows`, which callers see as
+  `n8n://{link}/workflows`.
+- Prompts: Time 3, Artifact 2, Media 4, which OpenCode shows as slash commands.
+- Each server's AGENTS.md and DESIGN.md, served as `{scheme}://docs/…`: manuals for the
+  server's maintainers, not guidance for its users.
+- The Hub CLI's `ask` has its own system prompt and ignores the Hub's instructions.
+- n8n's Assistant reads no server `instructions`; it has 9 bundled skills and n8n's own
+  remote skills. OpenCode has filesystem skills, a URL skill index and two built-in skills
+  (`opencode`, `report`); the Computer bakes in no AGENTS.md or skills.
+
+Decisions for the owner:
+1. Server skills are published under `skill://{slug}/{name}/SKILL.md`, which registration
+   enforces as it enforces `ui://{slug}/`. The Hub then passes entries and bytes through
+   unchanged, digests hold, and the path keeps the originating server visible behind the
+   one MCP server a host sees. The alternative, the Hub rewriting skill URIs, is not
+   recommended.
+2. A linked server's skills are one set per server, as its Apps are, not one per link.
+3. The Hub's own skills live under a reserved `skill://veoveo/…` that no slug can take,
+   sourced from the installation as the handbook is today (`computers.skills` replacing
+   `computers.handbook`), with digests computed when the catalog loads.
+4. Approval on a Computer. The spec requires explicit per-skill approval before content
+   from an MCP skill can lead to host-side code execution. Sessions the platform drives run
+   unattended. Decide whether the installation's pre-approval of the Hub's own skills
+   counts, which tools count as code execution (shell, Code Mode `execute`, subagents) and
+   whether the acting window is the session or ends at compaction.
+5. Upstream `instructions` stop being a channel: each server's guidance moves into its
+   skills, and its `instructions` say only what it is and which skills it serves. The Hub
+   keeps one line, the person's section and pointers to its own skills.
+6. Prompts: kept as user-invoked templates, or folded into skills.
+7. Skill text names tools as callers see them (`{slug}__{tool}`, `n8n__<team>__run`), which
+   the SDK's authoring guide states, since the Hub cannot rewrite bytes without breaking
+   digests.
+8. rmcp follows upstream `main` from a pinned revision with the Skills support merged in
+   #1392 (after 3.8.0), plus #1412 when it merges, carrying our four patches until upstream
+   takes them. `"dynamic"` skills are not served and hosts refuse them. AGENTS.md and
+   DESIGN.md stay maintainer documents, not skills. `resources/directory/read` is not
+   declared at first, since manifests are complete.
+
+Inventory, in order (S, M, L by size):
+1. rmcp (M). Move Hub, the SDK and every server from the fork at 3.5.0 (`faa4e9d`, and
+   `917e791` on console, Artifact, Media, Embedding and the template) to the pinned
+   upstream revision. Upstream's typed API (`model/skill.rs`: `SkillsCapability`,
+   `SkillResource::from_bytes`, `ListSkillsResult`, `ServerHandler::list_skills` and
+   `get_skill`, `Peer::list_skills`) replaces any types of our own.
+2. veoveo-core (M). Directory embedding at build time with `build.rs` change tracking
+   (`embedded_document!` embeds one file), reusing `Sha256Digest`, which already has the
+   spec's `sha256:{hex}` form. A YAML parser for frontmatter (core and the SDK have none;
+   the Hub has `serde_yaml` 0.9, upstream uses `yaml_serde` 0.10), run at build time so
+   every host sees the same JSON.
+3. veoveo-hub-sdk (M). `server_skills!` and `ServerSkills` beside `server_docs!`, a
+   `SkillUri` like `AppUri`, the extension declared when the bundle is non-empty, the
+   bundle validated (name equals directory, at most 512 files and 16 MiB), `skills/list` and
+   `skills/get` answered from it, `skill://{slug}/…` reads served before domain code,
+   registration ownership of `skill://{slug}/`, requirements and policy for skill reads,
+   `HubClient::skills` and `skill`, CLI `skills` and `skill <uri>`, a fixture with a
+   `skills/` directory, and the SDK's DESIGN.md, conventions and authoring guide.
+4. Each server (S each). A `skills/` directory for console (watch, select, status, logs,
+   sharing), Time, Artifact (upload, download, share), Media (model, schema, run, Artifact),
+   Embedding, n8n (a workflow-authoring skill: the Veoveo Trigger, Tool and Result contract,
+   `CUSTOM.*` types, tool names, admitted nodes, credentials as placeholders, drafts, with
+   the team template's workflows as examples) and the template (a reference skill and a
+   manifest test). Each `instructions` shrinks to a pointer.
+5. Hub (L). Declare the extension per admitted client; `skills/list` aggregated per caller
+   with authorization per skill (an entry is dropped whole if any file is denied), a skills
+   discovery cache and watch invalidation, private entries; `skills/get` and
+   `resources/read` routed for `skill://{slug}/` (shared across a server's runners, as
+   `ui://` is) and `skill://veoveo/`; the Hub's own skills from the control plane; new
+   `HubAction`s and audit records for skill discovery and gets; the instructions reduced to
+   the line, the person's section and pointers; DESIGN.md (routing and catalog, the
+   Computers section).
+6. Installation (S-M). The handbook becomes `computer/skills/` (the home, the Lore
+   workflow, served branches, Computer versions, Artifact transfers); the installer
+   publishes it as `computers.skills`; the template and Bioma's copy.
+7. OpenCode, a carried item in the fork (L). Bump `@modelcontextprotocol/client`, `core`
+   and `server` from 2.3.1 to 2.4.0 and rebuild our client patch; enable skills on modern
+   connections only; reuse the SDK's `SkillsClient`, which verifies size, digest,
+   frontmatter and unlisted files. OpenCode adds the rest: an MCP skill registry plugin
+   keyed by server and path, never by URI alone, that never shadows filesystem skills; a
+   lazy, verified load with an origin tag and the manifest's file list; load by URI; a
+   supporting-file tool bound to the originating server; approval bound to the skill's file
+   set, asked even under the Computer's allow-all default; the code-execution gate while a
+   skill is active, subagents included; origin in the skill list and the UI; tests with a
+   2.4.0 fixture server.
+8. n8n, a carried item in the fork (M-L). `McpConnection` adds a `SkillsClient` and reads
+   server `instructions`; an MCP skill source for `@n8n/agents` with an origin field, the
+   server's configured name as its label, the 512-file and 16 MiB limits, no `"dynamic"`
+   skills and no `allowed-tools`, `dependencies` or `policy` taken from MCP frontmatter;
+   approval before the first `load_skill`, revoked when the file set changes; active-skill
+   IDs encoding server and URI; MCP skills kept out of the trusted `<active_skills>` block;
+   the code-execution gate on `workspace_execute_command`; MCP skills as a third source in
+   the Assistant's skill assembly; `@modelcontextprotocol/server` 2.4.0 for test fixtures.
+   veoveo-n8n-computer's forwarder already passes every method byte for byte; it gains a
+   test.
+9. Qualification. New checklist rows: a server's skill is listed with its origin and loaded
+   on demand in OpenCode and in n8n's Assistant; nothing is fetched before load; a changed
+   file forces re-approval; a skill cannot drive a read on another server or run code
+   without approval; the Hub's own skills replace the handbook.
+
+Order: rmcp and core first, then the SDK with one server (console) end to end through the
+Hub, then the Hub's own skills and the handbook, then OpenCode, then n8n, then the rest of
+the servers.
+
 ## Later
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
