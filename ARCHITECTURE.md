@@ -94,12 +94,23 @@ The boundaries that follow from these:
   even where one issuer signs two kinds. The one exception is Lore's repository listing,
   creation and deletion: Lore forwards its caller's Lore token to Hub, the token's issuer,
   which answers only that person's repository assignments, makes them the owner of a
-  repository they create and lets only an owner delete one. A valid Lore token gives no other Hub access, and
-  Hub administration or Work Context membership gives no repository access.
-- **Credentials stay in custody.** Workloads hold placeholders that OpenShell replaces on
-  the request; the real Lore, Hub and model credentials never enter a Computer or a
-  factory sandbox. A placeholder resolves only for the process tree it was given to. Only a credential that must sign stays with its service, such as
-  Artifact's bucket key, which SigV4 needs in the signer.
+  repository they create and lets only an owner delete one. A valid Lore token gives no
+  other Hub access, and Hub administration gives no repository access.
+- **Credentials stay in custody.** Computers, factory instances and runners hold
+  placeholders that OpenShell replaces on the request, at the endpoints their provider
+  profile and policy bind; the real Lore, Hub and model credentials never enter them.
+  Services keep the credentials they sign or reach their own stores with: Hub its signing
+  keys, each registered server its key pair and database login, and Artifact its bucket
+  key, which SigV4 needs in the signer.
+- **A project is a group.** Lore repository assignments and Artifact grants name the same
+  group, so joining it gives what is shared with it and leaving removes that, in Lore and
+  in Artifact, while a person's own assignments and grants stay. Repository access is
+  decided by Lore from Hub's tokens, artifact access by Artifact from the forwarded groups
+  and its grants, a Task's by Hub's route and then its server, and tool permissions by
+  Hub's roles. What a person's Task, or a server acting for them, produces belongs to that
+  person, with the acting server and Task in its provenance. A project groups access; it
+  is not an execution boundary: each person has one Computer across their projects, and
+  revoking access does not take back what a Computer holds or a person downloaded.
 - **One owner per Computer.** Each Computer has its own OpenShell workspace and only its
   owner's browser session or Hub credential reaches it, including the programs of its
   version at `/computer/c/{computer}/apps/{name}/`; a server's App may send a person to
