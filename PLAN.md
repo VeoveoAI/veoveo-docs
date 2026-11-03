@@ -195,6 +195,11 @@ B22's day of logs.
 
 ## 6. Manual Task continuity verification
 
+Historical checkpoint: the Work Context-dependent Task proof package was retired
+in the [2026-11-02 bulk cleanup](records/2026-11-02-work-context-proof-retirement.md).
+The results below apply to their recorded revisions, not the current Task binding
+or the newer configured-group revocation path.
+
 Approved 2026-10-29. Verify the Task identity, retained routing and authority that
 Hub assembles for dispatch, with the SDK's recipient-deployment binding. The owning
 contract is [Hub Task routes](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/state/task_routes/DESIGN.md);
@@ -228,13 +233,19 @@ authorization rules, automatic proof gate or separate service.
 Approved 2026-10-29; paused 2026-11-01 for a coverage and value review. The
 [pause report](records/2026-11-01-hub-formal-verification-status.md) records the
 completed contracts, ten production correction groups, source applicability and
-remaining obligations. The subsequent
-[closeout](records/2026-11-01-hub-proof-closeout.md) adopts the tested dependency
-manifest and shared-package evidence, restores the checked membership baseline,
-and explicitly defers its two unfinished semantic controls. Further verification
-is paused pending better Rust/Aeneas support; no compiler is running. The roadmap
-below does not authorize starting another slice while this goal is paused.
-The intended scope remains to extend the completed Task-decision slice into
+remaining obligations. The [2026-11-01 closeout](records/2026-11-01-hub-proof-closeout.md)
+retained the then-current membership baseline and deferred its unfinished controls.
+After production removed Work Context, the user requested one bulk removal instead
+of porting the obsolete models. The
+[2026-11-02 cleanup](records/2026-11-02-work-context-proof-retirement.md) retires five
+Hub packages (`current_roles`, `control_publication`, `refresh_transactions`,
+`request_composition`, `task_continuity`) and SDK `internal_auth`; eight independent
+packages remain. Removed proofs and their receipts are available in Git history;
+dated records are unchanged. The membership controls are retired, not pending work.
+The checked items below are historical evidence, not renewed current-source coverage.
+Further verification remains paused pending better Rust/Aeneas support. This cleanup
+does not resume the roadmap or add a proof gate.
+The intended future scope remains
 coverage of Hub's complete operations: admitted caller, destination, committed state
 and recovery under concurrent updates, retries and failures. The authoritative
 [proof coverage map](https://github.com/VeoveoAI/veoveo-hub/blob/main/proofs/README.md#approved-implementation-roadmap)
