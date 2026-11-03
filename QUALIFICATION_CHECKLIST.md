@@ -20,9 +20,9 @@ Rules:
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
 `*.apps.veoveo.bioma.ai`, deployed 2026-11-03 ([sweep](records/2026-11-02-skills-and-work-context-sweep.md),
 [follow-up](records/2026-11-03-task-guard-and-task-privacy.md)): core `05b6c47`, SDK `a85b72d`
-(Hub CLI `a9abfd2`), Hub `ddb901c`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time
+(Hub CLI `a9abfd2`), Hub `349fffa`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time
 `565502c`, Artifact `1bebe8c`, Media `a7cba4e`, Embedding `488594e`; n8n server `ff4c37f` on the
-fork `8e87007`; OpenCode `e3dd1a1`; Computer version `0e9996d5296e`; installation `3ea5cff`
+fork `8e87007`; OpenCode `e3dd1a1`; Computer version `0e9996d5296e`; installation `f31422d`
 (template `68210d4`), control plane `gcp-01a1a048…`; people's factory servers on the same SDK
 ([record](records/2026-11-03-people-factory-servers-repinned.md)). Rows proven before
 2026-11-02 were proven on earlier revisions, as their evidence says.
@@ -202,7 +202,7 @@ sits before G because G stays last.
 
 | # | Check | How | Expect | Status |
 |---|---|---|---|---|
-| K1 | Servers and Hub declare and serve skills | `server/discover`; `skills/list` and `resources/read` from a Computer | The extension declared; every listed skill's bytes match its sha256 and size; Hub's own under `skill://veoveo/` | proven 2026-11-02: 23 skills on 7 sources, all matching ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K1 | Servers and Hub declare and serve skills | `server/discover`; `skills/list` and `resources/read` from a Computer | The extension declared; every listed skill's bytes match its sha256 and size; Hub's own under `skill://veoveo/` | proven 2026-11-02: 20 skills (23 files) on 7 sources, all matching; 21 skills (24 files) on 8 on 2026-11-03 ([record](records/2026-11-03-hub-discovery-watch-stack.md)) ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K2 | A group member gets an artifact granted to the group, capped by their group role, and loses it when removed; a personal grant survives | Artifact grants to a group and a principal, then removal from the group | read; admin refused as `member`, allowed as `owner`; refused within seconds of removal; personal grant still reads | proven 2026-11-02, removal refused within 1 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K3 | A group member reaches a shared repository and loses it when removed | Lore clone and push as member, then removal | push works; clone refused after removal within the token reuse | proven 2026-11-02, refused 261 s after removal ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K4 | A Task's output is owned by the person who started it | `media__run` from a Computer (fixture model) | Artifact owner is the person; acting server Media | proven 2026-11-02 with synthetic fixture bytes ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
