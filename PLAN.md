@@ -1710,7 +1710,7 @@ as the code:
       of the old shape remains; every server takes the new core and SDK in one rollout;
       Computers restart onto it.
 - [x] Qualification (2026-11-02, [record](records/2026-11-02-skills-and-work-context-sweep.md);
-      a Task answering only its person stays pending as checklist K6): a group member reads and writes an artifact granted to the group and
+      a Task answering only its person proven 2026-11-03 as checklist K6): a group member reads and writes an artifact granted to the group and
       loses it when removed, while a personal grant survives; a removed member loses the
       group's repository access, within the token reuse in Later; an artifact a Media
       Task produces is owned by the person who started it; a Task answers only its

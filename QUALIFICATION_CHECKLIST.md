@@ -18,13 +18,14 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
-`*.apps.veoveo.bioma.ai`, deployed 2026-11-02 after the skills and Work Context sweep
-([record](records/2026-11-02-skills-and-work-context-sweep.md)): core `05b6c47`, SDK `a85b72d`,
-Hub `b5c0832`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time `565502c`, Artifact
-`1bebe8c`, Media `a7cba4e`, Embedding `488594e`; n8n server `ff4c37f` on the fork `8e87007`
-(the parent's Lore revision 36); OpenCode `e3dd1a1`; Computer version `d673fa224715`;
-installation `a1edf31` (template `d869b8a`), control plane `gcp-01a19d5b…`. Rows proven
-before 2026-11-02 were proven on earlier revisions, as their evidence says.
+`*.apps.veoveo.bioma.ai`, deployed 2026-11-03 ([sweep](records/2026-11-02-skills-and-work-context-sweep.md),
+[follow-up](records/2026-11-03-task-guard-and-task-privacy.md)): core `05b6c47`, SDK `a85b72d`
+(Hub CLI `a9abfd2`), Hub `ddb901c`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time
+`565502c`, Artifact `1bebe8c`, Media `a7cba4e`, Embedding `488594e`; n8n server `ff4c37f` on the
+fork `8e87007`; OpenCode `e3dd1a1`; Computer version `0e9996d5296e`; installation `3ea5cff`
+(template `68210d4`), control plane `gcp-01a1a048…`; people's factory servers on the same SDK
+([record](records/2026-11-03-people-factory-servers-repinned.md)). Rows proven before
+2026-11-02 were proven on earlier revisions, as their evidence says.
 
 ## A. Identity and administration
 
@@ -205,8 +206,8 @@ sits before G because G stays last.
 | K2 | A group member gets an artifact granted to the group, capped by their group role, and loses it when removed; a personal grant survives | Artifact grants to a group and a principal, then removal from the group | read; admin refused as `member`, allowed as `owner`; refused within seconds of removal; personal grant still reads | proven 2026-11-02, removal refused within 1 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K3 | A group member reaches a shared repository and loses it when removed | Lore clone and push as member, then removal | push works; clone refused after removal within the token reuse | proven 2026-11-02, refused 261 s after removal ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K4 | A Task's output is owned by the person who started it | `media__run` from a Computer (fixture model) | Artifact owner is the person; acting server Media | proven 2026-11-02 with synthetic fixture bytes ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
-| K5 | A running Task stops acting for a caller removed from a configured group | n8n workflow that waits, then calls a Hub tool; remove the starter from a group during the wait | The call after the wait refused: "the caller's groups changed since the Task started"; without removal it succeeds | proven 2026-11-02: refused at 66.7 s, control succeeded in 61.2 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
-| K6 | A Task answers only its person | Another person polls or cancels it | Refused or not found | pending: no Computer-profile `tasks/get` for a second person; the local-profile attempt was inconclusive ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
+| K5 | A running Task stops acting for a caller removed from a configured group | n8n workflow that waits, then calls a Hub tool; remove the starter from a group during the wait | The call after the wait refused: "the caller's groups changed since the Task started"; without removal it succeeds | proven 2026-11-02: refused at 66.7 s, control succeeded in 61.2 s ([record](records/2026-11-02-skills-and-work-context-sweep.md)); again 2026-11-03 on Hub `ddb901c` for removal, the group's deletion and owner downgraded to member, each refused, while no change and an upgrade succeed ([record](records/2026-11-03-task-guard-and-task-privacy.md)) |
+| K6 | A Task answers only its person | From each person's Computer, `hub tasks get` of their own Task, then `tasks get` and `tasks cancel` of the other's | Own read works; the other's refused by the Hub; the other's Task completes | proven 2026-11-03 on Computer version `0e9996d5296e` (CLI from SDK `a9abfd2`): own `working` in about 0.4 s, the other's get and cancel refused -32602 "unknown task id" both ways, both Tasks completed in 91 s ([record](records/2026-11-03-task-guard-and-task-privacy.md)) |
 | K7 | Nothing names a Work Context | Database schema, token claims, control plane, instructions | None | proven 2026-11-02 ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K8 | A skill from a pushed server needs approval in OpenCode and n8n's Assistant | Use a factory server's skill from each client | The client asks first; the platform's own skills load without asking | pending |
 
