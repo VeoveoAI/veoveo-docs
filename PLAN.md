@@ -1642,8 +1642,8 @@ Delivered 2026-11-02 ([record](records/2026-11-02-skills-and-work-context-sweep.
 `d45f7f5` (1), core `05b6c47` (2), SDK `aff0022` (3), the servers (4: console `4c8a185`, Time
 `565502c`, Artifact `044a75b`, Media `e54cbb0`, Embedding `488594e`, n8n `5d82515`, template
 `fdb7df8`), Hub `496988c` (5), installation `8055532` and Bioma (6), OpenCode `e3dd1a1` (7),
-n8n fork `fa3e680` (8). Deployed and proven: checklist K1 and K7. Pending: K8, a pushed
-server's skill asking for approval in OpenCode and in n8n's Assistant.
+n8n fork `fa3e680` (8). Deployed and proven: checklist K1, K7 and K8 (a pushed server's skill
+asks first in OpenCode and in n8n's Assistant, 2026-11-03).
 
 ## 16. Remove Work Context: a project is a group
 
