@@ -1693,8 +1693,8 @@ as the code:
       by Lore from Hub's tokens, artifact access by Artifact from the forwarded groups
       and its grants, Task access by Hub's route and then the server, tool permissions
       by Hub's roles.
-- [ ] Docs: `ARCHITECTURE.md`'s trust boundaries (4ed3dd1) and the checklist (section K)
-      done; the platform diagram still shows Work Context.
+- [x] Docs: `ARCHITECTURE.md`'s trust boundaries (4ed3dd1), the checklist (section K) and
+      the platform diagram (d8fc9d8).
 - [x] Cutover (2026-11-02): reset application state; end every session and refresh family so no token
       of the old shape remains; every server takes the new core and SDK in one rollout;
       Computers restart onto it.
