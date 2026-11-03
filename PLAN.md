@@ -1731,6 +1731,16 @@ qualification. Done when deployed and proven, with a record and the checklist.
 
 ## Later
 
+- n8n's Assistant asks "Opening skill: keep-items" without naming the skill's server, where
+  OpenCode names both (`hub:template/keep-items`); show the origin in the fork's confirmation
+  ([record](records/2026-11-03-skills-acceptance.md)).
+- rmcp's streamable HTTP request handler takes about 670 KB of stack per inbound request in a
+  debug build, the largest single frame; boxing its inner future in the fork gives every
+  request path headroom. Hub `349fffa` moved discovery-watch opening off the request's stack,
+  which had overflowed the 2 MiB worker stack in the Linux test build.
+- Logout revokes a session family but does not delete it, so a running Task keeps acting
+  until it ends or the family expires (7 days); decide whether logout should stop Tasks.
+
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
   (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
 - Lore's client reports the server's `PERMISSION_DENIED` as "Repository not found".
