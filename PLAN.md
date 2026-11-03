@@ -1740,6 +1740,14 @@ qualification. Done when deployed and proven, with a record and the checklist.
   which had overflowed the 2 MiB worker stack in the Linux test build.
 - Logout revokes a session family but does not delete it, so a running Task keeps acting
   until it ends or the family expires (7 days); decide whether logout should stop Tasks.
+- Keycloak in the cluster, an installation's own identity provider instead of Entra
+  (template `9c8959a`,
+  [guide](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/identity/README.md#keycloak-in-the-cluster)):
+  inputs exist and the installer's tests check them, not yet installed. The first
+  installation with it (planned on AWS) proves the realm import, sign-in A1–A3, the gateway's
+  acceptance of Hub's native-control token, the operator's command-line sign-in, a Computer
+  and a factory push, and is also the first fresh install from the template (checklist F6).
+  The diagram's identity node gains Keycloak once that passes.
 
 - Faster removal: a removal reaches a Computer within 240 s, the reuse of a repository's token
   (checklist B5), accepted for now; shorten the reuse or Lore's token lifetime.
