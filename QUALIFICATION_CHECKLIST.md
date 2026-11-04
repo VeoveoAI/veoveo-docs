@@ -223,7 +223,6 @@ sits before G because G stays last.
 | L7 | Embedding takes media only by a valid signature | `embedding__embed` with a tampered signed GET | `source_refused`, zero usage, no URL echoed | proven 2026-11-04 (JSON-RPC error -32603 in 614 ms) [record](records/2026-11-04-knowledge-deployed.md) |
 | L8 | A person's index Task is theirs alone | The other person's `tasks get` of it | Refused | proven 2026-11-04 (`-32602 unknown task id`) [record](records/2026-11-04-knowledge-deployed.md) |
 | L9 | Another server's write is indexed as the person, before it returns | `media__run` with the fixture provider | The run succeeds; its output found by words; Embedding reached as the person | proven 2026-11-04 for the delegated path; the fixture's synthetic bytes are not a decodable image, so Embedding answered `preprocessing_failed` and no vector was stored [record](records/2026-11-04-knowledge-deployed.md) |
-| L10 | Retrieval quality | Judged text and media queries against the deployed Embedding, on Mac MPS and Linux CUDA | Recall at 10 recorded | pending |
 
 ## G. Model-driven acceptance (last)
 

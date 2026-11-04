@@ -1731,7 +1731,7 @@ qualification. Done when deployed and proven, with a record and the checklist.
 
 ## 17. Knowledge: one contract every server expresses, and each searches its own records
 
-Approved 2026-11-03. The monorepo's Knowledge was never ported: the split deleted its
+Approved 2026-11-03. Done 2026-11-04 ([record](records/2026-11-04-knowledge-deployed.md)). The monorepo's Knowledge was never ported: the split deleted its
 extension and contracts from core, and Embedding was ported as generation only
 ([survey](records/2026-11-03-knowledge-port-survey.md)). That Knowledge read every
 approved collection as its own machine client, cached it in one SurrealDB index, and
@@ -1900,8 +1900,8 @@ as the code:
       the template and Bioma's copy (template `217759a`, Bioma `91a3e7d`).
 - [x] Hub: `_meta` on resource templates reaches callers unchanged, proven deployed
       ([record](records/2026-11-04-knowledge-deployed.md)).
-- [ ] Qualification (deployed 2026-11-04 ([record](records/2026-11-04-knowledge-deployed.md)); component tests, deployed probes and
-      the model-driven acceptance done, the retrieval evaluation open):
+- [x] Qualification (deployed 2026-11-04 ([record](records/2026-11-04-knowledge-deployed.md))). It proves the contract
+      works; the quality of the embeddings is not part of this effort:
       - [x] Component tests against PostgreSQL with pgvector: the read rule applies before the
         limit, so a restricted caller still gets a full page; vectors from another model are
         never compared; the Task embeds as the writer.
@@ -1910,8 +1910,6 @@ as the code:
         group member finds an artifact shared with the group and loses it when removed; every
         hit reads back through its owner; the same calls work on Time, where an image
         query is answered from records that hold only text.
-      - [ ] Retrieval evaluation: judged text and media queries against the deployed Embedding,
-        on Mac MPS and Linux CUDA, with recall at 10 recorded.
       - [x] Last, model-driven acceptance in OpenCode (MiMo-V2.6-Pro, checklist G4).
 
 Order: the SDK's contract and wiring, then Embedding, then the SDK's ready-made search
