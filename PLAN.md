@@ -1786,13 +1786,15 @@ Decisions:
    caller. No chunker until a source holds long text (Later): an artifact's name and
    metadata and Time's records each fit one item.
 4. **Writes.** PostgreSQL keeps the `tsvector` column current with the row, so word search
-   finds a record as soon as it is written. After a write commits, the server calls
-   `reindex` for the record, and the SDK starts a durable Task that reads the record's
-   text and media, sends them to Embedding as the person who wrote it (so the usage and
-   the result are theirs) and stores the vector. Until the Task finishes, or if it fails,
-   which the Task shows, the record is found by words only. Search compares only vectors
-   made by the query's model. A model change resets the vectors; development data is
-   disposable.
+   finds a record as soon as it is written. After a write commits, the same call embeds
+   the record: the server calls `index`, which reads the record's text and media, sends
+   them to Embedding as the person who wrote it (so the usage and the result are theirs)
+   and stores the vector. A background Task cannot do this, because only a Task that a
+   person's own call through the Hub created may act as that person, and these writes
+   are ordinary calls. If Embedding fails, the record stays saved and found by words, and
+   the write's answer says its vector is missing; its next change tries again. Search
+   compares only vectors made by the query's model. A model change resets the vectors;
+   development data is disposable.
 5. **The SDK gives three layers; only the first is required.** It lives in a `knowledge`
    module beside `skills`.
    - **The contract** (`contract` feature): the template marker, the query and hit types,
@@ -1810,7 +1812,7 @@ Decisions:
      and HNSW indexes with SQL the SDK documents, and implements `PgKnowledgeSource`: its
      collection, its table, its existing read rule as a SQL condition (Artifact's is
      `artifact.effective_level`), how a row becomes a hit, and what to embed for a
-     record. `PgKnowledge` writes the search query, runs the `reindex` Task and binds
+     record. `PgKnowledge` writes the search query, writes the vectors in `index` and binds
      the caller's identity into the read rule. Its pieces (embedding a query, fusing two
      rankings) are public, so a server that writes its own `search` can reuse them.
    - **Embedding** is reached through an `Embedder` trait in the SDK, because the SDK
@@ -1820,7 +1822,7 @@ Decisions:
      pgvector 0.8.7.
 
    A server on the ready-made path writes one migration, one `PgKnowledgeSource`, the
-   `reindex` call after its writes and a paragraph of its skill.
+   `index` call in its writes and a paragraph of its skill.
 6. **Across servers, the client fans out.** OpenCode and n8n's Assistant call the
    `{slug}__search_knowledge` tools they need and read the hits. The Hub's own skill
    `skill://veoveo/knowledge`, from the installation, teaches the contract once; each
@@ -1863,14 +1865,14 @@ as the code:
       a `client` feature implementing the SDK's `Embedder`; its `DESIGN.md`, skill and
       qualification redone.
 - [ ] SDK, the ready-made search: `PgKnowledge`, `PgKnowledgeSource`, the documented
-      migration SQL, the `reindex` Task, SQL confinement admitting `_extensions`, and
+      migration SQL, `index`, SQL confinement admitting `_extensions`, and
       tests against PostgreSQL with pgvector. The SDK's rule that it owns no queries is
-      relaxed for this one search over a server's own table (2026-11-03, branch
-      `knowledge-contract`); it still owns no schema and no query on core's tables.
+      relaxed for this search and its vector writes over a server's own table (2026-11-03,
+      SDK `f6f0578`); it still owns no schema and no query on core's tables.
 - [ ] Artifact, the first source: the collection `artifact.artifacts` (an available
       artifact's name, metadata and media), with the two columns on its `artifact` table
       and a `PgKnowledgeSource` whose read rule is `artifact.effective_level` and the
-      caller's data labels; `reindex` when an artifact becomes available, as its
+      caller's data labels; `index` in the call that makes an artifact available, as its
       uploader, with Artifact signing its own download; its skill.
 - [ ] Time, the second source, to show the contract is common: events (their owner only)
       and calendars and epochs (shared within the tenant), records without media under
@@ -1900,6 +1902,9 @@ deployed, with a record and checklist rows.
 
 ## Later
 
+- Durable re-embedding (section 17): the Hub records a Task that a server creates during a
+  person's direct call, so a write's embedding can run and retry in the background as that
+  person instead of inside the write.
 - Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
   beside the records, with the monorepo's `structure-v1` chunker in the SDK.
 - One fused knowledge search across servers (section 17): registration lets a server declare
