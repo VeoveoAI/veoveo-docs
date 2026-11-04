@@ -1729,8 +1729,181 @@ Known limits, accepted for now:
 Order: core, then the SDK, Hub, the servers and the installation, then cutover and
 qualification. Done when deployed and proven, with a record and the checklist.
 
+## 17. Knowledge: one contract every server expresses, and each searches its own records
+
+Approved 2026-11-03. The monorepo's Knowledge was never ported: the split deleted its
+extension and contracts from core, and Embedding was ported as generation only
+([survey](records/2026-11-03-knowledge-port-survey.md)). That Knowledge read every
+approved collection as its own machine client, cached it in one SurrealDB index, and
+repeated each record's access rule at search time, with approvals, index generations,
+leases, listeners and windowed audit to keep the copy honest. Most of that rested on
+Work Context, which section 16 removed, and on a standing service authority that the
+architecture does not have.
+
+Here knowledge is one MCP contract that any server expresses in the same way, and a
+server that expresses it searches its own records: they carry their own text and vector
+columns, and search is filtered by the server's own read rule. Nothing leaves its owner,
+nothing reads on everyone's behalf, and there is nothing to approve, refresh or
+reconcile. Embeddings are multimodal: text, image, audio and video share one space.
+
+Decisions:
+1. **One contract.** The SDK defines the extension `ai.veoveo/knowledge` completely, so
+   every server expresses it alike and every client uses it alike:
+   - A server declares `ai.veoveo/knowledge` in its `server/discover` capabilities, and
+     marks each resource template whose records are knowledge with
+     `_meta["ai.veoveo/knowledge"] = {"collection": "{slug}.{name}"}`. The template's own
+     name, title and description say what the records are. The templates are the catalog:
+     listing resource templates through the Hub shows every collection a person can reach.
+   - It serves one tool, `search_knowledge` (`{slug}__search_knowledge` to callers), with the
+     SDK's schemas. The query is ordered text and media parts, each media part the SDK's
+     signed media `{url, headers, mediaType, size}`, which Embedding's contract takes as it
+     is (decision 8). It may name collections of that server, and takes a limit of at most
+     20. Hits come in rank order, each with the record's URI, its collection, title, a text
+     snippet of at most 320 characters and `modifiedAt`, and one `resource_link` each. A
+     caller reads a hit through its owner for its content.
+   - The searcher chooses the modality, never the server. Every collection lives in one
+     multimodal space, so an image searches records that hold only text as readily as words
+     search images; a server accepts every modality Embedding takes, and declares none.
+   - The tool requires the server's own read permission for those records, declared
+     through `ai.veoveo/authorization` like any other.
+   - Checks, without a runtime inspector (the SDK has none): the SDK refuses at startup a
+     declaration that does not hold together, and checks every result before it leaves
+     the server; a `testing` helper gives each server one test in which a query of each
+     modality is answered rather than refused and every hit reads back for the same
+     caller; the deployed probes check the same through the Hub.
+2. **Each server searches the records it already has.** There is no index table: a
+   knowledge record carries two more columns in its own table, a generated `tsvector` of
+   its text, which PostgreSQL keeps current with the row, and a pgvector `vector(768)`
+   with the model that made it. Search is the server's own readable-records query, the
+   one its listings use, ranked by full text when the query holds text and by cosine
+   distance through an HNSW index, the two fused by reciprocal rank (k = 60). The read
+   rule therefore applies before ranking and limit, so a record the caller may not read
+   never appears, title and snippet included, and pgvector's iterative index scan keeps
+   a filtered page full.
+3. **Multimodal indexing.** A record's vector is one Embedding item of its text and its
+   media together (prompt `Document`, 768 dimensions), so a description finds an image
+   and an image finds a description. The query is embedded with `SearchQuery` as the
+   caller. No chunker until a source holds long text (Later): an artifact's name and
+   metadata and Time's records each fit one item.
+4. **Writes.** PostgreSQL keeps the `tsvector` column current with the row, so word search
+   finds a record as soon as it is written. After a write commits, the server calls
+   `reindex` for the record, and the SDK starts a durable Task that reads the record's
+   text and media, sends them to Embedding as the person who wrote it (so the usage and
+   the result are theirs) and stores the vector. Until the Task finishes, or if it fails,
+   which the Task shows, the record is found by words only. Search compares only vectors
+   made by the query's model. A model change resets the vectors; development data is
+   disposable.
+5. **The SDK gives three layers; only the first is required.** It lives in a `knowledge`
+   module beside `skills`.
+   - **The contract** (`contract` feature): the template marker, the query and hit types,
+     the signed media part and the tool's schemas. A server in another language, or one
+     that keeps its records elsewhere, implements the contract by hand against the same
+     schemas.
+   - **The wiring** (`server` feature): a Rust server implements one trait,
+     `KnowledgeSearch`, with one method, `search(ctx, query) -> hits`, and registers it
+     with its routes, where it also marks its templates. The SDK declares the extension,
+     marks the templates, publishes `search_knowledge` with the contract's schemas,
+     checks the limit, trims snippets, confirms each hit belongs to a declared
+     collection and adds the links. Inside `search` a server may do anything.
+   - **The ready-made PostgreSQL search** (`server` feature): `PgKnowledge`, an
+     implementation of `KnowledgeSearch`. A server adds the two columns and their GIN
+     and HNSW indexes with SQL the SDK documents, and implements `PgKnowledgeSource`: its
+     collection, its table, its existing read rule as a SQL condition (Artifact's is
+     `artifact.effective_level`), how a row becomes a hit, and what to embed for a
+     record. `PgKnowledge` writes the search query, runs the `reindex` Task and binds
+     the caller's identity into the read rule. Its pieces (embedding a query, fusing two
+     rankings) are public, so a server that writes its own `search` can reuse them.
+   - **Embedding** is reached through an `Embedder` trait in the SDK, because the SDK
+     names no server. Servers do not implement it: Embedding's `client` feature does, so
+     a server passes `EmbeddingClient`; tests pass a fake.
+   - The SDK's SQL confinement check admits `_extensions`, where the installation keeps
+     pgvector 0.8.7.
+
+   A server on the ready-made path writes one migration, one `PgKnowledgeSource`, the
+   `reindex` call after its writes and a paragraph of its skill.
+6. **Across servers, the client fans out.** OpenCode and n8n's Assistant call the
+   `{slug}__search_knowledge` tools they need and read the hits. The Hub's own skill
+   `skill://veoveo/knowledge`, from the installation, teaches the contract once; each
+   server's skill says what its collections hold. One fused search behind a single tool
+   is in Later: calls between servers name each provider's typed contract and declared
+   use, so no server can call servers it learns of at run time.
+7. **Not ported:** the Knowledge server with its catalog, approvals and `embed` tool (Embedding
+   has one); entity kinds, enumeration, freshness lifetimes, change signals, conditional reads,
+   observations, access descriptors and read policies; the indexing client, its
+   `indexing-read` intent and audit windows; index generations, leases and
+   reconciliation; DCAT shapes; provenance lines in an agent's context. Server documents
+   are not indexed: skills carry guidance, and `{scheme}://docs` stays maintainer manuals.
+   No Knowledge repository is created, so the split plan's D29 does not apply to it.
+8. **Embedding takes media by signed URL, not by artifact ID.** Artifact, the first source,
+   must call Embedding, and Embedding's `contract` used Artifact's types because it
+   resolved artifact IDs through Artifact as the caller. A scratch build of two crates
+   shaped that way fails with `E0308`, two different `ArtifactId` types in one graph.
+   Instead a media part is `{url, headers, mediaType, size}`, and Embedding depends on no
+   Artifact crate. Artifact decides access when it signs, and records
+   `artifact.download_issued` with the caller and the acting server; Embedding's runtime
+   already fetches only from the installation's storage origin, with no redirects. A
+   URL is accepted as input and never echoed in results, errors or logs. A signed GET
+   lives 5 minutes, so a caller signs right before each call. Artifact signs its own
+   downloads for its Task; a source whose records hold artifacts signs through
+   `artifact__create_download` as the writer; an agent that embeds an artifact makes
+   that call first.
+
+Work, each design change written in its owner's `DESIGN.md` first, in the same branch
+as the code:
+- [ ] Docs: a topic-map row in `ARCHITECTURE.md` for the knowledge contract and index
+      (SDK), and the platform diagram.
+- [ ] SDK, the contract and the wiring: the `knowledge` module's `contract` feature, the
+      `KnowledgeSearch` trait and its registration, the `Embedder` trait, the startup and
+      result checks, the `testing` helper, a fixture server with one collection, its
+      `DESIGN.md` section, conventions and authoring guide.
+- [ ] Embedding: media parts by signed URL (decision 8), the SDK's signed media type, with
+      no Artifact dependency, its Artifact resolution and declared Artifact use removed;
+      a `client` feature implementing the SDK's `Embedder`; its `DESIGN.md`, skill and
+      qualification redone.
+- [ ] SDK, the ready-made search: `PgKnowledge`, `PgKnowledgeSource`, the documented
+      migration SQL, the `reindex` Task, SQL confinement admitting `_extensions`, and
+      tests against PostgreSQL with pgvector. The SDK's rule that it owns no queries is
+      relaxed for this one search over a server's own table (2026-11-03, branch
+      `knowledge-contract`); it still owns no schema and no query on core's tables.
+- [ ] Artifact, the first source: the collection `artifact.artifacts` (an available
+      artifact's name, metadata and media), with the two columns on its `artifact` table
+      and a `PgKnowledgeSource` whose read rule is `artifact.effective_level` and the
+      caller's data labels; `reindex` when an artifact becomes available, as its
+      uploader, with Artifact signing its own download; its skill.
+- [ ] Time, the second source, to show the contract is common: events (their owner only)
+      and calendars and epochs (shared within the tenant), records without media under
+      other read rules; its skill.
+- [ ] Installation: `computer/skills/knowledge`, pre-approved with the Hub's own skills, in
+      the template and Bioma's copy.
+- [ ] Hub: check that `_meta` on resource templates and tools reaches callers unchanged.
+      No Hub change is expected.
+- [ ] Qualification:
+      - Component tests against PostgreSQL with pgvector: the read rule applies before the
+        limit, so a restricted caller still gets a full page; vectors from another model are
+        never compared; the Task embeds as the writer.
+      - Deployed probes: a person finds their image by a description and by another image;
+        a new artifact is found by text at once and by meaning once its Task completes; a
+        group member finds an artifact shared with the group and loses it when removed; every
+        hit reads back through its owner; the same calls work on Time, where an image
+        query is answered from records that hold only text.
+      - Retrieval evaluation: judged text and media queries against the deployed Embedding,
+        on Mac MPS and Linux CUDA, with recall at 10 recorded.
+      - Last, model-driven acceptance in OpenCode.
+
+Order: the SDK's contract and wiring, then Embedding, then the SDK's ready-made search,
+then Artifact end to end through the Hub, then Time, then the installation's skill, then
+qualification. Done when Artifact and Time express the contract, an agent finds a
+person's media by meaning across both through the one skill, and that is proven
+deployed, with a record and checklist rows.
+
 ## Later
 
+- Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
+  beside the records, with the monorepo's `structure-v1` chunker in the SDK.
+- One fused knowledge search across servers (section 17): registration lets a server declare
+  use of an extension instead of each provider's permissions, and the Hub's exchange grants a
+  call to any server's `search_knowledge` whose permission the caller holds. Until a client
+  that is not an agent needs one fused answer, clients fan out themselves.
 - n8n's Assistant asks "Opening skill: keep-items" without naming the skill's server, where
   OpenCode names both (`hub:template/keep-items`); show the origin in the fork's confirmation
   ([record](records/2026-11-03-skills-acceptance.md)).
