@@ -1854,8 +1854,9 @@ Decisions:
 
 Work, each design change written in its owner's `DESIGN.md` first, in the same branch
 as the code:
-- [ ] Docs: a topic-map row in `ARCHITECTURE.md` for the knowledge contract and index
-      (SDK), and the platform diagram.
+- [x] Docs: a topic-map row in `ARCHITECTURE.md` for the knowledge contract (SDK and the
+      installation's skill), the component rows, and the platform diagram's Embedding and
+      Artifact notes.
 - [x] SDK, the contract and the wiring: the `knowledge` module's `contract` feature, the
       `KnowledgeSearch` trait and its registration, the `Embedder` trait, the startup and
       result checks, the `testing` helper, a fixture server with one collection, its
@@ -1868,45 +1869,50 @@ as the code:
       (Embedding `0ee0e23`, runtime `eb0f5f7`; Docker checks on the Mac and Linux, 41 and
       25 tests, synthetic). Its deployed qualification is in Qualification below, with a
       tampered and an expired signature refused.
-- [ ] SDK, the ready-made search: `PgKnowledge`, `PgKnowledgeSource`, the documented
+- [x] SDK, the ready-made search: `PgKnowledge`, `PgKnowledgeSource`, the documented
       migration SQL, `index`, SQL confinement admitting `_extensions`, and
-      tests against PostgreSQL with pgvector. The SDK's rule that it owns no queries is
+      tests against PostgreSQL with pgvector (SDK `22ff657`, with core `97e85e0`'s
+      `TestDb::create_extensions`; then core `a8dafe9`'s `Conformance::extensions`, SDK
+      `b820f05`). The SDK's rule that it owns no queries is
       relaxed for this search and its vector writes over a server's own table (2026-11-03,
       SDK `f6f0578`); it still owns no schema and no query on core's tables.
-- [ ] SDK and Hub, a Task a call starts: a tool handler starts a durable Task for its caller
+- [x] SDK and Hub, a Task a call starts (SDK `22ff657`, Hub `e86466e`; the CLI's `call` prints
+      the result's `_meta`, SDK `ed8d2f8`): a tool handler starts a durable Task for its caller
       and its result names it in `_meta["io.modelcontextprotocol/related-task"]`; the Hub
       records a Task so named as the caller's, with the same route, delegation limits and
       visibility as a Task a Task tool creates, so its worker can call Embedding as the
       person. Each `DESIGN.md` first; tests on both sides.
-- [ ] Installation: remove Embedding's Artifact call rules from `openshell/embedding.yaml`
+- [x] Installation: remove Embedding's Artifact call rules from `openshell/embedding.yaml`
       and `kubernetes/policies/embedding.yaml` (and its `/oauth/token` rule if nothing else
       uses it), and update `openshell/EMBEDDING.md` and `kubernetes/EMBEDDING.md`; the
-      template and Bioma's copy.
-- [ ] Artifact, the first source: the collection `artifact.artifacts` (an available
+      template and Bioma's copy (template `24e28e0`, Bioma `6049e3c`; Artifact's token
+      exchange and Embedding call rules, template `9a79799`, Bioma `16955fc`).
+- [x] Artifact, the first source (Artifact `d570e06`; Media `6a85dce` takes its contract): the collection `artifact.artifacts` (an available
       artifact's name, metadata and media), with the two columns on its `artifact` table
       and a `PgKnowledgeSource` whose read rule is `artifact.effective_level` and the
       caller's data labels; `index` in the call that makes an artifact available, as its
       uploader, with Artifact signing its own download; its skill.
-- [ ] Time, the second source, to show the contract is common: the collection `time.events`
+- [x] Time, the second source (Time `15775e1`), to show the contract is common: the collection `time.events`
       (an event's name, readable only by its owner), text-keyed records without media under
       another read rule; `create_event` indexes through the SDK; its skill. Calendar and
       epoch versions, addressed by key and version, come later.
-- [ ] Installation: `computer/skills/knowledge`, pre-approved with the Hub's own skills, in
-      the template and Bioma's copy.
-- [ ] Hub: check that `_meta` on resource templates and tools reaches callers unchanged.
-      No Hub change is expected.
-- [ ] Qualification:
-      - Component tests against PostgreSQL with pgvector: the read rule applies before the
+- [x] Installation: `computer/skills/knowledge`, pre-approved with the Hub's own skills, in
+      the template and Bioma's copy (template `217759a`, Bioma `91a3e7d`).
+- [x] Hub: `_meta` on resource templates reaches callers unchanged, proven deployed
+      ([record](records/2026-11-04-knowledge-deployed.md)).
+- [ ] Qualification (deployed 2026-11-04 ([record](records/2026-11-04-knowledge-deployed.md)); component tests, deployed probes and
+      the model-driven acceptance done, the retrieval evaluation open):
+      - [x] Component tests against PostgreSQL with pgvector: the read rule applies before the
         limit, so a restricted caller still gets a full page; vectors from another model are
         never compared; the Task embeds as the writer.
-      - Deployed probes: a person finds their image by a description and by another image;
+      - [x] Deployed probes: a person finds their image by a description and by another image;
         a new artifact is found by text at once and by meaning once its Task completes; a
         group member finds an artifact shared with the group and loses it when removed; every
         hit reads back through its owner; the same calls work on Time, where an image
         query is answered from records that hold only text.
-      - Retrieval evaluation: judged text and media queries against the deployed Embedding,
+      - [ ] Retrieval evaluation: judged text and media queries against the deployed Embedding,
         on Mac MPS and Linux CUDA, with recall at 10 recorded.
-      - Last, model-driven acceptance in OpenCode.
+      - [x] Last, model-driven acceptance in OpenCode (MiMo-V2.6-Pro, checklist G4).
 
 Order: the SDK's contract and wiring, then Embedding, then the SDK's ready-made search
 and the Hub's recording of a Task a call starts, then the installation's Embedding rules,

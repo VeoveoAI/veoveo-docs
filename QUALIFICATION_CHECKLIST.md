@@ -18,14 +18,13 @@ Rules:
 - **Secrets:** never in evidence. Keep signed URLs, tokens and passwords out.
 
 Installation under test: K3s box `rozgo-sim-pc`, public host `https://veoveo.bioma.ai` with
-`*.apps.veoveo.bioma.ai`, deployed 2026-11-03 ([sweep](records/2026-11-02-skills-and-work-context-sweep.md),
-[follow-up](records/2026-11-03-task-guard-and-task-privacy.md)): core `05b6c47`, SDK `a85b72d`
-(Hub CLI `a9abfd2`), Hub `349fffa`, all on the rmcp fork `d45f7f5`; console `4c8a185`, Time
-`565502c`, Artifact `1bebe8c`, Media `a7cba4e`, Embedding `488594e`; n8n server `ff4c37f` on the
-fork `8e87007`; OpenCode `e3dd1a1`; Computer version `0e9996d5296e`; installation `f31422d`
-(template `68210d4`), control plane `gcp-01a1a048…`; people's factory servers on the same SDK
-([record](records/2026-11-03-people-factory-servers-repinned.md)). Rows proven before
-2026-11-02 were proven on earlier revisions, as their evidence says.
+`*.apps.veoveo.bioma.ai`, deployed 2026-11-04 ([knowledge](records/2026-11-04-knowledge-deployed.md)):
+core `a8dafe9`, SDK and Hub CLI `b820f05`, Hub `e86466e` (SDK `22ff657`), all on the rmcp fork
+`d45f7f5`; console `4c8a185`, Time `15775e1`, Artifact `d570e06`, Media `6a85dce`, Embedding
+`e2d2b07` with runtime `eb0f5f7`; n8n server `ff4c37f` on the fork `8e87007`; OpenCode `e3dd1a1`;
+Computer version `ee1c6a537991`; installation `b9f4250` (template `217759a`), control plane
+`gcp-01a1a6e6…`. Rows proven before 2026-11-04 were proven on earlier revisions, as their evidence
+says.
 
 ## A. Identity and administration
 
@@ -211,6 +210,21 @@ sits before G because G stays last.
 | K7 | Nothing names a Work Context | Database schema, token claims, control plane, instructions | None | proven 2026-11-02 ([record](records/2026-11-02-skills-and-work-context-sweep.md)) |
 | K8 | A skill from a pushed server needs approval in OpenCode and n8n's Assistant | Use a factory server's skill from each client | The client asks first; the platform's own skills load without asking | proven 2026-11-03 with MiMo-V2.6-Pro on Computer version `0e9996d5296e`: OpenCode loaded the `lore` skill unasked and asked before `hub:template/keep-items`; n8n's Assistant asked "Opening skill: keep-items" (it does not name the server) ([record](records/2026-11-03-skills-acceptance.md)) |
 
+## L. Knowledge
+
+| # | Check | How | Expect | Status |
+|---|---|---|---|---|
+| L1 | Servers express the knowledge contract | `tools/list` and `resources/templates/list` from a Computer | `artifact__search_knowledge` and `time__search_knowledge`; each template names its collection in `_meta["ai.veoveo/knowledge"]` | proven 2026-11-04 (`artifact.artifacts`, `time.events`) [record](records/2026-11-04-knowledge-deployed.md) |
+| L2 | A new record is found by words at once and by meaning once its Task completes | Upload an artifact as a person; search by a word of its name; follow the Task named in the result's related-task `_meta` with `tasks get`; search with words it does not hold | Rank 0 by words before the Task ends; the Task completes; found by meaning | proven 2026-11-04: words 818 ms after `complete_upload`, Task completed in 1 260 ms, meaning at rank 0 [record](records/2026-11-04-knowledge-deployed.md) |
+| L3 | A person finds their image by a description and by another image | Upload a PNG; query with the same image, "a red circle" and a different picture of the same thing | Found each way | proven 2026-11-04 with synthetic pixels in valid PNGs, real inference on the GPU; ranks over 1 to 3 hits [record](records/2026-11-04-knowledge-deployed.md) |
+| L4 | Search shows only what the caller may read | Another person searches before, during and after a group grant, then with a personal grant | Not found; found; lost 1 186 ms after removal; found again | proven 2026-11-04 [record](records/2026-11-04-knowledge-deployed.md) |
+| L5 | Every hit reads back through its owner | `resources/read` of each hit's URI as the searcher | The record, for the same caller | proven 2026-11-04 [record](records/2026-11-04-knowledge-deployed.md) |
+| L6 | The contract is common: Time's events | Create an event; search by words, by meaning and with an image; another person searches | Found by words at once, by meaning after its Task; an image query answered from text records; never found by the other person | proven 2026-11-04 [record](records/2026-11-04-knowledge-deployed.md) |
+| L7 | Embedding takes media only by a valid signature | `embedding__embed` with a tampered signed GET | `source_refused`, zero usage, no URL echoed | proven 2026-11-04 (JSON-RPC error -32603 in 614 ms) [record](records/2026-11-04-knowledge-deployed.md) |
+| L8 | A person's index Task is theirs alone | The other person's `tasks get` of it | Refused | proven 2026-11-04 (`-32602 unknown task id`) [record](records/2026-11-04-knowledge-deployed.md) |
+| L9 | Another server's write is indexed as the person, before it returns | `media__run` with the fixture provider | The run succeeds; its output found by words; Embedding reached as the person | proven 2026-11-04 for the delegated path; the fixture's synthetic bytes are not a decodable image, so Embedding answered `preprocessing_failed` and no vector was stored [record](records/2026-11-04-knowledge-deployed.md) |
+| L10 | Retrieval quality | Judged text and media queries against the deployed Embedding, on Mac MPS and Linux CUDA | Recall at 10 recorded | pending |
+
 ## G. Model-driven acceptance (last)
 
 Only after every deployed check above passes. Use `deepinfra/XiaomiMiMo/MiMo-V2.6-Pro` in
@@ -223,3 +237,4 @@ proved.
 | G1 | The agent creates a server repository, pushes it, watches it serve, breaks it with a push, diagnoses it from `console__status` and `console__logs` alone, and fixes it with a push | Served again with no human help; every step uses only Hub's tools and plain `lore` | proven 2026-10-25, MiMo-V2.6-Pro ([record](records/2026-10-25-batch3-and-g1.md)); again 2026-10-26 on Hub `2739757` with the scope-free Lore token: three pushes, served, broken, diagnosed and fixed in 730 s, $0.08 ([record](records/2026-10-26-g1-rerun.md)) |
 | G2 | Two agents share through a group: the owner's creates a group with the other person, creates and pushes a repository and shares it with the group; the member's finds it, clones it by name and pushes | Both succeed with only Hub's tools and plain `lore`; an independent clone shows both pushes | proven 2026-10-26 on OpenCode 2.0, MiMo-V2.6-Pro: 281 s and 91 s, 31 tool calls all completed, $0.025 ([record](records/2026-10-26-sharing.md)) |
 | G3 | Daily work in a Computer: the agent finds a server's tools and manifests with OpenCode's `grep` and `glob`, adds a crate from crates.io in a unit test, checks and tests it with plain `cargo`, pushes, and confirms it serves | Every step succeeds with no workaround; the change serves | failed 2026-10-29 on Computer version `7e27dc4bf18d`: `cargo` needed `RUSTUP_TOOLCHAIN` and a libclang the agent unpacked into its home. Proven on version `31282b4461fe`, MiMo-V2.6-Pro: 565 s, 30 tool calls, 6 `grep`/`glob` completed, plain `cargo check` in 2 min 44 s, revision `e664e80e…` serving, $0.049 ([record](records/2026-10-29-daily-use-qualification.md)) |
+| G4 | The agent finds a person's picture and event by meaning through the knowledge skill: in Artifact the picture of a red circle (named `IMG_4821.png`), in Time the event about an outdoor meal under the full moon, reads each through its URI and names both | Both found by meaning with `artifact__search_knowledge` and `time__search_knowledge`, read back, named with their URIs | proven 2026-11-04 with MiMo-V2.6-Pro on Computer version `ee1c6a537991`: 20 tool calls, all completed, 354 s, USD 0.027; the knowledge path took 4 calls, the rest the agent's own check of the pixels [record](records/2026-11-04-knowledge-deployed.md) |
