@@ -1855,10 +1855,9 @@ as the code:
 - [x] SDK, the contract and the wiring: the `knowledge` module's `contract` feature, the
       `KnowledgeSearch` trait and its registration, the `Embedder` trait, the startup and
       result checks, the `testing` helper, a fixture server with one collection, its
-      `DESIGN.md` section, conventions and authoring guide (SDK `cc16cfe`; Mac Docker
-      check 362 passed, 3 skipped, all fixtures synthetic). The Linux x86_64 check is
-      owed: `rozgo-sim-pc` was unreachable on 2026-11-03, and the owner had the change
-      pushed after the Mac check.
+      `DESIGN.md` section, conventions and authoring guide (SDK `cc16cfe`, tree
+      `416cd46`; Docker check on the Mac and three times on Linux x86_64, each 362
+      passed and 3 skipped; all fixtures synthetic).
 - [ ] Embedding: media parts by signed URL (decision 8), the SDK's signed media type, with
       no Artifact dependency, its Artifact resolution and declared Artifact use removed;
       a `client` feature implementing the SDK's `Embedder`; its `DESIGN.md`, skill and
