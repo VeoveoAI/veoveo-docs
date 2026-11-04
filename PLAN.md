@@ -1786,15 +1786,17 @@ Decisions:
    caller. No chunker until a source holds long text (Later): an artifact's name and
    metadata and Time's records each fit one item.
 4. **Writes.** PostgreSQL keeps the `tsvector` column current with the row, so word search
-   finds a record as soon as it is written. After a write commits, the same call embeds
-   the record: the server calls `index`, which reads the record's text and media, sends
-   them to Embedding as the person who wrote it (so the usage and the result are theirs)
-   and stores the vector. A background Task cannot do this, because only a Task that a
-   person's own call through the Hub created may act as that person, and these writes
-   are ordinary calls. If Embedding fails, the record stays saved and found by words, and
-   the write's answer says its vector is missing; its next change tries again. Search
-   compares only vectors made by the query's model. A model change resets the vectors;
-   development data is disposable.
+   finds a record as soon as it is written. The write does not wait for its vector: it
+   starts a durable Task for its caller, and its answer names that Task. The Task runs
+   `index`, which reads the record's text and media, sends them to Embedding as the
+   person who wrote it (so the usage and the result are theirs) and stores the vector; it
+   survives restarts, and the person sees it among their Tasks, with its failure if
+   Embedding fails. Until it finishes the record is found by words. For the Task to act as
+   the person, the Hub records it as that person's Task when the call's answer names it,
+   as it already records a Task a Task tool creates; it carries the same limits, the
+   server's declared uses narrowed to what the person holds. Search compares only
+   vectors made by the query's model. A model change resets the vectors; development
+   data is disposable.
 5. **The SDK gives three layers; only the first is required.** It lives in a `knowledge`
    module beside `skills`.
    - **The contract** (`contract` feature): the template marker, the query and hit types,
@@ -1822,7 +1824,7 @@ Decisions:
      pgvector 0.8.7.
 
    A server on the ready-made path writes one migration, one `PgKnowledgeSource`, the
-   `index` call in its writes and a paragraph of its skill.
+   start of the `index` Task in its writes and a paragraph of its skill.
 6. **Across servers, the client fans out.** OpenCode and n8n's Assistant call the
    `{slug}__search_knowledge` tools they need and read the hits. The Hub's own skill
    `skill://veoveo/knowledge`, from the installation, teaches the contract once; each
@@ -1860,15 +1862,26 @@ as the code:
       `DESIGN.md` section, conventions and authoring guide (SDK `cc16cfe`, tree
       `416cd46`; Docker check on the Mac and three times on Linux x86_64, each 362
       passed and 3 skipped; all fixtures synthetic).
-- [ ] Embedding: media parts by signed URL (decision 8), the SDK's signed media type, with
+- [x] Embedding: media parts by signed URL (decision 8), the SDK's signed media type, with
       no Artifact dependency, its Artifact resolution and declared Artifact use removed;
-      a `client` feature implementing the SDK's `Embedder`; its `DESIGN.md`, skill and
-      qualification redone.
+      a `client` feature implementing the SDK's `Embedder`; its `DESIGN.md` and skill
+      (Embedding `0ee0e23`, runtime `eb0f5f7`; Docker checks on the Mac and Linux, 41 and
+      25 tests, synthetic). Its deployed qualification is in Qualification below, with a
+      tampered and an expired signature refused.
 - [ ] SDK, the ready-made search: `PgKnowledge`, `PgKnowledgeSource`, the documented
       migration SQL, `index`, SQL confinement admitting `_extensions`, and
       tests against PostgreSQL with pgvector. The SDK's rule that it owns no queries is
       relaxed for this search and its vector writes over a server's own table (2026-11-03,
       SDK `f6f0578`); it still owns no schema and no query on core's tables.
+- [ ] SDK and Hub, a Task a call starts: a tool handler starts a durable Task for its caller
+      and its result names it in `_meta["io.modelcontextprotocol/related-task"]`; the Hub
+      records a Task so named as the caller's, with the same route, delegation limits and
+      visibility as a Task a Task tool creates, so its worker can call Embedding as the
+      person. Each `DESIGN.md` first; tests on both sides.
+- [ ] Installation: remove Embedding's Artifact call rules from `openshell/embedding.yaml`
+      and `kubernetes/policies/embedding.yaml` (and its `/oauth/token` rule if nothing else
+      uses it), and update `openshell/EMBEDDING.md` and `kubernetes/EMBEDDING.md`; the
+      template and Bioma's copy.
 - [ ] Artifact, the first source: the collection `artifact.artifacts` (an available
       artifact's name, metadata and media), with the two columns on its `artifact` table
       and a `PgKnowledgeSource` whose read rule is `artifact.effective_level` and the
@@ -1894,7 +1907,8 @@ as the code:
         on Mac MPS and Linux CUDA, with recall at 10 recorded.
       - Last, model-driven acceptance in OpenCode.
 
-Order: the SDK's contract and wiring, then Embedding, then the SDK's ready-made search,
+Order: the SDK's contract and wiring, then Embedding, then the SDK's ready-made search
+and the Hub's recording of a Task a call starts, then the installation's Embedding rules,
 then Artifact end to end through the Hub, then Time, then the installation's skill, then
 qualification. Done when Artifact and Time express the contract, an agent finds a
 person's media by meaning across both through the one skill, and that is proven
@@ -1902,9 +1916,6 @@ deployed, with a record and checklist rows.
 
 ## Later
 
-- Durable re-embedding (section 17): the Hub records a Task that a server creates during a
-  person's direct call, so a write's embedding can run and retry in the background as that
-  person instead of inside the write.
 - Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
   beside the records, with the monorepo's `structure-v1` chunker in the SDK.
 - One fused knowledge search across servers (section 17): registration lets a server declare
