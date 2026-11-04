@@ -1887,9 +1887,10 @@ as the code:
       and a `PgKnowledgeSource` whose read rule is `artifact.effective_level` and the
       caller's data labels; `index` in the call that makes an artifact available, as its
       uploader, with Artifact signing its own download; its skill.
-- [ ] Time, the second source, to show the contract is common: events (their owner only)
-      and calendars and epochs (shared within the tenant), records without media under
-      other read rules; its skill.
+- [ ] Time, the second source, to show the contract is common: the collection `time.events`
+      (an event's name, readable only by its owner), text-keyed records without media under
+      another read rule; `create_event` indexes through the SDK; its skill. Calendar and
+      epoch versions, addressed by key and version, come later.
 - [ ] Installation: `computer/skills/knowledge`, pre-approved with the Hub's own skills, in
       the template and Bioma's copy.
 - [ ] Hub: check that `_meta` on resource templates and tools reaches callers unchanged.
