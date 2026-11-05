@@ -2144,8 +2144,9 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
 ```
 
-That needs no Hub change and no Kubernetes GPU claim, so it shares the 4090 with Embedding, which keeps its own. OpenShell already admits the devices
-when they exist. Measured in Docker, not yet in a sandbox.
+That needs no Hub change and no Kubernetes GPU claim, so it shares the 4090 with Embedding, which keeps its own. OpenShell adds the device nodes itself only
+for a sandbox with a GPU claim, so the factory's base policy names them, and they exist only when an image asks. A render on the 4090 in a real factory
+sandbox is [measured](records/2026-11-05-usd-server-and-viewer.md).
 
 ### Scenes
 
@@ -2228,8 +2229,10 @@ Nothing here adds a way around an existing control:
    ([record](records/2026-11-05-usd-lore-tls-and-files-deployed.md)); a real Lore token sent directly on `RevisionTree` is not yet measured.
 4. The content domain: tokens, `/view/`, the `file-viewer` image and viewer declarations, including a real DWG. Deployed to Bioma
    ([record](records/2026-11-05-usd-content-domain-deployed.md)); run in Chrome's Default profile only, and an App's cookie at a real app origin is not measured.
-5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App.
-6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras.
+5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App. Deployed to Bioma
+   ([record](records/2026-11-05-usd-server-and-viewer.md)), with the first render on the 4090 from a real factory sandbox; run in Chrome's Default profile only.
+6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras. Deployed, with a new time on the hummingbird down from about 9 s to about 115 ms
+   ([record](records/2026-11-05-usd-server-and-viewer.md)); a live variant switch on Franka, skinned scrubbing past 10 frames a second, and 1.7 GB of WASM memory remain.
 7. Artifact: its preview route, share links, then its library App.
 8. Qualification, with OpenCode last, then the record and checklist rows.
 
