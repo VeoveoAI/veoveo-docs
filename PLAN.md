@@ -1951,6 +1951,7 @@ Decided by the owner:
 - **Artifact files and share links preview.** Download-only is not acceptable.
 - **The RTX 4090 renders, from the start.** No software rendering and no time-slicing or quotas now.
 - **Any factory can use the GPU,** off by default and never forced, with a simple opt-in.
+- **We do not offer patches upstream.** Our forks and copies keep up with their upstreams and carry our changes.
 - **Straightforward.** A new component, format or special case needs a reason.
 
 ### What the platform already gives us
@@ -2130,8 +2131,7 @@ need it: its patch keeps reloads in order, and nothing here reloads a source whi
 **The update.** The copy moves to Bevy 0.20.1 starting from upstream's draft PR #4, `dave-gray101/bevy_openusd` `feat-bevy-0.20` at `5cbdee3f`. We
 take its 39 files under `crates/` (+893 -524, including WGSL to WESL) and leave its `usdview` changes, which are what wait on `mara`. It targets
 Bevy 0.20.0 on `main`, so it needs reconciling with `develop`'s three commits and a bump to 0.20.1. `bevy_egui` 0.43 already targets Bevy 0.20. The
-viewer builds for WebGPU. Done when the copied tests pass in `docker build --target check .` on the Mac and on Linux. The port is offered back
-upstream, whose author asked for help with it.
+viewer builds for WebGPU. Done when the copied tests pass in `docker build --target check .` on the Mac and on Linux.
 
 **GPU in a factory.** The factory template's driver configuration names the `nvidia` runtime class, which exposes no GPU by itself. A repository that
 wants the GPU asks in its own `openshell/image/Dockerfile`, and installs the driver's libraries there:
@@ -2196,7 +2196,7 @@ working. The viewer offers a download.
 | Hub | The files handler and repository listing |
 | Hub | The content domain: its setting, tokens, the viewers' routes and the `/view/` page, admitted by `ui/open-link` |
 | SDK | A server's viewer declaration, and owning items on the content domain |
-| Lore fork | TLS and ranges on the HTTP listener, with the certificate its gRPC listener has, a small patch offered upstream |
+| Lore fork | TLS and ranges on the HTTP listener, with the certificate its gRPC listener has |
 | Artifact | Its preview route, share links and library App |
 | Installation | Port 41339 on Lore's Service, NetworkPolicy and the Hub's sandbox policy, for the Hub alone. The Hub's content-domain setting. The `file-viewer` image. The `nvidia` runtime class in the factory template |
 | Cloudflare | Done for `veoveo-bioma.space`: its zone and certificate, a proxied wildcard CNAME and tunnel route to the Hub's `apps` service, a cache rule bypassing the edge cache, since a cached file would skip the check on every request, and content rewriting off ([record](records/2026-11-04-usd-cloudflare-setup.md)). The Hub also answers `Cache-Control: private, no-transform` |
