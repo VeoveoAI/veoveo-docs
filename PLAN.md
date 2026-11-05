@@ -1280,7 +1280,7 @@ Veoveo's own controls:
 - [ ] A crosswalk to the subcategories of NIST AI RMF 1.0, NIST AI 600-1 and NIST
       SP 800-53 Rev. 5, each row citing its checklist item and evidence: a record.
 
-OpenShell upstream, as the fork's smallest coherent patches, pursued upstream:
+OpenShell upstream, as the fork's smallest coherent patches:
 
 - [ ] MCP rules that match a tool's arguments (H10).
 - [ ] Response middleware on a model's streamed response, once measured whether it
