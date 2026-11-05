@@ -2222,7 +2222,8 @@ Nothing here adds a way around an existing control:
 
 1. The copy and the update, with the copied tests passing.
 2. On the box, render `kitchen_set` on the 4090 in Docker. Build the WASM for WebGPU, measure it and load the scene in the owner's Chrome.
-3. Lore's TLS and ranges. The Hub's files handler and WASM keyword, with tests of paths and of a token refused on another repository.
+3. Lore's TLS and ranges. The Hub's files handler and WASM keyword, with tests of paths and of a token refused on another repository. Deployed to Bioma
+   ([record](records/2026-11-05-usd-lore-tls-and-files-deployed.md)); a real Lore token sent directly on `RevisionTree` is not yet measured.
 4. The content domain: tokens, `/view/`, the `file-viewer` image and viewer declarations, including a real DWG.
 5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App.
 6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras.
