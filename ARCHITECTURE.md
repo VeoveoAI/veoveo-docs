@@ -202,8 +202,9 @@ its own repository, and reusable fixes go to the template first.
   existing Hub process; there is no separate factory service, broker, scheduler, CI
   system, watchdog or startup orchestrator.
 - **Forks are small and recorded.** Where a verified gap needs a change in Lore,
-  OpenShell, OpenCode or rmcp, the VeoveoAI fork carries the smallest coherent patch,
-  pursued upstream, with the upstream revision and patches recorded beside the pin.
+  OpenShell, OpenCode or rmcp, the VeoveoAI fork carries the smallest coherent patch
+  on top of upstream, kept up to date with it, with the upstream revision and patches
+  recorded beside the pin. We do not offer our patches upstream.
   Unsupported enforcement fails closed.
 - **No gate the function does not require.** Every check that can stop a person must be
   required by the function; Lore's grants and OpenShell's sandbox model are the only
