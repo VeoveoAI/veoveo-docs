@@ -2236,7 +2236,9 @@ Nothing here adds a way around an existing control:
 7. Artifact: its preview route, share links, then its library App. Deployed to Bioma
    ([record](records/2026-11-05-usd-artifact-previews-deployed.md)); run in Chrome's Default profile only, a link's expiry is a component test, and the gateway's log holding a
    share link's path is the owner's to decide.
-8. Qualification, with OpenCode last, then the record and checklist rows.
+8. Qualification, with OpenCode last, then the record and checklist rows. Done ([record](records/2026-11-05-usd-qualification.md)): a cold build of 11 min 12 s with no
+   out-of-memory kill, and six scenarios with MiMo-V2.6-Pro, three of which needed a skill fixed. It also found that a factory server's changed skill was refused until a publication,
+   fixed in Hub `ef727e2`. Run in Chrome's Default profile only.
 
 ## Later
 
