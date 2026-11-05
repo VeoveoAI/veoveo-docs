@@ -172,9 +172,15 @@ served from a branch this way. The mechanism is in Hub's
 the repository side in the [template's factory layout](https://github.com/VeoveoAI/veoveo-template-mcp-rust/blob/main/crates/veoveo-template-mcp-rust/DESIGN.md#factory),
 and the installation's part in its [factory section](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#factory).
 
-Bulk bytes never travel through MCP, the Hub or a model's context: clients move them
-directly to and from object storage through URLs Artifact signs. Lore and Artifact
+Bulk bytes never travel through MCP or a model's context, and downloads never through the
+Hub: clients move them directly to and from object storage through URLs Artifact signs.
+The one exception is a file read as a URL, by a server or a preview: a Lore file passes through
+the Hub once, from Lore to the caller, with nothing stored on the way. Lore and Artifact
 reference each other by identity; neither copies the other's content.
+
+Untrusted content and every viewer run on the installation's content domain, another registrable
+domain with no session, in the frame the Hub's `/view/` page sets
+([Hub's design](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#content-domain)).
 
 ## Configuration Ownership
 
@@ -245,6 +251,7 @@ its own repository, and reusable fixes go to the template first.
 | Factory sandboxes and data environments | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#factory-sandboxes) |
 | Linked repositories and their runners | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#linked-repositories) |
 | The MCP Apps host, the bridge and servers' app origins | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#apps-host), [SDK Apps](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/apps/DESIGN.md) |
+| Previews, the content domain, its tokens and viewers | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#content-domain) |
 | Public routes of instances and the providers a branch requests | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#public-routes), [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#factory-sandboxes) |
 | A server repository's factory layout | [MCP template](https://github.com/VeoveoAI/veoveo-template-mcp-rust/blob/main/crates/veoveo-template-mcp-rust/DESIGN.md#factory) |
 | Agent tools for status, logs, selection and watching | [console](https://github.com/VeoveoAI/veoveo-mcp-console/blob/main/crates/veoveo-mcp-console/DESIGN.md) |

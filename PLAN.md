@@ -2002,8 +2002,8 @@ branch or, say, an artifact. The Hub mints a token for that person and item and 
   checks that person's access on every request, and answers through its Lore contribution or the server that owns the item. A new
   kind of content needs no Hub change.
 - **It behaves like a signed link.** Anyone holding the URL can open that one item until it expires, so it is short-lived,
-  renewed while the Hub's page is open, and stays the same for a person and item while valid, so that the browser's cache holds. Its
-  lifetime is settled when it is built. An expired token in a new tab sends the person to `/view/`, which signs them in if needed
+  renewed while the Hub's page is open, and stays the same for a browser and item while valid, so that the browser's cache holds. It
+  lives one hour, renewed up to 24 hours. An expired token in a new tab sends the person to `/view/`, which signs them in if needed
   and mints a new one, so a stale tab recovers on reload.
 - **One frame rule.** Inside the platform every file loads in a frame with
   `sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"` and `allow="webgpu; autoplay"`, so a file
@@ -2050,6 +2050,8 @@ instancing, UDIM textures and lights. MaterialX is mapped to PBR.
 Limits:
 
 - **`file-viewer` views and does not edit,** and fidelity varies with fonts and vendor features.
+- **`file-viewer` downloads a video whole** before playing it, so a long one waits. Opened as itself, it seeks with ranges.
+- **IFC, LAS, COPC, 3D Tiles and the XML profile are not in the prebuilt `web-full`,** despite its format list: they are opt-in entries.
 - **A file reaches nothing else:** no tools, no session and no other item. Anything that needs those is an App.
 - **The USD viewer needs WebGPU,** because large point instancers use a compute pass, and it loads each file whole into browser
   memory before parsing, within WASM's limits.
@@ -2058,7 +2060,7 @@ Limits:
 - **Measured in Chrome only.**
 
 `file-viewer` is used as published: an image holds `@file-viewer/web-full` with the assets that `file-viewer-copy-assets` and its
-`assets-*` packs provide, at least 100 MB. The Hub mounts that image read-only, as factory sandboxes mount Lore's. Its DWG, DWF and DWFx engine
+`assets-*` packs provide, 226 MB. The Hub mounts that image read-only, as factory sandboxes mount Lore's. Its DWG, DWF and DWFx engine
 is AGPL-3.0-only and its LibreDWG bindings GPL-3.0-only. We serve them unmodified and keep their notices and the source link
 each release carries.
 
@@ -2224,7 +2226,8 @@ Nothing here adds a way around an existing control:
 2. On the box, render `kitchen_set` on the 4090 in Docker. Build the WASM for WebGPU, measure it and load the scene in the owner's Chrome.
 3. Lore's TLS and ranges. The Hub's files handler and WASM keyword, with tests of paths and of a token refused on another repository. Deployed to Bioma
    ([record](records/2026-11-05-usd-lore-tls-and-files-deployed.md)); a real Lore token sent directly on `RevisionTree` is not yet measured.
-4. The content domain: tokens, `/view/`, the `file-viewer` image and viewer declarations, including a real DWG.
+4. The content domain: tokens, `/view/`, the `file-viewer` image and viewer declarations, including a real DWG. Deployed to Bioma
+   ([record](records/2026-11-05-usd-content-domain-deployed.md)); run in Chrome's Default profile only, and an App's cookie at a real app origin is not measured.
 5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App.
 6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras.
 7. Artifact: its preview route, share links, then its library App.
