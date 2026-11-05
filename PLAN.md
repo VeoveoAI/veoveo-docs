@@ -2232,7 +2232,7 @@ Nothing here adds a way around an existing control:
 5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App. Deployed to Bioma
    ([record](records/2026-11-05-usd-server-and-viewer.md)), with the first render on the 4090 from a real factory sandbox; run in Chrome's Default profile only.
 6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras. Deployed, with a new time on the hummingbird down from about 9 s to about 115 ms
-   ([record](records/2026-11-05-usd-server-and-viewer.md)); a live variant switch on Franka, skinned scrubbing past 10 frames a second, and 1.7 GB of WASM memory remain.
+   ([record](records/2026-11-05-usd-server-and-viewer.md)), and a live variant switch now matches a fresh stage and reads what it names ([record](records/2026-11-05-usd-viewer-variants.md)); `Camo`'s camouflage, skinned scrubbing past 10 frames a second, and 1.7 GB of WASM memory remain.
 7. Artifact: its preview route, share links, then its library App. Deployed to Bioma
    ([record](records/2026-11-05-usd-artifact-previews-deployed.md)); run in Chrome's Default profile only, a link's expiry is a component test, and the gateway's log holding a
    share link's path is the owner's to decide.
