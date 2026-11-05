@@ -1919,6 +1919,315 @@ qualification. Done when Artifact and Time express the contract, an agent finds 
 person's media by meaning across both through the one skill, and that is proven
 deployed, with a record and checklist rows.
 
+## 18. USD: a viewer and agent tools from `bevy_openusd`
+
+This section also covers previews for every other file, on Lore and Artifact.
+
+Approved 2026-11-04, and being built in the order below. This section holds what the owner has decided and the design that
+follows, and changes as they do. Evidence is in the [investigation](records/2026-11-04-usd-investigation.md),
+[loading](records/2026-11-04-usd-app-loading.md), [Lore files](records/2026-11-04-usd-lore-files.md),
+[Lore access](records/2026-11-04-usd-lore-access.md), [file types](records/2026-11-04-usd-file-types.md),
+[previews](records/2026-11-04-usd-previews.md), [PDF viewer](records/2026-11-04-usd-pdf-viewer.md),
+[file-viewer](records/2026-11-04-usd-file-viewer.md) and [content domain](records/2026-11-04-usd-content-domain.md) records.
+When something is built, its design change goes to the owner's `DESIGN.md` first, as always.
+
+People open USD scenes and any other file in the Hub, and agents inspect and render the same scenes, from one Rust codebase
+that runs as WASM in the browser and natively on the GPU.
+
+Decided by the owner:
+
+- **This is a media platform.** People preview, run, test and interact with media. Safety comes from where a file runs, not
+  from taking the experience away.
+- **Library.** `usd_bevy` from `bevy_openusd`, on the pure Rust `openusd` crate. `usd-wg-webview` is not good enough.
+- **Copied source, not a fork,** with the upstream commit recorded beside it.
+- **Latest Bevy,** 0.20.1 today.
+- **Scenes live in Lore,** read directly, with no runner, checkout or disk.
+- **Lore's rules decide every read.**
+- **The Hub supports WASM,** and streams files generically, with no special case for USD.
+- **The MCP Apps specification decides how Apps load,** at the version we pin, `2026-01-26`.
+- **Content has its own domain,** on Bioma `veoveo-bioma.space`. `*.apps.{host}` stays.
+- **The USD viewer runs on the content domain,** like every other viewer.
+- **`file-viewer`, the full package,** with its DWG and DWF engine, for everything but USD and HTML.
+- **Artifact files and share links preview.** Download-only is not acceptable.
+- **The RTX 4090 renders, from the start.** No software rendering and no time-slicing or quotas now.
+- **Any factory can use the GPU,** off by default and never forced, with a simple opt-in.
+- **Straightforward.** A new component, format or special case needs a reason.
+
+### What the platform already gives us
+
+| Need | What we use |
+|---|---|
+| Build, deploy and serve the server | The factory: a push to Lore, BuildKit, a sandbox and its registration; Console's `watch`, `status`, `logs` and `select` |
+| Tools, resources, permissions and a small App | The MCP template and the SDK's `Routes` and `AppBuilder` |
+| The person in a server, including in a Task | The SDK's `.calls_hub()` and `hub_bearer`, as Console calls the Hub today |
+| A person's access to a repository | Lore's grants, and the Hub's `person::issue` for their Lore token |
+| Create and share scene repositories | Console's `create_repository` and `share_repository` |
+| Find a file without a checkout | Lore's `RevisionTree` |
+| File bytes | Lore's HTTP content route |
+| An agent changes a scene | The Lore command line in the person's Computer, then a push |
+| Long renders | Core's Tasks, through the SDK |
+| Render results | Artifact's `ArtifactClient`, bound to the Task, as Media stores outputs |
+| Find renders by meaning | Artifact's knowledge search, which already indexes images through Embedding |
+| Tell agents how to use it | The server's own skills |
+| The GPU | The NVIDIA toolkit, and OpenShell's admission of its devices |
+
+### Origins
+
+| Origin | What runs there | What it holds |
+|---|---|---|
+| `veoveo.bioma.ai` | The Hub, and its `/view/` page | The Hub's session |
+| `sandbox.apps.veoveo.bioma.ai` | Small Apps, in opaque frames, as today | Nothing |
+| `{slug}.apps.veoveo.bioma.ai` | A server's own full web application, as the Hub already allows | That server's session |
+| `{token}.veoveo-bioma.space` | Untrusted content and every viewer | Nothing: no cookies |
+
+The content domain is the installation's setting, on another registrable domain from the Hub's, so a browser never sends the
+Hub's or an App's cookies there. Measured on stand-in names, a hostile file's requests to the Hub and to an App arrived without
+their cookies, and everything rich still ran.
+
+### Previews
+
+A person opens `/view/{owner}/{item}/{path}` on the Hub, where the owner is `lore` or a server, and the item a repository's
+branch or, say, an artifact. The Hub mints a token for that person and item and frames the content domain:
+
+```text
+{token}.veoveo-bioma.space/{path}                 the item's file, with its real Content-Type and nosniff
+{token}.veoveo-bioma.space/_veoveo/view/{path}    the viewer for that file
+{token}.veoveo-bioma.space/_veoveo/viewer/...     file-viewer's files, from its image
+{token}.veoveo-bioma.space/_veoveo/viewers/{slug}/...   a server's viewer's files
+```
+
+- **The token is the credential.** A request reaches the Hub through the tunnel; the Hub maps the token to its person and item,
+  checks that person's access on every request, and answers through its Lore contribution or the server that owns the item. A new
+  kind of content needs no Hub change.
+- **It behaves like a signed link.** Anyone holding the URL can open that one item until it expires, so it is short-lived,
+  renewed while the Hub's page is open, and stays the same for a person and item while valid, so that the browser's cache holds. Its
+  lifetime is settled when it is built. An expired token in a new tab sends the person to `/view/`, which signs them in if needed
+  and mints a new one, so a stale tab recovers on reload.
+- **One frame rule.** Inside the platform every file loads in a frame with
+  `sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"` and `allow="webgpu; autoplay"`, so a file
+  cannot navigate the Hub's page away. In a new tab it opens as itself, and the browser shows it with its own viewer.
+- **Not an App.** The MCP Apps specification governs Views, not these. An App opens a file through `/view/` with `ui/open-link`,
+  which the Hub admits as it admits `/computer/apps/`.
+
+The Hub chooses the viewer by the file's type:
+
+| Type | Viewer |
+|---|---|
+| A type a server declares a viewer for, such as USD | That server's viewer |
+| HTML | Runs as itself |
+| Everything else | `file-viewer` |
+
+A server declares a viewer in its registration, with the extensions it takes and a public route for its files. So the Hub names
+no server, and another viewer needs no Hub change.
+
+### Preview capabilities
+
+Measured in the owner's Chrome, in the frame above, with real files:
+
+| File | What it does |
+|---|---|
+| HTML | Runs with its scripts and sibling files, WASM, WebGL2, WebGPU and storage |
+| Word `.docx` | Renders with tables, search and zoom |
+| Excel `.xlsx` | Renders as a grid with sheet tabs and search |
+| PowerPoint `.pptx` | Renders, with a slideshow button |
+| PDF | Renders with page thumbnails, search, zoom, print and download |
+| 3D `.glb`, CAD `.step` | Render in 3D with fit, rotate, wireframe, grid and axes |
+| Photoshop `.psd` | Renders with its layers and their visibility |
+| Video `.mp4` | Plays with controls |
+| Markdown | Renders with tables and highlighted code |
+| Images | Display |
+
+Some controls were seen in screenshots and not exercised. `file-viewer` 3.3.3 (Apache-2.0, with an AGPL DWG and DWF engine) also lists,
+untested by us: legacy Office, OpenDocument, Numbers and Keynote, CSV, DWG, DXF and DWF, IFC, IGES, STL, OBJ, PLY and 3DM, EPUB,
+email, archives, code, notebooks, SQLite and Parquet, GeoJSON, KML and Shapefile, EDA files and other Adobe formats. DICOM is its
+explicit opt-in. In all, 275 extensions.
+
+The USD viewer, not yet built, from what `usd_bevy` offers: composition, variants, payloads, animation and skeletons, cameras,
+instancing, UDIM textures and lights. MaterialX is mapped to PBR.
+
+Limits:
+
+- **`file-viewer` views and does not edit,** and fidelity varies with fonts and vendor features.
+- **A file reaches nothing else:** no tools, no session and no other item. Anything that needs those is an App.
+- **The USD viewer needs WebGPU,** because large point instancers use a compute pass, and it loads each file whole into browser
+  memory before parsing, within WASM's limits.
+- **Viewer code downloads once per origin.** A repository's files share one origin; each artifact has its own.
+- **A new domain may be blocked** by some corporate filters until it is categorized.
+- **Measured in Chrome only.**
+
+`file-viewer` is used as published: an image holds `@file-viewer/web-full` with the assets that `file-viewer-copy-assets` and its
+`assets-*` packs provide, at least 100 MB. The Hub mounts that image read-only, as factory sandboxes mount Lore's. Its DWG, DWF and DWFx engine
+is AGPL-3.0-only and its LibreDWG bindings GPL-3.0-only. We serve them unmodified and keep their notices and the source link
+each release carries.
+
+### Files from Lore
+
+A file in a Lore repository is a URL, for any server and any preview. Nothing is checked out, synced or stored on the way, so a push
+is live on the next request. The handler sits beside the Hub's `/lore/{profile}/repositories/{id}/...` routes, in the same Lore
+contribution:
+
+```text
+GET /lore/{profile}/repositories/{id}/files/{branch}/{path}
+
+Hub   the caller, from their bearer, or the person a token names
+      person::issue: their Lore token for that repository, which checks their grant
+      RevisionTree: that path on that branch's tip is this address
+      GET lore:41339/v1/repository/{id}/content/{address}, streamed back
+```
+
+A server reaches it for its caller or its Task with `.calls_hub()` and `hub_bearer`. A preview reaches the same handler on the content
+domain, so bytes go from Lore through the Hub to the browser, one pass.
+
+- **Caching.** The address is the `ETag`, so an unchanged file answers 304 and a changed one is new.
+- **Seeking.** Lore's content route ignores `Range` today, though the read beneath it takes a range. Our Lore fork adds it beside TLS, so
+  video in a repository can seek.
+- **Folders.** The same handler on a folder lists it from `RevisionTree`, so viewers can browse. `GET /lore/{profile}/repositories` lists
+  the repositories the person may read, from the grants the Hub already answers Lore's own listing with.
+- **Paths.** The Hub takes the path as Lore names it: percent-decoded, one segment at a time. `..` never matches a tree entry. Tests cover
+  spaces, unicode, `#`, `?`, `%`, `[ ]` and `..`. USD's own paths, such as `<UDIM>` tiles and files inside a USDZ, are resolved by `usd_bevy`
+  to real files or stay inside the downloaded archive. The USD viewer encodes each segment through Bevy's `request_mapper`.
+
+`ARCHITECTURE.md`'s rule that bulk bytes never pass through the Hub gains this exception. Downloads still go straight to storage.
+
+### The USD server
+
+One repository and one binary, made from the template and served by the factory. It opts in to the GPU, and it needs no app origin:
+
+```text
+veoveo-mcp-usd/
+  crates/veoveo-mcp-usd/  tools, skills, the small App, its viewer declaration, render subcommand (from gif_frames)
+  crates/usd-viewer/      the WASM viewer, from examples/web, with egui panels
+  crates/usd_bevy/        copied
+  crates/usd_macro/       copied
+  assets/                 upstream's 0.1 MB test fixtures, which usd_bevy's tests read
+  UPSTREAM.md             source commit and what we changed
+  openshell/              the factory layout, and the GPU opt-in
+```
+
+- **The viewer** declares `usd`, `usda`, `usdc` and `usdz`, and serves its built files from a public route, since they hold nothing private.
+  It reads scenes from its own origin by relative path, and browses the item's folders.
+- **A small App,** `ui://usd/scenes`, in an ordinary frame, lists scenes through the bridge and opens each with `ui/open-link`.
+- **`usd__inspect_stage`** reads with `openusd` in the server, through the Hub's handler, as the person who called.
+- **`usd__render_stage`** is a Task taking repository, branch, path, time, camera and variants. It runs the binary's render subcommand as a
+  child process on the GPU and stores a PNG in Artifact, with metadata naming the repository, revision and path. Because Artifact indexes
+  images, renders can be found by meaning with `artifact__search_knowledge`, and this server needs no knowledge contract of its own.
+
+**The copy.** From `openusd-rs/bevy_openusd`, `develop` at `5b3ebbc7`, which already uses upstream `openusd`, about 3 MB of its 558 MB:
+
+| From | To |
+|---|---|
+| `crates/usd_bevy/`, 2.66 MB | `crates/usd_bevy/` |
+| `crates/usd_macro/` | `crates/usd_macro/` |
+| The top-level files of `assets/`, 0.1 MB | `assets/`, where the crate's tests read them |
+| `examples/gif_frames.rs` | The start of the render subcommand |
+| `examples/web/` | The start of `crates/usd-viewer/` |
+| `LICENSE` | Kept beside the copied crates |
+
+Left out: `assets/external`, `media`, `usdview` and `mara`, `benchmarks`, `scripts` and `vendor/bevy_asset`, the last unless the tests show we
+need it: its patch keeps reloads in order, and nothing here reloads a source while it loads. A test that needs a left-out asset goes, and
+`UPSTREAM.md` lists it. The first commit is the copy unchanged, so later commits show what we changed.
+
+**The update.** The copy moves to Bevy 0.20.1 starting from upstream's draft PR #4, `dave-gray101/bevy_openusd` `feat-bevy-0.20` at `5cbdee3f`. We
+take its 39 files under `crates/` (+893 -524, including WGSL to WESL) and leave its `usdview` changes, which are what wait on `mara`. It targets
+Bevy 0.20.0 on `main`, so it needs reconciling with `develop`'s three commits and a bump to 0.20.1. `bevy_egui` 0.43 already targets Bevy 0.20. The
+viewer builds for WebGPU. Done when the copied tests pass in `docker build --target check .` on the Mac and on Linux. The port is offered back
+upstream, whose author asked for help with it.
+
+**GPU in a factory.** The factory template's driver configuration names the `nvidia` runtime class, which exposes no GPU by itself. A repository that
+wants the GPU asks in its own `openshell/image/Dockerfile`, and installs the driver's libraries there:
+
+```dockerfile
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+```
+
+That needs no Hub change and no Kubernetes GPU claim, so it shares the 4090 with Embedding, which keeps its own. OpenShell already admits the devices
+when they exist. Measured in Docker, not yet in a sandbox.
+
+### Scenes
+
+One ordinary Lore repository, `usd-demo`, about 146 MB, not linked to anything. Lore's grants decide who sees it, and a push is live on the next request.
+Another repository of scenes needs nothing else.
+
+```text
+usd-demo/
+  kitchen_set/kitchen_set.usdz      5.1 MB
+  med_city/med_city.usdz            1.7 MB
+  human_female/human_female.usdz   45.8 MB
+  hummingbird/hummingbird.usdz     20.8 MB
+  chameleon/chameleon.usdz         15.6 MB
+  cow/cow.usdz                      6.6 MB
+  tractor/
+    tractor.usd                     references ./tractor.usdc
+    tractor.usdc                    7.8 MB
+  ur10_pick/
+    ur10_pick.usda                  references ur10.usdc
+    ur10.usdc                       3.3 MB
+  franka/                          38.9 MB
+    franka.usd
+    DetailedProps/  Materials/  Props/  configuration/
+    franka-LICENSE.txt
+```
+
+A scene is a top-level folder whose root is `{folder}/{folder}.usd*`, so there is no manifest. Files are copied once from upstream and pushed with Lore, with
+no tooling. The rest of upstream's `cows` folder (about 550 MB), `.thumbs` folders and the other robots (35 MB) stay out for now. Franka's folder moves up one
+level as a whole; its references are binary and are confirmed when it first loads.
+
+### Artifact
+
+`create_download` always answers `attachment`, and for a reason that stays true: its signed URLs are on the Hub's own host
+(`https://veoveo.bioma.ai/artifacts/...`), so a file served inline there would run on the Hub's origin with the person's session. Those URLs stay for downloads
+and agents.
+
+Previews are new. Artifact's server owns its items on the content domain, checks the person's read level as `create_download` does, and streams the object from
+storage with its media type, passing ranges through so video can seek. There is no signed URL to expire mid-video. A visit records the same audit as a download,
+once and not per range. The library App, Artifact's pending item M8, lists artifacts and opens each one through `/view/`, and a media run's outputs open the same way.
+
+**Share links.** A browser opening a live share link goes to a preview, top-level on the content domain with the right viewer, since its recipient has no Hub page.
+Its token names the link rather than a person, and every request checks the link again, so revoking it, or its expiry, ends the preview at once. A visit counts as
+one redemption, and the rules for which artifacts may be shared do not change. Any other caller still gets the signed GET it gets today, so downloads and scripts keep
+working. The viewer offers a download.
+
+### Changes to what exists
+
+| Where | Change |
+|---|---|
+| Hub | `'wasm-unsafe-eval'` for an App that declares `ui.csp`. The specification fixes the policy only when `ui.csp` is omitted, and forbids undeclared domains, which this is not. Upstream's issue #605 and PR #667 are open, so we follow them if a field is added |
+| Hub | The files handler and repository listing |
+| Hub | The content domain: its setting, tokens, the viewers' routes and the `/view/` page, admitted by `ui/open-link` |
+| SDK | A server's viewer declaration, and owning items on the content domain |
+| Lore fork | TLS and ranges on the HTTP listener, with the certificate its gRPC listener has, a small patch offered upstream |
+| Artifact | Its preview route, share links and library App |
+| Installation | Port 41339 on Lore's Service, NetworkPolicy and the Hub's sandbox policy, for the Hub alone. The Hub's content-domain setting. The `file-viewer` image. The `nvidia` runtime class in the factory template |
+| Cloudflare | Done for `veoveo-bioma.space`: its zone and certificate, a proxied wildcard CNAME and tunnel route to the Hub's `apps` service, a cache rule bypassing the edge cache, since a cached file would skip the check on every request, and content rewriting off ([record](records/2026-11-04-usd-cloudflare-setup.md)). The Hub also answers `Cache-Control: private, no-transform` |
+| Docs | The owning designs, and `ARCHITECTURE.md`'s rule on bulk bytes |
+
+What existing behavior changes: a browser opening a share link previews instead of downloading at once; previews stream through the Hub; a repository that opts in shares the
+GPU with Embedding. Apps, n8n, downloads, Lore's command line and `*.apps.{host}` do not change.
+
+### Security
+
+Nothing here adds a way around an existing control:
+
+- **Lore's rules decide every read.** Each read uses the person's own Lore token, which the Hub issues against their current grant, and Lore refuses a token that cannot reach
+  the repository, on `RevisionTree` and on the content route alike. The first thing tested is a real token for one repository being refused on another.
+- **Untrusted content runs only on the content domain,** another site with no session. That isolation is the protection, so nothing is stripped from a file. A hostile file
+  reaches only its own item, read-only.
+- **The App rule stays.** A view reads only its own server, and browser code holds no token. Apps keep their frames.
+- **TLS to Lore,** so a person's token never crosses the cluster in the clear.
+- **The GPU opt-in skips Kubernetes' GPU allocation.** That is scheduling, not access to anyone's data.
+
+### Order
+
+1. The copy and the update, with the copied tests passing.
+2. On the box, render `kitchen_set` on the 4090 in Docker. Build the WASM for WebGPU, measure it and load the scene in the owner's Chrome.
+3. Lore's TLS and ranges. The Hub's files handler and WASM keyword, with tests of paths and of a token refused on another repository.
+4. The content domain: tokens, `/view/`, the `file-viewer` image and viewer declarations, including a real DWG.
+5. The `nvidia` runtime class, `usd-demo`, the USD server, its viewer, tools and small App.
+6. The USD viewer's panels: scene list, prims, variants, payloads, time and cameras.
+7. Artifact: its preview route, share links, then its library App.
+8. Qualification, with OpenCode last, then the record and checklist rows.
+
 ## Later
 
 - Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
