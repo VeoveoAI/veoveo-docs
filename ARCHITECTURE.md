@@ -47,7 +47,6 @@ model proxy: the agent calls its model provider directly through OpenShell's pro
 | OpenShell | Sandboxes, templates, workspaces, policies, providers and credential custody, forwarding, lifecycle and diagnostics | [VeoveoAI/OpenShell](https://github.com/VeoveoAI/OpenShell), a fork of [NVIDIA/OpenShell](https://github.com/NVIDIA/OpenShell) | OpenShell's own documentation |
 | OpenCode | The agent in every Computer; it does no version control | [VeoveoAI/opencode](https://github.com/VeoveoAI/opencode), a fork | its `VEOVEO_FORK.md` |
 | OpenShell qualification | Scenarios that qualify an OpenShell release for Veoveo | [veoveo-qualify-openshell](https://github.com/VeoveoAI/veoveo-qualify-openshell) | its [README](https://github.com/VeoveoAI/veoveo-qualify-openshell/blob/main/README.md) |
-| Lore Desktop adapter | Retired; kept as source history | [veoveo-service-lore](https://github.com/VeoveoAI/veoveo-service-lore) | none |
 
 The repositories form layers. Each depends only on the layers below it, through Git
 dependencies pinned to one revision, and never in a cycle:
