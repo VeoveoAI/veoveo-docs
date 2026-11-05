@@ -1951,7 +1951,8 @@ Decided by the owner:
 - **Artifact files and share links preview.** Download-only is not acceptable.
 - **The RTX 4090 renders, from the start.** No software rendering and no time-slicing or quotas now.
 - **Any factory can use the GPU,** off by default and never forced, with a simple opt-in.
-- **We do not offer patches upstream.** Our forks and copies keep up with their upstreams and carry our changes.
+- **Nothing goes upstream by default.** Our forks and copies keep up with their upstreams and carry our changes. Contributing a
+  patch is a specific decision the owner makes.
 - **Straightforward.** A new component, format or special case needs a reason.
 
 ### What the platform already gives us

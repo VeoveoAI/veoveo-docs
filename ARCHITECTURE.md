@@ -204,7 +204,8 @@ its own repository, and reusable fixes go to the template first.
 - **Forks are small and recorded.** Where a verified gap needs a change in Lore,
   OpenShell, OpenCode or rmcp, the VeoveoAI fork carries the smallest coherent patch
   on top of upstream, kept up to date with it, with the upstream revision and patches
-  recorded beside the pin. We do not offer our patches upstream.
+  recorded beside the pin. Nothing goes upstream by default: contributing a patch is a
+  specific decision the owner makes.
   Unsupported enforcement fails closed.
 - **No gate the function does not require.** Every check that can stop a person must be
   required by the function; Lore's grants and OpenShell's sandbox model are the only
