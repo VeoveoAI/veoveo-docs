@@ -2299,6 +2299,27 @@ So no new engine: LibreOffice, Poppler, ImageMagick, librsvg, FFmpeg and F3D, un
 the server decides a folder's cover, and a screen of kept pictures is one request. The rest appears to be server-to-Hub requests going out by the public
 name, a median of 499 ms against 13 ms on the gateway's service route. USD's gallery has no batch yet. Evidence: `records/2026-11-05-gallery-speed.md`.
 
+## 20. Repo: seeing what people and their agents did
+
+Agents do the editing, so people need to see what they did. The server that was `lore-api` is now
+[Repo](https://github.com/VeoveoAI/veoveo-mcp-repo/blob/main/crates/veoveo-mcp-repo/DESIGN.md), `veoveo-mcp-repo`, and its App at
+`/apps/repo/activity` opens on what was pushed across every repository a person can read.
+
+| What | Where |
+|---|---|
+| A repository's branches, a branch's history, what a revision changed | [Hub's routes](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#what-happened-in-a-repository) |
+| Any file route, the file page, Thumb and USD reading one old revision | A branch of `@{signature}`, in the Hub alone |
+| The list across branches, pictures before and after, text diffs, link moves, what is running | Repo |
+| The factory page and the viewer opening each other at a place | `ui/open-link` to another App, and the host handing the page's query as `tool-input` |
+
+- **The slug is `repo`.** Lore's role and schema keep the name `lore`, and the Hub's `/lore/` routes still serve Lore.
+- **Only viewing.** Nothing here edits; agents push through Lore.
+- **No new service, table, job or Lore change.** `ContentDiff` is not implemented in Lore, so Repo makes text diffs with `diffy`, as Lore's client does.
+- **Everyone is a person.** An agent pushes as the person it works for, and that is who a push names.
+- **Read on request.** The Apps contract has a view read again when asked, so the list has Refresh and no timer. `Serving` and `Build failed` say what is true now, since the factory keeps no history of builds.
+
+**Deployed and qualified** ([record](records/2026-11-06-repo-viewer.md)).
+
 ## Later
 
 **High-end stress test scenes, not now.** The owner wants these brought in later to stress the USD gallery, thumbnails and viewer, and will choose which then.
