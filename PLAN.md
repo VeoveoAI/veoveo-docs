@@ -2240,6 +2240,59 @@ Nothing here adds a way around an existing control:
    out-of-memory kill, and six scenarios with MiMo-V2.6-Pro, three of which needed a skill fixed. It also found that a factory server's changed skill was refused until a publication,
    fixed in Hub `ef727e2`. Run in Chrome's Default profile only.
 
+## 19. Galleries: seeing what is there
+
+Until now only a direct link reached a file: the top of the Hub answered 404, Lore had no browser, and the Artifact and USD Apps were lists
+of names. The owner's decision: the browser Apps are galleries, with thumbnails, without reinventing the thumbnailer, and each piece stays in its lane.
+
+**What a person gets.**
+
+| Where | What |
+|---|---|
+| `/` | A home page: a card for each App the person sees, and their Computer |
+| `/apps/lore-api/repositories` | New: the Lore repositories a person can read, then their folders and files |
+| `/apps/artifact/library` | A gallery of artifacts, where it was a list |
+| `/apps/usd/scenes` | A gallery of every scene, grouped by repository, showing only repositories that hold one |
+
+Each gallery shows a larger picture before opening a file. Open goes to the same `/view/` page as before.
+
+**The lanes.**
+
+| Piece | Its one job | Knows nothing of |
+|---|---|---|
+| [`veoveo-mcp-thumb`](https://github.com/VeoveoAI/veoveo-mcp-thumb) | A file in, a small picture out | Galleries, Apps, listings |
+| [`veoveo-mcp-lore`](https://github.com/VeoveoAI/veoveo-mcp-lore), slug `lore-api` | Lore for agents and people, starting with what a repository holds and its gallery. Where Lore's API grows | How a picture is made |
+| [`veoveo-hub-ui`](https://github.com/VeoveoAI/veoveo-hub-ui) | One look and one files and media browser, plain CSS and JavaScript in each App's page | Lore, Artifact and USD. It has no build step and no deployment |
+| Artifact, USD | Their own data, and a small adapter saying how to list an item, get its picture and open it | How the gallery looks |
+
+An App's page reads only its own server, so each of those servers has a `thumbnail` tool that asks Thumb as the same person.
+
+**The engine.** Tried on the 12 sample files before anything was built ([record](records/2026-11-05-galleries-deployed.md)):
+
+| Candidate | Result | Decision |
+|---|---|---|
+| Thumbrella, whose docs looked closest | Placeholder cards for Word, Excel, PowerPoint, Markdown and HTML, because it only reads a picture a file already holds. Its 3D fails on F3D 3.x | Not used |
+| Thumbelina | Real pictures of Office, Markdown, HTML, PDF, video and images. Its server has a fixed port, a fixed `/tmp`, no time limits, runs one job at a time and buffers each file in memory | Its recipe is used, not its server |
+| F3D's own release | GLB in 375 ms and STEP in 305 ms on the GPU, without a display. Debian's package has no EGL | Used for 3D |
+| The USD server's renderer | Already draws every scene in `usd-demo` | Used for USD |
+
+So no new engine: LibreOffice, Poppler, ImageMagick, librsvg, FFmpeg and F3D, unmodified, each a command line.
+
+**Decided on the way.**
+
+- **Reading is the check.** Every thumbnail first asks the file's owner as the person, even when one is kept. Removing a grant ends a person's thumbnails on their next request.
+- **Kept by content.** Lore's content address or an artifact's identifier, so nothing has to be told when a file changes.
+- **A renderer can be taken over.** The factory's sandbox lets every program reach the internet and read the server's key, so each step limits itself with Landlock, needing no privilege: it reads system files and its own job, writes its job, and opens no TCP connection. A kernel that cannot do this draws no thumbnails rather than unconfined ones.
+- **Large media.** A video or sound over 48 MiB is read from its two ends only.
+- **The factory base policy gains GET of `/artifacts/**`** beside its PUT, for any server that reads through Artifact's client.
+- **No framework in `veoveo-hub-ui`.** Next.js cannot work, because an App is one document with nothing else to load. React and the rest would add a build step and a generated file for a page this size. The owner chose plain CSS and JavaScript.
+- **The slug is `lore-api`,** because the Hub gives a server the role `server_{slug}` and the schema `{slug}`, and `server_lore` and `lore` hold the Lore service's own tables. The MCP server sits on top of the service and replaces nothing under it: clones and pushes, the factory reading a repository, the Hub's tokens and grants and file bytes all stay as they are.
+- **No SDK move for this.** Moving servers to a new SDK revision drags in every server they call. A server writes its page to a temporary file at startup and loads it as it always has. `AppHtml::new`, added to the SDK at `8ed1d5e`, waits for the next upgrade.
+
+**Deployed and qualified** ([record](records/2026-11-05-galleries-deployed.md)).
+
+**Not done.** DWG has no thumbnail, since no program here reads one; its viewer still opens it. A `gltf` with separate buffers has none. An artifact that is a USD stage has none. The Lore gallery shows `main`. Coming back from `/view/` starts a gallery over, because the host navigates its own page.
+
 ## Later
 
 - Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
