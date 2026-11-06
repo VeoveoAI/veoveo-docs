@@ -2293,6 +2293,10 @@ So no new engine: LibreOffice, Poppler, ImageMagick, librsvg, FFmpeg and F3D, un
 
 **Not done.** DWG has no thumbnail, since no program here reads one; its viewer still opens it. A `gltf` with separate buffers has none. An artifact that is a USD stage has none. The Lore gallery shows `main`. Coming back from `/view/` starts a gallery over, because the host navigates its own page.
 
+**Speed.** A Lore gallery load went from 110 requests to 8 to 10, and from about 25 s to about 14 s: the bridge reads no catalog to admit a request,
+the server decides a folder's cover, and a screen of kept pictures is one request. The rest appears to be server-to-Hub requests going out by the public
+name, a median of 499 ms against 13 ms on the gateway's service route. USD's gallery has no batch yet. Evidence: `records/2026-11-05-gallery-speed.md`.
+
 ## Later
 
 - Chunking for a knowledge source with long text (section 17): a vector per chunk in a table
