@@ -2293,6 +2293,8 @@ So no new engine: LibreOffice, Poppler, ImageMagick, librsvg, FFmpeg and F3D, un
 
 **Not done.** DWG has no thumbnail, since no program here reads one; its viewer still opens it. A `gltf` with separate buffers has none. An artifact that is a USD stage has none. The Lore gallery shows `main`. Coming back from `/view/` starts a gallery over, because the host navigates its own page.
 
+**Scale.** With `nvidia/USDCraft-10K` as the load, in the Lore repository `usdcraft-10k` and in no git repository, a screen of a repository is one request of about 1.2 s with its pictures, and a repository page 1.6 s. One read of a whole tree per revision answers covers, objects, pages and searches, and pictures are drawn ahead for as long as anyone browses. It also found that anything under 20 cm crashed the renderer and the viewer, now fixed. Evidence: `records/2026-11-05-usdcraft-gallery.md`.
+
 **Speed.** A Lore gallery load went from 110 requests to 8 to 10, and from about 25 s to about 14 s: the bridge reads no catalog to admit a request,
 the server decides a folder's cover, and a screen of kept pictures is one request. The rest appears to be server-to-Hub requests going out by the public
 name, a median of 499 ms against 13 ms on the gateway's service route. USD's gallery has no batch yet. Evidence: `records/2026-11-05-gallery-speed.md`.

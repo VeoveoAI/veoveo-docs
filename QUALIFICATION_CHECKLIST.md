@@ -260,6 +260,7 @@ Every browser row is Chrome's Default profile, signed in as `rozgo@bioma.ai`, th
 | M22 | A renderer reaches nothing | `confine` in the real sandbox, as a shell, against the unconfined server | No key, network, kept picture, source, environment or memory; GPU available | proven 2026-11-06 with a shell; no file built to exploit a renderer ([record](records/2026-11-05-galleries-deployed.md)) |
 | M23 | The galleries work in browsers | Lore, Artifact, USD: pictures, filters, list view, closer look, arrow keys, Open, in three profiles | As described, and each person sees only their own | proven 2026-11-06 ([record](records/2026-11-05-galleries-deployed.md)) |
 | M24 | An agent uses the Lore server | OpenCode with MiMo: what a repository holds | The skill loaded, sizes right, no ask | proven 2026-11-06: 42.8 s, 4 calls, USD 0.009 ([record](records/2026-11-05-galleries-deployed.md)) |
+| M25 | A repository of hundreds of objects browses by one request a screen, finds names at any depth, and a person with no grant sees none of it | A screen of 60 cards with its pictures in about 1 s; search and scrolling work; 403 for another person | proven 2026-11-05 on 369 objects, not on 10,000: `records/2026-11-05-usdcraft-gallery.md` |  |
 
 ## G. Model-driven acceptance (last)
 
