@@ -3,9 +3,10 @@
 Veoveo is a platform on which people use services, data and artifacts through their own
 agents, and build new services by pushing source. This document holds what no single
 repository owns: the components and their responsibilities, the identities and trust
-boundaries between them, the path from a person's Computer to a served branch, who owns
-which configuration, and where each topic is designed. Component behavior is in each
-component's `DESIGN.md`, which this document links to and does not restate.
+boundaries between them, how a request is authorized, the path from a person's Computer
+to a served branch, who owns which configuration, and where each topic is designed.
+Component behavior is in each component's `DESIGN.md`, which this document links to and
+does not restate.
 
 ## Purpose
 
@@ -137,6 +138,49 @@ The boundaries that follow from these:
 Identity wiring for an installation (which provider, which clients and roles) is in the
 [installation design](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity).
 
+## Authorization
+
+Three decisions authorize a request. Each has one owner, and none grants another:
+
+| Decision | Owner | Made from | Design |
+|---|---|---|---|
+| May the caller call this tool, or read this resource, template or prompt? | Hub, then the server again | The installation's roles over the permissions the server declares | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#authorization), [installation roles](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity) |
+| May the caller read, push or own this repository? | Lore | The caller's repository assignments, in the Lore token Hub issues | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#native-contributed-credential-lifecycle) |
+| May the caller use this object, such as an artifact? | The server | Its own grants to people and groups, and the groups Hub forwards | the server's `DESIGN.md`, such as [Artifact](https://github.com/VeoveoAI/veoveo-mcp-artifact/blob/main/crates/veoveo-mcp-artifact/DESIGN.md#access-control) |
+
+A server takes part through two MCP extensions, which it advertises in
+`server/discover` under `capabilities.extensions` and registers with Hub as OAuth client
+metadata. Hub decides by the registered copy.
+
+- `ai.veoveo/registration` names the server: its slug, which is its namespace, its URI
+  scheme, version, MCP endpoint and deployment, and the HTTP it serves besides MCP.
+- `ai.veoveo/authorization` names the permissions the server defines, each with the
+  resource type it acts on, its access and its risks; the permission, or plain
+  authentication, that each tool, resource, template, prompt and app origin requires;
+  and the permissions it uses on other servers.
+
+A server names no role and no person, and a target it does not declare is denied.
+Roles grant by access and risk, so a new server needs no change to them. The
+[SDK's registration protocol](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/registration/DESIGN.md#declarations)
+defines both extensions and the token a server receives, and the SDK derives the
+advertisement, the registration and the server's own check from one route table.
+
+Hub forwards each admitted request with a token addressed to that one server, naming the
+caller, their groups and the permissions granted in the server's namespace, and the
+server checks the route's permission again. A call to another server carries only the
+permissions the calling server declares it uses and the caller holds
+([calls between servers](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#calls-between-servers)).
+
+A group is one group for all three decisions: Lore assignments and a server's grants
+name it, and Hub forwards a person's groups with every request
+([groups and sharing](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#groups-and-sharing)).
+The installation's roles name people and the identity provider's groups, so a group
+shares repositories and objects, never a role. The decisions meet in a runner of a
+linked repository: Hub lists it only to people with a grant on that repository, and the
+token it forwards adds the caller's Lore actions, so the runner decides by the grant
+Lore decides by
+([linked repositories](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#linked-repositories)).
+
 ## From A Computer To A Served Branch
 
 1. **Enter.** A person opens `/computer` on the installation's one public origin. Hub
@@ -248,7 +292,7 @@ its own repository, and reusable fixes go to the template first.
 | Durable Tasks, audit and usage | [Tasks](https://github.com/VeoveoAI/veoveo-core/blob/main/platform/task/DESIGN.md), [audit](https://github.com/VeoveoAI/veoveo-core/blob/main/platform/audit/DESIGN.md), [usage](https://github.com/VeoveoAI/veoveo-core/blob/main/platform/usage/DESIGN.md) |
 | Hosting a server, Task work, calls to other servers | [SDK](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/DESIGN.md) |
 | Server registration protocol | [SDK registration](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/registration/DESIGN.md), [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#server-registration) |
-| Authorization, forwarded identity, calls between servers | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#authorization) |
+| Authorization: roles, servers' declarations and their MCP extensions, forwarded identity, calls between servers, groups | [overview](#authorization), [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#authorization), [SDK registration](https://github.com/VeoveoAI/veoveo-hub-sdk/blob/main/crates/veoveo-hub-sdk/src/registration/DESIGN.md#authorization), [installation roles](https://github.com/VeoveoAI/veoveo-template-installation/blob/main/DESIGN.md#identity), [groups](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#groups-and-sharing) |
 | Browser sign-in, sessions and Hub tokens | [Hub token and session authority](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/src/auth/DESIGN.md) |
 | Lore credentials and repository creation | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#native-contributed-credential-lifecycle) |
 | Selection and routing | [Hub](https://github.com/VeoveoAI/veoveo-hub/blob/main/crates/veoveo-hub/DESIGN.md#execution-composition-and-deployment-identity) |

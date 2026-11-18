@@ -6,7 +6,7 @@ what no single component owns, the plan and the evidence. Start with the archite
 
 | Document | Contents |
 |---|---|
-| [Architecture](ARCHITECTURE.md) | The platform's purpose, its components and their responsibilities, identities and trust boundaries, the Computer → Lore → factory → Hub workflow, configuration ownership, and the map of which `DESIGN.md` owns each topic |
+| [Architecture](ARCHITECTURE.md) | The platform's purpose, its components and their responsibilities, identities and trust boundaries, how a request is authorized, the Computer → Lore → factory → Hub workflow, configuration ownership, and the map of which `DESIGN.md` owns each topic |
 | [Plan](PLAN.md) | What is next and what is open |
 | [Qualification Checklist](QUALIFICATION_CHECKLIST.md) | Every feature to test on the installation, for people and agents: how to check it, what proves it and its current status |
 | [Records](records/README.md) | Dated plans, execution logs and qualification evidence, cited by reports; history, not the current design |
